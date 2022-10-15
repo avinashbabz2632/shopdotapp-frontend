@@ -8,6 +8,10 @@ export default function SignUpLayout({
   register,
   onSubmit,
   errors,
+  handlePassword,
+  passwordType,
+  onChangeText,
+  callback,
 }) {
   return (
     <>
@@ -29,7 +33,10 @@ export default function SignUpLayout({
                 <div className="form__field form__field--half form__field--floating-label">
                   <input
                     type="text"
-                    name="fname"
+                    name="first_name"
+                    onChange={(e) => {
+                      onChangeText('first_name', e.target.value);
+                    }}
                     placeholder="First name"
                     {...register('fname', {
                       required: true,
@@ -43,7 +50,10 @@ export default function SignUpLayout({
                 <div className="form__field form__field--half form__field--floating-label">
                   <input
                     type="text"
-                    name="lname"
+                    name="last_name"
+                    onChange={(e) => {
+                      onChangeText('last_name', e.target.value);
+                    }}
                     placeholder="Last name"
                     {...register('lname', {
                       required: true,
@@ -58,6 +68,9 @@ export default function SignUpLayout({
                   <input
                     type="email"
                     name="email"
+                    onChange={(e) => {
+                      onChangeText('email', e.target.value);
+                    }}
                     placeholder="Email address"
                     {...register('email', {
                       required: true,
@@ -71,8 +84,11 @@ export default function SignUpLayout({
                 <div className="form__field form__field--floating-label">
                   <input
                     className="password"
-                    type="password"
+                    type={passwordType ? 'password' : 'text'}
                     name="password"
+                    onChange={(e) => {
+                      onChangeText('password', e.target.value);
+                    }}
                     placeholder="Create password"
                     {...register('password', {
                       required: true,
@@ -83,8 +99,10 @@ export default function SignUpLayout({
                     Password is <span>strong!</span>
                   </div>
                   <span
-                    className="password-show"
-                    onClick={() => setPasswordType(!passwordType)}
+                    className={
+                      passwordType ? 'password-show' : 'password-show active'
+                    }
+                    onClick={handlePassword}
                   ></span>
                   {errors.password && (
                     <span className="error-text">

@@ -7,13 +7,14 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import SignIn from './scence/SignIn';
 import SignUp from './scence/SignUp';
+import Container from './containers/authContainer';
 
 class App extends React.Component {
   render() {
     return (
       <div>
         <Switch>
-          <Route exact path="/" component={SignUp} />
+          <Route exact path="/" component={Container(SignUp)} />
           <Route exact path="/signin" component={SignIn} />
           <Route component={NotFoundPage} />
         </Switch>

@@ -25,8 +25,15 @@ const validationSchema = yup
   })
   .required();
 
-function SignUp() {
+function SignUp({ actions }) {
   const [passwordType, setPasswordType] = useState(true);
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    device_id: 'testingdevice2',
+  });
 
   const {
     register,
@@ -37,7 +44,22 @@ function SignUp() {
 
   const onSubmit = (data) => {
     console.log('data', data);
-    reset();
+    // reset();
+    const updateFormData = {
+      first_name: data.fname,
+      last_name: data.lname,
+      email: data.email,
+      password: data.password,
+      device_id: 'testingdevice2',
+    };
+    actions.signUpAction(updateFormData);
+  };
+
+  const handleChangeText = (key, value) => {
+    setFormData({
+      ...formData,
+      [key]: value,
+    });
   };
 
   return (
@@ -47,6 +69,12 @@ function SignUp() {
         errors={errors}
         handleSubmit={handleSubmit}
         register={register}
+        formData={formData}
+        passwordType={passwordType}
+        onChangeText={handleChangeText}
+        handlePassword={() => {
+          setPasswordType(!passwordType);
+        }}
       />
     </>
   );
