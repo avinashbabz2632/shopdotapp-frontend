@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -17,7 +17,13 @@ const validationSchema = yup
       .email('Must be a valid email')
       .max(255)
       .required('Email is required'),
-    password: yup.string().required('Password is required'),
+    password: yup
+      .string()
+      .required('Password is required')
+      .matches(
+        /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+        'Password must contain at least 8 characters, one uppercase, one number and one special case character'
+      ),
     termsOfService: yup
       .boolean()
       .required('The terms and conditions must be accepted.')
@@ -25,7 +31,8 @@ const validationSchema = yup
   })
   .required();
 
-function SignUp({ actions }) {
+function SignUp({ actions, authReducer: { isSignUp } }) {
+  const history = useHistory();
   const [passwordType, setPasswordType] = useState(true);
   const [formData, setFormData] = useState({
     first_name: '',
@@ -41,6 +48,13 @@ function SignUp({ actions }) {
     reset,
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
+
+  useEffect(() => {
+    if (isSignUp) {
+      history.push('/verifyemail');
+      actions.clearAuthReducerAction();
+    }
+  }, [isSignUp]);
 
   const onSubmit = (data) => {
     console.log('data', data);
