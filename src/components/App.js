@@ -2,11 +2,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { hot } from 'react-hot-loader';
-import RootRouter from '../rootRoutes';
+import { RouterProvider } from 'react-router-dom';
+import { router } from '../RootRoutes'
 
 class App extends React.Component {
   render() {
-    return <h1>fghj</h1>
+    return <RouterProvider router={router} />
+
   }
 }
 

@@ -1,3 +1,5 @@
 export default {
-  userDetails: {},
+  userReducerInitial: {
+    isSignUp: false,
+  },
 };

@@ -10,7 +10,7 @@ export default class Root extends Component {
     const { store, history } = this.props;
     return (
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <App />
       </Provider>
     );
   }
