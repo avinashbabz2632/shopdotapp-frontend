@@ -1,27 +1,14 @@
 /* eslint-disable import/no-named-as-default */
-import { Route, Switch } from 'react-router-dom';
-
-import NotFoundPage from './NotFoundPage';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { hot } from 'react-hot-loader';
-import SignIn from './scence/SignIn';
-import SignUp from './scence/SignUp';
-import Container from './containers/authContainer';
-import VerifyEmail from './scence/VerifyEmail';
+import { RouterProvider } from 'react-router-dom';
+import { router } from '../RootRoutes'
 
 class App extends React.Component {
   render() {
-    return (
-      <div>
-        <Switch>
-          <Route exact path="/" component={Container(SignUp)} />
-          <Route exact path="/signin" component={SignIn} />
-          <Route exact path="/verifyemail" component={VerifyEmail} />
-          <Route component={NotFoundPage} />
-        </Switch>
-      </div>
-    );
+    return <RouterProvider router={router} />
+
   }
 }
 

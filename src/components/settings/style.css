@@ -1,0 +1,45 @@
+/* .gettingPaid {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    padding: 22px;
+} */
+.icons {
+    width: 50px;
+    height: 50px;
+    background-color: #FBF5F0;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+/* form width */
+.shippingLocation,
+.shippingRate {
+    width: 50%;
+}
+
+.shippingRate h6 {
+    font-weight: 600;
+    color: var(--navy);
+}
+
+.text {
+    font-size: 14px;
+    color: var(--navy);
+    margin-top: 10px;
+}
+
+.orderSwitch {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+
+}
+
+.orderSwitch .orderFormSwitch {
+    width: 39px !important;
+    height: 19px !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3.5' fill='white'/%3e%3c/svg%3e");
+    background-color: #219653;
+}
