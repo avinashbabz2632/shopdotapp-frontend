@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../../actions';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Container(CurrentComponent) {
   class Container extends Component {
@@ -13,6 +15,7 @@ export default function Container(CurrentComponent) {
       return (
         <div>
           <CurrentComponent {...this.props} />
+          <ToastContainer />
         </div>
       );
     }

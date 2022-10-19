@@ -13,7 +13,7 @@
     "start-message": "babel-node tools/startMessage.js",
     "prestart": "npm run start-message",
     "start": "concurrently -k -r -s first \"npm run test:watch\" \"npm run open:src\" \"npm run lint:watch\"",
-    "clear-cache":"rm -rf node_modules/.cache/hard-source",
+    "clear-cache": "rm -rf node_modules/.cache/hard-source",
     "open:src": "babel-node tools/srcServer.js",
     "open:dist": "babel-node tools/distServer.js",
     "lint": "esw webpack.config.* src tools --color",
@@ -43,8 +43,10 @@
     "react-hook-form": "7.37.0",
     "react-redux": "7.1.1",
     "react-router-dom": "5.1.2",
+    "react-toastify": "9.0.8",
     "redux": "4.0.4",
     "redux-thunk": "2.3.0",
+    "styled-components": "5.3.6",
     "yup": "0.32.11"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import CommonHeader from '../common/CommonHeader';
@@ -19,7 +19,8 @@ const validationSchema = yup
   })
   .required();
 
-function SignIn() {
+function SignIn({ actions, authReducer: { isSignIn } }) {
+  const history = useHistory();
   const [passwordType, setPasswordType] = useState(true);
 
   const {
@@ -29,9 +30,20 @@ function SignIn() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
+  useEffect(() => {
+    if (isSignIn) {
+      history.push('/home');
+      actions.clearAuthReducerAction();
+    }
+  }, [isSignIn]);
+
   const onSubmit = (data) => {
-    console.log('data', data);
-    reset();
+    const updateFormData = {
+      email: data.email,
+      password: data.password,
+      device_id: 'testingdevice2',
+    };
+    actions.signInAction(updateFormData);
   };
 
   return (

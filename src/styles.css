@@ -797,6 +797,123 @@ input[type='submit'][disabled] {
     min-height: 100vh;
 }
 
+/*Onbording ***********************************************************************************************/
+.onbording {
+    max-width: 100%;
+    height: 100%;
+    position: relative;
+    background: #fbf5f0;
+}
+
+.ob-head {
+    position: relative;
+    padding: 2.4rem;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.16);
+    height: 10rem;
+    background: var(--color-white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.ob-head h1 {
+    margin: 0;
+    padding: 0;
+    color: #283b49;
+    letter-spacing: 0.2px;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 24px;
+}
+
+.ob-body .form-wrapper {
+    margin: 0 auto;
+    text-align: left;
+    padding-top: 32px;
+    min-width: 576px;
+    max-width: 576px;
+    width: 100%;
+}
+
+.ob-body .form-area {
+    border-radius: 8px;
+    padding: 24px 24px 32px;
+    background: #fff;
+}
+
+.ob-body .form-input .form-control {
+    background: #fffcf9;
+    border: 1px solid #f3e0d2;
+    border-radius: 4px;
+    height: 4rem;
+    padding: 1rem 1.2rem;
+    display: block;
+    width: 100%;
+    margin-top: 0.6rem;
+    margin-bottom: 1.6rem;
+}
+
+.ob-body .form-password {
+    position: relative;
+}
+
+.ob-body .form-password .form-control {
+    background: #fbf5f0;
+    border: 1px solid #fbf5f0;
+    padding-right: 45%;
+}
+
+.ob-body .category-form-input .form-input {
+    width: 100%;
+    text-align: left;
+}
+
+.ob-body .category-form-input {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.8rem;
+    align-items: baseline;
+    margin-bottom: 1rem;
+}
+
+.ob-body svg.icon-eye {
+    position: absolute;
+    right: 13px;
+    width: 2.5rem;
+    opacity: 0.64;
+    height: 2rem;
+    top: 17px;
+}
+
+.ob-body svg.icon-eye:hover {
+    opacity: 0.5;
+}
+
+.pwd-indicator {
+    position: absolute;
+    right: 50px;
+    top: 16px;
+    color: #354253;
+    letter-spacing: 0.2px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.ob-body .check-box {
+    text-align: left;
+    color: #354253;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.ob-body .check-box a {
+    text-decoration: none;
+    color: #bd6f34;
+}
+
 .content {
     flex: 1 0 auto;
     display: flex;

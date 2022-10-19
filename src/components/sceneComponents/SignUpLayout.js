@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import CommonHeader from '../common/CommonHeader';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 export default function SignUpLayout({
   handleSubmit,
