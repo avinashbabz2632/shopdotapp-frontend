@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import SignUpLayout from '../sceneComponents/SignUpLayout';
+import { useSelector, } from 'react-redux';
+import * as actions from '../../actions/authActions'
 
 // Validation schema of form field
 const validationSchema = yup
@@ -31,8 +33,9 @@ const validationSchema = yup
   })
   .required();
 
-function SignUp({ actions, authReducer: { isSignUp } }) {
-  const history = useHistory();
+function SignUp({ }) {
+  const history = useNavigate();
+  const { isSignUp } = useSelector(state => state.authReducer);
   const [passwordType, setPasswordType] = useState(true);
   const [formData, setFormData] = useState({
     first_name: '',

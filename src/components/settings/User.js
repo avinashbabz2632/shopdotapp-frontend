@@ -9,7 +9,7 @@ const User = () => {
             <div>
                 <div className='settingLayoutHeading d-flex justify-content-between' style={{ borderBottom: '1px solid #E5E5E5' }} >
                     <h2>Active Users</h2>
-                    <a href='#' className='border-btn mb-3 ' ><span className='me-3 fs-4 fw-bolder'>+</span>Add a new user</a>
+                    <a href='#' className='border-btn mb-3' ><span className='me-3 fs-4 fw-bolder'>+</span>Add a new user</a>
                 </div>
 
                 <div className='datalist-table_wrap'>

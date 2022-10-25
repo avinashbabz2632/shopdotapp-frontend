@@ -249,7 +249,8 @@ textarea {
     font-family: var(--base-font-family);
     font-size: var(--input-fz);
     font-weight: 400;
-    /* border: 0.1rem solid var(--input-bg); */
+    border: 0.1rem solid var(--orange-tint-6);
+    /* border: none; */
     border-radius: var(--input-radius);
     padding: var(--input-padding);
     height: var(--input-height);
@@ -394,6 +395,67 @@ textarea {
     resize: none;
     vertical-align: top;
     min-height: 10rem;
+}
+
+.radioGroups {
+    width: 100%;
+    border: 2px solid var(--orange-tint-30);
+    padding: 6px 12px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    border-radius: 2px;
+}
+
+.selectedRadioGroups {
+    border: 2px solid var(--orange-100);
+}
+
+.selectedRadioGroups label {
+    margin-bottom: 0;
+    color: var(--navy) !important;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.radioGroups label {
+    margin-bottom: 0;
+    color: #7E8691;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+input[type='radio']:after {
+    width: 13px;
+    height: 13px;
+    border-radius: 15px;
+    top: -3px;
+    left: -0px;
+    position: relative;
+    background-color: white;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid var(--orange-tint-20);
+}
+
+input[type='radio']:checked:after {
+    width: 13px;
+    height: 13px;
+    border-radius: 15px;
+    top: -4px;
+    left: 0;
+    position: relative;
+    background-color: var(--orange-100);
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--orange-100);
 }
 
 button[type='submit'],
