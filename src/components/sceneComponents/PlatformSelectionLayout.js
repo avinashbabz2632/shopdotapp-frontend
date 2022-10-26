@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './styles/onboardStyle.css';
+import '../../styles/onboardStyle.css';
 import DynamicHeader from '../common/DynamicHeader';
 
 const PlatformSelectionLayout = ({

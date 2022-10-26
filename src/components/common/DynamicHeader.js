@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './styles.css';
 import logoMain from '../../assets/images/logos/logo-main.png';
 
 function DynamicHeader({ pageTitle, position, reverse }) {
