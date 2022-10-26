@@ -4,6 +4,7 @@ import PlatformSelectionLayout from '../sceneComponents/PlatformSelectionLayout'
 export default function PlatformSelection() {
   const [selected, setSelected] = useState('');
   const [radioVal, setRadioVal] = useState('');
+  const [otherPlatform, setOtherPlatform] = useState('');
 
   const selectedStyle = {
     border: '2px solid #D18D58',
@@ -12,20 +13,25 @@ export default function PlatformSelection() {
 
   const handleChange = (id) => {
     setSelected(id);
+    setRadioVal('');
   };
 
-  const OtherJsx = () => {
-    return (
-      <input className="mx-3" type="text" placeholder="Name of the platform" />
-    );
-  };
+  const isDisable =
+    selected === '' || selected === 'supplier' ? radioVal == '' : false;
+
+  const doAction = () => {};
+
   return (
     <PlatformSelectionLayout
       selected={selected}
       radioVal={radioVal}
       selectedStyle={selectedStyle}
       handleChange={handleChange}
-      OtherJsx={OtherJsx}
+      isDisable={isDisable}
+      onChangeText={() => {}}
+      onChangeRadio={(e) =>
+        setRadioVal(e && e.target && e.target.value ? e.target.value : '')
+      }
     />
   );
 }

@@ -11,6 +11,7 @@ import Container from './containers/authContainer';
 import VerifyEmail from './scence/VerifyEmail';
 import Home from './scence/Home';
 import PlatformSelection from './scence/PlatformSelection';
+import NotSupported from './scence/NotSupported';
 
 class App extends React.Component {
   render() {
@@ -24,6 +25,11 @@ class App extends React.Component {
             exact
             path="/platform"
             component={Container(PlatformSelection)}
+          />
+          <Route
+            exact
+            path="/notsupported"
+            component={Container(NotSupported)}
           />
           <Route exact path="/home" component={Container(Home)} />
           <Route component={NotFoundPage} />

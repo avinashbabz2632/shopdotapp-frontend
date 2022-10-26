@@ -7,8 +7,21 @@ const PlatformSelectionLayout = ({
   radioVal,
   selectedStyle,
   handleChange,
-  OtherJsx,
+  onChangeRadio,
+  isDisable,
+  onChangeText,
 }) => {
+  console.log(isDisable, 'isDisable');
+  const OtherJsx = () => {
+    return (
+      <input
+        className="mx-3"
+        type="text"
+        placeholder="Name of the platform"
+        onChange={onChangeText}
+      />
+    );
+  };
   return (
     <>
       <DynamicHeader
@@ -89,7 +102,7 @@ const PlatformSelectionLayout = ({
                             value="shopify"
                             type="radio"
                             name="integrate"
-                            onChange={(e) => setRadioVal(e.target.value)}
+                            onChange={onChangeRadio}
                           />
                           <span className="ms-3">Shopify</span>
                         </label>
@@ -108,7 +121,7 @@ const PlatformSelectionLayout = ({
                             value="other"
                             type="radio"
                             name="integrate"
-                            onChange={(e) => setRadioVal(e.target.value)}
+                            onChange={onChangeRadio}
                           />
                           <span className="ms-3">Other</span>
                         </label>
@@ -125,7 +138,7 @@ const PlatformSelectionLayout = ({
                 <div className="col-md-6">
                   <button
                     className="backBorderBtn"
-                    onClick={() => setRadioVal('')}
+                    onClick={() => onChangeRadio('')}
                   >
                     Back
                   </button>
@@ -140,8 +153,10 @@ const PlatformSelectionLayout = ({
               <div className="col-md-12">
                 <button
                   type="submit"
-                  className="nextButton button btn"
-                  disabled
+                  className={
+                    isDisable ? 'nextButton button btn' : 'nextButton button'
+                  }
+                  disabled={isDisable}
                 >
                   Next
                 </button>
