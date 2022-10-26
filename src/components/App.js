@@ -10,6 +10,7 @@ import SignUp from './scence/SignUp';
 import Container from './containers/authContainer';
 import VerifyEmail from './scence/VerifyEmail';
 import Home from './scence/Home';
+import PlatformSelection from './scence/PlatformSelection';
 
 class App extends React.Component {
   render() {
@@ -19,6 +20,11 @@ class App extends React.Component {
           <Route exact path="/" component={Container(SignUp)} />
           <Route exact path="/signin" component={Container(SignIn)} />
           <Route exact path="/verifyemail" component={Container(VerifyEmail)} />
+          <Route
+            exact
+            path="/platform"
+            component={Container(PlatformSelection)}
+          />
           <Route exact path="/home" component={Container(Home)} />
           <Route component={NotFoundPage} />
         </Switch>
