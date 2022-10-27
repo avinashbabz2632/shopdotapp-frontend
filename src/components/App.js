@@ -12,6 +12,8 @@ import VerifyEmail from './scence/VerifyEmail';
 import Home from './scence/Home';
 import PlatformSelection from './scence/PlatformSelection';
 import NotSupported from './scence/NotSupported';
+import SettingsLayout from './containers/settingsLayout';
+import Settings from './scence/Settings';
 
 class App extends React.Component {
   render() {
@@ -32,6 +34,11 @@ class App extends React.Component {
             component={Container(NotSupported)}
           />
           <Route exact path="/home" component={Container(Home)} />
+          <Route
+            path="/settings/"
+            name="settings"
+            component={Container(Settings)}
+          />
           <Route component={NotFoundPage} />
         </Switch>
       </div>
