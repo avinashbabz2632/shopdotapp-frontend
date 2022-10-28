@@ -3,6 +3,15 @@
     background-color: var(--white) ; 
 }
 
+.title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    gap: 1.2rem;
+    line-height: 1;
+}
+
 .settings_form {
     position: relative;
     width: 100%;
@@ -11,10 +20,26 @@
     padding: 3rem 0px;
 }
 
-.setting-section h1 {
-    font-weight: 700;
+.setting-title {
+    font-weight: 700 ;
     font-size: 2rem;
     line-height: 2rem;
+    color:var(--navy) !important;
+}
+.setting-sub-title {
+    font-weight: 400;
+    color:var(--navy) !important;
+    margin-top: 1rem;
+}
+
+.setting-section-title {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 18px;
+    box-shadow: 0 1px 0 rgb(0 0 0 / 10%);
+    margin: 4rem 1.8rem .1rem 0;
+    padding-bottom: 0.8rem;
+    color:var(--navy) !important;
 }
 
 .asterisk-red {
