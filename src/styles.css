@@ -386,6 +386,35 @@ select {
 
 }
 
+.ql-toolbar {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.ql-container {
+    height: 180px !important;
+    border: none !important;
+
+}
+
+.ql-editor {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border: 1px solid #CCCCCC;
+    border-top: none;
+}
+
+
+.ql-editor:focus {
+    border: 1px solid var(--orange-100);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.textEditorOuter {
+    position: relative;
+}
+
 select:focus {
     border: none !important;
     box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.82) !important;
@@ -397,6 +426,20 @@ textarea {
     min-height: 10rem;
 }
 
+.checkboxGroup {
+    border: 1px solid var(--orange-tint-30);
+    background-color: var(--orange-tint-2);
+    margin-bottom: 8px;
+}
+
+
+.checkboxGroup label {
+    margin: 0 !important;
+    width: 100% !important;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
 .radioGroups {
     width: 100%;
     border: 2px solid var(--orange-tint-30);
@@ -406,6 +449,51 @@ textarea {
     align-items: center;
     border-radius: 2px;
 }
+
+input[type='checkbox']:focus {
+    /* outline: none !important;
+    border: none !important; */
+    box-shadow: none !important;
+}
+
+input[type='checkbox']:after {
+    width: 16px;
+    height: 16px;
+    top: -2px;
+    left: -2px;
+    position: relative;
+    background-color: white;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid var(--orange-tint-20);
+    transition: linear 0.1s;
+}
+
+input[type='checkbox']:checked:after {
+    width: 16px;
+    height: 16px;
+    top: -1px;
+    left: -2px;
+    position: relative;
+    background-color: var(--orange-100);
+    border: none !important;
+    background: var(--orange-100) url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnIHdpZHRoPSIxMiIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgMTIgOSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgPHBhdGggZD0iTTQuNTc1IDguOTc3cy0uNDA0LS4wMDctLjUzNi0uMTY1TC4wNTcgNS42NGwuODI5LTEuMjI3TDQuNDcgNy4yNjggMTAuOTIxLjA4NmwuOTIzIDEuMTAzLTYuODYzIDcuNjRjLS4xMzQtLjAwMy0uNDA2LjE0OC0uNDA2LjE0OHoiIGZpbGw9IiNGRkYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPg0KPC9zdmc+) 40% 40% no-repeat;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .selectedRadioGroups {
     border: 2px solid var(--orange-100);

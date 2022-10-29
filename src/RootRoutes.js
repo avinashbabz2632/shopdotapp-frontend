@@ -16,6 +16,7 @@ import SettingsLayout from './layouts/SettingsLayout';
 import PersonalisedPlatfromExperience from './components/onBoardScreens/PersonalisePlatformExperience';
 import BrandOnBoarding from './components/onBoardScreens/BrandOnBoarding';
 import RetailerOnBoarding from './components/onBoardScreens/retailerOnBoarding';
+import BrandPrfile from './components/settings/BrandProfile';
 
 
 export const router = createBrowserRouter([
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
             {
                 path: "404",
                 element: <NotFoundPage />,
+            },
+            {
+                path: "brand-profile",
+                element: <BrandPrfile />,
             },
             {
                 path: "getting-paid",

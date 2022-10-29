@@ -11,7 +11,7 @@ const SettingsLayout = () => {
         },
         {
             name: 'Brand Profile',
-            path: '/setting/404'
+            path: '/setting/brand-profile'
         },
         {
             name: 'Preferences',

@@ -7,7 +7,7 @@ const Security = () => {
         <SettingsHeader heading={'Security'} isRequired>
             <div>
                 <div className="shippingLocationwrapper">
-                    <div className='settingLayoutHeading' style={{ borderBottom: '1px solid #E5E5E5' }} >
+                    <div className='settingLayoutHeading mt-2' style={{ borderBottom: '1px solid #E5E5E5' }} >
                         <h2>Change Password</h2>
                     </div>
                     <div className='row shippingLocation'>

@@ -9,7 +9,7 @@ const AlertAndNotifications = () => {
         <SettingsHeader heading={'Alerts and Notifications'} isRequired>
             <div>
                 <div className="shippingLocationwrapper">
-                    <div className='settingLayoutHeading mb-4' style={{ borderBottom: '1px solid #E5E5E5' }} >
+                    <div className='settingLayoutHeading mt-2 mb-4' style={{ borderBottom: '1px solid #E5E5E5' }} >
                         <h2>Email Notifications</h2>
                     </div>
                     <div className='row shippingLocation'>
