@@ -32,7 +32,7 @@ function SignIn({ actions, authReducer: { isSignIn } }) {
 
   useEffect(() => {
     if (isSignIn) {
-      history.push('/home');
+      history.push('/platform');
       actions.clearAuthReducerAction();
     }
   }, [isSignIn]);

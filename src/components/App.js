@@ -7,7 +7,7 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import SignIn from './scence/SignIn';
 import SignUp from './scence/SignUp';
-import Container from './containers/authContainer';
+import Container from './containers/Container';
 import VerifyEmail from './scence/VerifyEmail';
 import Home from './scence/Home';
 import PlatformSelection from './scence/PlatformSelection';
@@ -20,7 +20,7 @@ class App extends React.Component {
     return (
       <div>
         <Switch>
-          <Route exact path="/" component={Container(SignUp)} />
+          <Route exact path="/signup" component={Container(SignUp)} />
           <Route exact path="/signin" component={Container(SignIn)} />
           <Route exact path="/verifyemail" component={Container(VerifyEmail)} />
           <Route

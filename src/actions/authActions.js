@@ -10,6 +10,9 @@ export function signUpAction(formData) {
       if (res.status === 201) {
         dispatch({
           type: types.IS_SIGN_UP,
+        });
+        dispatch({
+          type: types.USER_DETAILS,
           userDetails: res.data.data,
         });
         setTimeout(() => {
@@ -39,6 +42,9 @@ export function signInAction(formData) {
       if (res.status === 200) {
         dispatch({
           type: types.IS_SIGN_IN,
+        });
+        dispatch({
+          type: types.USER_DETAILS,
           userDetails: res.data.data,
         });
       } else {

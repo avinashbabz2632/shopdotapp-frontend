@@ -24,6 +24,7 @@ export default function Container(CurrentComponent) {
   function mapStateToProps(state) {
     return {
       authReducer: state.authReducer,
+      userReducer: state.userReducer,
     };
   }
 

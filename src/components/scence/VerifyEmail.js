@@ -1,12 +1,18 @@
 // Onboarding flow:: Verify Email Page
 
-import React from 'react';
+import React, { useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 import OnboardingLayout from '../common/layout/OnboardingLayout';
 import emailIcon from '../../assets/images/icons/icon-email-sent.svg';
 import { LinkMod } from '../common/A';
 
-export default function VerifyEmail({ actions, authReducer: { userDetails } }) {
+export default function VerifyEmail({ actions, userReducer: { userDetails } }) {
+  useEffect(() => {
+    setTimeout(() => {
+      history.push('/platform');
+    }, 500);
+  }, []);
+
   const handleResend = () => {
     actions.sendEmailVerificationAction({ id: userDetails.id });
   };

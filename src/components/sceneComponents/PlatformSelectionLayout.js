@@ -10,13 +10,15 @@ const PlatformSelectionLayout = ({
   onChangeRadio,
   isDisable,
   onChangeText,
+  callback,
+  otherPlatform,
 }) => {
-  console.log(isDisable, 'isDisable');
   const OtherJsx = () => {
     return (
       <input
         className="mx-3"
         type="text"
+        value={otherPlatform}
         placeholder="Name of the platform"
         onChange={onChangeText}
       />
@@ -37,13 +39,11 @@ const PlatformSelectionLayout = ({
             <div className="col-md-6">
               <button
                 className=" textcard"
-                onClick={() => handleChange('supplier')}
-                style={selected == 'supplier' ? selectedStyle : null}
+                onClick={() => handleChange('brand')}
+                style={selected == 'brand' ? selectedStyle : null}
               >
                 <div className="cardIcon mb-4"></div>
-                <h6
-                  style={{ color: selected == 'supplier' ? '#354253' : null }}
-                >
+                <h6 style={{ color: selected == 'brand' ? '#354253' : null }}>
                   BRAND SUPPLIER
                 </h6>
                 <p>
@@ -72,7 +72,7 @@ const PlatformSelectionLayout = ({
                 </p>
               </button>
             </div>
-            {selected === 'supplier' && (
+            {selected === 'brand' && (
               <>
                 <div className="col-12 text-left mt-4 mb-2">
                   <label>
@@ -144,7 +144,13 @@ const PlatformSelectionLayout = ({
                   </button>
                 </div>
                 <div className="col-md-6">
-                  <button type="submit" className="nextButton button">
+                  <button
+                    type="submit"
+                    className={
+                      isDisable ? 'nextButton button btn' : 'nextButton button'
+                    }
+                    onClick={callback}
+                  >
                     Next
                   </button>
                 </div>
@@ -157,6 +163,7 @@ const PlatformSelectionLayout = ({
                     isDisable ? 'nextButton button btn' : 'nextButton button'
                   }
                   disabled={isDisable}
+                  onClick={callback}
                 >
                   Next
                 </button>
