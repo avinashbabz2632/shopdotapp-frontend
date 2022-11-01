@@ -69,6 +69,16 @@
     --header-padding: 1.2rem calc(var(--header-height) + 2rem);
 }
 
+.button-grey{--btn-background:var(--color-grey-6);--btn-color:var(--color-navy)}
+.button-grey:hover{background:var(--color-navy);color:var(--color-white);border-color:var(--color-navy)}
+.button-grey-3{--btn-background:var(--color-grey-3);--btn-color:var(--color-white)}
+.button-grey-3:hover{background:var(--color-grey-3);color:var(--color-white);border-color:var(--color-grey-3)}
+
+.shippingLocation,
+.shippingRate {
+    width: 55%;
+}
+
 .clearfix:after {
     content: '';
     display: block;
@@ -1183,6 +1193,36 @@ td {
     color: var(--red);
     font-size: 12px;
 }
+
+.ql-toolbar {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.ql-container {
+    height: 180px !important;
+    border: none !important;
+
+}
+
+.ql-editor {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border: 1px solid #CCCCCC;
+    border-top: none;
+}
+
+
+.ql-editor:focus {
+    border: 1px solid var(--orange-100);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.textEditorOuter {
+    position: relative;
+}
+
 
 @media (hover: hover) and (pointer: fine),
 (-ms-high-contrast: none),

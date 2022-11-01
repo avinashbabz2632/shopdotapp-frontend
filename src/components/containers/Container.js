@@ -25,6 +25,7 @@ export default function Container(CurrentComponent) {
     return {
       authReducer: state.authReducer,
       userReducer: state.userReducer,
+      commonReducer: state.commonReducer,
     };
   }
 

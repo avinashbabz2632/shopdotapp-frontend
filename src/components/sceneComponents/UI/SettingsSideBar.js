@@ -7,7 +7,7 @@ const SettingsSideBar = () => {
   const items = [
     {
       name: 'Retailer Profile',
-      path: '/settings/',
+      path: '/settings',
     },
     {
       name: 'Billing',

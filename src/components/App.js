@@ -14,6 +14,7 @@ import PlatformSelection from './scence/PlatformSelection';
 import NotSupported from './scence/NotSupported';
 import SettingsLayout from './containers/settingsLayout';
 import Settings from './scence/Settings';
+import OnboardUser from './scence/OnboardUser';
 
 class App extends React.Component {
   render() {
@@ -34,8 +35,9 @@ class App extends React.Component {
             component={Container(NotSupported)}
           />
           <Route exact path="/home" component={Container(Home)} />
+          <Route exact path="/onboard" component={Container(OnboardUser)} />
           <Route
-            path="/settings/"
+            path="/settings"
             name="settings"
             component={Container(Settings)}
           />

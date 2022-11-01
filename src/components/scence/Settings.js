@@ -8,7 +8,7 @@ import '../sceneComponents/UI/style.css';
 export default function Settings(props) {
   const routes = [
     {
-      path: '/settings/',
+      path: '/settings',
       name: 'Settings Profile',
       component: SettingsProfile,
       layout: 'settings',
@@ -35,14 +35,13 @@ export default function Settings(props) {
         </div>
         <div className="col-10 rightSide">
           <Switch>
-            {routes.map((prop, key) => {
-              console.log(prop.layout, 'prop.layout');
+            {routes.map((currentRoute, key) => {
               return (
                 <Route
-                  path={prop.path}
+                  path={currentRoute.path}
                   key={key}
-                  exact={prop.exact}
-                  children={<prop.component />}
+                  exact={currentRoute.exact}
+                  children={<currentRoute.component {...props} />}
                 />
               );
             })}
