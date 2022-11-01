@@ -43,6 +43,7 @@ export function signInAction(formData) {
         dispatch({
           type: types.IS_SIGN_IN,
         });
+        localStorage.setItem('userId', '7');
         dispatch({
           type: types.USER_DETAILS,
           userDetails: res.data.data,

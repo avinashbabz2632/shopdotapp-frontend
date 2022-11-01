@@ -48,7 +48,7 @@ export default function CommonDropdown({ lable, isHalf, items, onChange }) {
         getOptionValue={(option) => option.id}
         getOptionLabel={(option) => option.name}
         onChange={(e) => {
-          onChange(e.id);
+          onChange(e.id, e);
         }}
         theme={(theme) => ({
           ...theme,

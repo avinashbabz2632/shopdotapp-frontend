@@ -39,7 +39,7 @@ function SignUp({ actions, authReducer: { isSignUp } }) {
     last_name: '',
     email: '',
     password: '',
-    device_id: 'testingdevice2',
+    device_id: 'testingdevice56',
   });
 
   const {

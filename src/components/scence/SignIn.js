@@ -43,6 +43,7 @@ function SignIn({ actions, authReducer: { isSignIn } }) {
       password: data.password,
       device_id: 'testingdevice2',
     };
+
     actions.signInAction(updateFormData);
   };
 

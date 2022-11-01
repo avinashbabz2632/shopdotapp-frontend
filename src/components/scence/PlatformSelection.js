@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PlatformSelectionLayout from '../sceneComponents/PlatformSelectionLayout';
 import { isEmpty } from 'lodash';
+import { useHistory } from 'react-router-dom';
 
 export default function PlatformSelection({
   actions,
@@ -10,6 +11,7 @@ export default function PlatformSelection({
     platformType,
   },
 }) {
+  const history = useHistory();
   const [selected, setSelected] = useState('');
   const [radioVal, setRadioVal] = useState('');
   const [otherPlatform, setOtherPlatform] = useState('');
@@ -21,11 +23,8 @@ export default function PlatformSelection({
 
   useEffect(() => {
     if (isUserPlatformUpdated) {
-      if (platformType === 'brand') {
-        history.push('/platform');
-      } else if (platformType === 'retailer') {
-        history.push('/platform');
-      }
+      localStorage.setItem('platformType', platformType);
+      history.push('/onboard');
       actions.clearUserReducerAction();
     }
   }, [isUserPlatformUpdated]);
@@ -43,10 +42,12 @@ export default function PlatformSelection({
       : false;
 
   const doAction = () => {
+    const getId = localStorage.getItem('userId');
     const currentPlatform = radioVal == 'shopify' ? 'shopify' : otherPlatform;
     actions.updateUserRoleAction(
-      { user_id: id, role: selected },
-      currentPlatform
+      { user_id: getId, role: selected },
+      currentPlatform,
+      history
     );
   };
 

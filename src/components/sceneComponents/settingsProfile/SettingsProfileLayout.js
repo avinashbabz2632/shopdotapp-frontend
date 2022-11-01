@@ -1,4 +1,6 @@
 import React from 'react';
+import countryArray from '../../../constants/countryArray';
+import stateArray from '../../../constants/stateArray';
 import CommonDropdown from '../../common/CommonDropdown';
 import CommonSelection from '../../common/CommonSelection';
 import TextEditor from '../../common/TextEditor';
@@ -17,6 +19,7 @@ export default function SettingsProfileLayout({
   onChange,
   callback,
   onChangeText,
+  richText,
 }) {
   return (
     <div className="conentWrapper">
@@ -41,11 +44,17 @@ export default function SettingsProfileLayout({
                   return (
                     <CommonDropdown
                       lable={field.lable}
-                      onChange={(value) => {
-                        onChangeSelection(field.key, value, true);
+                      onChange={(value, tempData) => {
+                        onChangeSelection(field.key, value, true, tempData);
                       }}
                       items={
-                        field.key === 'retailer_categories' ? categoryData : []
+                        field.key === 'retailer_categories'
+                          ? categoryData
+                          : field.key === 'store_country'
+                          ? countryArray
+                          : field.key === 'store_state'
+                          ? stateArray
+                          : []
                       }
                     />
                   );
@@ -68,10 +77,10 @@ export default function SettingsProfileLayout({
                 } else if (field.fieldType === 'editor') {
                   return (
                     <TextEditor
-                      value={formData[field.key]}
+                      value={richText}
                       onChange={(content, delta, source, editor) => {
                         const text = editor.getText(content);
-                        onChangeText(field.key, text);
+                        onChangeText(field.key, content, text);
                       }}
                     />
                   );

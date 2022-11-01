@@ -2,15 +2,32 @@ import React from 'react';
 import DynamicHeader from '../../common/DynamicHeader';
 import SetUpGuidCard from './UI/SetUpGuidCard';
 
-export default function OnboardUserLayout({ isBrand, callback }) {
+export default function OnboardUserLayout({
+  isBrand,
+  callback,
+  onChangeText,
+  disable,
+  connectCallback,
+  onboardStep,
+  shopifyUrl,
+}) {
   const setUpCardData = isBrand
     ? [
+        {
+          title: 'Connect your shopify store',
+          src: '#',
+          isInputRequired: true,
+        },
         {
           title: 'Confirm your settings',
           src: '#',
         },
         {
-          title: 'Confirm your settings',
+          title: 'Add shopify products to ShopDot',
+          src: '#',
+        },
+        {
+          title: 'Activate your products',
           src: '#',
         },
       ]
@@ -24,7 +41,15 @@ export default function OnboardUserLayout({ isBrand, callback }) {
   return (
     <div>
       <DynamicHeader pageTitle="Getting Started" />
-      <SetUpGuidCard data={setUpCardData} callback={callback} />
+      <SetUpGuidCard
+        shopifyUrl={shopifyUrl}
+        onboardStep={onboardStep}
+        data={setUpCardData}
+        callback={callback}
+        onChangeText={onChangeText}
+        disable={disable}
+        connectCallback={connectCallback}
+      />
     </div>
   );
 }

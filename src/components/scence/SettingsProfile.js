@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import SettingsProfileLayout from '../sceneComponents/settingsProfile/SettingsProfileLayout';
 import { cloneDeep, isEmpty, remove } from 'lodash';
-import { useQuill } from 'react-quilljs';
 
 // Validation schema of form field
 const validationSchema = yup
@@ -30,84 +29,87 @@ const validationSchema = yup
       .oneOf([true], 'The terms and conditions must be accepted.'),
   })
   .required();
-
-const textFields = [
-  {
-    title: 'Company Information',
-    fields: [
-      {
-        key: 'company_name',
-        lable: 'Company name',
-      },
-      {
-        key: 'company_email_address',
-        lable: 'Company email address',
-      },
-      {
-        key: 'company_phone_number',
-        lable: 'Company phone number',
-      },
-    ],
-  },
-  {
-    title: 'Retailer Information',
-    fields: [
-      {
-        key: 'store_logo',
-        lable: 'Company name',
-        fieldType: 'avatar',
-      },
-      {
-        key: 'store_name',
-        lable: 'Store name',
-      },
-      {
-        key: 'store_website',
-        lable: 'Store Website',
-      },
-      {
-        key: 'retailer_categories',
-        lable: 'Store category',
-        fieldType: 'dropdown',
-      },
-      {
-        key: 'retailer_values',
-        lable: 'Store values',
-        fieldType: 'selection',
-      },
-      {
-        key: 'retailer_story',
-        lable: 'Your Retailer Story',
-        fieldType: 'editor',
-      },
-    ],
-  },
-  {
-    title: 'Store Address',
-    fields: [
-      {
-        key: 'store_country',
-        lable: 'Country',
-        isHalf: true,
-        fieldType: 'dropdown',
-      },
-      {
-        key: 'store_state',
-        lable: 'State',
-        isHalf: true,
-        fieldType: 'dropdown',
-      },
-      {
-        key: 'store_country',
-        lable: 'City',
-      },
-      {
-        key: 'store_mailing_address',
-        lable: 'Mailing Address',
-      },
-    ],
-  },
-];
+const platformType = localStorage.getItem('platformType');
+const textFields =
+  platformType === 'brand'
+    ? []
+    : [
+        {
+          title: 'Company Information',
+          fields: [
+            {
+              key: 'company_name',
+              lable: 'Company name',
+            },
+            {
+              key: 'company_email_address',
+              lable: 'Company email address',
+            },
+            {
+              key: 'company_phone_number',
+              lable: 'Company phone number',
+            },
+          ],
+        },
+        {
+          title: 'Retailer Information',
+          fields: [
+            {
+              key: 'store_logo',
+              lable: 'Company name',
+              fieldType: 'avatar',
+            },
+            {
+              key: 'store_name',
+              lable: 'Store name',
+            },
+            {
+              key: 'store_website',
+              lable: 'Store Website',
+            },
+            {
+              key: 'retailer_categories',
+              lable: 'Store category',
+              fieldType: 'dropdown',
+            },
+            {
+              key: 'retailer_values',
+              lable: 'Store values',
+              fieldType: 'selection',
+            },
+            {
+              key: 'retailer_story',
+              lable: 'Your Retailer Story',
+              fieldType: 'editor',
+            },
+          ],
+        },
+        {
+          title: 'Store Address',
+          fields: [
+            {
+              key: 'store_country',
+              lable: 'Country',
+              isHalf: true,
+              fieldType: 'dropdown',
+            },
+            {
+              key: 'store_state',
+              lable: 'State',
+              isHalf: true,
+              fieldType: 'dropdown',
+            },
+            {
+              key: 'store_city',
+              lable: 'City',
+            },
+            {
+              key: 'store_mailing_address',
+              lable: 'Mailing Address',
+            },
+          ],
+        },
+      ];
 
 let textArea = '';
 
@@ -115,7 +117,6 @@ export default function SettingsProfile({
   actions,
   commonReducer: { categoryData, valueData },
 }) {
-  const { quill, quillRef } = useQuill();
   const {
     register,
     handleSubmit,
@@ -131,7 +132,7 @@ export default function SettingsProfile({
     store_logo: 'www.example.com',
     store_website: '',
     retailer_story: '',
-    store_photo: '',
+    store_photo: 'www.example.com',
     retailer_categories: [],
     retailer_values: [],
     store_country: '',
@@ -139,6 +140,8 @@ export default function SettingsProfile({
     store_city: '',
     store_mailing_address: '',
   });
+
+  const [richText, setRichText] = useState(null);
 
   const onChange = (key, value) => {
     setFormData({
@@ -152,12 +155,19 @@ export default function SettingsProfile({
     actions.getValues();
   }, []);
 
-  const handleSelection = (key, value, isSingle) => {
+  const handleSelection = (key, value, isSingle, tempData) => {
     if (isSingle) {
-      setFormData({
-        ...formData,
-        [key]: [value],
-      });
+      if (key === 'store_country' || key === 'store_state') {
+        setFormData({
+          ...formData,
+          [key]: tempData.name,
+        });
+      } else {
+        setFormData({
+          ...formData,
+          [key]: [value],
+        });
+      }
     } else {
       let currentArray = cloneDeep(formData[key]);
       const isThere = currentArray.includes(value);
@@ -176,7 +186,14 @@ export default function SettingsProfile({
   };
 
   const doAction = () => {
-    console.log(formData, 'formdata', textArea);
+    const getId = localStorage.getItem('userId');
+    const roleId = localStorage.getItem('roleId');
+    const data = {
+      ...formData,
+      user_id: getId,
+      role_id: roleId ? JSON.parse(roleId) : 1,
+    };
+    actions.updateUserRetailerAction(data);
   };
 
   const btnDisable = isEmpty(formData.company_name);
@@ -191,9 +208,14 @@ export default function SettingsProfile({
       categoryData={categoryData}
       onChangeSelection={handleSelection}
       callback={doAction}
-      onChangeText={(key, value) => {
+      richText={richText}
+      onChangeText={(key, richValue, value) => {
         // onChange(key, value);
-        textArea = value;
+        setRichText(richValue);
+        setFormData({
+          ...formData,
+          retailer_story: value,
+        });
       }}
     />
   );

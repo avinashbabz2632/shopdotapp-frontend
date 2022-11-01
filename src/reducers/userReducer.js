@@ -7,6 +7,7 @@ const initialState = {
   isRetailerProfileUpdate: false,
   platformType: '',
   userDetails: { id: null },
+  isShopityConnected: false,
 };
 
 export default function userReducer(state = initialState, action) {
@@ -32,12 +33,17 @@ export default function userReducer(state = initialState, action) {
       return Object.assign({}, state, {
         isRetailerProfileUpdate: true,
       });
+    case types.IS_CONNECTED_SHOPIFY:
+      return Object.assign({}, state, {
+        isShopityConnected: true,
+      });
     case types.CLEAR_USER_REDUCER:
       return Object.assign({}, state, {
         isUserRoleUpdated: false,
         isUserPlatformUpdated: false,
         isBrandProfileUpdate: false,
         isRetailerProfileUpdate: false,
+        isShopityConnected: false,
         platformType: '',
       });
     default:
