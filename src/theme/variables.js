@@ -10,6 +10,9 @@ export const green = '#27ae60';
 export const red = '#eb5757';
 export const yellow = '#f2c94c';
 export const orange100 = '#bd6f34';
+export const gray2 = '#828282';
+export const gray3 = '#f9f9f9';
+export const gray4 = '#bdbdbd';
 
 // Orange Tint
 export const orangeTint90 = '#c9783a';
@@ -55,14 +58,14 @@ export const inuputHeight = '4.2rem';
 export const inputPadding = '1.2rem 1.2rem';
 export const inputColor = navy;
 export const inputBackground = orangeTint2;
-export const inputBorderColor = orangeTint2;
+export const inputBorderColor = orangeTint6;
 export const inputTransitionSpeed = '0.2s';
 export const inputFonstSize = '1.4rem';
 export const inputFontFamily = '"Mulish","sans-serif"';
 export const inputBorderRadius = '0.4rem';
 
 //Input focus,require and invalid
-export const inputFocusBorderColor = orange100;
+export const inputFocusBorderColor = red;
 export const inputFocusBackgroundColor = white;
 
 //Input valid,required

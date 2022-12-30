@@ -1,29 +1,33 @@
-/* eslint-disable import/default */
-
 import React from 'react';
-import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import configureStore, { history } from './store/configureStore';
-import Root from './components/Root';
-import './styles.css'; // Yep, that's right. You can import SASS/CSS files too! Webpack will run the associated loader and plug this into the page.
-require('./favicon.ico'); // Tell webpack to load favicon.ico
-const store = configureStore();
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import './index.scss';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
+import ErrorBoundary from './components/ErrorBoundary';
+import { store, persistor } from './redux/store';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import './vendor.min.css';
 
-render(
-  <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('app')
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+root.render(
+    <React.StrictMode>
+        <ErrorBoundary>
+            <BrowserRouter>
+                <Provider store={store}>
+                    <PersistGate loading={null} persistor={persistor}>
+                        <App />
+                    </PersistGate>
+                </Provider>
+            </BrowserRouter>
+        </ErrorBoundary>
+    </React.StrictMode>
 );
 
-if (module.hot) {
-  module.hot.accept('./components/Root', () => {
-    const NewRoot = require('./components/Root').default;
-    render(
-      <AppContainer>
-        <NewRoot store={store} history={history} />
-      </AppContainer>,
-      document.getElementById('app')
-    );
-  });
-}
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
