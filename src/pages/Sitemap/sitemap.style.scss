@@ -1,0 +1,34 @@
+.site-wrapper {
+    background-color: #fbf5f0;
+    width: 100%;
+    height: 100vh;
+}
+
+.site-heading {
+    width: 100%;
+    text-align: center;
+    margin-top: 0px !important;
+}
+
+.site-section {
+    display: flex;
+    gap: 20px;
+}
+.site-title {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-family: 'Mulish', sans-serif;
+}
+
+.site-link {
+    color: inherit;
+    font-family: 'Mulish', sans-serif;
+    line-height: 20px;
+}
+.site-link:hover {
+    text-decoration: none;
+}
+.last-child {
+    margin-bottom: 20px;
+}

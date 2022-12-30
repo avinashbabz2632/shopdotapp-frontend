@@ -1,0 +1,227 @@
+:root {
+    --phone: 480px;
+    --tablet: 768px;
+    --desktop: 980px;
+    --widescreen: 1200px;
+    --color-white: #fff;
+    --color-offwhite: #ede7d8;
+    --color-black: #000;
+    --color-navy: #354253;
+    --color-dark: #23272a;
+    --color-grey-1: #333;
+    --color-grey-2: #4f4f4f;
+    --color-grey-3: #828282;
+    --color-grey-4: #bdbdbd;
+    --color-grey-5: #e0e0e0;
+    --color-grey-6: #f2f2f2;
+    --color-grey-7: #f9f9f9;
+    --color-blue: #39f;
+    --color-blue-dark: #6953e7;
+    --color-red: #eb5757;
+    --color-green-1: #219653;
+    --color-yellow: #f2c94c;
+    --color-orange: #f2994a;
+    --color-orange-100: #bd6f34;
+    --color-orange-tint-80: #cd8249;
+    --color-orange-tint-70: #d18d58;
+    --color-orange-tint-50: #daa277;
+    --color-orange-tint-40: #deac86;
+    --color-orange-tint-30: #e2b695;
+    --color-orange-tint-20: #e6c1a4;
+    --color-orange-tint-10: #eacbb3;
+    --color-orange-tint-6: #f3e0d2;
+    --color-orange-tint-4: #f7eae1;
+    --color-orange-tint-2: #fbf5f0;
+    --color-orange-tint-1: #fffcf9;
+    --color-orange-shade-100: #bd6f34;
+    --color-orange-shade-90: #af6730;
+    --color-orange-shade-80: #a15f2c;
+    --color-orange-shade-70: #945728;
+    --color-orange-shade-60: #864f25;
+    --color-orange-shade-50: #794721;
+    --color-orange-shade-40: #794721;
+    --color-orange-shade-30: #5e371a;
+    --color-orange-shade-20: #512f16;
+    --color-orange-shade-10: #432812;
+    --color-orange-shade-8: #36200f;
+    --color-orange-shade-6: #28180b;
+    --color-orange-shade-4: #1b1007;
+    --color-orange-shade-2: #0d0804;
+    --font-sans-serif: Mulish, sans-serif;
+    --font-serif: 'Times New Roman', Times, Baskerville, Georgia, serif;
+    --base-background-color: var(--color-white);
+    --base-font-family: var(--font-sans-serif);
+    --base-font-size: var(--text);
+    --base-line-height: 1.42;
+    --base-text-color: var(--color-navy);
+    --base-border-radius: 0.4rem;
+    --base-min-width: 320px;
+    --gap: 15px;
+    --base-link-color: var(--color-orange-100);
+    --btn-color: var(--color-white);
+    --btn-background: var(--color-orange-100);
+    --btn-background-active: var(--color-white);
+    --btn-height: 2.5em;
+    --btn-radius: 0.333em;
+    --btn-padding: 0.5em 1em;
+    --btn-font-size: 1.2rem;
+    --btn-font-family: var(--font-sans-serif);
+    --form-font-family: var(--font-sans-serif);
+    --form-font-size: 1.4rem;
+    --form-element-padding: 0.35714285714em 0.57142857142em;
+    --form-element-border-color: var(--color-white);
+    --form-element-focus-border-color: var(--color-orange-100);
+    --placeholder-color: #808084;
+    --headings-font-family: var(--font-sans-serif);
+    --headings-color: var(--base-text-color);
+    --headings-sizes-h1: 2.4rem;
+    --headings-sizes-h2: 2rem;
+    --headings-sizes-h3: 1.8rem;
+    --headings-sizes-h4: 1.6rem;
+    --headings-sizes-h5: 1.4rem;
+    --headings-sizes-h6: 1.2rem;
+    --text: 1.4rem;
+    --h-height-top: 5.2rem;
+    --h-height-bottom: 4rem;
+    --h-height: calc(var(--h-height-bottom) + var(--h-height-top));
+    --color-blue: #2f80ed;
+    --h-pos: fixed;
+    --h-z: 10;
+    --h-pd-top: 1rem 0.8rem 1rem 2.4rem;
+    --h-pd-bottom: 0.5rem 1.6rem;
+    --h-fz: inherit;
+    --h-bg: var(--color-white);
+}
+
+.gettingpaid-tab .wp-right .form-control {
+    padding-left: 0;
+}
+
+input[type='number'] {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    font-family: var(--form-font-family);
+    border-radius: 0;
+    border: 0.1rem solid var(--form-element-border-color);
+    padding: var(--form-element-padding);
+    outline: none;
+}
+
+.gettingpaid-tab .wp-right .form-control {
+    padding-left: 0;
+}
+
+input[type='number'] {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    font-family: var(--form-font-family);
+    border-radius: 0;
+    border: 0.1rem solid var(--form-element-border-color);
+    padding: var(--form-element-padding);
+    outline: none;
+}
+
+.gp-link-area a {
+    cursor: pointer;
+}
+
+.summary-icon:hover {
+    filter: brightness(0);
+}
+
+.loader_area {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin: 0px auto;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 9;
+    height: 100%;
+
+    .loader {
+        position: absolute;
+        width: 101px;
+        left: 0;
+        right: 0;
+        margin: 0px auto;
+        display: flex;
+        text-align: center;
+        height: 101px;
+        top: 10%;
+        z-index: 11;
+    }
+}
+
+.gp-right .form-submit .button-grey {
+    img {
+        transform: rotate(180deg);
+        filter: invert(100%);
+    }
+
+    &:hover img {
+        filter: invert(0);
+    }
+}
+
+.error-text {
+    color: var(--color-red);
+    font-size: 12px;
+    display: block;
+    text-align: left;
+}
+
+.gp-right .form-submit .button-grey {
+    img {
+        transform: rotate(180deg);
+        filter: invert(100%);
+    }
+
+    &:hover img {
+        filter: invert(0);
+    }
+}
+
+.connect_shopify {
+    height: 4rem !important;
+    width: 12rem;
+    font-size: 16px !important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+.setting-section .tabs .tab-links:hover {
+    z-index: 1;
+    opacity: 1;
+}
+
+.setting-section .form-upload-image .icon {
+    background-color: white;
+    border-radius: 4px;
+}
+
+.brand-checklist-error {
+    display: flex;
+    width: 100%;
+}
+
+.form-upload-image a.remove-logo {
+    width: 100px;
+}
+
+.setting-section .form-upload-image .icon:hover {
+    cursor: pointer;
+}
