@@ -2,7 +2,7 @@
 
 // Auth flow:: Signin page
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,7 +15,9 @@ import Input from '../../../components/common/Input/divStyled';
 import '../auth.style.scss';
 import { loginAction } from '../../../actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { clearAuthReducer } from '../../../redux/auth/authSlice';
 import { loginSuccess } from '../../../redux/auth/authSelector';
+import { selectUserDetails } from '../../../redux/user/userSelector';
 
 // Validation schema of form field
 const validationSchema = yup
@@ -30,18 +32,30 @@ const validationSchema = yup
   })
   .required();
 
-function SignIn({}) {
+function SignIn() {
   const [passwordType, setPasswordType] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLogged = useSelector(loginSuccess);
-  console.log(isLogged, 'isLoggedisLogged');
+  const success = useSelector(loginSuccess);
+  const userDetails = useSelector(selectUserDetails);
+  console.log(success, 'authReducer', userDetails);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
+
+  useEffect(() => {
+    if (success) {
+      if (userDetails.is_email_verified) {
+        navigate('/personalize');
+      } else {
+        navigate('/verify-email');
+      }
+      dispatch(clearAuthReducer());
+    }
+  }, [success]);
 
   const onSubmit = (data) => {
     console.log('data', data);

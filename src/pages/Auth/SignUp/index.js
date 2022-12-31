@@ -15,201 +15,181 @@ import Button from '../../../components/common/Button';
 import '../auth.style.scss';
 import tAndCDoc from '../../../assets/ShopDot-Online-Business-Services-Agreement-09-01-2022.pdf';
 import privacyDoc from '../../../assets/ShopDot-Privacy-Policy-09.01.2022.pdf';
+import { useDispatch } from 'react-redux';
+import { registerAction } from '../../../actions/authActions';
 
 // Validation schema of form field
 const validationSchema = yup
-    .object()
-    .shape({
-        fname: yup.string().required('First name is required.'),
-        lname: yup.string().required('Last name is required.'),
-        email: yup
-            .string()
-            .email('Must be a valid email.')
-            .max(255)
-            .required('Email is required.'),
-        password: yup
-            .string()
-            .required('Password is required.')
-            .matches(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
-                'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character.'
-            ),
-        termsOfService: yup
-            .boolean()
-            .required('The terms and conditions must be accepted.')
-            .oneOf([true], 'The terms and conditions must be accepted.'),
-    })
-    .required();
+  .object()
+  .shape({
+    fname: yup.string().required('First name is required.'),
+    lname: yup.string().required('Last name is required.'),
+    email: yup
+      .string()
+      .email('Must be a valid email.')
+      .max(255)
+      .required('Email is required.'),
+    password: yup
+      .string()
+      .required('Password is required.')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+        'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character.'
+      ),
+    termsOfService: yup
+      .boolean()
+      .required('The terms and conditions must be accepted.')
+      .oneOf([true], 'The terms and conditions must be accepted.'),
+  })
+  .required();
 
 function SignUp() {
-    const [passwordType, setPasswordType] = useState(true);
-    const navigate = useNavigate();
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm({ resolver: yupResolver(validationSchema) });
+  const [passwordType, setPasswordType] = useState(true);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(validationSchema) });
 
-    const onSubmit = (data) => {
-        console.log('data', data);
-        navigate('/verify-email');
-        reset();
-    };
-    console.log(errors);
-    return (
-        <>
-            <Header pageTitle="Create your ShopDot Account" />
-            <PublicLayout>
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="sign__form form"
-                >
-                    <div className="form__field form__field--half ">
-                        <Input
-                            className={errors.fname ? 'invalid' : ''}
-                            type="text"
-                            name="fname"
-                            placeholder="First name"
-                            {...register('fname', {
-                                required: true,
-                            })}
-                        />
-                        {errors.fname && (
-                            <span className="error-text">
-                                {errors.fname?.message}
-                            </span>
-                        )}
-                    </div>
-                    <div className="form__field form__field--half ">
-                        <Input
-                            className={errors.lname ? 'invalid' : ''}
-                            type="text"
-                            name="lname"
-                            placeholder="Last name"
-                            {...register('lname', {
-                                required: true,
-                            })}
-                        />
-                        {errors.lname && (
-                            <span className="error-text">
-                                {errors.lname?.message}
-                            </span>
-                        )}
-                    </div>
-                    <div className="form__field ">
-                        <Input
-                            className={errors.email ? 'invalid' : ''}
-                            type="text"
-                            name="email"
-                            placeholder="Email address"
-                            {...register('email', {
-                                required: true,
-                            })}
-                        />
-                        {errors.email && (
-                            <span className="error-text">
-                                {errors.email?.message}
-                            </span>
-                        )}
-                    </div>
-                    <div className="form__field password-tooltip">
-                        <Input
-                            className={`password ${
-                                errors.password ? 'invalid' : ''
-                            }`}
-                            type={passwordType ? 'password' : 'text'}
-                            name="password"
-                            placeholder="Create password"
-                            {...register('password', {
-                                required: true,
-                            })}
-                        />
-                        <div className="password-message">
-                            Password is <span>strong!</span>
-                        </div>
-                        <span
-                            className={`password-show ${
-                                passwordType ? '' : 'active'
-                            }`}
-                            onClick={() => setPasswordType(!passwordType)}
-                        />
-                        <div className="tooltip">
-                            <div className="tooltip-icon"></div>
-                            <div className="tooltip_text">
-                                <div className="tooltip-arrow"></div>
-                                <div className="pwd-info-title">
-                                    Password must:
-                                </div>
-                                <div className="pwd-info">
-                                    <div className="tooltip-text">
-                                        - have at least 1 number
-                                    </div>
-                                    <div className="tooltip-text">
-                                        - have at least 1 uppercase character
-                                    </div>
-                                    <div className="tooltip-text">
-                                        - have at least 1 lowercase character
-                                    </div>
-                                    <div className="tooltip-text">
-                                        - have at least 1 special character
-                                    </div>
-                                    <div className="tooltip-text">
-                                        - have 8 characters minimum
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {errors.password && (
-                            <span className="error-text">
-                                {errors.password?.message}
-                            </span>
-                        )}
-                    </div>
+  const onSubmit = (data) => {
+    dispatch(registerAction(data));
+    navigate('/verify-email');
+    reset();
+  };
 
-                    <div className="form__field checkbox">
-                        <label>
-                            <Input
-                                type="checkbox"
-                                name="termsOfService"
-                                {...register('termsOfService', {
-                                    required: true,
-                                })}
-                            />
-                            <small className="checkbox-text">
-                                By signing up for ShopDot, you are agreeing to
-                                our&nbsp;
-                                <LinkMod to={tAndCDoc} target="_blank">
-                                    Terms{' '}
-                                </LinkMod>
-                                &nbsp;and
-                                <LinkMod to={privacyDoc} target="_blank">
-                                    &nbsp;Privacy Policy.
-                                </LinkMod>
-                                &nbsp;
-                            </small>
-                        </label>
-                        {errors.termsOfService && (
-                            <div className="error-text">
-                                {errors.termsOfService?.message}
-                            </div>
-                        )}
-                    </div>
-                    <div className="form__field buttons">
-                        <Button type="submit" className="button">
-                            Sign Up
-                        </Button>
-                    </div>
-                    <div className="form__field mb-0 text-center">
-                        <small>
-                            Already have an account? Sign in{' '}
-                            <LinkMod to="/">here</LinkMod>
-                        </small>
-                    </div>
-                </form>
-            </PublicLayout>
-        </>
-    );
+  return (
+    <>
+      <Header pageTitle="Create your ShopDot Account" />
+      <PublicLayout>
+        <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
+          <div className="form__field form__field--half ">
+            <Input
+              className={errors.fname ? 'invalid' : ''}
+              type="text"
+              name="fname"
+              placeholder="First name"
+              {...register('fname', {
+                required: true,
+              })}
+            />
+            {errors.fname && (
+              <span className="error-text">{errors.fname?.message}</span>
+            )}
+          </div>
+          <div className="form__field form__field--half ">
+            <Input
+              className={errors.lname ? 'invalid' : ''}
+              type="text"
+              name="lname"
+              placeholder="Last name"
+              {...register('lname', {
+                required: true,
+              })}
+            />
+            {errors.lname && (
+              <span className="error-text">{errors.lname?.message}</span>
+            )}
+          </div>
+          <div className="form__field ">
+            <Input
+              className={errors.email ? 'invalid' : ''}
+              type="text"
+              name="email"
+              placeholder="Email address"
+              {...register('email', {
+                required: true,
+              })}
+            />
+            {errors.email && (
+              <span className="error-text">{errors.email?.message}</span>
+            )}
+          </div>
+          <div className="form__field password-tooltip">
+            <Input
+              className={`password ${errors.password ? 'invalid' : ''}`}
+              type={passwordType ? 'password' : 'text'}
+              name="password"
+              placeholder="Create password"
+              {...register('password', {
+                required: true,
+              })}
+            />
+            <div className="password-message">
+              Password is <span>strong!</span>
+            </div>
+            <span
+              className={`password-show ${passwordType ? '' : 'active'}`}
+              onClick={() => setPasswordType(!passwordType)}
+            />
+            <div className="tooltip">
+              <div className="tooltip-icon"></div>
+              <div className="tooltip_text">
+                <div className="tooltip-arrow"></div>
+                <div className="pwd-info-title">Password must:</div>
+                <div className="pwd-info">
+                  <div className="tooltip-text">- have at least 1 number</div>
+                  <div className="tooltip-text">
+                    - have at least 1 uppercase character
+                  </div>
+                  <div className="tooltip-text">
+                    - have at least 1 lowercase character
+                  </div>
+                  <div className="tooltip-text">
+                    - have at least 1 special character
+                  </div>
+                  <div className="tooltip-text">
+                    - have 8 characters minimum
+                  </div>
+                </div>
+              </div>
+            </div>
+            {errors.password && (
+              <span className="error-text">{errors.password?.message}</span>
+            )}
+          </div>
+
+          <div className="form__field checkbox">
+            <label>
+              <Input
+                type="checkbox"
+                name="termsOfService"
+                {...register('termsOfService', {
+                  required: true,
+                })}
+              />
+              <small className="checkbox-text">
+                By signing up for ShopDot, you are agreeing to our&nbsp;
+                <LinkMod to={tAndCDoc} target="_blank">
+                  Terms{' '}
+                </LinkMod>
+                &nbsp;and
+                <LinkMod to={privacyDoc} target="_blank">
+                  &nbsp;Privacy Policy.
+                </LinkMod>
+                &nbsp;
+              </small>
+            </label>
+            {errors.termsOfService && (
+              <div className="error-text">{errors.termsOfService?.message}</div>
+            )}
+          </div>
+          <div className="form__field buttons">
+            <Button type="submit" className="button">
+              Sign Up
+            </Button>
+          </div>
+          <div className="form__field mb-0 text-center">
+            <small>
+              Already have an account? Sign in <LinkMod to="/">here</LinkMod>
+            </small>
+          </div>
+        </form>
+      </PublicLayout>
+    </>
+  );
 }
 
 export default SignUp;
