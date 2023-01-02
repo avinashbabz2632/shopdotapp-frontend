@@ -2,7 +2,7 @@
 
 // Auth flow:: Signup page
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,15 +15,18 @@ import Button from '../../../components/common/Button';
 import '../auth.style.scss';
 import tAndCDoc from '../../../assets/ShopDot-Online-Business-Services-Agreement-09-01-2022.pdf';
 import privacyDoc from '../../../assets/ShopDot-Privacy-Policy-09.01.2022.pdf';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { registerAction } from '../../../actions/authActions';
+import { registerSuccess } from '../../../redux/auth/authSelector';
+import { selectUserDetails } from '../../../redux/user/userSelector';
+import { clearAuthReducer } from '../../../redux/auth/authSlice';
 
 // Validation schema of form field
 const validationSchema = yup
   .object()
   .shape({
-    fname: yup.string().required('First name is required.'),
-    lname: yup.string().required('Last name is required.'),
+    first_name: yup.string().required('First name is required.'),
+    last_name: yup.string().required('Last name is required.'),
     email: yup
       .string()
       .email('Must be a valid email.')
@@ -47,6 +50,8 @@ function SignUp() {
   const [passwordType, setPasswordType] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const success = useSelector(registerSuccess);
+  const userDetails = useSelector(selectUserDetails);
   const {
     register,
     handleSubmit,
@@ -54,10 +59,18 @@ function SignUp() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
+  useEffect(() => {
+    if (success) {
+      dispatch(clearAuthReducer());
+      navigate('/verify-email');
+    }
+  }, [success]);
+
   const onSubmit = (data) => {
-    dispatch(registerAction(data));
-    navigate('/verify-email');
-    reset();
+    console.log(data, 'data');
+    dispatch(registerAction({ ...data, device_id: '1234' }));
+    // navigate('/verify-email');
+    // reset();
   };
 
   return (
@@ -67,30 +80,30 @@ function SignUp() {
         <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
           <div className="form__field form__field--half ">
             <Input
-              className={errors.fname ? 'invalid' : ''}
+              className={errors.first_name ? 'invalid' : ''}
               type="text"
-              name="fname"
+              name="first_name"
               placeholder="First name"
-              {...register('fname', {
+              {...register('first_name', {
                 required: true,
               })}
             />
-            {errors.fname && (
-              <span className="error-text">{errors.fname?.message}</span>
+            {errors.first_name && (
+              <span className="error-text">{errors.first_name?.message}</span>
             )}
           </div>
           <div className="form__field form__field--half ">
             <Input
-              className={errors.lname ? 'invalid' : ''}
+              className={errors.last_name ? 'invalid' : ''}
               type="text"
-              name="lname"
+              name="last_name"
               placeholder="Last name"
-              {...register('lname', {
+              {...register('last_name', {
                 required: true,
               })}
             />
-            {errors.lname && (
-              <span className="error-text">{errors.lname?.message}</span>
+            {errors.last_name && (
+              <span className="error-text">{errors.last_name?.message}</span>
             )}
           </div>
           <div className="form__field ">

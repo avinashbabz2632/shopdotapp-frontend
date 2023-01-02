@@ -13,7 +13,10 @@ import { LinkMod } from '../../../components/common/A';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input/divStyled';
 import '../auth.style.scss';
-import { loginAction } from '../../../actions/authActions';
+import {
+  loginAction,
+  sendVerifyEmailAction,
+} from '../../../actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearAuthReducer } from '../../../redux/auth/authSlice';
 import { loginSuccess } from '../../../redux/auth/authSelector';

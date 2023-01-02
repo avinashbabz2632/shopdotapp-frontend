@@ -4,6 +4,7 @@ const initialState = {
   isLoggedIn: false,
   isLoginSuccess: false,
   isRegisterSuccess: false,
+  isVerifyEmailSent: false,
   user: null,
 };
 
@@ -22,9 +23,13 @@ const authSlice = createSlice({
       state.isRegisterSuccess = true;
       state.isLoggedIn = true;
     },
+    setVerifyEmail: (state, action) => {
+      state.isVerifyEmailSent = false;
+    },
     clearAuthReducer: (state, action) => {
       state.isLoginSuccess = false;
       state.isRegisterSuccess = false;
+      state.isVerifyEmailSent = false;
     },
   },
 });
@@ -32,7 +37,8 @@ const authSlice = createSlice({
 /**
  * Actions
  */
-export const { logOut, setLoggedIn, clearAuthReducer } = authSlice.actions;
+export const { logOut, setLoggedIn, setRegister, clearAuthReducer } =
+  authSlice.actions;
 
 /**
  * Reducers
