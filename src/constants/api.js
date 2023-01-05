@@ -14,6 +14,9 @@ export const SHOPIFY = `${BASE_URL}/platform/shopify-integration`;
 export const BRAND_PROFILE = `${BASE_URL}/user/brand-profile`;
 export const RETAIL_PROFILE = `${BASE_URL}/user/retailer-profile`;
 
+// Brand
+export const PLATFORM = `${BASE_URL}/platform`;
+
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;
 export const VALUES = `${BASE_URL}/platform/values`;
