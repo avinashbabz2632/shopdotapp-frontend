@@ -17,6 +17,7 @@ export const RETAIL_PROFILE = `${BASE_URL}/user/retailer-profile`;
 
 // Brand
 export const PLATFORM = `${BASE_URL}/platform`;
+export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;
