@@ -4,6 +4,7 @@ const BASE_URL = ` https://dev.backend.shopdotapp.com/api/v1`;
 export const REGISTER = `${BASE_URL}/auth/signup/`;
 export const VERIFICATION_EMAIL = `${BASE_URL}/auth/verification/send-mail`;
 export const SIGN_IN = `${BASE_URL}/auth/signin`;
+export const CHANGE_PASSWORD = (id) => `${BASE_URL}/auth/user/${id}/change-password`;
 
 // User
 export const USER_ROLE = `${BASE_URL}/user/roles`;
