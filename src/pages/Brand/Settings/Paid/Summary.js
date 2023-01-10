@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import EditIcon from '../../images/edit.svg';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { get } from 'lodash';
 import {
@@ -13,6 +13,7 @@ import {
 import { SummaryValidationSchema } from './ValidationSchema';
 import tAndCDoc from '../../../../assets/ShopDot-Online-Business-Services-Agreement-09-01-2022.pdf';
 import { LinkMod } from '../../../../components/common/A';
+import { brandAsCustomerAction } from '../../../../actions/brandActions';
 
 export default function Summary({
   handleChangeTab,
@@ -22,7 +23,7 @@ export default function Summary({
   const bankDetails = useSelector(selectBankDetails);
   const personalDetails = useSelector(selectRepresentativeDetails);
   const businessDetails = useSelector(selectBusinessDetails);
-
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -32,16 +33,18 @@ export default function Summary({
   } = useForm({ resolver: yupResolver(SummaryValidationSchema) });
 
   const renderEditTab = (tabCode) => {
-    // persistor.pause();
-    // persistor.flush().then(() => {
-    //     return persistor.purge();
-    // });
     handleChangeTab(tabCode);
     setIsEdited(true);
   };
   const onSubmit = (data) => {
-    reset();
-    setIsCompleteApplication(true);
+    dispatch(
+      brandAsCustomerAction({
+        ...personalDetails,
+        ...businessDetails,
+      })
+    );
+    // reset();
+    // setIsCompleteApplication(true);
   };
 
   return (

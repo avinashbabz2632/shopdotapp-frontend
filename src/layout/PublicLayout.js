@@ -7,14 +7,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import { isLoggedIn } from '../redux/auth/authSelector';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { selectUserDetails } from '../redux/user/userSelector';
 
 function PublicLayout({ children }) {
   const navigate = useNavigate();
   const isLogged = useSelector(isLoggedIn);
+  const userDetils = useSelector(selectUserDetails);
 
   useEffect(() => {
     const pathname = window.location.pathname;
     if (isLogged) {
+      console.log(userDetils, 'userDetils');
+      axios.defaults.headers.common['Authorization'] = userDetils.access_token;
     } else {
       if (pathname !== '/sign-up') {
         navigate('/');

@@ -9,8 +9,9 @@ import { ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { selectUserDetails } from '../redux/user/userSelector';
 import axios from 'axios';
+import { shippingValidationSchema } from '../pages/Brand/Settings/Paid/ValidationSchema';
 
-function OnboardingLayout({ children, classNames, pageTitle }) {
+function CommonLayout({ children, classNames, pageTitle }) {
   const navigate = useNavigate();
   const isLogged = useSelector(isLoggedIn);
   const userDetils = useSelector(selectUserDetails);
@@ -19,41 +20,29 @@ function OnboardingLayout({ children, classNames, pageTitle }) {
     const pathname = window.location.pathname;
     if (isLogged) {
       console.log(userDetils, 'userDetils');
-      axios.defaults.headers.common['Authorization'] = userDetils.access_token;
+      const token = `${userDetils.access_token}`;
+      axios.defaults.headers.common['Authorization'] = token;
     } else {
       if (pathname !== '/sign-up') {
         navigate('/');
       }
     }
   }, []);
-
+  shippingValidationSchema;
   return (
     <>
-      <div className="wrapper onbording">
-        <main>
-          <section>
-            <OnboardingHeader pageTitle={pageTitle} />
-            <div className="ob-body">
-              <div className={classNames}>{children}</div>
-            </div>
-          </section>
-        </main>
-      </div>
+      <div>{children}</div>
       <ToastContainer />
     </>
   );
 }
 
-OnboardingLayout.propTypes = {
+CommonLayout.propTypes = {
   children: PropTypes.any,
-  pageTitle: PropTypes.any,
-  classNames: PropTypes.any,
 };
 
-OnboardingLayout.defaultProps = {
+CommonLayout.defaultProps = {
   children: <p>Shopdot</p>,
-  pageTitle: 'Signin',
-  classNames: 'form-wrapper',
 };
 
-export default OnboardingLayout;
+export default CommonLayout;

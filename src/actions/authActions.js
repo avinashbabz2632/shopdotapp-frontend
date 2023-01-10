@@ -11,8 +11,10 @@ export function loginAction(formData) {
       if (response && response.data && response.data.code == 200) {
         dispatch(setLoggedIn());
         dispatch(setUserInfo(response.data.data));
-        axios.defaults.headers.common['Authorization'] =
-          response.data.data.access_token;
+        console.log(response.data.data, 'response.data.data');
+        axios.defaults.headers.common[
+          'Authorization'
+        ] = `${response.data.data.access_token}`;
       } else {
         toast.error('Something went worng');
       }

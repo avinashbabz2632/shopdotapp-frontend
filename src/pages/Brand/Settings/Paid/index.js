@@ -15,34 +15,6 @@ const EditBankDetails = lazy(() => import('./EditBankDetails'));
 export default function BrandPaid() {
   const [tabCode, setTabCode] = useState('1');
   const [startingTab, setStartingTab] = useState(false);
-  const [formData, setFormData] = useState({
-    legal_name: '',
-    doing_business_as: '',
-    business_category: '',
-    ein: '',
-    state_of_incorporation: '',
-    date_of_incorporation: '',
-    address_line_1: '',
-    address_line_2: '',
-    city: '',
-    state: '',
-    zip: '',
-    owner_first_name: '',
-    owner_last_name: '',
-    owner_phone: '',
-    owner_dob: '',
-    ssn: '',
-    secondary_identification_type: '',
-    identification_state_of_issuance: '',
-    identification_id: '',
-    prior_bankruptcy: false,
-    average_sales_volume: 0,
-    average_purchase: 0,
-    average_delivery_time: '',
-    merchant_category_code: '',
-    sales_method: '',
-    product_description: '',
-  });
   const [isCompleteApplication, setIsCompleteApplication] = useState(false);
   const [editBankDetails, setEditBankDetails] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
@@ -57,7 +29,6 @@ export default function BrandPaid() {
     const renderComponent = {
       1: (
         <BusinessDetails
-          formData={formData}
           isEdited={isEdited}
           setIsEdited={setIsEdited}
           setStartingTab={setStartingTab}

@@ -16,6 +16,7 @@ export const RETAIL_PROFILE = `${BASE_URL}/user/retailer-profile`;
 
 // Brand
 export const PLATFORM = `${BASE_URL}/platform`;
+export const BRAND_AS_CUSTOMER = `${BASE_URL}/payment/create-brand-as-customer`;
 
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;
