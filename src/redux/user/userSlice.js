@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   userDetails: null,
+  personalizeLoading: false
 };
 
 const userSlice = createSlice({
@@ -14,13 +15,16 @@ const userSlice = createSlice({
     clearUserReducer: (state, action) => {
       state.userDetails = null;
     },
+    setPersonalizeLoading: () => {
+      state.personalizeLoading = action.payload;
+    }
   },
 });
 
 /**
  * Actions
  */
-export const { setUserInfo, clearUserReducer } = userSlice.actions;
+export const { setUserInfo, clearUserReducer, setPersonalizeLoading } = userSlice.actions;
 
 /**
  * Reducers
