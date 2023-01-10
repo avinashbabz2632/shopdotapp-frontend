@@ -4,6 +4,8 @@ const BASE_URL = ` https://dev.backend.shopdotapp.com/api/v1`;
 export const REGISTER = `${BASE_URL}/auth/signup/`;
 export const VERIFICATION_EMAIL = `${BASE_URL}/auth/verification/send-mail`;
 export const SIGN_IN = `${BASE_URL}/auth/signin`;
+export const CHANGE_PASSWORD = (id) =>
+  `${BASE_URL}/auth/user/${id}/change-password`;
 
 // User
 export const USER_ROLE = `${BASE_URL}/user/roles`;
@@ -17,6 +19,7 @@ export const RETAIL_PROFILE = `${BASE_URL}/user/retailer-profile`;
 // Brand
 export const PLATFORM = `${BASE_URL}/platform`;
 export const BRAND_AS_CUSTOMER = `${BASE_URL}/payment/create-brand-as-customer`;
+export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;

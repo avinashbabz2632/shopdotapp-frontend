@@ -7,6 +7,8 @@ import { encryptTransform } from 'redux-persist-transform-encrypt';
 import { authReducer } from './auth/authSlice';
 import { gettingPaidReducer } from './Brand/GettingPaid/gettingPaidSlice';
 import { userReducer } from './user/userSlice';
+import { securityReducer } from './Brand/Security/securitySlice';
+import { shippingReducer } from './Brand/Shipping/shippingSlice';
 
 const persistConfig = {
   // configuration object for redux-persist
@@ -27,6 +29,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   gettingPaid: gettingPaidReducer,
   user: userReducer,
+  security: securityReducer,
+  shipping: shippingReducer
 });
 
 // TODO: for future use - if we want to remove store from localstorage
