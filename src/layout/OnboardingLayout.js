@@ -1,59 +1,36 @@
 // Layout:: Onboarding layout component
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import OnboardingHeader from '../components/Header/OnboardingHeader';
-import { isLoggedIn } from '../redux/auth/authSelector';
-import { useSelector } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { selectUserDetails } from '../redux/user/userSelector';
-import axios from 'axios';
 
 function OnboardingLayout({ children, classNames, pageTitle }) {
-  const navigate = useNavigate();
-  const isLogged = useSelector(isLoggedIn);
-  const userDetils = useSelector(selectUserDetails);
-
-  useEffect(() => {
-    const pathname = window.location.pathname;
-    if (isLogged) {
-      console.log(userDetils, 'userDetils');
-      axios.defaults.headers.common['Authorization'] = userDetils.access_token;
-    } else {
-      if (pathname !== '/sign-up') {
-        navigate('/');
-      }
-    }
-  }, []);
-
-  return (
-    <>
-      <div className="wrapper onbording">
-        <main>
-          <section>
-            <OnboardingHeader pageTitle={pageTitle} />
-            <div className="ob-body">
-              <div className={classNames}>{children}</div>
+    return (
+        <>
+            <div className="wrapper onbording">
+                <main>
+                    <section>
+                        <OnboardingHeader pageTitle={pageTitle} />
+                        <div className="ob-body">
+                            <div className={classNames}>{children}</div>
+                        </div>
+                    </section>
+                </main>
             </div>
-          </section>
-        </main>
-      </div>
-      <ToastContainer />
-    </>
-  );
+        </>
+    );
 }
 
 OnboardingLayout.propTypes = {
-  children: PropTypes.any,
-  pageTitle: PropTypes.any,
-  classNames: PropTypes.any,
+    children: PropTypes.any,
+    pageTitle: PropTypes.any,
+    classNames: PropTypes.any,
 };
 
 OnboardingLayout.defaultProps = {
-  children: <p>Shopdot</p>,
-  pageTitle: 'Signin',
-  classNames: 'form-wrapper',
+    children: <p>Shopdot</p>,
+    pageTitle: 'Signin',
+    classNames: 'form-wrapper',
 };
 
 export default OnboardingLayout;
