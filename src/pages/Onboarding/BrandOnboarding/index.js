@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import logoPng from '../../../assets/images/logos/logo-png.png';
 import Button from '../../../components/common/Button';
 import { LinkMod } from '../../../components/common/A';
 import tickIcon from '../../../assets/images/icons/tick.svg';
 import tickGreenIcon from '../../../assets/images/icons/tick-green.svg';
-import checkTrue from '../../../assets/images/icons/check-white.svg';
-import exclmenationIcon from '../../../assets/images/icons/acculturation.svg';
 import '../../Brand/Style/brand.style.scss';
 import '../../Brand/Style/brand.dev.scss';
 import '../../Brand/Style/brand.media.scss';
@@ -22,7 +19,6 @@ export default function BrandOnBoarding() {
     const [isStoreNameValid, setIsStoreNameValid] = useState(false);
 
     const changeDisable = () => {
-        console.log('step', stepOne);
         if (stepOne) {
             setBoardingStep(2);
         } else if (stepTwo) {
@@ -263,60 +259,6 @@ export default function BrandOnBoarding() {
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-                            <div className="steps step-left">
-                                <div className="step-indicator">
-                                    <h6>Getting Started</h6>
-                                    <div className="si-info">
-                                        <img
-                                            src={checkTrue}
-                                            alt="confirm your setting"
-                                        />{' '}
-                                        Confirm your settings
-                                    </div>
-                                </div>
-
-                                <div className="step-indicator-wide">
-                                    <h6>Getting Started (0/4)</h6>
-                                    <div className="si-info not-completed">
-                                        <img
-                                            src={exclmenationIcon}
-                                            alt="connet your shopify store"
-                                        ></img>{' '}
-                                        <span className="link">
-                                            {' '}
-                                            Configure your mandatory Settings
-                                        </span>
-                                    </div>
-                                    <div className="si-info">
-                                        <img
-                                            src={checkTrue}
-                                            alt="confirm your settings"
-                                        ></img>{' '}
-                                        <span className="link">
-                                            {' '}
-                                            Connect your Shopify store
-                                        </span>
-                                    </div>
-                                    <div className="si-info">
-                                        <img
-                                            src={checkTrue}
-                                            alt="Add shopify products to shopdot"
-                                        />{' '}
-                                        <span className="link">
-                                            Add Shopify producs to Shopdots
-                                        </span>
-                                    </div>
-                                    <div className="si-info not-completed">
-                                        <img
-                                            src={checkTrue}
-                                            alt="Activate your product"
-                                        />{' '}
-                                        <span className="link">
-                                            Activate your products
-                                        </span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </section>

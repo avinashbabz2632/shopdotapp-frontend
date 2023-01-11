@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import OnboardingLayout from '../../../layout/OnboardingLayout';
 import Input from '../../../components/common/Input/divStyled';
 import Button from '../../../components/common/Button';
@@ -8,7 +8,10 @@ import retailerIcon from '../../../assets/images/icons/retailer.svg';
 import brandIcon from '../../../assets/images/icons/brand.svg';
 import '../onboarding.style.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUserRoleAction, addUserPlatformAction } from '../../../actions/userActions';
+import {
+  updateUserRoleAction,
+  addUserPlatformAction,
+} from '../../../actions/userActions';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 
 export default function Personalize() {
@@ -30,21 +33,21 @@ export default function Personalize() {
     }
   };
 
-  //Here 1 for SHOFIFY and 2 for OTHERS
-  const selectPlatform = (platform) => {
-    if (platform == 1) {
-      setPlatform(1);
-    } else {
-      setPlatform(2);
-    }
-  };
-
   const handleBack = () => {
     setPlatform(1);
   };
 
-  const updateUserRole = createAsyncThunk('updateUserRole', updateUserRoleAction);
-  const addUserPlatform = createAsyncThunk('addUserProfile', addUserPlatformAction);
+  const handleChangeInput = (e) => {
+    setPlatformName(e.target.value);
+  };
+  const updateUserRole = createAsyncThunk(
+    'updateUserRole',
+    updateUserRoleAction
+  );
+  const addUserPlatform = createAsyncThunk(
+    'addUserProfile',
+    addUserPlatformAction
+  );
 
   const handleGoSupport = async () => {
     try {
@@ -53,7 +56,7 @@ export default function Personalize() {
         await dispatch(
           addUserPlatform({
             user_id: userDetails.id,
-            platform: platform === 1 ? 'shopify' : platformName
+            platform: platform === 1 ? 'shopify' : platformName,
           })
         ).unwrap();
       } else if (supplier === 2) {
@@ -72,19 +75,13 @@ export default function Personalize() {
     }
   };
 
-  const handleChangeInput = (e) => {
-    setPlatformName(e.target.value);
-  };
-
   return (
     <>
       <OnboardingLayout pageTitle="Let’s Personalize Your Platform & Experience">
         <form action="#" className="form" id="">
           <div className="form-area">
             <div className="form-group personalize">
-              <p className="p-text mb-0">
-                Please tell us more about you. You are a …
-              </p>
+              <p className="p-text mb-0">You are creating an account as a..</p>
               <div className="personalize_selection">
                 <div
                   className={
@@ -200,7 +197,7 @@ export default function Personalize() {
                   <Button
                     type="button"
                     className="button w-100 "
-                    disabled={(supplier == 0 || loading)}
+                    disabled={supplier == 0 ? true : false}
                     onClick={handleGoSupport}
                   >
                     Next
@@ -215,14 +212,13 @@ export default function Personalize() {
                     <Button
                       type="button"
                       className="button w-50 button bordered cancel"
-                      disabled={loading}
                       onClick={handleBack}
                     >
                       Back
                     </Button>
                     <Button
                       type="button"
-                      disabled={(platformName.length < 1 || loading)}
+                      disabled={platformName.length > 0 ? false : true}
                       className="button w-50 "
                       onClick={handleGoSupport}
                     >

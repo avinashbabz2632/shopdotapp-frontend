@@ -1,7 +1,6 @@
 import React from 'react';
 import { LinkMod } from '../../../components/common/A';
 import tickIcon from '../../../assets/images/icons/tick.svg';
-import checkTrue from '../../../assets/images/icons/check-white.svg';
 import '../../Retailer/Style/retail.style.scss';
 import '../../Retailer/Style/ratail.media.scss';
 import '../../Retailer/Style/retail.dev.scss';
@@ -46,18 +45,6 @@ export default function ReatialerOnBoarding() {
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-                            <div className="steps step-left">
-                                <div className="step-indicator">
-                                    <h6>Getting Started</h6>
-                                    <div className="si-info">
-                                        <img
-                                            src={checkTrue}
-                                            alt="confirm your setting"
-                                        />{' '}
-                                        Confirm your settings
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </section>

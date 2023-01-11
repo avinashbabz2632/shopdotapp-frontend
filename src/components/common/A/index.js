@@ -9,8 +9,17 @@ import { orange100 } from '../../../theme/variables';
 export const A = styled.a`
     color: ${orange100};
     font-family: 'Mulish', sans-serif;
-    font-size: 16px;
-    text-decoration: none;
+    outline: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    &:hover {
+        color: ${orange100};
+        opacity: 0.8;
+    }
 
     &.sm {
         font-size: 14px;
@@ -19,10 +28,6 @@ export const A = styled.a`
 
     &[disabled] {
         pointer-events: none;
-    }
-
-    &:hover {
-        color: ${orange100};
     }
 `;
 
