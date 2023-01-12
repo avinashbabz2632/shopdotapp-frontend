@@ -14,7 +14,7 @@ export function loginAction(formData) {
         console.log(response.data.data, 'response.data.data');
         axios.defaults.headers.common[
           'Authorization'
-        ] = `${response.data.data.access_token}`;
+        ] = `Bearer ${response.data.data.access_token}`;
       } else {
         toast.error('Something went worng');
       }
