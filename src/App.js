@@ -40,6 +40,7 @@ const RetailerOnBoarding = lazy(() =>
 const UserInfo = lazy(() => import('./pages/Onboarding/UserInfo'));
 // Brand Portal Pages
 const BrandSettingPage = lazy(() => import('./pages/Brand/Settings'));
+const BrandOrdersPage = lazy(() => import('./pages/Brand/Orders'));
 
 //Retailer Portal Pages
 const RetailerSettingPage = lazy(() => import('./pages/Retailer/Settings'));
@@ -88,6 +89,7 @@ function App() {
             path="/brand/setting/:activeTab"
             element={<BrandSettingPage />}
           />
+          <Route path="/brand/orders" element={<BrandOrdersPage />} />
           {/* Brand Portal Routes::: end */}
 
           {/* Retailer Portal Routes:::start */}

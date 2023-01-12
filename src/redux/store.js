@@ -9,6 +9,7 @@ import { gettingPaidReducer } from './Brand/GettingPaid/gettingPaidSlice';
 import { userReducer } from './user/userSlice';
 import { securityReducer } from './Brand/Security/securitySlice';
 import { shippingReducer } from './Brand/Shipping/shippingSlice';
+import { orderReducer } from './Brand/Orders/orderSlice';
 
 const persistConfig = {
   // configuration object for redux-persist
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   gettingPaid: gettingPaidReducer,
   user: userReducer,
   security: securityReducer,
-  shipping: shippingReducer
+  shipping: shippingReducer,
+  brandOrders: orderReducer,
 });
 
 // TODO: for future use - if we want to remove store from localstorage
