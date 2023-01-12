@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { NavLink , Outlet } from 'react-router-dom';
 import Logo from '../../../../assets/images/icons/logo.svg';
 import SearchClear from '../../images/icons/icon-search.svg';
-import { Outlet } from 'react-router-dom';
 import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import IconMarket from '../../images/icons/icon-retailers.svg';
 import IconMail from '../../images/icons/icon-mail.svg';
 import IconNotification from '../../images/icons/icon-notification.svg';
 
 export default function BrandHeader() {
+    const [tab, setTab] = useState(1);
+
     return (
         <>
             <header className="header mp-header">
@@ -37,14 +39,28 @@ export default function BrandHeader() {
                             </div>
                             <ul className="header_menu menu">
                                 <li className="menu_item">
-                                    <a href="#" className="menu_link">
+                                    <NavLink
+                                        className={(navData) =>
+                                            navData.isActive
+                                                ? 'active menu_link'
+                                                : 'link menu_link'
+                                        }
+                                        to="/dashboard"
+                                    >
                                         Dashboard
-                                    </a>
+                                    </NavLink>
                                 </li>
                                 <li className="menu_item">
-                                    <a href="#" className="menu_link">
+                                    <NavLink
+                                        className={(navData) =>
+                                            navData.isActive
+                                                ? 'active menu_link'
+                                                : 'link menu_link'
+                                        }
+                                        to="/products"
+                                    >
                                         Products
-                                    </a>
+                                    </NavLink>
                                 </li>
                                 <li className="menu_item">
                                     <div className="dropdown">
@@ -55,7 +71,10 @@ export default function BrandHeader() {
                                             <div className="dropdown_header-chevron">
                                                 <a
                                                     href="#"
-                                                    className="menu_link"
+                                                    className={`menu_link ${
+                                                        tab === 3 && 'active'
+                                                    }`}
+                                                    onClick={() => setTab(3)}
                                                 >
                                                     Retailers
                                                     <div className="dropdown_header-chevron">
@@ -88,9 +107,16 @@ export default function BrandHeader() {
                                     </div>
                                 </li>
                                 <li className="menu_item">
-                                    <a href="#" className="menu_link">
+                                    <NavLink
+                                        className={(navData) =>
+                                            navData.isActive
+                                                ? 'active menu_link'
+                                                : 'link menu_link'
+                                        }
+                                        to="/brand/orders"
+                                    >
                                         Orders
-                                    </a>
+                                    </NavLink>
                                 </li>
                             </ul>
                         </div>

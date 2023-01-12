@@ -1,7 +1,9 @@
 import React from 'react';
 import Logo from '../../assets/images/icons/logo.svg';
 import SearchClear from '../../assets/images/icons/icon-search.svg';
-import '../../pages/Brand/Style/brand.style.scss';
+
+import '../../pages/Brand/Style/brand.media.scss';
+import '../../pages/Brand/Style/brand.dev.scss';
 import { Outlet } from 'react-router-dom';
 import ArrowDown from '../../assets/images/sprite.svg';
 import IconMarket from '../../assets/images/icons/icon-retailers.svg';

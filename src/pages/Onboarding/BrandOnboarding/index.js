@@ -4,8 +4,8 @@ import { LinkMod } from '../../../components/common/A';
 import tickIcon from '../../../assets/images/icons/tick.svg';
 import tickGreenIcon from '../../../assets/images/icons/tick-green.svg';
 import '../../Brand/Style/brand.style.scss';
-import '../../Brand/Style/brand.dev.scss';
 import '../../Brand/Style/brand.media.scss';
+import '../../Brand/Style/brand.dev.scss';
 import BrandHeader from '../../../components/Header/BrandHeader';
 
 export default function BrandOnBoarding() {

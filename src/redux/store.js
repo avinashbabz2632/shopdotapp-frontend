@@ -6,6 +6,7 @@ import thunk from 'redux-thunk';
 import { encryptTransform } from 'redux-persist-transform-encrypt';
 import { authReducer } from './auth/authSlice';
 import { gettingPaidReducer } from './Brand/GettingPaid/gettingPaidSlice';
+import { orderReducer } from './Brand/Orders/orderSlice';
 
 const persistConfig = {
     // configuration object for redux-persist
@@ -25,6 +26,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
     auth: authReducer,
     gettingPaid: gettingPaidReducer,
+    brandOrders: orderReducer,
 });
 
 // TODO: for future use - if we want to remove store from localstorage
