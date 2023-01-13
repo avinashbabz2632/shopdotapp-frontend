@@ -28,10 +28,10 @@ function CommonLayout({ children, classNames, pageTitle }) {
       }
     }
   }, []);
-  shippingValidationSchema;
+
   return (
     <>
-      <div>{children}</div>
+      <div className="wrapper onbording">{children}</div>
       <ToastContainer />
     </>
   );

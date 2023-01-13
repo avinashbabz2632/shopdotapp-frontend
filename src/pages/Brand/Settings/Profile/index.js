@@ -4,8 +4,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { brandProfileValidationSchema } from '../Paid/ValidationSchema';
 import EditIcon from '../../images/icons/icon-edit.svg';
 import Brandlogo from '../../images/profile-avatar.jpg';
-import { useDispatch } from 'react-redux';
-import { getPlatformCategoryAction } from '../../../../actions/brandActions';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getBrandProfileAction,
+  getPlatformCategoryAction,
+  getPlatformValuesAction,
+} from '../../../../actions/brandActions';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 const brandCategoryList = [
   'Animals & Pet Supplies',
@@ -52,9 +57,14 @@ export default function BrandProfile() {
     resolver: yupResolver(brandProfileValidationSchema),
   });
   const dispatch = useDispatch();
+  const useDetails = useSelector(selectUserDetails);
 
   useEffect(() => {
-    dispatch(getPlatformCategoryAction());
+    setTimeout(() => {
+      dispatch(getPlatformCategoryAction());
+      dispatch(getPlatformValuesAction());
+      dispatch(getBrandProfileAction(useDetails.id));
+    }, 350);
   }, []);
 
   const onSubmit = (data) => {

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../utils/axios';
 import { toast } from 'react-toastify';
 import * as API_END_POINT from '../constants/api';
 import { setShippingLoading } from '../redux/Brand/Shipping/shippingSlice';
@@ -26,6 +26,17 @@ export function getPlatformCategoryAction() {
   return async (dispatch) => {
     try {
       const response = await axios.get(API_END_POINT.CATEGORY);
+      if (response && response.data && response.data.code == 200) {
+      } else {
+      }
+    } catch (err) {}
+  };
+}
+
+export function getBrandProfileAction(id) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(`${API_END_POINT.BRAND_PROFILE}/${id}/`);
       if (response && response.data && response.data.code == 200) {
       } else {
       }
@@ -90,7 +101,11 @@ export function brandAsCustomerAction(formData) {
         toast.error('Something went worng');
       }
     } catch (err) {
-      dispatch(onChangePassword(false));
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
     }
   };
 }

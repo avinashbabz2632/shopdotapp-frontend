@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../utils/axios';
 import { toast } from 'react-toastify';
 import * as API_END_POINT from '../constants/api';
 
