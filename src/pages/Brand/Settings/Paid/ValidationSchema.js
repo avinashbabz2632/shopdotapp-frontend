@@ -208,21 +208,29 @@ export const shippingValidationSchema = yup.object().shape({
 });
 
 export const brandProfileValidationSchema = yup.object().shape({
-  companyName: yup.string().required('Company name is required.'),
-  contactEmail: yup
+  company_name: yup.string().required('Company name is required.'),
+  company_email_address: yup
     .string()
     .email('Must be a valid email.')
     .max(255)
     .required('Contact email is required.'),
-  contactPhone: yup.string().required('Contact phone number is required.'),
-  brandName: yup.string().required('Brand name is required.'),
-  brandWebsite: yup.string().required('Brand website is required.'),
-  brandCategory: yup
+  company_phone_number: yup
+    .string()
+    .required('Contact phone number is required.'),
+  store_name: yup.string().required('Brand name is required.'),
+  store_website: yup.string().required('Brand website is required.'),
+  brand_categories: yup
     .array()
     .min(1, 'At least 1 category required')
     .max(3, 'Select max 3 category.')
     .nullable()
     .required('Select max 3 category.'),
-  aboutTheBrand: yup.string().required('About the brand is required.'),
-  videoLink: yup.string().required('Please enter valid website.'),
+  brand_values: yup
+    .array()
+    .min(1, 'At least 1 category required')
+    .max(3, 'Select max 3 category.')
+    .nullable()
+    .required('Select max 3 category.'),
+  brand_story: yup.string().required('About the brand is required.'),
+  brand_promo: yup.string().required('Please enter valid website.'),
 });

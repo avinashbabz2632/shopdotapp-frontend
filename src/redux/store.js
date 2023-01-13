@@ -10,6 +10,7 @@ import { userReducer } from './user/userSlice';
 import { securityReducer } from './Brand/Security/securitySlice';
 import { shippingReducer } from './Brand/Shipping/shippingSlice';
 import { orderReducer } from './Brand/Orders/orderSlice';
+import { brandProfileReducer } from './Brand/Profile/brandProfileSlice';
 
 const persistConfig = {
   // configuration object for redux-persist
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   security: securityReducer,
   shipping: shippingReducer,
   brandOrders: orderReducer,
+  brandProfile: brandProfileReducer,
 });
 
 // TODO: for future use - if we want to remove store from localstorage
