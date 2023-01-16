@@ -18,9 +18,6 @@ function OnboardingLayout({ children, classNames, pageTitle }) {
   useEffect(() => {
     const pathname = window.location.pathname;
     if (isLogged) {
-      console.log(userDetils, 'userDetils');
-      const token = `Bearer ${userDetils.access_token}`;
-      axios.defaults.headers.common['Authorization'] = token;
     } else {
       if (pathname !== '/sign-up') {
         navigate('/');

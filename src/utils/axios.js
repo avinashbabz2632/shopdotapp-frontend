@@ -15,6 +15,7 @@ axios.interceptors.request.use(
       axios.defaults.headers.common.Authorization = token
         ? `Bearer ${token}`
         : '';
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
