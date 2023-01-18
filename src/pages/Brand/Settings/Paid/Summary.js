@@ -14,6 +14,8 @@ import { SummaryValidationSchema } from './ValidationSchema';
 import tAndCDoc from '../../../../assets/ShopDot-Online-Business-Services-Agreement-09-01-2022.pdf';
 import { LinkMod } from '../../../../components/common/A';
 import { brandAsCustomerAction } from '../../../../actions/brandActions';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
+import moment from 'moment';
 
 export default function Summary({
   handleChangeTab,
@@ -23,6 +25,7 @@ export default function Summary({
   const bankDetails = useSelector(selectBankDetails);
   const personalDetails = useSelector(selectRepresentativeDetails);
   const businessDetails = useSelector(selectBusinessDetails);
+  const useDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
   const {
     register,
@@ -41,6 +44,24 @@ export default function Summary({
       brandAsCustomerAction({
         ...personalDetails,
         ...businessDetails,
+        average_delivery_time: businessDetails.average_delivery_time.value,
+        business_category: businessDetails.business_category.value,
+        merchant_category_code: businessDetails.merchant_category_code.value,
+        identification_state_of_issuance:
+          personalDetails.identification_state_of_issuance.value,
+        sales_method: businessDetails.sales_method.value,
+        date_of_incorporation: moment(
+          businessDetails.date_of_incorporation
+        ).format('MM/DD/YYYY'),
+        owner_dob: moment(businessDetails.owner_dob).format('MM/DD/YYYY'),
+        secondary_identification_type:
+          personalDetails.secondary_identification_type.value,
+        state: personalDetails.state.value,
+        state_of_incorporation: businessDetails.state_of_incorporation.value,
+        prior_bankruptcy:
+          personalDetails.prior_bankruptcy == 'no' ? false : true,
+        brand_user_id: useDetails.id,
+        date_of_discharge: '123',
       })
     );
     // reset();

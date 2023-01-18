@@ -34,11 +34,11 @@ const countryOfIssurenceOptions = [
 ];
 const identityOptions = [
   {
-    value: 'dl',
+    value: 'DRIVER_LICENSE',
     label: 'Driver’s License',
   },
-  { value: 'passport', label: 'Passport' },
-  { value: 'reg_card', label: 'Alien Registration Card' },
+  { value: 'PASSPORT', label: 'Passport' },
+  { value: 'ALIEN_REGISTRATION_CARD', label: 'Alien Registration Card' },
 ];
 
 const categoryStyle = {
@@ -104,7 +104,6 @@ export default function BusinessRepresentative({
         'city',
         'citySelect',
         'zip',
-        'identification_state_of_issuance',
         'identification_state_of_issuance',
         'identification_id',
         'secondary_identification_type',

@@ -1,0 +1,3 @@
+export const BRAND_PROFILE = 'BRAND_PROFILE';
+export const BRAND_CATEGORY = 'BRAND_CATEGORY';
+export const BRAND_VALUES = 'BRAND_VALUES';

@@ -14,16 +14,16 @@ import tAndCDoc from '../../../../assets/ShopDot-Online-Business-Services-Agreem
 import { LinkMod } from '../../../../components/common/A';
 
 const businessCategoryOptions = [
-  { value: 'signle_member_llc', label: 'Single Member LLC' },
-  { value: 'solo_proprietor', label: 'Sole Proprietor' },
-  { value: 'llc', label: 'LLC' },
-  { value: 'llp', label: 'LLP' },
-  { value: 'partnership', label: 'Partnership' },
-  { value: 'ccorp', label: 'C_CORP' },
-  { value: 'scorp', label: 'S_CORP' },
-  { value: 'goverment_organization', label: 'Government Organization' },
-  { value: 'non_profit', label: 'Non Profit' },
-  { value: 'tax_exempt', label: 'Tax Exempt' },
+  { value: 'SINGLE_MEMBER_LLC', label: 'Single Member LLC' },
+  { value: 'SOLE_PROPRIETOR', label: 'Sole Proprietor' },
+  { value: 'LLC', label: 'LLC' },
+  { value: 'LLP', label: 'LLP' },
+  { value: 'PARTNERSHIP', label: 'Partnership' },
+  { value: 'C_CORP', label: 'C_CORP' },
+  { value: 'S_CORP', label: 'S_CORP' },
+  { value: 'GOVERNMENT_ORGANISATION', label: 'Government Organization' },
+  { value: 'NON_PROFIT', label: 'Non Profit' },
+  { value: 'TAX_EXEMPT', label: 'Tax Exempt' },
 ];
 
 const textIdOptions = [
@@ -44,13 +44,13 @@ const stateIncorporationOptions = [
 
 const deliveryTimeOptions = [
   {
-    value: 'week',
+    value: 'WEEK',
     label: 'Week',
   },
-  { value: '2weeks', label: '2 Weeks' },
-  { value: 'month', label: 'Month' },
-  { value: '2month', label: '2 Months' },
-  { value: '2monthplus', label: 'Over 2 Months' },
+  { value: 'FORTNIGHT', label: '2 Weeks' },
+  { value: 'MONTH', label: 'Month' },
+  { value: 'TWO_MONTHS', label: '2 Months' },
+  { value: 'OVER_TWO_MONTHS', label: 'Over 2 Months' },
 ];
 
 const merchantOptions = [
@@ -63,7 +63,7 @@ const merchantOptions = [
 
 const salesOptions = [
   {
-    value: '0',
+    value: 'POS',
     label: '100% Digital Transaction',
   },
 ];

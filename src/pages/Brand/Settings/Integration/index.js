@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { connectShopifyAction } from '../../../../actions/brandActions';
 import Warning from '../../../../assets/images/icons/icon-outline.svg';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 export default function BrandSetting() {
   const [storeUrl, setStoreUrl] = useState('');
   const [isValideStoreURL, setIsValidStoreUrl] = useState(false);
   const [isStoreConnected, setIsStoreConnected] = useState(false);
   const [storeStatus, setStoreStatus] = useState(true); //temporary for seeing a disconnect ui
+  const useDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
 
   const connectStore = () => {
     if (storeUrl) {
-      dispatch(connectShopifyAction({ name: storeUrl }));
+      dispatch(
+        connectShopifyAction({
+          name: `${storeUrl}.myshopify.com`,
+          user_id: useDetails.id,
+        })
+      );
       // setIsStoreConnected(true);
     } else {
       setIsStoreConnected(false);

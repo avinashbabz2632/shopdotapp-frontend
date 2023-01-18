@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
 import { setLoggedIn, setRegister } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
@@ -11,14 +11,11 @@ export function loginAction(formData) {
       if (response && response.data && response.data.code == 200) {
         dispatch(setLoggedIn());
         dispatch(setUserInfo(response.data.data));
-        console.log(response.data.data, 'response.data.data');
-        axios.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${response.data.data.access_token}`;
       } else {
         toast.error('Something went worng');
       }
     } catch (err) {
+      console.log(err, 'errerr');
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors

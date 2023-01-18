@@ -4,40 +4,20 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { brandProfileValidationSchema } from '../Paid/ValidationSchema';
 import EditIcon from '../../images/icons/icon-edit.svg';
 import Brandlogo from '../../images/profile-avatar.jpg';
-import { useDispatch } from 'react-redux';
-import { getPlatformCategoryAction } from '../../../../actions/brandActions';
-
-const brandCategoryList = [
-  'Animals & Pet Supplies',
-  'Hardware & DIY',
-  'Apparel & Accessories',
-  'Health & Beauty',
-  'Baby & Kids',
-  'Home & Garden',
-  'Electronics',
-  'Paper & Novelty',
-  'Food & Beverage',
-  'Sports & Outdoor',
-  'Footwear',
-  'Toys & Games',
-  'Furniture',
-];
-
-const brandValueList = [
-  'BIPOC Owned',
-  'Eco-friendly',
-  'Fair Trade',
-  'Handmade',
-  'Made in Canada',
-  'Made in USA',
-  'Not on Amazon',
-  'Organic',
-  'Size Inclusive',
-  'Small Batch',
-  'Social Good',
-  'Women Owned',
-  'Other',
-];
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getBrandProfileAction,
+  getPlatformCategoryAction,
+  getPlatformValuesAction,
+  updateBrandProfileAction,
+} from '../../../../actions/brandActions';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
+import {
+  selectBrandCategory,
+  selectBrandProfileDetails,
+  selectBrandValues,
+} from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import { isEmpty } from 'lodash';
 
 export default function BrandProfile() {
   const [image, setImage] = useState(Brandlogo);
@@ -52,13 +32,38 @@ export default function BrandProfile() {
     resolver: yupResolver(brandProfileValidationSchema),
   });
   const dispatch = useDispatch();
+  const useDetails = useSelector(selectUserDetails);
+  const brandCategoryList = useSelector(selectBrandCategory);
+  const brandValueList = useSelector(selectBrandValues);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
   useEffect(() => {
-    dispatch(getPlatformCategoryAction());
+    setTimeout(() => {
+      dispatch(getPlatformCategoryAction());
+      dispatch(getPlatformValuesAction());
+      dispatch(getBrandProfileAction(useDetails.id));
+    }, 350);
   }, []);
 
+  useEffect(() => {
+    if (brandProfileDetails) {
+      reset({ company_name: brandProfileDetails.store_name });
+    }
+  }, [brandProfileDetails]);
+
   const onSubmit = (data) => {
-    // console.log(data);
+    console.log(data);
+    dispatch(
+      updateBrandProfileAction(
+        {
+          user_id: useDetails.id,
+          role_id: 1,
+          store_logo: image,
+          ...data,
+        },
+        !isEmpty(brandProfileDetails.store_name)
+      )
+    );
     // reset();
   };
 
@@ -246,23 +251,27 @@ export default function BrandProfile() {
                         </label>
 
                         <div className="select-checkbox">
-                          {brandCategoryList.map((item, i) => {
-                            return (
-                              <div className="check-item" key={i}>
-                                <label className="checkbox">
-                                  <input
-                                    type="checkbox"
-                                    name={'brandCategory'}
-                                    value={item}
-                                    {...register('brandCategory')}
-                                  />
-                                  <div className="checkbox-text">
-                                    <span>{item}</span>
-                                  </div>
-                                </label>
-                              </div>
-                            );
-                          })}
+                          {brandCategoryList && brandCategoryList.length ? (
+                            brandCategoryList.map((item, i) => {
+                              return (
+                                <div className="check-item" key={i}>
+                                  <label className="checkbox">
+                                    <input
+                                      type="checkbox"
+                                      name={'brand_categories'}
+                                      value={item.id}
+                                      {...register('brand_categories')}
+                                    />
+                                    <div className="checkbox-text">
+                                      <span>{item.name}</span>
+                                    </div>
+                                  </label>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <div />
+                          )}
                         </div>
                         {errors?.brandCategory && (
                           <span className="error-text">
@@ -274,25 +283,29 @@ export default function BrandProfile() {
                         <label className="form-label">Brand values</label>
                         <div className="select-checkbox third-col">
                           <div className="select-checkbox">
-                            {brandValueList.map((val, i) => {
-                              return (
-                                <div className="check-item" key={i}>
-                                  <label className="checkbox">
-                                    <input
-                                      type="checkbox"
-                                      name={'brandValue'}
-                                      value={val}
-                                      {...register('brandValue', {
-                                        required: false,
-                                      })}
-                                    />
-                                    <div className="checkbox-text">
-                                      <span>{val}</span>
-                                    </div>
-                                  </label>
-                                </div>
-                              );
-                            })}
+                            {brandValueList && brandValueList.length ? (
+                              brandValueList.map((val, i) => {
+                                return (
+                                  <div className="check-item" key={i}>
+                                    <label className="checkbox">
+                                      <input
+                                        type="checkbox"
+                                        name={'brand_values'}
+                                        value={val.id}
+                                        {...register('brand_values', {
+                                          required: false,
+                                        })}
+                                      />
+                                      <div className="checkbox-text">
+                                        <span>{val.name}</span>
+                                      </div>
+                                    </label>
+                                  </div>
+                                );
+                              })
+                            ) : (
+                              <div />
+                            )}
                           </div>
                           {errors?.brandValue && (
                             <span className="error-text">

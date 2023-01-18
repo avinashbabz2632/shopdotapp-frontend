@@ -6,6 +6,8 @@ const initialState = {
   isRegisterSuccess: false,
   isVerifyEmailSent: false,
   user: null,
+  access_token: '',
+  refresh_token: '',
 };
 
 const authSlice = createSlice({
@@ -14,10 +16,16 @@ const authSlice = createSlice({
   reducers: {
     logOut: (state) => {
       state.isLoggedIn = false;
+      state.access_token = '';
+      state.refresh_token = '';
     },
     setLoggedIn: (state, action) => {
       state.isLoginSuccess = true;
       state.isLoggedIn = true;
+    },
+    setToken: (state, action) => {
+      state.access_token = action.access_token;
+      state.refresh_token = action.refresh_token;
     },
     setRegister: (state, action) => {
       state.isRegisterSuccess = true;
@@ -37,7 +45,7 @@ const authSlice = createSlice({
 /**
  * Actions
  */
-export const { logOut, setLoggedIn, setRegister, clearAuthReducer } =
+export const { logOut, setLoggedIn, setRegister, clearAuthReducer, setToken } =
   authSlice.actions;
 
 /**
