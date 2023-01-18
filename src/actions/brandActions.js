@@ -13,8 +13,15 @@ import {
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
     try {
-      const response = await axios.post(API_END_POINT.PLATFORM, formData);
-      if (response && response.data && response.data.code == 200) {
+      const params = {
+        shop: formData.name,
+        user_id: formData.user_id,
+      };
+      const response = await axios.get(
+        `${API_END_POINT.PLATFORM}/shopify-integration`,
+        { params }
+      );
+      if (response && response.data && response.data.code == 201) {
       } else {
         toast.error('Something went worng');
       }
@@ -80,6 +87,7 @@ export function getPlatformValuesAction() {
 }
 
 export function updateBrandProfileAction(formData, isUpdate) {
+  console.log(isUpdate, 'isUpdate');
   return async (dispatch) => {
     try {
       let response;
