@@ -24,3 +24,7 @@ export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;
 export const VALUES = `${BASE_URL}/platform/values`;
+
+// Order
+export const LISTORDER = `${BASE_URL}/brand/orders`;
+export const ORDERDETAILS = `${BASE_URL}/order/details`;

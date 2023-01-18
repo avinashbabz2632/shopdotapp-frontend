@@ -7,15 +7,15 @@ import FilterSideBar from './FiltersInfo';
 import OrderTable from './OrderTable';
 
 export default function OrderList() {
-    return (
-        <div className="wrapper">
-            <BrandHeader />
-            <main className="content mp-content setting-section">
-                <section className="section products pc_tabs tabs">
-                    <FilterSideBar />
-                    <OrderTable />
-                </section>
-            </main>
-        </div>
-    );
+  return (
+    <div className="wrapper">
+      <BrandHeader />
+      <main className="content mp-content setting-section">
+        <section className="section products pc_tabs tabs">
+          <FilterSideBar />
+          <OrderTable />
+        </section>
+      </main>
+    </div>
+  );
 }
