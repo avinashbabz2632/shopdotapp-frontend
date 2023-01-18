@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import * as API_END_POINT from '../constants/api';
 import { setOrderList, setOrderLoading } from '../redux/Brand/Orders/orderSlice';
 import capitalizeFirstLetterEachWord from '../utils/capitalizeFirstLetterEachWord';
+import formatter from '../utils/currencyFormatter';
 
 export function getOrderList(filterOptions) {
   return async (dispatch) => {
@@ -23,10 +24,10 @@ export function getOrderList(filterOptions) {
             productUrl: '-',
             productName: '-',
             qty: element.quantity,
-            totalWsp: { wsp: '$10.00', wsp_unit: '$2.00/unit' },
-            totalMSRP: { msrp: '$25.00', msrp_unit: '$8.00/unit' },
+            totalWsp: { wsp: formatter.format(parseFloat(__.get(element, 'product_variants.wsp', '0.00') * parseInt(element.quantity))), wsp_unit: `$${__.get(element, 'product_variants.wsp', '0.00')}/unit` },
+            totalMSRP: { msrp: formatter.format(parseFloat(__.get(element, 'product_variants.price', '0.00') * parseInt(element.quantity))), msrp_unit: `$${__.get(element, 'product_variants.price', '0.00')}/unit` },
             fulfillmentStatus: capitalizeFirstLetterEachWord(element.fulfillment_status),
-            shippingCarrier: '-',
+            shippingCarrier: __.get(element, 'itemTrackingInfo[0].tracking_company', ''),
             TranckingNumber: __.get(element, 'itemTrackingInfo[0].tracking_number', ''),
           })),
           qty: item.orderItems.map(item => parseFloat(item.quantity)).reduce((a, b) => a + b, 0),
