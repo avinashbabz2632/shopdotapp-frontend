@@ -1,5 +1,5 @@
 import request from 'axios';
-import { REFRESH_TOKEN, LOGOUT, SIGN_IN } from '../constants/api';
+import { REFRESH_TOKEN, LOGOUT, SIGN_IN, REGISTER } from '../constants/api';
 
 const axios = request;
 
@@ -26,7 +26,7 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(async (response) => {
-  if (response.config.url === SIGN_IN) {
+  if (response.config.url === SIGN_IN || response.config.url === REGISTER) {
     const token = response.data.data['access_token']
       ? response.data.data['access_token']
       : '';

@@ -46,13 +46,24 @@ export default function BrandProfile() {
   }, []);
 
   useEffect(() => {
-    if (brandProfileDetails) {
-      reset({ company_name: brandProfileDetails.store_name });
+    if (brandProfileDetails && brandProfileDetails.company_name) {
+      reset({
+        company_name: brandProfileDetails.company_name,
+        company_email_address: brandProfileDetails.company_email_addres,
+        company_phone_number: brandProfileDetails.company_phone_number,
+        store_name: brandProfileDetails.brand_profile.store_name,
+        store_website: brandProfileDetails.brand_profile.store_website,
+        brand_story: brandProfileDetails.brand_profile.brand_story,
+        brand_promo: brandProfileDetails.brand_profile.brand_promo,
+      });
     }
   }, [brandProfileDetails]);
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log(
+      isEmpty(brandProfileDetails.company_name),
+      ' !isEmpty(brandProfileDetails.company_name)'
+    );
     dispatch(
       updateBrandProfileAction(
         {
@@ -61,7 +72,7 @@ export default function BrandProfile() {
           store_logo: image,
           ...data,
         },
-        !isEmpty(brandProfileDetails.store_name)
+        isEmpty(brandProfileDetails.company_name)
       )
     );
     // reset();

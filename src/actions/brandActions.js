@@ -86,17 +86,19 @@ export function getPlatformValuesAction() {
   };
 }
 
-export function updateBrandProfileAction(formData, isUpdate) {
-  console.log(isUpdate, 'isUpdate');
+export function updateBrandProfileAction(formData, isCreate) {
+  console.log(isCreate, 'isCreate');
   return async (dispatch) => {
     try {
       let response;
-      if (isUpdate) {
-        response = await axios.put(API_END_POINT.BRAND_PROFILE, formData);
-      } else {
+      if (isCreate) {
         response = await axios.post(API_END_POINT.BRAND_PROFILE, formData);
+      } else {
+        response = await axios.put(API_END_POINT.BRAND_PROFILE, formData);
       }
       if (response && response.status && response.status == 201) {
+        toast.success('Profile Details Updated');
+        dispatch(getBrandProfileAction(formData.user_id));
       } else {
         toast.error('Something went worng');
       }
