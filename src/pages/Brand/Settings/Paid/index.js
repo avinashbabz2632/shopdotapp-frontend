@@ -1,8 +1,11 @@
-import React, { lazy, useState, Suspense } from 'react';
+import React, { lazy, useState, Suspense, useEffect } from 'react';
 import gpLogo from '../../images/gp-logo.jpg';
 import Loader from '../../../../components/Loader';
 import GpInfoIcon from '../../images/gp-info.svg';
 import GpTimeIcon from '../../images/gp-time.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBrandBankDetailsAction } from '../../../../actions/brandActions';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 //paid component
 const BusinessDetails = lazy(() => import('./BusinessDetails'));
@@ -13,17 +16,24 @@ const GettingPaid = lazy(() => import('./GettingPaid'));
 const EditBankDetails = lazy(() => import('./EditBankDetails'));
 
 export default function BrandPaid() {
+  const dispatch = useDispatch();
+  const useDetails = useSelector(selectUserDetails);
   const [tabCode, setTabCode] = useState('1');
   const [startingTab, setStartingTab] = useState(false);
   const [isCompleteApplication, setIsCompleteApplication] = useState(false);
   const [editBankDetails, setEditBankDetails] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
+
   // eslint-disable-next-line no-shadow
   const handleChangeTab = (tabCode) => {
     const myDiv = document.getElementById('content-wrapper');
     myDiv.scrollTop = 0;
     setTabCode(tabCode);
   };
+
+  useEffect(() => {
+    dispatch(getBrandBankDetailsAction(useDetails.id));
+  }, []);
 
   const renderTab = () => {
     const renderComponent = {

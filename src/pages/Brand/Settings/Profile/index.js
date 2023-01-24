@@ -351,9 +351,9 @@ export default function BrandProfile() {
                             <div />
                           )}
                         </div>
-                        {errors?.brandCategory && (
+                        {errors?.brand_categories && (
                           <span className="error-text">
-                            {errors?.brandCategory?.message}
+                            {errors?.brand_categories?.message}
                           </span>
                         )}
                       </div>
@@ -394,9 +394,9 @@ export default function BrandProfile() {
                               <div />
                             )}
                           </div>
-                          {errors?.brandValue && (
+                          {errors?.brand_values && (
                             <span className="error-text">
-                              {errors?.brandValue?.message}
+                              {errors?.brand_values?.message}
                             </span>
                           )}
                         </div>

@@ -91,18 +91,34 @@ export default function Summary({
         personalDetails.secondary_identification_type.value,
       identification_state_of_issuance:
         personalDetails.identification_state_of_issuance.value,
+      countryOfIssuance: personalDetails.identification_state_of_issuance.value,
       identification_id: personalDetails.identification_id,
       prior_bankruptcy: personalDetails.prior_bankruptcy == 'no' ? false : true,
-      average_sales_volume: businessDetails.average_sales_volume,
-      average_purchase: businessDetails.average_purchase,
+      average_sales_volume: businessDetails.average_sales_volume
+        ? Number(businessDetails.average_sales_volume)
+        : 0,
+      average_purchase: businessDetails.average_purchase
+        ? Number(businessDetails.average_purchase)
+        : 0,
       average_delivery_time: businessDetails.average_delivery_time.value,
       merchant_category_code: businessDetails.merchant_category_code.value,
       sales_method: businessDetails.sales_method.value,
       product_description: businessDetails.product_description,
-      taxIdType: businessDetails.textIdType.value,
+      taxIdType: businessDetails.textIdType
+        ? businessDetails.textIdType.value
+        : null,
       brand_user_id: useDetails.id,
-      date_of_discharge: businessDetails.dateOfDischarge,
+      date_of_discharge: businessDetails.dateOfDischarge
+        ? businessDetails.dateOfDischarge
+        : null,
     };
+
+    if (!formData.taxIdType) {
+      delete formData.taxIdType;
+    }
+    if (!formData.date_of_discharge) {
+      delete formData.date_of_discharge;
+    }
 
     dispatch(brandAsCustomerAction(formData, bankDetails));
     // reset();

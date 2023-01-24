@@ -176,6 +176,26 @@ export function brandBankDetailsAction(formData) {
   };
 }
 
+export function getBrandBankDetailsAction(id) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.PAYMENT_CUSTOMER}/${id}`
+      );
+      if (response && response.data && response.data.code == 200) {
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
 export function updateShipping(data) {
   return async (dispatch) => {
     try {

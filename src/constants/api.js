@@ -23,6 +23,7 @@ export const PLATFORM = `${BASE_URL}/platform`;
 export const BRAND_PROFILE = `${BASE_URL}/user/brand-profile`;
 export const BRAND_AS_CUSTOMER = `${BASE_URL}/payment/create-brand-as-customer`;
 export const EXTERNAL_ACCOUNT = `${BASE_URL}/payment/customer/external-account`;
+export const PAYMENT_CUSTOMER = `${BASE_URL}/payment/customer`;
 export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 
 // Common

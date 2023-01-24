@@ -36,10 +36,10 @@ const textIdOptions = [
 
 const stateIncorporationOptions = [
   {
-    value: 'alaska',
+    value: 'AL',
     label: 'Alaska',
   },
-  { value: 'nyc', label: 'New York' },
+  { value: 'NY', label: 'New York' },
 ];
 
 const deliveryTimeOptions = [
@@ -63,7 +63,7 @@ const merchantOptions = [
 
 const salesOptions = [
   {
-    value: 'POS',
+    value: 'ECOM',
     label: '100% Digital Transaction',
   },
 ];

@@ -11,26 +11,26 @@ import { BusinessRepresentativeValidationSchema } from './ValidationSchema';
 
 const countryOptions = [
   {
-    value: 'usa',
+    value: 'US',
     label: 'United States',
   },
-  { value: 'canada', label: 'Canada' },
+  { value: 'CA', label: 'Canada' },
 ];
 
 const stateOptions = [
   {
-    value: 'alaska',
+    value: 'AL',
     label: 'Alaska',
   },
-  { value: 'nyc', label: 'New York' },
+  { value: 'NY', label: 'New York' },
 ];
 
 const countryOfIssurenceOptions = [
   {
-    value: 'usa',
+    value: 'US',
     label: 'United States           ',
   },
-  { value: 'canada', label: 'Canada' },
+  { value: 'CA', label: 'Canada' },
 ];
 const identityOptions = [
   {
@@ -118,7 +118,7 @@ export default function BusinessRepresentative({
   }, [isEdited]);
 
   const onSubmit = (data) => {
-    console.log('sub');
+    console.log('sub', data);
     dispatch(setRepresentativeDetails(data));
     reset();
     handleChangeTab('3');
@@ -180,7 +180,7 @@ export default function BusinessRepresentative({
             name="owner_phone"
             {...register('owner_phone', { required: true })}
           />
-          {errors.ssn && (
+          {errors.owner_phone && (
             <span className="error-text">{errors.owner_phone?.message}</span>
           )}
         </div>
@@ -376,7 +376,7 @@ export default function BusinessRepresentative({
             </span>
           )}
 
-          {businessCategoryWatch?.value === 'dl' && (
+          {businessCategoryWatch?.value === 'DRIVER_LICENSE' && (
             <div className="form-input mb-2 state_issuance mt-2">
               <Controller
                 name="identification_state_of_issuance"
@@ -410,8 +410,8 @@ export default function BusinessRepresentative({
             </div>
           )}
 
-          {(businessCategoryWatch?.value === 'passport' ||
-            businessCategoryWatch?.value === 'reg_card') && (
+          {(businessCategoryWatch?.value === 'PASSPORT' ||
+            businessCategoryWatch?.value === 'ALIEN_REGISTRATION_CARD') && (
             <div className="form-input mb-2 country_issuance mt-4">
               <label htmlFor="" className="form-label">
                 Country of issuance
