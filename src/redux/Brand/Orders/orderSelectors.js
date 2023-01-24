@@ -1,7 +1,9 @@
 export const selectOrderFilter = (state) => state.brandOrders.orderFilter;
 
 export const selectRetailerOptions = (state) =>
-    state.brandOrders.retailerOptions;
+  state.brandOrders.retailerOptions;
 
 export const selectFullfillmentOptions = (state) =>
-    state.brandOrders.fulFillmentOptions;
+  state.brandOrders.fulFillmentOptions;
+
+export const selectAllOrder = (state) => state.brandOrders;
