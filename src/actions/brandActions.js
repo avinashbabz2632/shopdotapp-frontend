@@ -128,11 +128,38 @@ export function changePassword(formData, id) {
   };
 }
 
-export function brandAsCustomerAction(formData) {
+export function brandAsCustomerAction(formData, bankDetails) {
   return async (dispatch) => {
     try {
       const response = await axios.post(
         API_END_POINT.BRAND_AS_CUSTOMER,
+        formData
+      );
+      if (response && response.data && response.data.code == 201) {
+        dispatch(
+          brandBankDetailsAction({
+            ...bankDetails,
+            customer_id: response.data.data.customer_id,
+          })
+        );
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function brandBankDetailsAction(formData) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        API_END_POINT.EXTERNAL_ACCOUNT,
         formData
       );
       if (response && response.data && response.data.code == 200) {

@@ -19,6 +19,11 @@ function CommonLayout({ children, classNames, pageTitle }) {
   useEffect(() => {
     const pathname = window.location.pathname;
     if (isLogged) {
+      if (pathname == '/sign-up' || pathname == '/') {
+        setTimeout(() => {
+          navigate.replace('/brand/setting/#');
+        }, 1000);
+      }
     } else {
       if (pathname !== '/sign-up') {
         navigate('/');

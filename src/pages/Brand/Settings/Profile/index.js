@@ -17,7 +17,7 @@ import {
   selectBrandProfileDetails,
   selectBrandValues,
 } from '../../../../redux/Brand/Profile/brandProfileSelectors';
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty, map, remove } from 'lodash';
 
 export default function BrandProfile() {
   const [image, setImage] = useState(Brandlogo);
@@ -26,6 +26,7 @@ export default function BrandProfile() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -36,6 +37,8 @@ export default function BrandProfile() {
   const brandCategoryList = useSelector(selectBrandCategory);
   const brandValueList = useSelector(selectBrandValues);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
+  const [selectedCategory, setSelectCategory] = useState([]);
+  const [selectedValues, setSelectValues] = useState([]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -47,17 +50,69 @@ export default function BrandProfile() {
 
   useEffect(() => {
     if (brandProfileDetails && brandProfileDetails.company_name) {
-      reset({
-        company_name: brandProfileDetails.company_name,
-        company_email_address: brandProfileDetails.company_email_addres,
-        company_phone_number: brandProfileDetails.company_phone_number,
-        store_name: brandProfileDetails.brand_profile.store_name,
-        store_website: brandProfileDetails.brand_profile.store_website,
-        brand_story: brandProfileDetails.brand_profile.brand_story,
-        brand_promo: brandProfileDetails.brand_profile.brand_promo,
-      });
+      initialState(brandProfileDetails);
     }
   }, [brandProfileDetails]);
+
+  const initialState = async (brandData) => {
+    if (brandData && brandData.company_name) {
+      let categoryArray = [];
+      let valuesArray = [];
+      if (
+        brandData.brand_profile.brand_categories &&
+        brandData.brand_profile.brand_categories.length
+      ) {
+        await map(brandData.brand_profile.brand_categories, (cat, key) => {
+          categoryArray.push(JSON.parse(cat.category_id));
+        });
+      }
+      if (
+        brandData.brand_profile.brand_values &&
+        brandData.brand_profile.brand_values.length
+      ) {
+        await map(brandData.brand_profile.brand_values, (cat, key) => {
+          valuesArray.push(JSON.parse(cat.value_id));
+        });
+      }
+
+      reset({
+        brand_values: valuesArray,
+        brand_categories: categoryArray,
+        company_name: brandData.company_name,
+        company_email_address: brandData.company_email_addres,
+        company_phone_number: brandData.company_phone_number,
+        store_name: brandData.brand_profile.store_name,
+        store_website: brandData.brand_profile.store_website,
+        brand_story: brandData.brand_profile.brand_story,
+        brand_promo: brandData.brand_profile.brand_promo,
+      });
+      setTimeout(() => {
+        setSelectCategory(categoryArray);
+        setSelectValues(valuesArray);
+      }, 100);
+    }
+  };
+
+  const handleCheckbox = (value, valueType) => {
+    const valueParse = JSON.parse(value);
+    const currentArray =
+      valueType === 'category' ? selectedCategory : selectedValues;
+
+    let updateArray = cloneDeep(currentArray);
+    const isSelected = updateArray.includes(valueParse);
+    if (isSelected) {
+      remove(updateArray, (r, key) => {
+        return r === valueParse;
+      });
+    } else {
+      updateArray.push(valueParse);
+    }
+    if (valueType === 'category') {
+      setSelectCategory(updateArray);
+    } else if (valueType === 'value') {
+      setSelectValues(updateArray);
+    }
+  };
 
   const onSubmit = (data) => {
     console.log(
@@ -77,6 +132,8 @@ export default function BrandProfile() {
     );
     // reset();
   };
+
+  console.log(selectedCategory, 'selectedCategory');
 
   return (
     <div className="pc_tabs-content tabs_body">
@@ -270,8 +327,18 @@ export default function BrandProfile() {
                                     <input
                                       type="checkbox"
                                       name={'brand_categories'}
+                                      checked={selectedCategory.includes(
+                                        item.id
+                                      )}
                                       value={item.id}
-                                      {...register('brand_categories')}
+                                      {...register('brand_categories', {
+                                        onChange: (e) => {
+                                          handleCheckbox(
+                                            e.target.value,
+                                            'category'
+                                          );
+                                        },
+                                      })}
                                     />
                                     <div className="checkbox-text">
                                       <span>{item.name}</span>
@@ -302,9 +369,18 @@ export default function BrandProfile() {
                                       <input
                                         type="checkbox"
                                         name={'brand_values'}
+                                        checked={selectedValues.includes(
+                                          val.id
+                                        )}
                                         value={val.id}
                                         {...register('brand_values', {
                                           required: false,
+                                          onChange: (e) => {
+                                            handleCheckbox(
+                                              e.target.value,
+                                              'value'
+                                            );
+                                          },
                                         })}
                                       />
                                       <div className="checkbox-text">

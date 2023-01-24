@@ -18,6 +18,11 @@ function OnboardingLayout({ children, classNames, pageTitle }) {
   useEffect(() => {
     const pathname = window.location.pathname;
     if (isLogged) {
+      if (pathname == '/sign-up' || pathname == '/') {
+        setTimeout(() => {
+          navigate('/brand/setting/#');
+        }, 350);
+      }
     } else {
       if (pathname !== '/sign-up') {
         navigate('/');

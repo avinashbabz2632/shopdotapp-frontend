@@ -40,30 +40,71 @@ export default function Summary({
     setIsEdited(true);
   };
   const onSubmit = (data) => {
-    dispatch(
-      brandAsCustomerAction({
-        ...personalDetails,
-        ...businessDetails,
-        average_delivery_time: businessDetails.average_delivery_time.value,
-        business_category: businessDetails.business_category.value,
-        merchant_category_code: businessDetails.merchant_category_code.value,
-        identification_state_of_issuance:
-          personalDetails.identification_state_of_issuance.value,
-        sales_method: businessDetails.sales_method.value,
-        date_of_incorporation: moment(
-          businessDetails.date_of_incorporation
-        ).format('MM/DD/YYYY'),
-        owner_dob: moment(businessDetails.owner_dob).format('MM/DD/YYYY'),
-        secondary_identification_type:
-          personalDetails.secondary_identification_type.value,
-        state: personalDetails.state.value,
-        state_of_incorporation: businessDetails.state_of_incorporation.value,
-        prior_bankruptcy:
-          personalDetails.prior_bankruptcy == 'no' ? false : true,
-        brand_user_id: useDetails.id,
-        date_of_discharge: '123',
-      })
-    );
+    let ein = '';
+    let ssn = '';
+    let owner_phone = '';
+    if (businessDetails.ein) {
+      ein = `${businessDetails.ein.substring(
+        0,
+        2
+      )}-${businessDetails.ein.substring(2, 9)}`;
+    }
+    if (businessDetails.ssn) {
+      ssn = `${businessDetails.ssn.substring(
+        0,
+        3
+      )}-${businessDetails.ssn.substring(3, 5)}-${businessDetails.ssn.substring(
+        5,
+        9
+      )}`;
+    }
+    if (personalDetails.owner_phone) {
+      owner_phone = `${personalDetails.owner_phone.substring(
+        0,
+        3
+      )}-${personalDetails.owner_phone.substring(
+        3,
+        6
+      )}-${personalDetails.owner_phone.substring(6, 10)}`;
+    }
+
+    const formData = {
+      legal_name: businessDetails.legal_name,
+      doing_business_as: businessDetails.doing_business_as,
+      business_category: businessDetails.business_category.value,
+      ein: ein,
+      state_of_incorporation: businessDetails.state_of_incorporation.value,
+      date_of_incorporation: moment(
+        businessDetails.date_of_incorporation
+      ).format('MM/DD/YYYY'),
+      address_line_1: personalDetails.address_line_1,
+      address_line_2: personalDetails.address_line_1,
+      city: personalDetails.citySelect.value,
+      state: personalDetails.state.value,
+      zip: personalDetails.zip,
+      owner_first_name: personalDetails.owner_first_name,
+      owner_last_name: personalDetails.owner_last_name,
+      owner_phone: owner_phone,
+      owner_dob: moment(businessDetails.owner_dob).format('MM/DD/YYYY'),
+      ssn: ssn,
+      secondary_identification_type:
+        personalDetails.secondary_identification_type.value,
+      identification_state_of_issuance:
+        personalDetails.identification_state_of_issuance.value,
+      identification_id: personalDetails.identification_id,
+      prior_bankruptcy: personalDetails.prior_bankruptcy == 'no' ? false : true,
+      average_sales_volume: businessDetails.average_sales_volume,
+      average_purchase: businessDetails.average_purchase,
+      average_delivery_time: businessDetails.average_delivery_time.value,
+      merchant_category_code: businessDetails.merchant_category_code.value,
+      sales_method: businessDetails.sales_method.value,
+      product_description: businessDetails.product_description,
+      taxIdType: businessDetails.textIdType.value,
+      brand_user_id: useDetails.id,
+      date_of_discharge: businessDetails.dateOfDischarge,
+    };
+
+    dispatch(brandAsCustomerAction(formData, bankDetails));
     // reset();
     // setIsCompleteApplication(true);
   };

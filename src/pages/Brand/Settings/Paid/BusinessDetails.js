@@ -251,7 +251,7 @@ export default function BusinessDetails({
               </span>
             )}
           </div>
-          {businessCategoryWatch?.value === 'signle_member_llc' && (
+          {businessCategoryWatch?.value === 'SINGLE_MEMBER_LLC' && (
             <>
               <div className="form-input mb-4 signle_member_llc">
                 <label htmlFor="" className="form-label">
@@ -292,15 +292,15 @@ export default function BusinessDetails({
             </>
           )}
           {((textIdTypeWatch?.value === 'ein' &&
-            businessCategoryWatch?.value === 'signle_member_llc') ||
-            businessCategoryWatch?.value === 'llc' ||
-            businessCategoryWatch?.value === 'llp' ||
-            businessCategoryWatch?.value === 'partnership' ||
-            businessCategoryWatch?.value === 'ccorp' ||
-            businessCategoryWatch?.value === 'scorp' ||
-            businessCategoryWatch?.value === 'goverment_organization' ||
-            businessCategoryWatch?.value === 'non_profit' ||
-            businessCategoryWatch?.value === 'tax_exempt') && (
+            businessCategoryWatch?.value === 'SINGLE_MEMBER_LLC') ||
+            businessCategoryWatch?.value === 'LLC' ||
+            businessCategoryWatch?.value === 'LLP' ||
+            businessCategoryWatch?.value === 'PARTNERSHIP' ||
+            businessCategoryWatch?.value === 'C_CORP' ||
+            businessCategoryWatch?.value === 'S_CORP' ||
+            businessCategoryWatch?.value === 'GOVERNMENT_ORGANISATION' ||
+            businessCategoryWatch?.value === 'NON_PROFIT' ||
+            businessCategoryWatch?.value === 'TAX_EXEMPT') && (
             <div className="form-input mb-4 ein">
               <label htmlFor="" className="form-label">
                 Employer Identification Number (EIN)&nbsp;
@@ -322,15 +322,15 @@ export default function BusinessDetails({
           )}
 
           {(textIdTypeWatch?.value === 'ssn' ||
-            businessCategoryWatch?.value === 'solo_proprietor') &&
-            businessCategoryWatch?.value !== 'llc' &&
-            businessCategoryWatch?.value !== 'llp' &&
-            businessCategoryWatch?.value !== 'partnership' &&
-            businessCategoryWatch?.value !== 'ccorp' &&
-            businessCategoryWatch?.value !== 'scorp' &&
-            businessCategoryWatch?.value !== 'goverment_organization' &&
-            businessCategoryWatch?.value !== 'non_profit' &&
-            businessCategoryWatch?.value !== 'tax_exempt' && (
+            businessCategoryWatch?.value === 'SOLE_PROPRIETOR') &&
+            businessCategoryWatch?.value !== 'LLC' &&
+            businessCategoryWatch?.value !== 'LLP' &&
+            businessCategoryWatch?.value !== 'PARTNERSHIP' &&
+            businessCategoryWatch?.value !== 'C_CORP' &&
+            businessCategoryWatch?.value !== 'S_CORP' &&
+            businessCategoryWatch?.value !== 'GOVERNMENT_ORGANISATION' &&
+            businessCategoryWatch?.value !== 'NON_PROFIT' &&
+            businessCategoryWatch?.value !== 'TAX_EXEMPT' && (
               <div className="form-input mb-4 ssn">
                 <label htmlFor="" className="form-label">
                   Social Security Number (SSN)&nbsp;
