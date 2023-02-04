@@ -9,7 +9,10 @@ import mailIcon from '../../images/icons/icon-mail-black.png';
 import emptyTable from '../../images/product-card-empty.svg';
 import { ProductData, Data } from '../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectOrderFilter, selectAllOrder } from '../../../../redux/Brand/Orders/orderSelectors';
+import {
+  selectOrderFilter,
+  selectAllOrder,
+} from '../../../../redux/Brand/Orders/orderSelectors';
 import { getOrderList } from '../../../../actions/orderActions';
 import {
   resetToInitial,
@@ -96,12 +99,14 @@ export default function OrderTable(props) {
   };
 
   useEffect(() => {
-    dispatch(getOrderList({
-      "paging": {
-        "limit": limit,
-        "offset": (page - 1)
-      }
-    }));
+    dispatch(
+      getOrderList({
+        paging: {
+          limit: limit,
+          offset: page - 1,
+        },
+      })
+    );
   }, [page, limit]);
 
   return (
@@ -129,10 +134,7 @@ export default function OrderTable(props) {
                   />
                 </div>
                 <img className="icon" src={searchIcon} />
-                <button
-                  type="cancel"
-                  className="search_form-button"
-                >
+                <button type="cancel" className="search_form-button">
                   <img className="icon" src={closeIcon} />
                 </button>
               </form>
@@ -196,13 +198,13 @@ export default function OrderTable(props) {
             {(!isEmpty(dateStus) ||
               !isEmpty(retailerStus) ||
               !isEmpty(fulfillmentStus)) && (
-                <button
-                  className="products_active-remove-all"
-                  onClick={() => handleClearFilter()}
-                >
-                  Clear Filters
-                </button>
-              )}
+              <button
+                className="products_active-remove-all"
+                onClick={() => handleClearFilter()}
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
           <div
             className="my_list-table-wrap datalist-table_wrap sticky-header-table dynamic_height"
@@ -215,10 +217,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       Order ID
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -226,10 +225,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       Retailer Name
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -237,10 +233,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       Order Date
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -248,10 +241,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       Customer Name
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -259,10 +249,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       Customer Order ID
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -270,10 +257,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       Qty
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -281,10 +265,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       WSP
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -292,10 +273,7 @@ export default function OrderTable(props) {
                     <div className="txt">
                       Shipping
                       <button className="sort">
-                        <img
-                          className="icon"
-                          src={ArrowDownIcon}
-                        />
+                        <img className="icon" src={ArrowDownIcon} />
                       </button>
                     </div>
                   </th>
@@ -306,132 +284,93 @@ export default function OrderTable(props) {
               <tbody className="accordion">
                 {Data.length === 0 && (
                   <tr>
-                    <td
-                      className="no-data-cell"
-                      colSpan="10"
-                    >
+                    <td className="no-data-cell" colSpan="10">
                       <div className="product-card-empty_body">
-                        <p>
-                          There are no orders that
-                          meet your criteria.
-                        </p>
+                        <p>There are no orders that meet your criteria.</p>
                         <div className="image">
                           <picture>
-                            <img
-                              src={emptyTable}
-                              alt=""
-                            />
+                            <img src={emptyTable} alt="" />
                           </picture>
                         </div>
                       </div>
                     </td>
                   </tr>
                 )}
-                {(orderValue.orderList).map((item, i) => {
-                  return (
-                    <tr
-                      className="order_parent_row"
-                      key={i}
-                    >
-                      <td colSpan="11">
-                        <table className="op_table">
-                          <tbody>
-                            <tr
-                              onClick={() =>
-                                handleTableShow(
-                                  item.id
-                                )
-                              }
-                              // "linen-bg" class will be apply for heighlight row
-                              // className={`tr-head linen-bg ${
-                              className={`tr-head ${show &&
-                                productId ===
-                                item.id
-                                ? 'order_show'
-                                : ''
+                {orderValue && orderValue.orderList ? (
+                  orderValue.orderList.map((item, i) => {
+                    return (
+                      <tr className="order_parent_row" key={i}>
+                        <td colSpan="11">
+                          <table className="op_table">
+                            <tbody>
+                              <tr
+                                onClick={() => handleTableShow(item.id)}
+                                // "linen-bg" class will be apply for heighlight row
+                                // className={`tr-head linen-bg ${
+                                className={`tr-head ${
+                                  show && productId === item.id
+                                    ? 'order_show'
+                                    : ''
                                 }
                                                             `}
-                            >
-                              <td>
-                                <div className="text-bolder">
-                                  {item.id}
-                                </div>
-                              </td>
-                              <td>
-                                <div className="text-bolder">
-                                  {
-                                    item.retailerName
-                                  }
-                                </div>
-                              </td>
-                              <td>
-                                <div className="text-bolder">
-                                  {
-                                    item.orderDate
-                                  }
-                                </div>
-                              </td>
-                              <td>
-                                <div className="text-bolder">
-                                  {
-                                    item.customerName
-                                  }
-                                </div>
-                              </td>
-                              <td>
-                                <div className="text-bolder">
-                                  {
-                                    item.customerOrderId
-                                  }
-                                </div>
-                              </td>
-                              <td>
-                                <div className="text-bolder">
-                                  {item.qty}
-                                </div>
-                              </td>
-                              <td>
-                                <div className="text-bolder">
-                                  {item.wsp}
-                                </div>
-                              </td>
-                              <td>
-                                <div className="text-bolder">
-                                  {item.fees}
-                                </div>
-                              </td>
-                              <td className="black-envelope-action">
-                                <a href="mailto:abc@example.com ">
-                                  <img
-                                    className="icon black-arrow black-envelope"
-                                    src={
-                                      mailIcon
-                                    }
-                                  />
-                                </a>
-                              </td>
-                              <td>
-                                <button className="black-arrow-action">
-                                  <img
-                                    className={`icon black-arrow parent-arrow ${show ===
-                                      true &&
-                                      productId ===
-                                      item.id
-                                      ? 'down-arrow-transform'
-                                      : ''
+                              >
+                                <td>
+                                  <div className="text-bolder">{item.id}</div>
+                                </td>
+                                <td>
+                                  <div className="text-bolder">
+                                    {item.retailerName}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="text-bolder">
+                                    {item.orderDate}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="text-bolder">
+                                    {item.customerName}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="text-bolder">
+                                    {item.customerOrderId}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="text-bolder">{item.qty}</div>
+                                </td>
+                                <td>
+                                  <div className="text-bolder">{item.wsp}</div>
+                                </td>
+                                <td>
+                                  <div className="text-bolder">{item.fees}</div>
+                                </td>
+                                <td className="black-envelope-action">
+                                  <a href="mailto:abc@example.com ">
+                                    <img
+                                      className="icon black-arrow black-envelope"
+                                      src={mailIcon}
+                                    />
+                                  </a>
+                                </td>
+                                <td>
+                                  <button className="black-arrow-action">
+                                    <img
+                                      className={`icon black-arrow parent-arrow ${
+                                        show === true && productId === item.id
+                                          ? 'down-arrow-transform'
+                                          : ''
                                       }`}
-                                    src={
-                                      DownIcon
-                                    }
-                                  />
-                                </button>
-                              </td>
-                            </tr>
+                                      src={DownIcon}
+                                    />
+                                  </button>
+                                </td>
+                              </tr>
 
-                            {show === true && productId ===
-                              item.id && (
+                              {show === true && productId === item.id && (
                                 <>
-                                  {(
+                                  {
                                     <tr className="tr-body">
                                       <td
                                         colSpan="11"
@@ -446,14 +385,11 @@ export default function OrderTable(props) {
                                                     <tr>
                                                       <th>
                                                         <div className="txt">
-                                                          Product
-                                                          Name
+                                                          Product Name
                                                           <button className="sort">
                                                             <img
                                                               className="icon"
-                                                              src={
-                                                                DownIcon
-                                                              }
+                                                              src={DownIcon}
                                                             />
                                                           </button>
                                                         </div>
@@ -464,9 +400,7 @@ export default function OrderTable(props) {
                                                           <button className="sort">
                                                             <img
                                                               className="icon"
-                                                              src={
-                                                                DownIcon
-                                                              }
+                                                              src={DownIcon}
                                                             />
                                                           </button>
                                                         </div>
@@ -477,9 +411,7 @@ export default function OrderTable(props) {
                                                           <button className="sort">
                                                             <img
                                                               className="icon"
-                                                              src={
-                                                                DownIcon
-                                                              }
+                                                              src={DownIcon}
                                                             />
                                                           </button>
                                                         </div>
@@ -490,9 +422,7 @@ export default function OrderTable(props) {
                                                           <button className="sort">
                                                             <img
                                                               className="icon"
-                                                              src={
-                                                                DownIcon
-                                                              }
+                                                              src={DownIcon}
                                                             />
                                                           </button>
                                                         </div>
@@ -500,42 +430,33 @@ export default function OrderTable(props) {
 
                                                       <th>
                                                         <div className="txt">
-                                                          Fulfillment
-                                                          Status
+                                                          Fulfillment Status
                                                           <button className="sort">
                                                             <img
                                                               className="icon"
-                                                              src={
-                                                                DownIcon
-                                                              }
+                                                              src={DownIcon}
                                                             />
                                                           </button>
                                                         </div>
                                                       </th>
                                                       <th>
                                                         <div className="txt">
-                                                          Shipping
-                                                          Carrier
+                                                          Shipping Carrier
                                                           <button className="sort">
                                                             <img
                                                               className="icon"
-                                                              src={
-                                                                DownIcon
-                                                              }
+                                                              src={DownIcon}
                                                             />
                                                           </button>
                                                         </div>
                                                       </th>
                                                       <th>
                                                         <div className="txt">
-                                                          Tracking
-                                                          Number
+                                                          Tracking Number
                                                           <button className="sort">
                                                             <img
                                                               className="icon"
-                                                              src={
-                                                                DownIcon
-                                                              }
+                                                              src={DownIcon}
                                                             />
                                                           </button>
                                                         </div>
@@ -550,120 +471,109 @@ export default function OrderTable(props) {
                                                         i
                                                       ) => {
                                                         return (
-                                                          (
-                                                            <tr
-                                                              key={
-                                                                i
-                                                              }
-                                                            >
-                                                              <td>
-                                                                <div className="my_list-product">
-                                                                  <div className="my_list-product-image">
-                                                                    <picture>
-                                                                      <img
-                                                                        src={
-                                                                          ele.productUrl
-                                                                        }
-                                                                        alt=""
-                                                                      />
-                                                                    </picture>
-                                                                  </div>
-                                                                  <div>
-                                                                    <a
-                                                                      href="#"
-                                                                      className="my_list-product-title"
-                                                                    >
-                                                                      {
-                                                                        ele.productName
+                                                          <tr key={i}>
+                                                            <td>
+                                                              <div className="my_list-product">
+                                                                <div className="my_list-product-image">
+                                                                  <picture>
+                                                                    <img
+                                                                      src={
+                                                                        ele.productUrl
                                                                       }
-                                                                    </a>
-                                                                  </div>
+                                                                      alt=""
+                                                                    />
+                                                                  </picture>
                                                                 </div>
-                                                              </td>
-                                                              <td>
-                                                                <div>
-                                                                  {
-                                                                    ele.qty
-                                                                  }
-                                                                </div>
-                                                              </td>
-                                                              <td>
-                                                                <div>
-                                                                  {
-                                                                    ele
-                                                                      .totalWsp
-                                                                      .wsp
-                                                                  }
-                                                                </div>
-                                                                <div>
-                                                                  (
-                                                                  {
-                                                                    ele
-                                                                      .totalWsp
-                                                                      .wsp_unit
-                                                                  }
-
-                                                                  )
-                                                                </div>
-                                                              </td>
-                                                              <td>
-                                                                <div>
-                                                                  {
-                                                                    ele
-                                                                      .totalMSRP
-                                                                      .msrp
-                                                                  }
-                                                                </div>
-                                                                <div>
-                                                                  (
-                                                                  {
-                                                                    ele
-                                                                      .totalMSRP
-                                                                      .msrp_unit
-                                                                  }
-
-                                                                  )
-                                                                </div>
-                                                              </td>
-                                                              <td>
-                                                                <span
-                                                                  className={`status-pill ${ele.fulfillmentStatus ===
-                                                                    'Fulfilled' &&
-                                                                    'pill_connected'
-                                                                    } ${ele.fulfillmentStatus ===
-                                                                    'Unfulfilled' &&
-                                                                    'pill_pending'
-                                                                    } ${ele.fulfillmentStatus ===
-                                                                    'Cancelled' &&
-                                                                    'pill_declined'
-                                                                    }`}
-                                                                >
-                                                                  {
-                                                                    ele.fulfillmentStatus
-                                                                  }
-                                                                </span>
-                                                              </td>
-                                                              <td>
-                                                                <div>
-                                                                  {
-                                                                    ele.shippingCarrier
-                                                                  }
-                                                                </div>
-                                                              </td>
-                                                              <td>
                                                                 <div>
                                                                   <a
-                                                                    href="target/blank_"
-                                                                    className="link-text"
+                                                                    href="#"
+                                                                    className="my_list-product-title"
                                                                   >
                                                                     {
-                                                                      ele.TranckingNumber
+                                                                      ele.productName
                                                                     }
                                                                   </a>
                                                                 </div>
-                                                              </td>
-                                                            </tr>
-                                                          )
+                                                              </div>
+                                                            </td>
+                                                            <td>
+                                                              <div>
+                                                                {ele.qty}
+                                                              </div>
+                                                            </td>
+                                                            <td>
+                                                              <div>
+                                                                {
+                                                                  ele.totalWsp
+                                                                    .wsp
+                                                                }
+                                                              </div>
+                                                              <div>
+                                                                (
+                                                                {
+                                                                  ele.totalWsp
+                                                                    .wsp_unit
+                                                                }
+                                                                )
+                                                              </div>
+                                                            </td>
+                                                            <td>
+                                                              <div>
+                                                                {
+                                                                  ele.totalMSRP
+                                                                    .msrp
+                                                                }
+                                                              </div>
+                                                              <div>
+                                                                (
+                                                                {
+                                                                  ele.totalMSRP
+                                                                    .msrp_unit
+                                                                }
+                                                                )
+                                                              </div>
+                                                            </td>
+                                                            <td>
+                                                              <span
+                                                                className={`status-pill ${
+                                                                  ele.fulfillmentStatus ===
+                                                                    'Fulfilled' &&
+                                                                  'pill_connected'
+                                                                } ${
+                                                                  ele.fulfillmentStatus ===
+                                                                    'Unfulfilled' &&
+                                                                  'pill_pending'
+                                                                } ${
+                                                                  ele.fulfillmentStatus ===
+                                                                    'Cancelled' &&
+                                                                  'pill_declined'
+                                                                }`}
+                                                              >
+                                                                {
+                                                                  ele.fulfillmentStatus
+                                                                }
+                                                              </span>
+                                                            </td>
+                                                            <td>
+                                                              <div>
+                                                                {
+                                                                  ele.shippingCarrier
+                                                                }
+                                                              </div>
+                                                            </td>
+                                                            <td>
+                                                              <div>
+                                                                <a
+                                                                  href="target/blank_"
+                                                                  className="link-text"
+                                                                >
+                                                                  {
+                                                                    ele.TranckingNumber
+                                                                  }
+                                                                </a>
+                                                              </div>
+                                                            </td>
+                                                          </tr>
                                                         );
                                                       }
                                                     )}
@@ -675,24 +585,32 @@ export default function OrderTable(props) {
                                         </div>
                                       </td>
                                     </tr>
-                                  )}
+                                  }
                                 </>
                               )}
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  );
-                })}
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <div />
+                )}
               </tbody>
             </table>
           </div>
           <div className="pagination_wrap">
             <div className="pagination">
               <div className="pagination_per">
-                <select name="per" id="per" disabled={orderValue.orderLoading} onChange={(e) => {
-                  setLimit(parseInt(e.target.value));
-                }}>
+                <select
+                  name="per"
+                  id="per"
+                  disabled={orderValue.orderLoading}
+                  onChange={(e) => {
+                    setLimit(parseInt(e.target.value));
+                  }}
+                >
                   <option value="10">10</option>
                   <option value="20" selected="">
                     20
@@ -700,26 +618,41 @@ export default function OrderTable(props) {
                   <option value="50">50</option>
                   <option value="100">100</option>
                 </select>
-                <div className="pagination-title">
-                  items per page
-                </div>
+                <div className="pagination-title">items per page</div>
               </div>
               <div className="pagination_nav">
-                <button className="pagination-arrow pagination-arrow-prev" disabled={orderValue.orderLoading || page <= 1} onClick={() => {
-                  setPage(prevState => prevState - 1);
-                }}>
+                <button
+                  className="pagination-arrow pagination-arrow-prev"
+                  disabled={orderValue.orderLoading || page <= 1}
+                  onClick={() => {
+                    setPage((prevState) => prevState - 1);
+                  }}
+                >
                   <img className="icon" src={LeftIcon} />
                 </button>
                 <div className="pagination-current">
-                  <input type="text" disabled={orderValue.orderLoading} value={page} />
+                  <input
+                    type="text"
+                    disabled={orderValue.orderLoading}
+                    value={page}
+                  />
                 </div>
-                <button className="pagination-arrow pagination-arrow-next" disabled={orderValue.orderLoading || page >= (orderValue >= limit ? Math.ceil(orderValue / limit) : 1)} onClick={() => {
-                  setPage(prevState => prevState + 1);
-                }}>
+                <button
+                  className="pagination-arrow pagination-arrow-next"
+                  disabled={
+                    orderValue.orderLoading ||
+                    page >=
+                      (orderValue >= limit ? Math.ceil(orderValue / limit) : 1)
+                  }
+                  onClick={() => {
+                    setPage((prevState) => prevState + 1);
+                  }}
+                >
                   <img className="icon" src={RightIcon} />
                 </button>
                 <div className="pagination-title">
-                  of {orderValue >= limit ? Math.ceil(orderValue / limit) : 1} pages
+                  of {orderValue >= limit ? Math.ceil(orderValue / limit) : 1}{' '}
+                  pages
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import OnboardingLayout from '../../../layout/OnboardingLayout';
 import Input from '../../../components/common/Input/divStyled';
 import Button from '../../../components/common/Button';
@@ -8,7 +8,10 @@ import retailerIcon from '../../../assets/images/icons/retailer.svg';
 import brandIcon from '../../../assets/images/icons/brand.svg';
 import '../onboarding.style.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUserRoleAction, addUserPlatformAction } from '../../../actions/userActions';
+import {
+  updateUserRoleAction,
+  addUserPlatformAction,
+} from '../../../actions/userActions';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 
 export default function Personalize() {
@@ -43,17 +46,29 @@ export default function Personalize() {
     setPlatform(1);
   };
 
-  const updateUserRole = createAsyncThunk('updateUserRole', updateUserRoleAction);
-  const addUserPlatform = createAsyncThunk('addUserProfile', addUserPlatformAction);
+  const updateUserRole = createAsyncThunk(
+    'updateUserRole',
+    updateUserRoleAction
+  );
+  const addUserPlatform = createAsyncThunk(
+    'addUserProfile',
+    addUserPlatformAction
+  );
 
   const handleGoSupport = async () => {
     try {
       setLoading(true);
       if (supplier === 1) {
         await dispatch(
+          updateUserRole({
+            user_id: userDetails.id,
+            role: 'brand',
+          })
+        ).unwrap();
+        await dispatch(
           addUserPlatform({
             user_id: userDetails.id,
-            platform: platform === 1 ? 'shopify' : platformName
+            platform: platform === 1 ? 'shopify' : platformName,
           })
         ).unwrap();
       } else if (supplier === 2) {
@@ -200,7 +215,7 @@ export default function Personalize() {
                   <Button
                     type="button"
                     className="button w-100 "
-                    disabled={(supplier == 0 || loading)}
+                    disabled={supplier == 0 || loading}
                     onClick={handleGoSupport}
                   >
                     Next
@@ -222,7 +237,7 @@ export default function Personalize() {
                     </Button>
                     <Button
                       type="button"
-                      disabled={(platformName.length < 1 || loading)}
+                      disabled={platformName.length < 1 || loading}
                       className="button w-50 "
                       onClick={handleGoSupport}
                     >

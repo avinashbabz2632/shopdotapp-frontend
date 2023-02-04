@@ -33,7 +33,11 @@ function CommonLayout({ children, classNames, pageTitle }) {
 
   return (
     <>
-      <div className="wrapper onbording">{children}</div>
+      <div className="wrapper onbording">
+        <main>
+          <section>{children}</section>
+        </main>
+      </div>
       <ToastContainer />
     </>
   );

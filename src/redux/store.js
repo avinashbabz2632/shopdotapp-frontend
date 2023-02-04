@@ -27,7 +27,7 @@ const persistConfig = {
   ],
 };
 
-const rootReducer = combineReducers({
+const combinedReducer = combineReducers({
   auth: authReducer,
   gettingPaid: gettingPaidReducer,
   user: userReducer,
@@ -36,6 +36,15 @@ const rootReducer = combineReducers({
   brandOrders: orderReducer,
   brandProfile: brandProfileReducer,
 });
+
+const rootReducer = (state, action) => {
+  console.log(action, 'action');
+  if (action.type === 'auth/logOut') {
+    console.log('is in ', action.type);
+    return combinedReducer(undefined, { type: undefined });
+  }
+  return combinedReducer(state, action);
+};
 
 // TODO: for future use - if we want to remove store from localstorage
 // const rootReducer = (state, action) => {

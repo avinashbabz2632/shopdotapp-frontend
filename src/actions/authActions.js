@@ -1,6 +1,6 @@
 import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
-import { setLoggedIn, setRegister } from '../redux/auth/authSlice';
+import { logOut, setLoggedIn, setRegister } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ export function loginAction(formData) {
         toast.error('Something went worng');
       }
     } catch (err) {
-      console.log(err, 'errerr');
+      console.log(err, 'err');
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
@@ -63,5 +63,11 @@ export function sendVerifyEmailAction(formData) {
           : 'Something went worng'
       );
     }
+  };
+}
+
+export function signOutAction() {
+  return async (dispatch) => {
+    dispatch(logOut());
   };
 }

@@ -14,10 +14,12 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logOut: (state) => {
+    logOut: async (state) => {
       state.isLoggedIn = false;
       state.access_token = '';
       state.refresh_token = '';
+      await localStorage.removeItem('accessToken');
+      await localStorage.removeItem('refreshToken');
     },
     setLoggedIn: (state, action) => {
       state.isLoginSuccess = true;

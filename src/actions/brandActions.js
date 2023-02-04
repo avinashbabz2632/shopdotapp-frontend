@@ -17,15 +17,43 @@ export function connectShopifyAction(formData) {
         shop: formData.name,
         user_id: formData.user_id,
       };
-      const response = await axios.get(
-        `${API_END_POINT.PLATFORM}/shopify-integration`,
-        { params }
-      );
-      if (response && response.data && response.data.code == 201) {
-      } else {
-        toast.error('Something went worng');
-      }
+
+      fetch(
+        `${API_END_POINT.PLATFORM}/shopify-integration?shop=${formData.name}&user_id=${formData.user_id}`,
+        {
+          redirect: 'manual',
+        }
+      )
+        .then((res) => {
+          if (res.type === 'opaqueredirect') {
+            window.location.href = res.url;
+          } else {
+            return res;
+          }
+        })
+        .catch(() => {});
+
+      // const response = await axios.get(
+      //   `${API_END_POINT.PLATFORM}/shopify-integration`,
+      //   {
+      //     params,
+
+      //     headers: {
+      //       'Content-type': 'text/html',
+      //       'Access-Control-Allow-Origin': true,
+      //     },
+      //   }
+      // );
+      // console.log(response.request.res.responseUrl);
+      // if (response && response.data && response.data.code == 201) {
+      // } else {
+      //   console.log(response, 'response');
+      //   toast.error('Something went worng');
+      // }
     } catch (err) {
+      if (err.response && err.response.data && err.response.data.location) {
+        window.location = err.response.data.location;
+      }
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
@@ -87,7 +115,6 @@ export function getPlatformValuesAction() {
 }
 
 export function updateBrandProfileAction(formData, isCreate) {
-  console.log(isCreate, 'isCreate');
   return async (dispatch) => {
     try {
       let response;
@@ -96,7 +123,11 @@ export function updateBrandProfileAction(formData, isCreate) {
       } else {
         response = await axios.put(API_END_POINT.BRAND_PROFILE, formData);
       }
-      if (response && response.status && response.status == 201) {
+      if (
+        response &&
+        response.status &&
+        (response.status == 201 || response.status == 200)
+      ) {
         toast.success('Profile Details Updated');
         dispatch(getBrandProfileAction(formData.user_id));
       } else {

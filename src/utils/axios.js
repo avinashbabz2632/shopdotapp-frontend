@@ -9,6 +9,7 @@ axios.interceptors.request.use(
     //   axios.defaults.baseURL = BASE_URL;
     //   config.baseURL = BASE_URL;
     // }
+
     if (!config.headers.Authorization) {
       const token = await localStorage.getItem('accessToken');
 
@@ -16,6 +17,7 @@ axios.interceptors.request.use(
         ? `Bearer ${token}`
         : '';
       config.headers.Authorization = `Bearer ${token}`;
+      config.maxRedirects = 0;
     }
     return config;
   },
@@ -124,6 +126,12 @@ axios.interceptors.response.use(undefined, async (error) => {
           });
       }
     });
+  } else if (
+    error.response &&
+    error.response.data &&
+    error.response.data.location
+  ) {
+    window.location = error.response.data.location;
   } else if (
     error.response &&
     error.response.status == 401 &&
