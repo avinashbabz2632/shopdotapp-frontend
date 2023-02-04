@@ -41,7 +41,7 @@ function SignIn() {
   const dispatch = useDispatch();
   const success = useSelector(loginSuccess);
   const userDetails = useSelector(selectUserDetails);
-  console.log(success, 'authReducer', userDetails);
+
   const {
     register,
     handleSubmit,
@@ -61,7 +61,6 @@ function SignIn() {
   }, [success]);
 
   const onSubmit = (data) => {
-    console.log('data', data);
     dispatch(loginAction({ ...data, device_id: '123' }));
     // navigate('/verify-email');
   };

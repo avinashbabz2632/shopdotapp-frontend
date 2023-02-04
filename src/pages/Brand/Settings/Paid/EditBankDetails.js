@@ -63,11 +63,9 @@ export default function EditBankDetail({ setEditBankDetails }) {
     defaultValues,
   });
 
-  console.log('errorssss', errors);
-
   const bankDetails = useSelector(selectBankDetails);
   const dispatch = useDispatch();
-  console.log(bankDetails, 'bankDetails');
+
   useEffect(() => {
     const fields = [
       'account_holder_name',

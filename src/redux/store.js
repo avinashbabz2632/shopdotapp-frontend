@@ -21,7 +21,6 @@ const persistConfig = {
       secretKey: process.env.REACT_APP_SECRET_KEY_REDUX || 'shopdot',
       onError: function (error) {
         // Handle the error.
-        console.log('error in encryptopn store', error);
       },
     }),
   ],
@@ -38,9 +37,7 @@ const combinedReducer = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  console.log(action, 'action');
   if (action.type === 'auth/logOut') {
-    console.log('is in ', action.type);
     return combinedReducer(undefined, { type: undefined });
   }
   return combinedReducer(state, action);
@@ -48,7 +45,7 @@ const rootReducer = (state, action) => {
 
 // TODO: for future use - if we want to remove store from localstorage
 // const rootReducer = (state, action) => {
-//     console.log('action', action, state);
+//
 //     // when a logout action is dispatched it will reset redux state
 //     if (action.type === 'auth/logOut') {
 //         state = undefined;

@@ -67,7 +67,6 @@ function SignUp() {
   }, [success]);
 
   const onSubmit = (data) => {
-    console.log(data, 'data');
     dispatch(registerAction({ ...data, device_id: '1234' }));
     // navigate('/verify-email');
     // reset();

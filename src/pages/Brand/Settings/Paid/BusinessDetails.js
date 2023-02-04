@@ -155,7 +155,6 @@ export default function BusinessDetails({
   }, [isEdited]);
 
   const onSubmit = (data) => {
-    console.log(data, 'data');
     dispatch(setBusinessDetails(data));
     reset();
     handleChangeTab('2');

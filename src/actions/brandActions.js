@@ -44,10 +44,10 @@ export function connectShopifyAction(formData) {
       //     },
       //   }
       // );
-      // console.log(response.request.res.responseUrl);
+      //
       // if (response && response.data && response.data.code == 201) {
       // } else {
-      //   console.log(response, 'response');
+      //
       //   toast.error('Something went worng');
       // }
     } catch (err) {

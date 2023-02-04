@@ -115,10 +115,6 @@ export default function BrandProfile() {
   };
 
   const onSubmit = (data) => {
-    console.log(
-      isEmpty(brandProfileDetails.company_name),
-      ' !isEmpty(brandProfileDetails.company_name)'
-    );
     dispatch(
       updateBrandProfileAction(
         {
@@ -132,8 +128,6 @@ export default function BrandProfile() {
     );
     // reset();
   };
-
-  console.log(selectedCategory, 'selectedCategory');
 
   return (
     <div className="pc_tabs-content tabs_body">

@@ -118,7 +118,6 @@ export default function BusinessRepresentative({
   }, [isEdited]);
 
   const onSubmit = (data) => {
-    console.log('sub', data);
     dispatch(setRepresentativeDetails(data));
     reset();
     handleChangeTab('3');

@@ -15,7 +15,6 @@ export function loginAction(formData) {
         toast.error('Something went worng');
       }
     } catch (err) {
-      console.log(err, 'err');
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
