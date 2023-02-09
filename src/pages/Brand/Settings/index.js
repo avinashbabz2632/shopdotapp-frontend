@@ -71,32 +71,30 @@ export default function BrandSettingPage() {
   };
 
   return (
-    <CommonLayout>
-      <div className="wrapper">
-        <BrandHeader
-          callback={(callbackType) => {
-            if (callbackType === 'signout') {
-              dispatch(signOutAction());
-              history.replace('/');
-            }
-          }}
-        />
-        <main
-          className="content mp-content setting-section"
+    <div className="wrapper">
+      <BrandHeader
+        callback={(callbackType) => {
+          if (callbackType === 'signout') {
+            dispatch(signOutAction());
+            history.replace('/');
+          }
+        }}
+      />
+      <main
+        className="content mp-content setting-section"
+        style={{ background: 'white' }}
+      >
+        <section
+          className="section products pc_tabs tabs"
           style={{ background: 'white' }}
         >
-          <section
-            className="section products pc_tabs tabs"
-            style={{ background: 'white' }}
-          >
-            <BrandSidebar />
-            <Suspense fallback={<Loader />}>
-              {tab && renderTab(tab)}
-              {!activeTab && <BrandProfile />}
-            </Suspense>
-          </section>
-        </main>
-      </div>
-    </CommonLayout>
+          <BrandSidebar />
+          <Suspense fallback={<Loader />}>
+            {tab && renderTab(tab)}
+            {!activeTab && <BrandProfile />}
+          </Suspense>
+        </section>
+      </main>
+    </div>
   );
 }

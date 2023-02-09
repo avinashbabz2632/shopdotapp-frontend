@@ -3,6 +3,7 @@ import * as API_END_POINT from '../constants/api';
 import { logOut, setLoggedIn, setRegister } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
 import { toast } from 'react-toastify';
+import { map } from 'lodash';
 
 export function loginAction(formData) {
   return async (dispatch) => {
@@ -16,7 +17,15 @@ export function loginAction(formData) {
       }
     } catch (err) {
       toast.error(
-        err && err.response && err.response.data && err.response.data.errors
+        err &&
+          err.response &&
+          err.response.data &&
+          err.response.data.errors &&
+          err.response.data.errors.length &&
+          err.response.data.errors[0] &&
+          err.response.data.errors[0].password
+          ? err.response.data.errors[0].password
+          : err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
           : 'Something went worng'
       );
