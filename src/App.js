@@ -1,11 +1,14 @@
 // Main App.js file which load first, it'll manage entire Application routing with lazy loading
 
-import React, { Suspense, lazy } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import Loader from './components/Loader';
 import ResetPasswordSuccess from './pages/Auth/ResetPassword/ResetPassworeSuccess';
 import SiteMap from './pages/Sitemap';
+import { isLoggedIn } from './redux/auth/authSelector';
 
 // Auth Pages
 const SignIn = lazy(() => import('./pages/Auth/SignIn'));
@@ -46,6 +49,25 @@ const BrandOrdersPage = lazy(() => import('./pages/Brand/Orders'));
 const RetailerSettingPage = lazy(() => import('./pages/Retailer/Settings'));
 
 function App() {
+  const navigate = useNavigate();
+  const history = createBrowserHistory();
+  const isLogged = useSelector(isLoggedIn);
+
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    if (isLogged) {
+      if (pathname == '/sign-up' || pathname == '/') {
+        history.replace('/brand-onboarding');
+        navigate('/brand-onboarding');
+      }
+    } else {
+      if (pathname !== '/sign-up') {
+        history.replace('/');
+        navigate('/');
+      }
+    }
+  }, []);
+
   return (
     <>
       <Suspense fallback={<Loader />}>

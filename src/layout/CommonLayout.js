@@ -12,25 +12,6 @@ import axios from 'axios';
 import { shippingValidationSchema } from '../pages/Brand/Settings/Paid/ValidationSchema';
 
 function CommonLayout({ children, classNames, pageTitle }) {
-  const navigate = useNavigate();
-  const isLogged = useSelector(isLoggedIn);
-  const userDetils = useSelector(selectUserDetails);
-
-  useEffect(() => {
-    const pathname = window.location.pathname;
-    if (isLogged) {
-      if (pathname == '/sign-up' || pathname == '/') {
-        setTimeout(() => {
-          navigate.replace('/brand/setting/#');
-        }, 1000);
-      }
-    } else {
-      if (pathname !== '/sign-up') {
-        navigate('/');
-      }
-    }
-  }, []);
-
   return (
     <>
       <div className="wrapper onbording">

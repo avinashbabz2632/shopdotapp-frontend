@@ -11,25 +11,6 @@ import { selectUserDetails } from '../redux/user/userSelector';
 import axios from 'axios';
 
 function OnboardingLayout({ children, classNames, pageTitle }) {
-  const navigate = useNavigate();
-  const isLogged = useSelector(isLoggedIn);
-  const userDetils = useSelector(selectUserDetails);
-
-  useEffect(() => {
-    const pathname = window.location.pathname;
-    if (isLogged) {
-      if (pathname == '/sign-up' || pathname == '/') {
-        setTimeout(() => {
-          navigate('/brand/setting/#');
-        }, 350);
-      }
-    } else {
-      if (pathname !== '/sign-up') {
-        navigate('/');
-      }
-    }
-  }, []);
-
   return (
     <>
       <div className="wrapper onbording">
