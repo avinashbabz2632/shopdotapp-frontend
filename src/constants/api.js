@@ -1,4 +1,4 @@
-const BASE_URL = ` https://dev.backend.shopdotapp.com/api/v1`;
+const BASE_URL = `http://192.168.1.8:3001/api/v1`;
 
 // Auth
 export const REGISTER = `${BASE_URL}/auth/signup/`;

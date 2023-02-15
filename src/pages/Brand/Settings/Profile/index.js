@@ -41,7 +41,6 @@ export default function BrandProfile() {
   const [selectedCategory, setSelectCategory] = useState([]);
   const [selectedValues, setSelectValues] = useState([]);
   const [profileLoading, setProfileLoading] = useState(false);
-
   useEffect(() => {
     setTimeout(() => {
       dispatch(getPlatformCategoryAction());
@@ -51,32 +50,32 @@ export default function BrandProfile() {
   }, []);
 
   useEffect(() => {
-    if (brandProfileDetails && brandProfileDetails.brand_profile.company_name) {
+    if (brandProfileDetails.brand_profile && brandProfileDetails.brand_profile.company_name) {
       initialState(brandProfileDetails);
     }
   }, [brandProfileDetails]);
 
   const initialState = async (brandData) => {
-    if (brandData && brandData.brand_profile.company_name) {
+    if (brandData.brand_profile && brandData.brand_profile.company_name) {
       let categoryArray = [];
       let valuesArray = [];
       if (
-        brandData.brand_profile.brand_categories &&
-        brandData.brand_profile.brand_categories.length
+        brandData.brand_categories &&
+        brandData.brand_categories.length
       ) {
-        await map(brandData.brand_profile.brand_categories, (cat, key) => {
-          categoryArray.push(JSON.parse(cat.category_id));
+        await map(brandData.brand_categories, (cat, key) => {
+          categoryArray.push(cat.id);
         });
       }
       if (
-        brandData.brand_profile.brand_values &&
-        brandData.brand_profile.brand_values.length
+        brandData.brand_values &&
+        brandData.brand_values.length
       ) {
-        await map(brandData.brand_profile.brand_values, (cat, key) => {
-          valuesArray.push(JSON.parse(cat.value_id));
+        await map(brandData.brand_values, (cat, key) => {
+          valuesArray.push(cat.id);
         });
       }
-
+      setImage(brandData.brand_profile.store_logo || Brandlogo);
       reset({
         brand_values: valuesArray,
         brand_categories: categoryArray,
@@ -123,9 +122,7 @@ export default function BrandProfile() {
       data.append('file', e.target.files[0]);
       dispatch(uploadImageAction(data).then((res) => {
         setImage(res.url);
-        console.log('loading started', res);
       }).finally(() => {
-        console.log('loading completed');
         setProfileLoading(false);
       }));
     }
@@ -141,7 +138,7 @@ export default function BrandProfile() {
           profile_picture: image,
           ...data,
         },
-        isEmpty(brandProfileDetails.brand_profile.company_name)
+        isEmpty(brandProfileDetails.brand_profile ? brandProfileDetails.brand_profile.company_name : '')
       )
     );
     // reset();

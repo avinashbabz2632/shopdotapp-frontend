@@ -46,7 +46,7 @@ export async function uploadImageAction(formData) {
       }
     });
     if (response && response.data && response.data.code == 200) {
-      return response.data;
+      return response.data.data;
     } else {
       toast.error('Something went worng');
     }
