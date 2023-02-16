@@ -114,6 +114,21 @@ export function getPlatformValuesAction() {
   };
 }
 
+export function syncProductAction(productId, userId) {
+  return async (dispatch) => {
+    const params = {
+      product_id: productId,
+      user_id: userId,
+    };
+    try {
+      const response = await axios.get(API_END_POINT.SYNC_PRODUCT, { params });
+      if (response && response.data && response.data.code == 200) {
+      } else {
+      }
+    } catch (err) {}
+  };
+}
+
 export function updateBrandProfileAction(formData, isCreate) {
   return async (dispatch) => {
     try {
@@ -233,6 +248,23 @@ export function updateShipping(data) {
       dispatch(setShippingLoading(true));
       const response = await axios.post(API_END_POINT.UPDATE_SHIPPING, data);
       toast.error(response.data.message);
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function updatePreferences(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(API_END_POINT.PREFERENCES, data);
+      if (response.status === 201) {
+        toast.success('Preferences Updated');
+      }
     } catch (err) {
       toast.error(
         err && err.response && err.response.data && err.response.data.errors

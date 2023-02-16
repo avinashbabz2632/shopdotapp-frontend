@@ -15,7 +15,6 @@ export const USER_PLATFORM = `${BASE_URL}/user/platform`;
 export const SHOPIFY = `${BASE_URL}/platform/shopify-integration`;
 
 // Settings
-
 export const RETAIL_PROFILE = `${BASE_URL}/user/retailer-profile`;
 
 // Brand
@@ -25,6 +24,8 @@ export const BRAND_AS_CUSTOMER = `${BASE_URL}/payment/create-brand-as-customer`;
 export const EXTERNAL_ACCOUNT = `${BASE_URL}/payment/customer/external-account`;
 export const PAYMENT_CUSTOMER = `${BASE_URL}/payment/customer`;
 export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
+export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-product`;
+export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;

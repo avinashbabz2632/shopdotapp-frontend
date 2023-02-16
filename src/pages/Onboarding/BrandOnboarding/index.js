@@ -40,15 +40,16 @@ export default function BrandOnBoarding() {
   const [storeName, setStoreName] = useState('');
   const [isStoreNameValid, setIsStoreNameValid] = useState(false);
 
-  const [brandStep, setBrandStep] = useState([1, 2, 3]);
-  const [activeStep, setActiveStep] = useState(4);
+  const [brandStep, setBrandStep] = useState([1]);
+  const [activeStep, setActiveStep] = useState(2);
 
   const handleSetStoreName = (e) => {
     const fixedSuffix = ['myshopify', 'com'];
     const storeName = e.target.value;
     const isValid = storeName
       .split('.')
-      .some((item) => fixedSuffix.includes(item));
+      .some((item) => !fixedSuffix.includes(item));
+    console.log(e.target.value, 'e.target.value', isValid);
     setIsStoreNameValid(isValid);
     setStoreName(e.target.value);
   };
@@ -76,10 +77,11 @@ export default function BrandOnBoarding() {
                           isCompleted={isCompleted}
                           isActive={curentKey == activeStep}
                           openGuide={curentKey == 2 && activeStep == 2}
+                          handleStore={handleSetStoreName}
                           shopifyConnected={
                             curentKey == 2 && brandStep.includes(2)
                           }
-                          storeName=""
+                          storeName={storeName}
                         />
                       );
                     })}

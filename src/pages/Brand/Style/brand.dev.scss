@@ -239,7 +239,7 @@ input[type='number'] {
 }
 
 .mp-content .datalist-table_wrap {
-    height: 38rem;
+    height: auto;
 }
 
 .setting-section h1 {
@@ -314,4 +314,202 @@ input[type='number'] {
 .tracking_num {
     font-weight: 700;
     text-decoration: none;
+}
+
+.ant-modal-content {
+    width: 640px;
+    height: 100%;
+}
+
+.main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.text h1 {
+    color: #bd6f34;
+    font-family: Mulish, sans-serif;
+}
+
+.text p {
+    text-align: center;
+}
+
+.text-a {
+    color: #bd6f34;
+}
+
+.footerbuttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.button.button-dark,
+.button.button-red {
+    width: 283px;
+    height: 45px;
+    font-size: 18px;
+}
+
+.iconinfo {
+    display: flex;
+    justify-content: center;
+}
+
+.required-icon {
+    height: 60px;
+    width: 60px;
+    margin: 3rem 0rem 2.3rem 0rem;
+}
+
+.form-input.form-submit.mt-5 {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.button.button-grey.cancel.large,
+.button.user-added.large {
+    width: 49%;
+}
+
+.form-group h1 {
+    color: #bd6f34;
+    font-family: Mulish, sans-serif;
+}
+
+.tab.active {
+    width: 100%;
+}
+
+.table-head {
+    width: 100%;
+}
+
+.button-parent {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    position: relative;
+}
+
+.button-delete-table {
+    background: #eb5757;
+    height: 30px;
+    border: 0.2rem solid #eb5757;
+    border-radius: 4px;
+}
+
+.button-edit-table {
+    background: #bd6f34;
+    height: 30px;
+    border: 0.2rem solid #bd6f34;
+    border-radius: 4px;
+    color: white;
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+// .products_head {
+//     position: sticky !important;
+//     top: 0;
+//     z-index: 1;
+// }
+// .products-content {
+//     overflow: scroll;
+//     height: 100%;
+//     background-color: white !important;
+// }
+// .products_head {
+//     height: auto !important;
+// }
+// .mp-content .datalist-table_wrap {
+//     height: auto !important;
+//     overflow: auto;
+//     border-radius: 0.8rem !important;
+// }
+// .mp-content .my_list-body {
+//     padding: none;
+//     height: auto !important;
+// }
+// .my_list-body {
+//     padding: 0px 24px 24px !important;
+// }
+// .products_head {
+//     padding: 24px 24px 15px !important;
+// }
+// .my_list-body.order_table {
+//     background: white !important;
+// }
+// .my_list-table-wrap {
+//     margin-bottom: 4rem !important;
+// }
+// .my_list-body .pagination {
+//     border: none !important;
+//     border-top: 1px solid rgba(0, 0, 0, 0.12) !important;
+// }
+
+.pl-0 {
+    padding-left: 0 !important;
+}
+
+.button-delete-table:hover {
+    cursor: pointer;
+}
+
+.preferences_info.mt-4 {
+    background: #fbf5f0;
+    border-radius: 8px;
+    padding: 6px 14px 20px 20px;
+}
+
+.basic-single {
+    margin-top: 14px;
+}
+
+.preferences_info .wp-left label,
+.preferences_info .wp-right label {
+    font-weight: 700;
+}
+
+.integration_url .button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    background: var(--btn-background);
+    padding: var(--btn-padding);
+    height: var(--btn-height);
+    border-radius: var(--btn-radius);
+    border: 0.2rem solid var(--btn-background);
+    font-size: var(--btn-font-size);
+    font-family: var(--btn-font-family);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--btn-color);
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    gap: 1rem;
+}
+
+.integration_url .button.button-dark {
+    --btn-background: var(--color-navy);
+    --btn-color: var(--color-white);
+    width: auto;
+}
+
+.popup {
+    opacity: 1 !important;
+    visibility: visible !important;
 }
