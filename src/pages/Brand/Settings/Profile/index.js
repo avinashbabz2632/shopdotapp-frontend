@@ -11,6 +11,7 @@ import {
   getPlatformValuesAction,
   updateBrandProfileAction,
 } from '../../../../actions/brandActions';
+import { uploadImageAction } from '../../../../actions/userActions';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import {
   selectBrandCategory,
@@ -39,7 +40,7 @@ export default function BrandProfile() {
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const [selectedCategory, setSelectCategory] = useState([]);
   const [selectedValues, setSelectValues] = useState([]);
-
+  const [profileLoading, setProfileLoading] = useState(false);
   useEffect(() => {
     setTimeout(() => {
       dispatch(getPlatformCategoryAction());
@@ -49,38 +50,38 @@ export default function BrandProfile() {
   }, []);
 
   useEffect(() => {
-    if (brandProfileDetails && brandProfileDetails.company_name) {
+    if (brandProfileDetails.brand_profile && brandProfileDetails.brand_profile.company_name) {
       initialState(brandProfileDetails);
     }
   }, [brandProfileDetails]);
 
   const initialState = async (brandData) => {
-    if (brandData && brandData.company_name) {
+    if (brandData.brand_profile && brandData.brand_profile.company_name) {
       let categoryArray = [];
       let valuesArray = [];
       if (
-        brandData.brand_profile.brand_categories &&
-        brandData.brand_profile.brand_categories.length
+        brandData.brand_categories &&
+        brandData.brand_categories.length
       ) {
-        await map(brandData.brand_profile.brand_categories, (cat, key) => {
-          categoryArray.push(JSON.parse(cat.category_id));
+        await map(brandData.brand_categories, (cat, key) => {
+          categoryArray.push(cat.id);
         });
       }
       if (
-        brandData.brand_profile.brand_values &&
-        brandData.brand_profile.brand_values.length
+        brandData.brand_values &&
+        brandData.brand_values.length
       ) {
-        await map(brandData.brand_profile.brand_values, (cat, key) => {
-          valuesArray.push(JSON.parse(cat.value_id));
+        await map(brandData.brand_values, (cat, key) => {
+          valuesArray.push(cat.id);
         });
       }
-
+      setImage(brandData.brand_profile.store_logo || Brandlogo);
       reset({
         brand_values: valuesArray,
         brand_categories: categoryArray,
-        company_name: brandData.company_name,
-        company_email_address: brandData.company_email_addres,
-        company_phone_number: brandData.company_phone_number,
+        company_name: brandData.brand_profile.company_name,
+        company_email_address: brandData.brand_profile.company_email_address,
+        company_phone_number: brandData.brand_profile.company_phone_number,
         store_name: brandData.brand_profile.store_name,
         store_website: brandData.brand_profile.store_website,
         brand_story: brandData.brand_profile.brand_story,
@@ -114,6 +115,19 @@ export default function BrandProfile() {
     }
   };
 
+  const onChangeImage = (e) => {
+    if (!profileLoading) {
+      setProfileLoading(true);
+      const data = new FormData();
+      data.append('file', e.target.files[0]);
+      dispatch(uploadImageAction(data).then((res) => {
+        setImage(res.url);
+      }).finally(() => {
+        setProfileLoading(false);
+      }));
+    }
+  };
+
   const onSubmit = (data) => {
     dispatch(
       updateBrandProfileAction(
@@ -121,9 +135,10 @@ export default function BrandProfile() {
           user_id: useDetails.id,
           role_id: 1,
           store_logo: image,
+          profile_picture: image,
           ...data,
         },
-        isEmpty(brandProfileDetails.company_name)
+        isEmpty(brandProfileDetails.brand_profile ? brandProfileDetails.brand_profile.company_name : '')
       )
     );
     // reset();
@@ -226,9 +241,7 @@ export default function BrandProfile() {
                               className="d-none"
                               id=""
                               type="file"
-                              onChange={(e) =>
-                                setImage(URL.createObjectURL(e.target.files[0]))
-                              }
+                              onChange={onChangeImage}
                             />
                             <img src={EditIcon} className="icon" />
                             <div className="profile-user-avtar">
@@ -242,7 +255,11 @@ export default function BrandProfile() {
                           <a
                             href="#"
                             className="remove-logo"
-                            onClick={() => setImage(Brandlogo)}
+                            onClick={() => {
+                              if (!profileLoading) {
+                                setImage(Brandlogo)
+                              }
+                            }}
                           >
                             Remove logo{' '}
                           </a>
