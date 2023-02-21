@@ -30,8 +30,6 @@ export default function Summary({
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
     formState: { errors },
   } = useForm({ resolver: yupResolver(SummaryValidationSchema) });
 

@@ -44,6 +44,7 @@ const UserInfo = lazy(() => import('./pages/Onboarding/UserInfo'));
 // Brand Portal Pages
 const BrandSettingPage = lazy(() => import('./pages/Brand/Settings'));
 const BrandOrdersPage = lazy(() => import('./pages/Brand/Orders'));
+const BrandProductsPage = lazy(() => import('./pages/Brand/Products'));
 
 //Retailer Portal Pages
 const RetailerSettingPage = lazy(() => import('./pages/Retailer/Settings'));
@@ -55,17 +56,17 @@ function App() {
 
   useEffect(() => {
     const pathname = window.location.pathname;
-    if (isLogged) {
-      if (pathname == '/sign-up' || pathname == '/') {
-        history.replace('/brand-onboarding');
-        navigate('/brand-onboarding');
-      }
-    } else {
-      if (pathname !== '/sign-up') {
-        history.replace('/');
-        navigate('/');
-      }
-    }
+    // if (isLogged) {
+    //   if (pathname == '/sign-up' || pathname == '/') {
+    //     history.replace('/brand-onboarding');
+    //     navigate('/brand-onboarding');
+    //   }
+    // } else {
+    //   if (pathname !== '/sign-up') {
+    //     history.replace('/');
+    //     navigate('/');
+    //   }
+    // }
   }, []);
 
   return (
@@ -112,6 +113,7 @@ function App() {
             element={<BrandSettingPage />}
           />
           <Route path="/brand/orders" element={<BrandOrdersPage />} />
+          <Route path="/brand/products" element={<BrandProductsPage />} />
           {/* Brand Portal Routes::: end */}
 
           {/* Retailer Portal Routes:::start */}

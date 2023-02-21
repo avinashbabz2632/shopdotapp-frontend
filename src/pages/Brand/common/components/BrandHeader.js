@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { NavLink, Outlet } from 'react-router-dom';
 import Logo from '../../../../assets/images/icons/logo.svg';
 import SearchClear from '../../images/icons/icon-search.svg';
-import { Outlet } from 'react-router-dom';
 import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import IconMarket from '../../images/icons/icon-retailers.svg';
 import IconMail from '../../images/icons/icon-mail.svg';
 import IconNotification from '../../images/icons/icon-notification.svg';
 
-export default function BrandHeader({ callback }) {
+export default function BrandHeader() {
+  const [tab, setTab] = useState(1);
+
   return (
     <>
       <header className="header mp-header">
-        <div className="header_block header_block-top mp-header_block-top">
+        <div
+          className="header_block header_block-top mp-header_block-top"
+          style={{ width: '100%' }}
+        >
           <div className="header_container">
             <div className="header_logo">
               <a href="#" className="logo">
@@ -30,20 +35,34 @@ export default function BrandHeader({ callback }) {
               </div>
               <ul className="header_menu menu">
                 <li className="menu_item">
-                  <a href="#" className="menu_link">
+                  <NavLink
+                    className={(navData) =>
+                      navData.isActive ? 'active menu_link' : 'link menu_link'
+                    }
+                    to="/dashboard"
+                  >
                     Dashboard
-                  </a>
+                  </NavLink>
                 </li>
                 <li className="menu_item">
-                  <a href="#" className="menu_link">
+                  <NavLink
+                    className={(navData) =>
+                      navData.isActive ? 'active menu_link' : 'link menu_link'
+                    }
+                    to="/brand/products"
+                  >
                     Products
-                  </a>
+                  </NavLink>
                 </li>
                 <li className="menu_item">
                   <div className="dropdown">
                     <div className="dropdown_header" style={{ width: '110px' }}>
                       <div className="dropdown_header-chevron">
-                        <a href="#" className="menu_link">
+                        <a
+                          href="#"
+                          className={`menu_link ${tab === 3 && 'active'}`}
+                          onClick={() => setTab(3)}
+                        >
                           Retailers
                           <div className="dropdown_header-chevron">
                             <span className="icon">
@@ -68,9 +87,14 @@ export default function BrandHeader({ callback }) {
                   </div>
                 </li>
                 <li className="menu_item">
-                  <a href="#" className="menu_link">
+                  <NavLink
+                    className={(navData) =>
+                      navData.isActive ? 'active menu_link' : 'link menu_link'
+                    }
+                    to="/brand/orders"
+                  >
                     Orders
-                  </a>
+                  </NavLink>
                 </li>
               </ul>
             </div>
@@ -117,11 +141,7 @@ export default function BrandHeader({ callback }) {
                         <li>
                           <a href="#">Help Center</a>
                         </li>
-                        <li
-                          onClick={() => {
-                            callback('signout');
-                          }}
-                        >
+                        <li>
                           <a href="#">Sign out</a>
                         </li>
                       </ul>

@@ -27,6 +27,9 @@ export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 
+// Product
+export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
+
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;
 export const VALUES = `${BASE_URL}/platform/values`;

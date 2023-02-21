@@ -591,17 +591,20 @@ input[type='submit'] {
     background-color: #56ccf2;
 }
 
-.checkbox--no-decor input:checked ~ .checkbox-text {
+.checkbox--no-decor input:checked ~ .checkbox-text,
+.checkbox--no-decor input[checked] ~ .checkbox-text {
     border-color: var(--color-navy);
     background: var(--color-navy);
     color: var(--color-white);
 }
 
-.checkbox--no-decor input:checked ~ .checkbox-text strong {
+.checkbox--no-decor input:checked ~ .checkbox-text strong,
+.checkbox--no-decor input[checked] ~ .checkbox-text strong {
     color: inherit;
 }
 
-.checkbox--no-decor input:checked ~ .checkbox-text:after {
+.checkbox--no-decor input:checked ~ .checkbox-text:after,
+.checkbox--no-decor input[checked] ~ .checkbox-text:after {
     opacity: 1;
     visibility: visible;
 }
@@ -2432,7 +2435,7 @@ input[type='submit'] {
 }
 
 .popup-invite .popup_content {
-    max-width: 1000px;
+    max-width: 800px;
 }
 
 .popup-invite div.popup-close {
@@ -3220,6 +3223,9 @@ input[type='submit'] {
     display: flex;
     flex-wrap: wrap;
     gap: 0.8rem;
+}
+
+.products_active-filters .products_active-filter {
     margin-bottom: 1.6rem;
 }
 
@@ -3240,6 +3246,7 @@ input[type='submit'] {
 
 .products_active-filters button.products_active-remove-all {
     background: transparent;
+    margin-bottom: 1.6rem;
 }
 
 .products_active-filters button.products_active-remove-all:hover {
@@ -5131,6 +5138,9 @@ input[type='submit'] {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
+    border: 0.5px solid #ebebeb;
+    border-radius: 0.2rem;
+    overflow: hidden;
 }
 
 .video-button {
@@ -7812,7 +7822,6 @@ input[type='range']:active::-webkit-slider-thumb {
     width: 100%;
     overflow: auto;
     border: 0.1rem solid var(--color-grey-5);
-    border-right: 0;
 }
 
 .bottom-notify.data-syncing .sync-data {
@@ -14145,7 +14154,8 @@ html,
 }
 
 .ph_actions .form-input .form-label {
-    width: 320px;
+    white-space: nowrap;
+    margin-right: 15px;
 }
 
 .ph_actions .select-white-bg {
@@ -14154,10 +14164,13 @@ html,
 
 .ph_actions {
     margin-left: auto;
+    display: flex;
+    gap: 3rem;
 }
 
 .ph_actions .form-input select {
     height: 3.2rem;
+    min-width: 190px;
 }
 
 .table tbody .actionSvg .icon {
@@ -14186,4 +14199,200 @@ html,
 .mp-content .payout-table thead {
     background: #283b49;
     color: #ffffff;
+}
+
+/*PopUp Invite*/
+.form_brands input {
+    height: 4rem;
+    padding: 1rem 1.2rem;
+    background: var(--color-orange-tint-1);
+    border: 0.1rem solid var(--color-orange-tint-6);
+    border-radius: 0.4rem;
+    width: 100%;
+}
+
+.popup-invite div.popup-close {
+    right: 3rem;
+    top: 2.5rem;
+}
+
+.popup-invite h3 {
+    color: #333333;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 25px;
+}
+
+.copyLinkArea {
+    padding: 16px;
+    width: 100%;
+    min-height: 72px;
+    background: #f9f9f9;
+    border: 1px solid #d6d6d6;
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.popup-invite .popup_content {
+    min-width: 800px;
+}
+
+.copyLinkArea .button {
+    width: 100%;
+    font-size: 1.6rem;
+    height: 40px;
+    max-width: 120px;
+}
+
+.copyLinkArea input {
+    border: 1px solid #b3b2b5;
+    border-radius: 4px;
+}
+
+.emailTemplateArea h4 {
+    font-weight: 700;
+    width: 100%;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 16px;
+}
+
+.emailTemplateArea {
+    margin-top: 24px;
+}
+
+.emailText {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px 4px 4px 8px;
+    background: #ffffff;
+    padding: 16px;
+    overflow: auto;
+    height: 280px;
+    margin-bottom: 16px;
+}
+
+.emailText h5 {
+    color: #354253;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 8px;
+    margin-top: 14px;
+}
+
+.emailTextItem {
+    overflow: auto;
+}
+
+.emailText::-webkit-scrollbar-track {
+    background-color: var(--color-white);
+    border-radius: 0.4rem;
+    border: 1px solid #dfdfe0;
+    border-right: none;
+}
+
+.emailText::-webkit-scrollbar-thumb {
+    border-radius: 0.4rem;
+    background: #7d7d7d;
+}
+
+.action .button {
+    width: 120px;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.form_brands > * {
+    background-color: var(--color-white);
+    min-height: 100%;
+    padding: 2.4rem;
+    border-radius: 0.8rem;
+    margin-bottom: 0.8rem;
+    width: 100%;
+}
+
+.ph_subtitle {
+    font-weight: 400;
+    color: #283b49;
+    font-size: 14px;
+    line-height: 24px;
+    display: block;
+}
+
+.product-tag .tab-list .tag-lbl .checkbox-text:before {
+    content: '';
+    left: auto;
+    right: 5px;
+    width: 10px;
+    height: 10px;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 8px;
+    background-image: url(../images/icons/icon-close.svg);
+    background-size: 80%;
+}
+
+.product-tag .tab-list .tag-lbl .checkbox-text {
+    padding: 0.3rem 2.2rem 0.2rem 1.2rem;
+    margin-bottom: 0;
+}
+
+.product-item-right
+    .product-tag
+    .tab-list
+    .checkbox
+    label.tag-lbl
+    .checkbox-text:hover {
+    color: #fff;
+}
+
+.product-item-right .product-tag .tab-list .checkbox {
+    margin-bottom: 0.5rem;
+}
+
+.product-actions .button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    background: var(--btn-background);
+    padding: var(--btn-padding);
+    height: var(--btn-height);
+    border-radius: var(--btn-radius);
+    border: 0.2rem solid var(--btn-background);
+    font-size: var(--btn-font-size);
+    font-family: var(--btn-font-family);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--btn-color);
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    gap: 1rem;
+}
+
+.product-actions .button:hover {
+    background: transparent;
+    border-color: var(--btn-background);
+    color: var(--btn-background);
+}
+
+.btn-tooitip ~ .active-btn-tooitip {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.btn-tooitip:hover ~ .active-btn-tooitip {
+    visibility: visible;
+    opacity: 1;
+    left: 189px;
+    right: auto;
+    top: 35px;
+}
+
+.fs-14 {
+    font-size: 1.4rem;
 }
