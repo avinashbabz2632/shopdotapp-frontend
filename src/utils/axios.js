@@ -9,7 +9,6 @@ axios.interceptors.request.use(
     //   axios.defaults.baseURL = BASE_URL;
     //   config.baseURL = BASE_URL;
     // }
-
     if (!config.headers.Authorization) {
       const token = await localStorage.getItem('accessToken');
 
@@ -41,7 +40,7 @@ axios.interceptors.response.use(async (response) => {
     try {
       await localStorage.setItem('accessToken', token);
       await localStorage.setItem('refreshToken', refreshToken);
-    } catch (error) {}
+    } catch (error) { }
   }
   return response;
 });
