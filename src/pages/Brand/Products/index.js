@@ -6,17 +6,40 @@ import BrandHeader from '../common/components/BrandHeader';
 import ProductsFilters from './ProductsFilter';
 import ProductTable from './ProductTable';
 import iconClose from '../../../assets/images/icons/info-blue.svg';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getProductListAction } from '../../../actions/productActions';
+import { selectProduct } from '../../../redux/Brand/Products/productSelectors';
 
 export default function ProductsList() {
   const dispatch = useDispatch();
   const [actionDes, setActionDes] = useState('');
   const [toasterVisible, setToasterVisible] = useState(false);
+  const brandProduct = useSelector(selectProduct);
 
   useEffect(() => {
-    dispatch(getProductListAction());
-  }, []);
+    dispatch(getProductListAction({
+      paging: {
+        limit: brandProduct.pagination.limit,
+        offset: brandProduct.pagination.page - 1,
+      },
+      sort: [['shopify_product_id', 'DESC']],
+      query: {
+        category_id: 48,
+      },
+      filter: [
+        {
+          field: 'status',
+          operator: 'eq',
+          value: brandProduct.filter.status,
+        },
+        {
+          field: 'inventory_quantity',
+          operator: 'lte',
+          value: '7',
+        },
+      ],
+    }));
+  }, [brandProduct.pagination, brandProduct.filter]);
 
   const handleAction = (type, howMuch) => {
     if (type == 'active') {

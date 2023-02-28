@@ -31,6 +31,7 @@ export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
+export const PRODUCT_CATEGORIES = (id) => `${BASE_URL}/brand/product/category/${id}`;
 
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;
