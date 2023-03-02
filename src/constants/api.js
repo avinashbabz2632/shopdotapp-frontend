@@ -28,6 +28,7 @@ export const PAYMENT_CUSTOMER = `${BASE_URL}/payment/customer`;
 export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
+export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
