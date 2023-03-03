@@ -21,6 +21,7 @@ export default function OnboardListUI({
   guideLink,
   handleStore,
   shopifyConnected,
+  btnCallback,
 }) {
   return (
     <div
@@ -44,7 +45,9 @@ export default function OnboardListUI({
           {text2}
         </span>
         {btnText ? (
-          <button className="button button-blue">{btnText}</button>
+          <button onClick={btnCallback} className="button button-blue">
+            {btnText}
+          </button>
         ) : (
           <div />
         )}

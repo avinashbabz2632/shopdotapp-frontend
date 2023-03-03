@@ -7,6 +7,8 @@ import '../../Brand/Style/brand.media.scss';
 import BrandHeader from '../../../components/Header/BrandHeader';
 import OnboardListUI from './UI/OnboardListUI';
 import { map } from 'lodash';
+import { useSelector } from 'react-redux';
+import { selectUserDetails } from '../../../redux/user/userSelector';
 
 const list = [
   {
@@ -37,11 +39,13 @@ const list = [
 ];
 
 export default function BrandOnBoarding() {
+  const useDetails = useSelector(selectUserDetails);
   const [storeName, setStoreName] = useState('');
   const [isStoreNameValid, setIsStoreNameValid] = useState(false);
 
   const [brandStep, setBrandStep] = useState([1]);
   const [activeStep, setActiveStep] = useState(2);
+  const [productId, setProductId] = useState('8019618038038');
 
   const handleSetStoreName = (e) => {
     const fixedSuffix = ['myshopify', 'com'];
@@ -52,6 +56,10 @@ export default function BrandOnBoarding() {
     console.log(e.target.value, 'e.target.value', isValid);
     setIsStoreNameValid(isValid);
     setStoreName(e.target.value);
+  };
+
+  const doSyncProduct = () => {
+    dispatch(syncProductAction(productId, useDetails.id));
   };
 
   return (
@@ -82,6 +90,7 @@ export default function BrandOnBoarding() {
                             curentKey == 2 && brandStep.includes(2)
                           }
                           storeName={storeName}
+                          btnCallback={doSyncProduct}
                         />
                       );
                     })}

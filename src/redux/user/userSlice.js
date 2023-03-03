@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   userDetails: null,
-  personalizeLoading: false
+  personalizeLoading: false,
+  roleUpdated: false,
 };
 
 const userSlice = createSlice({
@@ -12,19 +13,30 @@ const userSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userDetails = action.payload;
     },
+    setRoleUpdated: (state, action) => {
+      state.roleUpdated = true;
+    },
     clearUserReducer: (state, action) => {
       state.userDetails = null;
     },
+    clearUpdateReducer: (state, action) => {
+      state.roleUpdated = false;
+    },
     setPersonalizeLoading: () => {
       state.personalizeLoading = action.payload;
-    }
+    },
   },
 });
 
 /**
  * Actions
  */
-export const { setUserInfo, clearUserReducer, setPersonalizeLoading } = userSlice.actions;
+export const {
+  setUserInfo,
+  clearUserReducer,
+  setPersonalizeLoading,
+  clearUpdateReducer,
+} = userSlice.actions;
 
 /**
  * Reducers

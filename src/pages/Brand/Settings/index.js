@@ -74,7 +74,7 @@ export default function BrandSettingPage() {
     <div className="wrapper">
       <BrandHeader
         callback={(callbackType) => {
-          if (callbackType === 'signout') {
+          if (callbackType === 'logout') {
             dispatch(signOutAction());
             history.replace('/');
           }

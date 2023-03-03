@@ -7,7 +7,7 @@ import IconMarket from '../../images/icons/icon-retailers.svg';
 import IconMail from '../../images/icons/icon-mail.svg';
 import IconNotification from '../../images/icons/icon-notification.svg';
 
-export default function BrandHeader() {
+export default function BrandHeader({ callback }) {
   const [tab, setTab] = useState(1);
 
   return (
@@ -141,7 +141,11 @@ export default function BrandHeader() {
                         <li>
                           <a href="#">Help Center</a>
                         </li>
-                        <li>
+                        <li
+                          onClick={() => {
+                            callback('logout');
+                          }}
+                        >
                           <a href="#">Sign out</a>
                         </li>
                       </ul>
