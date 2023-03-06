@@ -4,7 +4,7 @@ import {
   setProductFilter,
   resetToInitial,
 } from '../../../../redux/Brand/Products/productSlice';
-import { getProductCategories } from '../../../../actions/productActions';
+import { getProductCategories, getProductTags } from '../../../../actions/productActions';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectProductFilter,
@@ -29,6 +29,7 @@ export default function ProductsFilters() {
 
   useEffect(() => {
     dispatch(getProductCategories());
+    dispatch(getProductTags());
     setProductTagOption(productTags);
     setStockOption(stockOptions);
   }, []);

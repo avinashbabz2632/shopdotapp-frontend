@@ -18,7 +18,7 @@ const initialState = {
     page: 1
   },
   filter: {
-    status: productStatus.all
+    status: productStatus.active
   }
 };
 
@@ -64,6 +64,9 @@ const orderSlice = createSlice({
     },
     setProductStatus: (state, action) => {
       state.filter.status = action.payload;
+    },
+    setProductTags: (state, action) => {
+      state.productTagOptions = action.payload;
     }
   },
 });
@@ -82,7 +85,8 @@ export const {
   setProductCategory,
   setPaginationLimit,
   setPaginationPage,
-  setProductStatus
+  setProductStatus,
+  setProductTags
 } = orderSlice.actions;
 
 /**

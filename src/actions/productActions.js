@@ -1,9 +1,7 @@
 import axios from '../utils/axios';
 import __ from 'lodash';
 import * as API_END_POINT from '../constants/api';
-import { setLoggedIn } from '../redux/auth/authSlice';
-import { setUserInfo } from '../redux/user/userSlice';
-import { setProductList, setProductCategory } from '../redux/Brand/Products/productSlice';
+import { setProductList, setProductCategory, setProductTags } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
 export function getProductListAction(formData) {
@@ -56,6 +54,27 @@ export function getProductCategories() {
         // console.log(response.data.data);
         const values = response.data.data.map(item => item.name);
         dispatch(setProductCategory(values));
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getProductTags() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(API_END_POINT.PRODUCT_TAGS);
+      if (response && response.data && response.data.code == 200) {
+        console.log(response.data.data);
+        const values = response.data.data.map(item => item.name);
+        dispatch(setProductTags(values));
       } else {
         toast.error('Something went worng');
       }
