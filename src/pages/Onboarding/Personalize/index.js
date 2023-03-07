@@ -16,7 +16,7 @@ import {
   selectRoleUpdated,
   selectUserDetails,
 } from '../../../redux/user/userSelector';
-import { clearUpdateReducer } from '../../../redux/user/userSlice';
+import { isEmpty } from 'lodash';
 
 export default function Personalize() {
   const [supplier, setSupplier] = useState(0);
@@ -27,17 +27,6 @@ export default function Personalize() {
   const dispatch = useDispatch();
   const userDetails = useSelector(selectUserDetails);
   const roleUpdated = useSelector(selectRoleUpdated);
-
-  useEffect(() => {
-    if (roleUpdated) {
-      if (platform === 1) {
-        handlePlatform();
-      } else if (platform === 2) {
-        navigate('/brand-onboarding');
-      }
-      dispatch(clearUpdateReducer());
-    }
-  }, [roleUpdated]);
 
   //Here 1 for BRAND SUPPLIER and 2 for OTHERS
   const selectSupplier = (supplier) => {
@@ -62,34 +51,26 @@ export default function Personalize() {
     setPlatform(1);
   };
 
-  const handlePlatform = () => {
-    dispatch(
-      addUserPlatformAction({
-        user_id: userDetails.id,
-        platform: platform === 1 ? 'shopify' : platformName,
-      })
-    );
-  };
-
   const handleGoSupport = async () => {
-    setLoading(true);
-    if (supplier === 1) {
-      dispatch(
-        updateUserRoleAction({
-          user_id: userDetails.id,
-          role: 'brand',
-        })
-      );
-    } else if (supplier === 2) {
-      dispatch(
-        updateUserRoleAction({
-          user_id: userDetails.id,
-          role: 'retailer',
-        })
-      );
-    }
-    navigate('/brand-onboarding');
-    // navigate('/personalized-not-supported', { state: platformName });
+    // setLoading(true);
+    dispatch(
+      roleUpdated
+        ? addUserPlatformAction(
+            {
+              user_id: userDetails.id,
+              platform: platform === 1 ? 'shopify' : platformName,
+            },
+            navigate
+          )
+        : updateUserRoleAction(
+            {
+              user_id: userDetails.id,
+              role: supplier === 1 ? 'brand' : 'retailer',
+            },
+            navigate,
+            !isEmpty(platformName) ? platformName : 'shopify'
+          )
+    );
   };
 
   const handleChangeInput = (e) => {

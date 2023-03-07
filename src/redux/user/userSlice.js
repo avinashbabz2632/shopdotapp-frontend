@@ -19,9 +19,6 @@ const userSlice = createSlice({
     clearUserReducer: (state, action) => {
       state.userDetails = null;
     },
-    clearUpdateReducer: (state, action) => {
-      state.roleUpdated = false;
-    },
     setPersonalizeLoading: () => {
       state.personalizeLoading = action.payload;
     },
@@ -33,6 +30,7 @@ const userSlice = createSlice({
  */
 export const {
   setUserInfo,
+  setRoleUpdated,
   clearUserReducer,
   setPersonalizeLoading,
   clearUpdateReducer,

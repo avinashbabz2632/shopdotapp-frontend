@@ -31,6 +31,9 @@ export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 
+// Retailer
+export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
+
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
 
