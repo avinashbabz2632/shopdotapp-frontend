@@ -38,8 +38,8 @@ export default function BrandSettingPage() {
       setTab('preference');
     } else if (activeTab == 'paid') {
       setTab('paid');
-    } else if (activeTab == 'Notification') {
-      setTab('Notification');
+    } else if (activeTab == 'notification') {
+      setTab('notification');
     } else if (activeTab == 'users') {
       setTab('users');
     } else if (activeTab == 'integration') {
@@ -61,7 +61,7 @@ export default function BrandSettingPage() {
         return <BrandPreference />;
       case 'paid':
         return <BrandPaid />;
-      case 'Notification':
+      case 'notification':
         return <BrandNotification />;
       case 'users':
         return <BrandUsers />;
@@ -74,7 +74,7 @@ export default function BrandSettingPage() {
     <div className="wrapper">
       <BrandHeader
         callback={(callbackType) => {
-          if (callbackType === 'signout') {
+          if (callbackType === 'logout') {
             dispatch(signOutAction());
             history.replace('/');
           }

@@ -1,4 +1,5 @@
 const BASE_URL = `https://dev.backend.shopdotapp.com/api/v1`;
+// const BASE_URL = `http://127.0.0.1:3002/api/v1`;
 
 // Auth
 export const REGISTER = `${BASE_URL}/auth/signup/`;
@@ -28,6 +29,10 @@ export const PAYMENT_CUSTOMER = `${BASE_URL}/payment/customer`;
 export const UPDATE_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
+export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
+
+// Retailer
+export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;

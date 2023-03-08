@@ -125,14 +125,14 @@ export default function BrandSidebar() {
                     Security
                   </LinkMod>
                   <LinkMod
-                    to={'/brand/setting/Notification'}
+                    to={'/brand/setting/notification'}
                     data-link="AlertsNotifications"
                     className={`tab-links ${
-                      tab === 'Notification' ? 'active' : ''
+                      tab === 'notification' ? 'active' : ''
                     }`}
-                    onClick={() => handleChangTab('Notification')}
+                    onClick={() => handleChangTab('notification')}
                   >
-                    Alerts and Notifications
+                    Notifications
                   </LinkMod>
                 </div>
               </div>

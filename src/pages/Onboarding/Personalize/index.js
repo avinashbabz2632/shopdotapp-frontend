@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import OnboardingLayout from '../../../layout/OnboardingLayout';
 import Input from '../../../components/common/Input/divStyled';
@@ -12,7 +12,11 @@ import {
   updateUserRoleAction,
   addUserPlatformAction,
 } from '../../../actions/userActions';
-import { selectUserDetails } from '../../../redux/user/userSelector';
+import {
+  selectRoleUpdated,
+  selectUserDetails,
+} from '../../../redux/user/userSelector';
+import { isEmpty } from 'lodash';
 
 export default function Personalize() {
   const [supplier, setSupplier] = useState(0);
@@ -22,6 +26,7 @@ export default function Personalize() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userDetails = useSelector(selectUserDetails);
+  const roleUpdated = useSelector(selectRoleUpdated);
 
   //Here 1 for BRAND SUPPLIER and 2 for OTHERS
   const selectSupplier = (supplier) => {
@@ -46,45 +51,26 @@ export default function Personalize() {
     setPlatform(1);
   };
 
-  const updateUserRole = createAsyncThunk(
-    'updateUserRole',
-    updateUserRoleAction
-  );
-  const addUserPlatform = createAsyncThunk(
-    'addUserProfile',
-    addUserPlatformAction
-  );
-
   const handleGoSupport = async () => {
-    try {
-      setLoading(true);
-      if (supplier === 1) {
-        await dispatch(
-          updateUserRole({
-            user_id: userDetails.id,
-            role: 'brand',
-          })
-        ).unwrap();
-        await dispatch(
-          addUserPlatform({
-            user_id: userDetails.id,
-            platform: platform === 1 ? 'shopify' : platformName,
-          })
-        ).unwrap();
-      } else if (supplier === 2) {
-        await dispatch(
-          updateUserRole({
-            user_id: userDetails.id,
-            role: 'retailer',
-          })
-        ).unwrap();
-      }
-      navigate('/brand-onboarding');
-    } catch (err) {
-      navigate('/personalized-not-supported', { state: platformName });
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    dispatch(
+      roleUpdated
+        ? addUserPlatformAction(
+            {
+              user_id: userDetails.id,
+              platform: platform === 1 ? 'shopify' : platformName,
+            },
+            navigate
+          )
+        : updateUserRoleAction(
+            {
+              user_id: userDetails.id,
+              role: supplier === 1 ? 'brand' : 'retailer',
+            },
+            navigate,
+            !isEmpty(platformName) ? platformName : 'shopify'
+          )
+    );
   };
 
   const handleChangeInput = (e) => {
