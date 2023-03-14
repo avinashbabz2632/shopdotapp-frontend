@@ -17,7 +17,7 @@ export default function ProductsList() {
   const brandProduct = useSelector(selectProduct);
 
   useEffect(() => {
-    dispatch(getProductListAction({
+    const payload = {
       paging: {
         limit: brandProduct.pagination.limit,
         offset: brandProduct.pagination.page - 1,
@@ -26,19 +26,16 @@ export default function ProductsList() {
       query: {
         category_id: 48,
       },
-      filter: [
-        {
-          field: 'status',
-          operator: 'eq',
-          value: brandProduct.filter.status,
-        },
-        {
-          field: 'inventory_quantity',
-          operator: 'lte',
-          value: '7',
-        },
-      ],
-    }));
+      filter: [],
+    };
+    if (brandProduct.filter.status && brandProduct.filter.status !== 'all') {
+      payload.filter.push({
+        field: 'status',
+        operator: 'eq',
+        value: brandProduct.filter.status,
+      });
+    }
+    dispatch(getProductListAction(payload));
   }, [brandProduct.pagination, brandProduct.filter]);
 
   const handleAction = (type, howMuch) => {

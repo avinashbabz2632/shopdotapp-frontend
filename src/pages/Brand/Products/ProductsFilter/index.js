@@ -23,9 +23,9 @@ export default function ProductsFilters() {
   const [productTagOption, setProductTagOption] = useState([]);
   const [stockOption, setStockOption] = useState([]);
   const [productsFilter, setProductsFilter] = useState(productFilterValue);
-  const [productCatFilterVal, setProductCatFilterVal] = useState('');
-  const [productTagFilterVal, setProductTagFilterVal] = useState('');
-  const [stockFilterVal, setStockFilterVal] = useState('');
+  const [productCatFilterVal, setProductCatFilterVal] = useState([]);
+  const [productTagFilterVal, setProductTagFilterVal] = useState([]);
+  const [stockFilterVal, setStockFilterVal] = useState([]);
 
   useEffect(() => {
     dispatch(getProductCategories());

@@ -8,6 +8,7 @@ const initialState = {
     stockFilter: [],
     statusViseFilter: [],
   },
+  loading: false,
   productCatOptions: [],
   productTagOptions: ['Chips', 'Summer', 'Summer Activities', 'Summer Toys'],
   stockOptions: ['< 10 units', '11-50 units', '> 50 units'],
@@ -18,7 +19,7 @@ const initialState = {
     page: 1
   },
   filter: {
-    status: productStatus.active
+    status: productStatus.all
   }
 };
 
@@ -67,7 +68,10 @@ const orderSlice = createSlice({
     },
     setProductTags: (state, action) => {
       state.productTagOptions = action.payload;
-    }
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
 });
 
@@ -86,7 +90,8 @@ export const {
   setPaginationLimit,
   setPaginationPage,
   setProductStatus,
-  setProductTags
+  setProductTags,
+  setLoading
 } = orderSlice.actions;
 
 /**

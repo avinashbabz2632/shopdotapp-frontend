@@ -26,7 +26,7 @@ import {
   setPaginationPage,
   setProductStatus
 } from '../../../../redux/Brand/Products/productSlice';
-import { filter, isEmpty } from 'lodash';
+import { filter, fromPairs, isEmpty } from 'lodash';
 import PopupModal from '../Popupmodal';
 import CategoryTagPopupModal from '../CategoryTagPopup';
 import RetailerPopup from '../RetailerPopup';
@@ -34,6 +34,7 @@ import stockRedAlert from '../../../../assets/images/icons/red-warning.svg';
 import stockYellowAlert from '../../../../assets/images/icons/yellow-warning.svg';
 import convertNumberToArray from '../../../../utils/convertNumberToArray';
 import { productStatus } from '../../../../constants/constants';
+import { uploadProductList } from '../../../../actions/productActions';
 
 export default function ProductTable(props) {
   const dispatch = useDispatch();
@@ -202,8 +203,16 @@ export default function ProductTable(props) {
     if (e === 'replace') {
       setUploadFile('');
     } else {
-      const file = e.target.file;
+      const file = e.target.files[0];
       setUploadFile(file);
+    }
+  };
+
+  const handleConfirmUpload = () => {
+    if (uploadFile) {
+      const formData = new FormData();
+      formData.append('file', uploadFile);
+      dispatch(uploadProductList(formData));
     }
   };
 
@@ -348,7 +357,7 @@ export default function ProductTable(props) {
                       Click Confirm to update product
                       details.
                     </label>
-                    <button className="button large">
+                    <button className="button large" onClick={handleConfirmUpload}>
                       Confirm
                     </button>
                   </div>
@@ -459,12 +468,13 @@ export default function ProductTable(props) {
               </form>
             </div>
             <div className="action-button-right">
-              <button className="button button-blue small">
+              <button className="button button-blue small" disabled={brandProduct.loading}>
                 Download All Products
               </button>
               <button
                 className="button button-dark-black small upload-file"
                 onClick={() => handalUploadFileModalShow()}
+                disabled={brandProduct.loading}
               >
                 Upload File
               </button>
@@ -476,7 +486,11 @@ export default function ProductTable(props) {
                   ? 'active'
                   : ''
                   }`}
-                onClick={() => dispatch(setProductFilter(productStatus.all))}
+                onClick={() => {
+                  if (!brandProduct.loading) {
+                    dispatch(setProductStatus(productStatus.all))
+                  }
+                }}
               >
                 All
               </a>
@@ -487,8 +501,11 @@ export default function ProductTable(props) {
                   ? 'active'
                   : ''
                   }`}
-                onClick={() =>
-                  dispatch(setProductFilter(productStatus.active))
+                onClick={() => {
+                  if (!brandProduct.loading) {
+                    dispatch(setProductStatus(productStatus.active))
+                  }
+                }
                 }
               >
                 Active
@@ -500,8 +517,11 @@ export default function ProductTable(props) {
                   ? 'active'
                   : ''
                   }`}
-                onClick={() =>
-                  dispatch(setProductFilter(productStatus.inActive))
+                onClick={() => {
+                  if (!brandProduct.loading) {
+                    dispatch(setProductStatus(productStatus.inActive))
+                  }
+                }
                 }
               >
                 Inactive
@@ -1118,7 +1138,7 @@ export default function ProductTable(props) {
               <div className="pagination_per">
                 <select name="per" id="per" onChange={(e) => {
                   dispatch(setPaginationLimit(parseInt(e.target.value)));
-                }}>
+                }} disabled={brandProduct.loading}>
                   <option value="20">20</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
@@ -1131,14 +1151,14 @@ export default function ProductTable(props) {
                 <div className="pagination-title">page</div>
                 <select name="per" id="per" onChange={(e) => {
                   dispatch(setPaginationPage(parseInt(e.target.value)));
-                }}>
+                }} disabled={brandProduct.loading}>
                   {convertNumberToArray(1, totalPages, 1).map(item => <option value={item}>{item}</option>)}
                 </select>
                 <div className="pagination-title">of {totalPages}</div>
-                <button className="pagination-arrow pagination-arrow-prev">
+                <button className="pagination-arrow pagination-arrow-prev" disabled={brandProduct.loading}>
                   <img className="icon" src={LeftIcon} />
                 </button>
-                <button className="pagination-arrow pagination-arrow-next">
+                <button className="pagination-arrow pagination-arrow-next" disabled={brandProduct.loading}>
                   <img className="icon" src={RightIcon} />
                 </button>
               </div>

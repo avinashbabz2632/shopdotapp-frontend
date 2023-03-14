@@ -1,12 +1,13 @@
 import axios from '../utils/axios';
 import __ from 'lodash';
 import * as API_END_POINT from '../constants/api';
-import { setProductList, setProductCategory, setProductTags } from '../redux/Brand/Products/productSlice';
+import { setProductList, setProductCategory, setProductTags, setLoading } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
 export function getProductListAction(formData) {
   return async (dispatch) => {
     try {
+      dispatch(setLoading(true));
       const response = await axios.post(API_END_POINT.PRODUCT_LIST, formData);
       if (response && response.data && response.data.code == 200) {
         const values = response.data.data.records.map(item => ({
@@ -42,6 +43,8 @@ export function getProductListAction(formData) {
             ? err.response.data.errors
             : 'Something went worng'
       );
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 }
@@ -49,7 +52,7 @@ export function getProductListAction(formData) {
 export function getProductCategories() {
   return async (dispatch) => {
     try {
-      const response = await axios.get(API_END_POINT.PRODUCT_CATEGORIES(14));
+      const response = await axios.get(API_END_POINT.PRODUCT_CATEGORIES(0));
       if (response && response.data && response.data.code == 200) {
         // console.log(response.data.data);
         const values = response.data.data.map(item => item.name);
@@ -84,6 +87,32 @@ export function getProductTags() {
           ? err.response.data.errors
           : 'Something went worng'
       );
+    }
+  };
+}
+
+export const uploadProductList = (formData) => {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axios.post(API_END_POINT.UPLOAD_PRODUCT, formData, {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      });
+      if (response && response.data && response.data.code == 200) {
+        console.log(response.data);
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 }
