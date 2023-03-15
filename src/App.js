@@ -56,17 +56,17 @@ function App() {
 
   useEffect(() => {
     const pathname = window.location.pathname;
-    // if (isLogged) {
-    //   if (pathname == '/sign-up' || pathname == '/') {
-    //     history.replace('/brand-onboarding');
-    //     navigate('/brand-onboarding');
-    //   }
-    // } else {
-    //   if (pathname !== '/sign-up') {
-    //     history.replace('/');
-    //     navigate('/');
-    //   }
-    // }
+    if (isLogged) {
+      if (pathname == '/sign-up' || pathname == '/') {
+        history.replace('/brand-onboarding');
+        navigate('/brand-onboarding');
+      }
+    } else {
+      if (pathname !== '/sign-up') {
+        history.replace('/');
+        navigate('/');
+      }
+    }
   }, []);
 
   return (

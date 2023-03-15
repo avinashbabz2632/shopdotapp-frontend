@@ -2,7 +2,10 @@ import axios from '../utils/axios';
 import { toast } from 'react-toastify';
 import * as API_END_POINT from '../constants/api';
 import * as types from './actionTypes';
-import { setShippingLoading } from '../redux/Brand/Shipping/shippingSlice';
+import {
+  setBrandShippingData,
+  setShippingLoading,
+} from '../redux/Brand/Shipping/shippingSlice';
 import { onChangePassword } from '../redux/Brand/Security/securitySlice';
 import {
   setBrandCategory,
@@ -246,8 +249,34 @@ export function updateShipping(data) {
   return async (dispatch) => {
     try {
       dispatch(setShippingLoading(true));
-      const response = await axios.post(API_END_POINT.UPDATE_SHIPPING, data);
+      const response = await axios.post(API_END_POINT.BRAND_SHIPPING, data);
       toast.error(response.data.message);
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getBrandShippingAction(brandId) {
+  return async (dispatch) => {
+    const params = {
+      brand_id: brandId,
+    };
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.BRAND_SHIPPING}/${brandId}`
+      );
+      if (response.status == 200) {
+        dispatch(
+          setBrandShippingData({
+            payload: response.data.data,
+          })
+        );
+      }
     } catch (err) {
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
@@ -264,6 +293,25 @@ export function updatePreferences(data) {
       const response = await axios.post(API_END_POINT.PREFERENCES, data);
       if (response.status === 201) {
         toast.success('Preferences Updated');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getPreferencesAction(brandId) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.PREFERENCES}/${brandId}`
+      );
+      if (response.status === 200) {
+        dispatch(setBrandPreferenceData(response.data.data));
       }
     } catch (err) {
       toast.error(

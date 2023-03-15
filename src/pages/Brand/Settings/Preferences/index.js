@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Select from 'react-select';
 import Info from '../../images/icons/info.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { updatePreferences } from '../../../../actions/brandActions';
+import {
+  getPreferencesAction,
+  updatePreferences,
+} from '../../../../actions/brandActions';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { ToastContainer } from 'react-toastify';
 
@@ -85,6 +88,10 @@ export default function BrandPreference() {
   const useDetails = useSelector(selectUserDetails);
   const wholesalePercentage = watch('wholesalePercentage');
   const inventoryPercentage = watch('inventoryPercentage');
+
+  useEffect(() => {
+    dispatch(getPreferencesAction(useDetails.id));
+  }, []);
 
   const onSubmit = (data) => {
     const formData = {

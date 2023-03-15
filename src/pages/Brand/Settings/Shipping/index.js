@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Info from '../../images/icons/info.svg';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,7 +7,11 @@ import { shippingValidationSchema } from '../Paid/ValidationSchema';
 import Select from 'react-select';
 import { shippingPaid } from '../../../../redux/Brand/Shipping/shippingPaidSelector';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
-import { updateShipping } from '../../../../actions/brandActions';
+import {
+  getBrandShippingAction,
+  updateShipping,
+} from '../../../../actions/brandActions';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 
 const stateOption = [
   { value: 'manitoba', label: 'Manitoba' },
@@ -61,21 +65,28 @@ export default function Shipping() {
   const dispatch = useDispatch();
   const shippingDetails = useSelector(shippingPaid);
   const userDetails = useSelector(selectUserDetails);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
+
+  useEffect(() => {
+    dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
+  }, []);
 
   const onSubmit = (data) => {
-    dispatch(updateShipping({
-      "brand_id": 1,
-      "user_id": userDetails.id,
-      "street_address_1": data.address1,
-      "street_address_2": data.address2,
-      "country": data.country,
-      "state": "montana",
-      "city": data.city,
-      "zip": data.zip,
-      "shipping_cost": parseFloat(data.shippingfee),
-      "incremental_fee": parseFloat(data.incrementalfee),
-      "shipping_time_id": 1
-    }));
+    dispatch(
+      updateShipping({
+        brand_id: brandProfileDetails?.brand_profile?.id,
+        user_id: userDetails.id,
+        street_address_1: data.address1,
+        street_address_2: data.address2,
+        country: data.country,
+        state: 'montana',
+        city: data.city,
+        zip: data.zip,
+        shipping_cost: parseFloat(data.shippingfee),
+        incremental_fee: parseFloat(data.incrementalfee),
+        shipping_time_id: 1,
+      })
+    );
     reset();
   };
 
@@ -100,9 +111,7 @@ export default function Shipping() {
                       <div className="form-input mb-4">
                         <label className="form-label">
                           Address 1&nbsp;
-                          <span className="asterisk-red">
-                            *
-                          </span>
+                          <span className="asterisk-red">*</span>
                         </label>
                         <input
                           type="text"
@@ -116,17 +125,12 @@ export default function Shipping() {
                         />
                         {errors.address1 && (
                           <span className="error-text">
-                            {
-                              errors.address1
-                                ?.message
-                            }
+                            {errors.address1?.message}
                           </span>
                         )}
                       </div>
                       <div className="form-input mb-4">
-                        <label className="form-label">
-                          Address 2
-                        </label>
+                        <label className="form-label">Address 2</label>
                         <input
                           type="text"
                           className="form-control "
@@ -140,37 +144,26 @@ export default function Shipping() {
                         <div className="form-input">
                           <label className="form-label">
                             Country &nbsp;
-                            <span className="asterisk-red">
-                              *
-                            </span>
+                            <span className="asterisk-red">*</span>
                           </label>
                           <input
                             type="text"
                             className="form-control mb-0"
                             name="country"
                             placeholder=""
-                            {...register(
-                              'country',
-                              {
-                                required: true,
-                              }
-                            )}
+                            {...register('country', {
+                              required: true,
+                            })}
                           />
                           {errors.country && (
                             <span className="error-text">
-                              {
-                                errors.country
-                                  ?.message
-                              }
+                              {errors.country?.message}
                             </span>
                           )}
                         </div>
                         <div className="form-input">
                           <label className="form-label">
-                            State{' '}
-                            <span className="asterisk-red">
-                              *
-                            </span>
+                            State <span className="asterisk-red">*</span>
                           </label>
                           <Controller
                             name="statelist"
@@ -180,29 +173,19 @@ export default function Shipping() {
                                 {...field}
                                 className="basic-single"
                                 classNamePrefix="select"
-                                styles={
-                                  categoryStyle
-                                }
+                                styles={categoryStyle}
                                 components={{
-                                  IndicatorSeparator:
-                                    () =>
-                                      null,
+                                  IndicatorSeparator: () => null,
                                 }}
-                                theme={(
-                                  theme
-                                ) => ({
+                                theme={(theme) => ({
                                   ...theme,
                                   colors: {
                                     ...theme.colors,
-                                    primary25:
-                                      '#fbf5f0',
-                                    primary:
-                                      '#bd6f34',
+                                    primary25: '#fbf5f0',
+                                    primary: '#bd6f34',
                                   },
                                 })}
-                                options={
-                                  stateOption
-                                }
+                                options={stateOption}
                               />
                             )}
                           />
@@ -212,9 +195,7 @@ export default function Shipping() {
                         <div className="form-input">
                           <label className="form-label">
                             City&nbsp;
-                            <span className="asterisk-red">
-                              *
-                            </span>
+                            <span className="asterisk-red">*</span>
                           </label>
                           <input
                             type="text"
@@ -227,19 +208,14 @@ export default function Shipping() {
                           />
                           {errors.city && (
                             <span className="error-text">
-                              {
-                                errors.city
-                                  ?.message
-                              }
+                              {errors.city?.message}
                             </span>
                           )}
                         </div>
                         <div className="form-input">
                           <label className="form-label">
                             ZIP&nbsp;
-                            <span className="asterisk-red">
-                              *
-                            </span>
+                            <span className="asterisk-red">*</span>
                           </label>
                           <input
                             type="number"
@@ -252,10 +228,7 @@ export default function Shipping() {
                           />
                           {errors.zip && (
                             <span className="error-text">
-                              {
-                                errors.zip
-                                  ?.message
-                              }
+                              {errors.zip?.message}
                             </span>
                           )}
                         </div>
@@ -269,8 +242,7 @@ export default function Shipping() {
                     <div className="form-area">
                       <div className="form-input preferences-item">
                         <p>
-                          Flat shipping rate is
-                          applied on each order from a
+                          Flat shipping rate is applied on each order from a
                           retailer.
                         </p>
                       </div>
@@ -278,23 +250,14 @@ export default function Shipping() {
                       <div className="category-form-input tooltip-input mt-4">
                         <div className="form-input">
                           <label className="form-label">
-                            Shipping fee{' '}
-                            <span className="asterisk-red">
-                              *
-                            </span>
+                            Shipping fee <span className="asterisk-red">*</span>
                             <div className="tooltip">
                               <div className="tooltip-icon">
-                                <img
-                                  src={Info}
-                                  className="icon"
-                                />
+                                <img src={Info} className="icon" />
                               </div>
                               <div className="tooltip_text">
                                 <p>
-                                  This is the
-                                  flat
-                                  shipping fee
-                                  to ship the
+                                  This is the flat shipping fee to ship the
                                   product.
                                 </p>
                               </div>
@@ -304,18 +267,11 @@ export default function Shipping() {
                             type="number"
                             className="form-control mb-0"
                             name="shippingfee"
-                            {...register(
-                              'shippingfee',
-                              { required: true }
-                            )}
+                            {...register('shippingfee', { required: true })}
                           />
                           {errors.shippingfee && (
                             <span className="error-text">
-                              {
-                                errors
-                                  .shippingfee
-                                  ?.message
-                              }
+                              {errors.shippingfee?.message}
                             </span>
                           )}
                         </div>
@@ -323,43 +279,19 @@ export default function Shipping() {
                         <div className="form-input">
                           <label className="form-label">
                             Incremental fee{' '}
-                            <span className="asterisk-red">
-                              *
-                            </span>
+                            <span className="asterisk-red">*</span>
                             <div className="tooltip">
                               <div className="tooltip-icon">
-                                <img
-                                  src={Info}
-                                  className="icon"
-                                />
+                                <img src={Info} className="icon" />
                               </div>
                               <div className="tooltip_text">
                                 <p>
-                                  This is the
-                                  cost for
-                                  every
-                                  additional
-                                  item of the
-                                  same product
-                                  in an order.
-                                  For example,
-                                  if the
-                                  shipping
-                                  cost for
-                                  Product A is
-                                  $5 and the
-                                  incremental
-                                  fee for
-                                  Product A is
-                                  $2 and there
-                                  are 2 units
-                                  of the same
-                                  product
-                                  purchased in
-                                  the same
-                                  order, the
-                                  shipping fee
-                                  will be $7.
+                                  This is the cost for every additional item of
+                                  the same product in an order. For example, if
+                                  the shipping cost for Product A is $5 and the
+                                  incremental fee for Product A is $2 and there
+                                  are 2 units of the same product purchased in
+                                  the same order, the shipping fee will be $7.
                                 </p>
                               </div>
                             </div>
@@ -368,18 +300,11 @@ export default function Shipping() {
                             type="number"
                             className="form-control mb-0"
                             name="incrementalfee"
-                            {...register(
-                              'incrementalfee',
-                              { required: true }
-                            )}
+                            {...register('incrementalfee', { required: true })}
                           />
                           {errors.incrementalfee && (
                             <span className="error-text">
-                              {
-                                errors
-                                  .incrementalfee
-                                  ?.message
-                              }
+                              {errors.incrementalfee?.message}
                             </span>
                           )}
                         </div>
@@ -392,35 +317,23 @@ export default function Shipping() {
                     <div className="form-area">
                       <div className="form-input preferences-item">
                         <p>
-                          You can use this section to
-                          set default days to fulfill
-                          for your products. You will
-                          be able to modify this
-                          information on a product
-                          level.
+                          You can use this section to set default days to
+                          fulfill for your products. You will be able to modify
+                          this information on a product level.
                         </p>
                       </div>
                       <div className="category-form-input tooltip-input mt-4">
                         <div className="form-input">
                           <label className="form-label">
                             Default Days to Fulfill
-                            <span className="asterisk-red">
-                              *
-                            </span>
+                            <span className="asterisk-red">*</span>
                             <div className="tooltip">
                               <div className="tooltip-icon">
-                                <img
-                                  src={Info}
-                                  className="icon"
-                                />
+                                <img src={Info} className="icon" />
                               </div>
                               <div className="tooltip_text">
                                 <p>
-                                  Number of
-                                  business
-                                  days to
-                                  process and
-                                  ship
+                                  Number of business days to process and ship
                                   product.
                                 </p>
                               </div>
@@ -435,39 +348,25 @@ export default function Shipping() {
                                 className="basic-single"
                                 classNamePrefix="select"
                                 placeholder="Days to Fulfill"
-                                styles={
-                                  categoryStyle
-                                }
+                                styles={categoryStyle}
                                 components={{
-                                  IndicatorSeparator:
-                                    () =>
-                                      null,
+                                  IndicatorSeparator: () => null,
                                 }}
-                                theme={(
-                                  theme
-                                ) => ({
+                                theme={(theme) => ({
                                   ...theme,
                                   colors: {
                                     ...theme.colors,
-                                    primary25:
-                                      '#fbf5f0',
-                                    primary:
-                                      '#bd6f34',
+                                    primary25: '#fbf5f0',
+                                    primary: '#bd6f34',
                                   },
                                 })}
-                                options={
-                                  daysOption
-                                }
+                                options={daysOption}
                               />
                             )}
                           />
                           {errors.daystofulfill && (
                             <span className="error-text">
-                              {
-                                errors
-                                  .daystofulfill
-                                  ?.message
-                              }
+                              {errors.daystofulfill?.message}
                             </span>
                           )}
                           {/* <Controller
@@ -516,7 +415,7 @@ export default function Shipping() {
                   <div className="form-area">
                     <div className="form-input form-submit mt-4">
                       <button
-                        disabled={shippingDetails.shippingLoading}
+                        // disabled={shippingDetails.shippingLoading}
                         onClick={() => reset()}
                         className="button button-grey cancel"
                       >
@@ -524,7 +423,7 @@ export default function Shipping() {
                       </button>
                       <button
                         type="submit"
-                        disabled={shippingDetails.shippingLoading}
+                        // disabled={shippingDetails.shippingLoading}
                         className="button"
                       >
                         Save

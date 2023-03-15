@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import InfoIcon from '../../images/icons/info.svg';
 import Switch from 'react-switch';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateNotificationAction } from '../../../../actions/userActions';
-import { selectUserDetails } from '../../../../redux/user/userSelector';
+import {
+  getNotificationAction,
+  updateNotificationAction,
+} from '../../../../actions/userActions';
+import {
+  selectNotificationData,
+  selectUserDetails,
+} from '../../../../redux/user/userSelector';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 
 const defaultValues = {
   isNotification: true,
@@ -16,16 +23,42 @@ export default function BrandNotification() {
     defaultValues,
   });
   const dispatch = useDispatch();
-  const useDetails = useSelector(selectUserDetails);
+  const userDetails = useSelector(selectUserDetails);
+  const notificationData = useSelector(selectNotificationData);
+
+  console.log(notificationData, 'notificationData');
+
+  useEffect(() => {
+    dispatch(getNotificationAction(userDetails.id));
+  }, []);
+
+  useEffect(() => {
+    if (notificationData.id) {
+      initialState();
+    }
+  }, [notificationData]);
+
+  const initialState = () => {
+    reset({
+      lowStock: notificationData.stock_warning,
+      newOrder: notificationData.new_order == 1 ? true : false,
+    });
+  };
 
   const onSubmit = (data) => {
-    dispatch(
-      updateNotificationAction({
-        brand_id: useDetails.id,
-        newOrder: data.isNotification ? 1 : 0,
-        stockWarning: data.lowStock,
-      })
-    );
+    const currentData = notificationData?.id
+      ? {
+          id: notificationData?.id,
+          brand_id: userDetails.id,
+          newOrder: data.isNotification ? 1 : 0,
+          stockWarning: data.lowStock,
+        }
+      : {
+          brand_id: userDetails.id,
+          newOrder: data.isNotification ? 1 : 0,
+          stockWarning: data.lowStock,
+        };
+    dispatch(updateNotificationAction(currentData));
   };
 
   return (

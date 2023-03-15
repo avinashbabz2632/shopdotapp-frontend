@@ -8,9 +8,10 @@ import BrandHeader from '../common/components/BrandHeader';
 import BrandSidebar from '../common/components/Sidebar';
 import OnboardingLayout from '../../../layout/OnboardingLayout';
 import CommonLayout from '../../../layout/CommonLayout';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { signOutAction } from '../../../actions/authActions';
 import { createBrowserHistory } from 'history';
+import { selectUserDetails } from '../../../redux/user/userSelector';
 
 const BrandShipping = lazy(() => import('./Shipping'));
 const BrandSecurity = lazy(() => import('./Security'));
@@ -25,6 +26,7 @@ export default function BrandSettingPage() {
   const { activeTab } = useParams();
   const [tab, setTab] = useState('');
   const dispatch = useDispatch();
+  const useDetails = useSelector(selectUserDetails);
   const history = createBrowserHistory();
 
   useEffect(() => {
@@ -73,6 +75,7 @@ export default function BrandSettingPage() {
   return (
     <div className="wrapper">
       <BrandHeader
+        useDetails={useDetails}
         callback={(callbackType) => {
           if (callbackType === 'logout') {
             dispatch(signOutAction());

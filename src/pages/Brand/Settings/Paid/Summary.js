@@ -107,7 +107,7 @@ export default function Summary({
         : null,
       brand_user_id: useDetails.id,
       date_of_discharge: businessDetails.dateOfDischarge
-        ? businessDetails.dateOfDischarge
+        ? moment(businessDetails.dateOfDischarge).format('MM/DD/YYYY')
         : null,
     };
 
@@ -292,7 +292,7 @@ export default function Summary({
                 </label>
               </div>
             </div>
-            <div className="summary-item mt-3">
+            <div className="summary-item">
               <div className="summary-title">
                 <h4>
                   Bank Details
