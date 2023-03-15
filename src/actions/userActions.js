@@ -107,7 +107,9 @@ export function getNotificationAction(brandId) {
         `${API_END_POINT.NOTIFICATION}/${brandId}/`
       );
       if (response && response.data && response.data.code == 200) {
-        dispatch(setNotificationData(response.data.data));
+        if (response.data.data) {
+          dispatch(setNotificationData(response.data.data));
+        }
       } else {
       }
       return response;
