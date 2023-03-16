@@ -8,6 +8,7 @@ import { changePassword } from '../../../../actions/brandActions';
 import { securityDetails } from '../../../../redux/Brand/Security/securitySelector';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { ToastContainer } from 'react-toastify';
+import { isEmpty } from 'lodash';
 
 const validationSchema = yup
   .object()
@@ -44,17 +45,19 @@ export default function BrandSecurity() {
   const userDetails = useSelector(selectUserDetails);
 
   const onSubmit = (data) => {
-    dispatch(
-      changePassword(
-        {
-          old_password: data.password,
-          password: data.newpassword,
-          confirm_password: data.confirmNewPassword,
-        },
-        userDetails.id
-      )
-    );
-    reset();
+    if (!isEmpty(data.password)) {
+      dispatch(
+        changePassword(
+          {
+            old_password: data.password,
+            password: data.newpassword,
+            confirm_password: data.confirmNewPassword,
+          },
+          userDetails.id
+        )
+      );
+      reset();
+    }
   };
 
   return (
@@ -167,14 +170,14 @@ export default function BrandSecurity() {
                     <button
                       onClick={() => reset()}
                       className="button button-grey cancel"
-                      disabled={security.changePasswordLoading}
+                      // disabled={security.changePasswordLoading}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       className="button"
-                      disabled={security.changePasswordLoading}
+                      // disabled={security.changePasswordLoading}
                     >
                       Save
                     </button>
