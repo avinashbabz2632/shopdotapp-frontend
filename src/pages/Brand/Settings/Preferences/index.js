@@ -11,6 +11,7 @@ import {
 } from '../../../../actions/brandActions';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { ToastContainer } from 'react-toastify';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import { selectPreferenceData } from '../../../../redux/Brand/Preference/preferenceSelector';
 
 export const PreferencesValidationSchema = yup.object().shape({
@@ -88,11 +89,12 @@ export default function BrandPreference() {
   const dispatch = useDispatch();
   const useDetails = useSelector(selectUserDetails);
   const preferenceData = useSelector(selectPreferenceData);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const wholesalePercentage = watch('wholesalePercentage');
   const inventoryPercentage = watch('inventoryPercentage');
 
   useEffect(() => {
-    dispatch(getPreferencesAction(useDetails.id));
+    dispatch(getPreferencesAction(brandProfileDetails?.brand_profile?.id));
   }, []);
 
   useEffect(() => {
@@ -111,10 +113,9 @@ export default function BrandPreference() {
       requirementsForRetailers: preferenceData.connect_brand,
     });
   };
-
   const onSubmit = (data) => {
     const formData = {
-      brand_id: useDetails.id,
+      brand_id: brandProfileDetails?.brand_profile?.id,
       wholesalePricing: data.wholesalePercentage,
       // retailerPricing: data.returnPricing.value,
       retailerPricing: data.inventoryPercentage,

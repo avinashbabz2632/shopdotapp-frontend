@@ -60,12 +60,27 @@ export default function BrandSettingPage() {
   }, []);
 
   useEffect(() => {
+    const steps = [];
     if (
       brandProfileDetails.brand_profile &&
       brandProfileDetails.brand_profile.company_name
     ) {
-      setCompletedStep(['profile']);
+      steps.push('profile');
     }
+    if (brandProfileDetails.shop_detail) {
+      steps.push('integration');
+    }
+    if (brandProfileDetails.shippingRate) {
+      steps.push('shipping');
+    }
+    if (brandProfileDetails.payment_detail) {
+      steps.push('payment');
+    }
+    if (brandProfileDetails.brandPreference) {
+      steps.push('preference');
+    }
+    console.log(steps, brandProfileDetails, 'brandprofile')
+    setCompletedStep(steps);
   }, [brandProfileDetails]);
 
   const renderTab = (tabName) => {
