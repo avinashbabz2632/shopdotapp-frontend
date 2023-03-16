@@ -5,13 +5,14 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { shippingValidationSchema } from '../Paid/ValidationSchema';
 import Select from 'react-select';
-import { shippingPaid } from '../../../../redux/Brand/Shipping/shippingPaidSelector';
+import { shippingData } from '../../../../redux/Brand/Shipping/shippingPaidSelector';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import {
   getBrandShippingAction,
   updateShipping,
 } from '../../../../actions/brandActions';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import { ToastContainer } from 'react-toastify';
 
 const stateOption = [
   { value: 'manitoba', label: 'Manitoba' },
@@ -63,13 +64,31 @@ export default function Shipping() {
   });
 
   const dispatch = useDispatch();
-  const shippingDetails = useSelector(shippingPaid);
+  const shippingDetails = useSelector(shippingData);
   const userDetails = useSelector(selectUserDetails);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
   useEffect(() => {
     dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
+    initalCall();
   }, []);
+
+  console.log(shippingDetails, 'shippingDetails');
+
+  const initalCall = () => {
+    if (shippingDetails?.street_address_1) {
+      reset({
+        address1: shippingDetails.street_address_1,
+        address2: shippingDetails.street_address_2,
+        country: shippingDetails.country,
+        state: shippingDetails.state,
+        city: shippingDetails.city,
+        zip: shippingDetails.zip,
+        shippingfee: shippingDetails.ShippingRate.shipping_cost,
+        incrementalfee: shippingDetails.ShippingRate.incremental_fee,
+      });
+    }
+  };
 
   const onSubmit = (data) => {
     dispatch(
@@ -436,6 +455,7 @@ export default function Shipping() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

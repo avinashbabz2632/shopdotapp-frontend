@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LinkMod } from '../../../../components/common/A';
 import { useParams } from 'react-router-dom';
 
-export default function BrandSidebar() {
+export default function BrandSidebar({ completedStep }) {
   const { activeTab } = useParams();
 
   const [tab, setTab] = useState(activeTab);
@@ -29,9 +29,9 @@ export default function BrandSidebar() {
                   <LinkMod
                     to={'/brand/setting'}
                     data-link="Account"
-                    className={`tab-links required ${
-                      tab === 'profile' || tab == undefined ? 'active' : ''
-                    }`}
+                    className={`tab-links ${
+                      completedStep.includes('profile') ? 'checked' : 'required'
+                    } ${tab === 'profile' || tab == undefined ? 'active' : ''}`}
                     onClick={() => handleChangTab('profile')}
                   >
                     Brand Profile

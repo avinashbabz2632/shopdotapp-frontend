@@ -12,6 +12,7 @@ import {
   setBrandProfileDetails,
   setBrandValues,
 } from '../redux/Brand/Profile/brandProfileSlice';
+import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
@@ -166,7 +167,7 @@ export function changePassword(formData, id) {
     dispatch(onChangePassword(true));
     try {
       await axios.post(API_END_POINT.CHANGE_PASSWORD(id), formData);
-      toast.error('Password changed successfully');
+      toast.success('Password changed successfully');
     } catch (err) {
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
@@ -263,19 +264,12 @@ export function updateShipping(data) {
 
 export function getBrandShippingAction(brandId) {
   return async (dispatch) => {
-    const params = {
-      brand_id: brandId,
-    };
     try {
       const response = await axios.get(
         `${API_END_POINT.BRAND_SHIPPING}/${brandId}`
       );
       if (response.status == 200) {
-        dispatch(
-          setBrandShippingData({
-            payload: response.data.data,
-          })
-        );
+        dispatch(setBrandShippingData(response.data.data));
       }
     } catch (err) {
       toast.error(
@@ -292,6 +286,7 @@ export function updatePreferences(data) {
     try {
       const response = await axios.post(API_END_POINT.PREFERENCES, data);
       if (response.status === 201) {
+        dispatch(getPreferencesAction(data.brand_id));
         toast.success('Preferences Updated');
       }
     } catch (err) {
@@ -314,6 +309,7 @@ export function getPreferencesAction(brandId) {
         dispatch(setBrandPreferenceData(response.data.data));
       }
     } catch (err) {
+      console.log(err, 'err');
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors

@@ -39,7 +39,7 @@ export function addUserPlatformAction(formData, navigate) {
   return async (dispatch) => {
     try {
       const response = await axios.post(API_END_POINT.USER_PLATFORM, formData);
-      if (response && response.data && response.data.code == 200) {
+      if (response && response.data && response.data.code == 201) {
         navigate('/brand-onboarding');
       } else {
         navigate('/personalized-not-supported', { state: formData.platform });

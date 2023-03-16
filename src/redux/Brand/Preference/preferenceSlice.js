@@ -17,8 +17,7 @@ const preferenceSlice = createSlice({
 /**
  * Actions
  */
-export const { setShippingLoading, setBrandShippingData } =
-  preferenceSlice.actions;
+export const { setBrandPreferenceData } = preferenceSlice.actions;
 
 /**
  * Reducers

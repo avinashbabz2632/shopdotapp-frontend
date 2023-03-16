@@ -1,1 +1,1 @@
-export const shippingPaid = (state) => state.shipping;
+export const shippingData = (state) => state.shipping.shippingData;

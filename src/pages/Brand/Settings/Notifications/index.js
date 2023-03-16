@@ -12,6 +12,7 @@ import {
   selectUserDetails,
 } from '../../../../redux/user/userSelector';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import { ToastContainer } from 'react-toastify';
 
 const defaultValues = {
   isNotification: true,
@@ -33,7 +34,7 @@ export default function BrandNotification() {
   }, []);
 
   useEffect(() => {
-    if (notificationData.id) {
+    if (notificationData?.id) {
       initialState();
     }
   }, [notificationData]);
@@ -41,7 +42,7 @@ export default function BrandNotification() {
   const initialState = () => {
     reset({
       lowStock: notificationData.stock_warning,
-      newOrder: notificationData.new_order == 1 ? true : false,
+      isNotification: notificationData.new_order == 1 ? true : false,
     });
   };
 
@@ -166,6 +167,7 @@ export default function BrandNotification() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

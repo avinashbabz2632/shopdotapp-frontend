@@ -2,7 +2,7 @@ import React from 'react';
 import Logo from '../../assets/images/icons/logo.svg';
 import SearchClear from '../../assets/images/icons/icon-search.svg';
 import '../../pages/Brand/Style/brand.style.scss';
-import { Outlet } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import ArrowDown from '../../assets/images/sprite.svg';
 import IconMarket from '../../assets/images/icons/icon-retailers.svg';
 import IconMail from '../../assets/images/icons/icon-mail.svg';
@@ -21,7 +21,7 @@ export default function BrandHeader() {
         >
           <div className="header_container">
             <div className="header_logo">
-              <a href="#" className="logo">
+              <a href="/brand-onboarding" className="logo">
                 <picture>
                   <img style={{ width: '100%' }} src={Logo} alt="" />
                 </picture>
@@ -37,9 +37,14 @@ export default function BrandHeader() {
               </div>
               <ul className="header_menu menu">
                 <li className="menu_item">
-                  <a href="#" className="menu_link">
+                  <NavLink
+                    className={(navData) =>
+                      navData.isActive ? 'active menu_link' : 'link menu_link'
+                    }
+                    to="/brand-onboarding"
+                  >
                     Getting Started
-                  </a>
+                  </NavLink>
                 </li>
                 <li className="menu_item">
                   <a href="#" className="menu_link">

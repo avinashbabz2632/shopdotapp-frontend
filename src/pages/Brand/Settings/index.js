@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signOutAction } from '../../../actions/authActions';
 import { createBrowserHistory } from 'history';
 import { selectUserDetails } from '../../../redux/user/userSelector';
+import { getBrandProfileAction } from '../../../actions/brandActions';
+import { selectBrandProfileDetails } from '../../../redux/Brand/Profile/brandProfileSelectors';
 
 const BrandShipping = lazy(() => import('./Shipping'));
 const BrandSecurity = lazy(() => import('./Security'));
@@ -25,9 +27,11 @@ const BrandSetting = lazy(() => import('./Integration'));
 export default function BrandSettingPage() {
   const { activeTab } = useParams();
   const [tab, setTab] = useState('');
+  const [completedStep, setCompletedStep] = useState([]);
   const dispatch = useDispatch();
   const useDetails = useSelector(selectUserDetails);
   const history = createBrowserHistory();
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
   useEffect(() => {
     if (activeTab == 'shipping') {
@@ -50,6 +54,19 @@ export default function BrandSettingPage() {
       setTab('');
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    dispatch(getBrandProfileAction(useDetails.id));
+  }, []);
+
+  useEffect(() => {
+    if (
+      brandProfileDetails.brand_profile &&
+      brandProfileDetails.brand_profile.company_name
+    ) {
+      setCompletedStep(['profile']);
+    }
+  }, [brandProfileDetails]);
 
   const renderTab = (tabName) => {
     switch (tabName) {
@@ -91,7 +108,7 @@ export default function BrandSettingPage() {
           className="section products pc_tabs tabs"
           style={{ background: 'white' }}
         >
-          <BrandSidebar />
+          <BrandSidebar completedStep={completedStep} />
           <Suspense fallback={<Loader />}>
             {tab && renderTab(tab)}
             {!activeTab && <BrandProfile />}

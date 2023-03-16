@@ -43,8 +43,8 @@ export default function BrandOnBoarding() {
   const [storeName, setStoreName] = useState('');
   const [isStoreNameValid, setIsStoreNameValid] = useState(false);
 
-  const [brandStep, setBrandStep] = useState([1]);
-  const [activeStep, setActiveStep] = useState(2);
+  const [brandStep, setBrandStep] = useState([]);
+  const [activeStep, setActiveStep] = useState(1);
   const [productId, setProductId] = useState('8019618038038');
 
   const handleSetStoreName = (e) => {
