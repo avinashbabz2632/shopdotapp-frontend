@@ -183,7 +183,7 @@ export default function BusinessRepresentative({
             <span className="error-text">{errors.owner_phone?.message}</span>
           )}
         </div>
-        {/* <div className="form-input mb-4">
+        <div className="form-input mb-4">
           <label htmlFor="" className="form-label">
             SSN&nbsp;<span className="asterisk-red">*</span>
           </label>
@@ -196,7 +196,7 @@ export default function BusinessRepresentative({
           {errors.ssn && (
             <span className="error-text">{errors.ssn?.message}</span>
           )}
-        </div> */}
+        </div>
         <div className="form-input mb-4">
           <label htmlFor="" className="form-label">
             Date of birth&nbsp;

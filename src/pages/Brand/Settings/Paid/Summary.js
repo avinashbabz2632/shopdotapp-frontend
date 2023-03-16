@@ -58,6 +58,15 @@ export default function Summary({
         9
       )}`;
     }
+    if (personalDetails.ssn) {
+      ssn = `${personalDetails.ssn.substring(
+        0,
+        3
+      )}-${personalDetails.ssn.substring(3, 5)}-${personalDetails.ssn.substring(
+        5,
+        9
+      )}`;
+    }
     if (personalDetails.owner_phone) {
       owner_phone = `${personalDetails.owner_phone.substring(
         0,
@@ -118,6 +127,9 @@ export default function Summary({
     }
     if (!formData.date_of_discharge) {
       delete formData.date_of_discharge;
+    }
+    if (!formData.ssn) {
+      delete formData.ssn;
     }
 
     dispatch(brandAsCustomerAction(formData, bankDetails));
