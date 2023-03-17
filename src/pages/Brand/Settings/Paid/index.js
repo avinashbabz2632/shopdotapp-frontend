@@ -6,6 +6,9 @@ import GpTimeIcon from '../../images/gp-time.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBrandBankDetailsAction } from '../../../../actions/brandActions';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { ToastContainer } from 'react-toastify';
+import { selectPaidDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 
 //paid component
 const BusinessDetails = lazy(() => import('./BusinessDetails'));
@@ -18,6 +21,8 @@ const EditBankDetails = lazy(() => import('./EditBankDetails'));
 export default function BrandPaid() {
   const dispatch = useDispatch();
   const useDetails = useSelector(selectUserDetails);
+  const paidDetails = useSelector(selectPaidDetails);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const [tabCode, setTabCode] = useState('1');
   const [startingTab, setStartingTab] = useState(false);
   const [isCompleteApplication, setIsCompleteApplication] = useState(false);
@@ -32,8 +37,22 @@ export default function BrandPaid() {
   };
 
   useEffect(() => {
-    dispatch(getBrandBankDetailsAction(useDetails.id));
+    if (brandProfileDetails?.payment_detail?.customer_id) {
+      dispatch(
+        getBrandBankDetailsAction(
+          brandProfileDetails?.payment_detail?.customer_id,
+          brandProfileDetails?.payment_detail?.customer_id
+        )
+      );
+    }
   }, []);
+
+  useEffect(() => {
+    if (paidDetails?.external) {
+      setEditBankDetails(paidDetails);
+      setIsCompleteApplication(true);
+    }
+  }, [paidDetails]);
 
   const renderTab = () => {
     const renderComponent = {
@@ -185,6 +204,7 @@ export default function BrandPaid() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

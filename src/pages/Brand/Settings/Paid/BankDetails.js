@@ -10,17 +10,17 @@ import { selectBankDetails } from '../../../../redux/Brand/GettingPaid/gettingPa
 import { BankDetailsValidationSchema } from './ValidationSchema';
 
 const accountTypeOption = [
-  { value: 'checking', label: 'Checking' },
+  { value: 'CURRENT', label: 'Current' },
   {
-    value: 'saving',
+    value: 'SAVINGS',
     label: 'Savings',
   },
 ];
 
 const accountRoleOption = [
-  { value: 'business', label: 'Business' },
+  { value: 'CORPORATE', label: 'Business' },
   {
-    value: 'personal',
+    value: 'CONSUMER',
     label: 'Personal',
   },
 ];

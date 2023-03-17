@@ -13,6 +13,7 @@ import {
   setBrandValues,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
+import { setPaidDetails } from '../redux/Brand/GettingPaid/gettingPaidSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
@@ -187,10 +188,15 @@ export function brandAsCustomerAction(formData, bankDetails) {
       );
       if (response && response.data && response.data.code == 201) {
         dispatch(
-          brandBankDetailsAction({
-            ...bankDetails,
-            customer_id: response.data.data.customer_id,
-          })
+          brandBankDetailsAction(
+            {
+              ...bankDetails,
+              account_type: bankDetails.account_type.value,
+              purpose: bankDetails.purpose.value,
+              customer_id: Number(response.data.data.customer_id),
+            },
+            formData.brand_user_id
+          )
         );
       } else {
         toast.error('Something went worng');
@@ -212,7 +218,14 @@ export function brandBankDetailsAction(formData) {
         API_END_POINT.EXTERNAL_ACCOUNT,
         formData
       );
-      if (response && response.data && response.data.code == 200) {
+      if (response && response.data && response.data.code == 201) {
+        // dispatch(setPaidCompleted(true));
+        dispatch(
+          getBrandBankDetailsAction(
+            formData.customer_id,
+            Number(response.data.data.external_account_id)
+          )
+        );
       } else {
         toast.error('Something went worng');
       }
@@ -226,22 +239,27 @@ export function brandBankDetailsAction(formData) {
   };
 }
 
-export function getBrandBankDetailsAction(id) {
+export function getBrandBankDetailsAction(customerId, externalAccountId) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `${API_END_POINT.PAYMENT_CUSTOMER}/${id}`
+        `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalAccountId}`
       );
       if (response && response.data && response.data.code == 200) {
+        setPaidDetails(response.data.data);
       } else {
         toast.error('Something went worng');
       }
     } catch (err) {
-      toast.error(
-        err && err.response && err.response.data && err.response.data.errors
-          ? err.response.data.errors
-          : 'Something went worng'
-      );
+      const error = err?.response?.data?.errors;
+      if (error.startsWith(`customer with id`)) {
+      } else {
+        toast.error(
+          err && err.response && err.response.data && err.response.data.errors
+            ? err.response.data.errors
+            : 'Something went worng'
+        );
+      }
     }
   };
 }

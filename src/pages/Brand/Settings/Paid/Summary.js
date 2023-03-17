@@ -16,7 +16,6 @@ import { LinkMod } from '../../../../components/common/A';
 import { brandAsCustomerAction } from '../../../../actions/brandActions';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import moment from 'moment';
-import { ToastContainer } from 'react-toastify';
 
 export default function Summary({
   handleChangeTab,
@@ -386,7 +385,6 @@ export default function Summary({
           </div>
         </div>
       </form>
-      <ToastContainer />
     </>
   );
 }
