@@ -5,6 +5,7 @@ import * as types from './actionTypes';
 import {
   setBrandShippingData,
   setShippingLoading,
+  setShippingTimes
 } from '../redux/Brand/Shipping/shippingSlice';
 import { onChangePassword } from '../redux/Brand/Security/securitySlice';
 import {
@@ -276,8 +277,27 @@ export function updateShipping(data) {
           ? err.response.data.errors
           : 'Something went worng'
       );
+    } finally {
+      dispatch(setShippingLoading(false));
     }
   };
+}
+
+export function getBrandShippingTime() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(API_END_POINT.BRAND_SHIPPING_TIMES);
+      if (response.status == 200) {
+        dispatch(setShippingTimes(response.data.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  }
 }
 
 export function getBrandShippingAction(brandId) {
@@ -287,7 +307,10 @@ export function getBrandShippingAction(brandId) {
         `${API_END_POINT.BRAND_SHIPPING}/${brandId}`
       );
       if (response.status == 200) {
-        dispatch(setBrandShippingData(response.data.data));
+        dispatch(setBrandShippingData({
+          ...response.data.data,
+          daystofulfill: response.data.data.shipping_time_id
+        }));
       }
     } catch (err) {
       toast.error(
