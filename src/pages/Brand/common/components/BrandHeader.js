@@ -7,7 +7,8 @@ import IconMarket from '../../images/icons/icon-retailers.svg';
 import IconMail from '../../images/icons/icon-mail.svg';
 import IconNotification from '../../images/icons/icon-notification.svg';
 
-export default function BrandHeader({ callback }) {
+export default function BrandHeader({ callback, useDetails }) {
+  console.log(useDetails, 'useDetails');
   const [tab, setTab] = useState(1);
 
   return (
@@ -39,7 +40,7 @@ export default function BrandHeader({ callback }) {
                     className={(navData) =>
                       navData.isActive ? 'active menu_link' : 'link menu_link'
                     }
-                    to="/dashboard"
+                    to="/brand/setting"
                   >
                     Dashboard
                   </NavLink>
@@ -119,7 +120,10 @@ export default function BrandHeader({ callback }) {
                 <div className="dropdown">
                   <div className="dropdown_header">
                     <div className="dropdown_header-text">
-                      Hi, <span className="username">Jane</span>
+                      Hi,{' '}
+                      <span className="username">
+                        {`${useDetails?.first_name}`}
+                      </span>
                     </div>
                     <div className="dropdown_header-icon">
                       <span className="icon">

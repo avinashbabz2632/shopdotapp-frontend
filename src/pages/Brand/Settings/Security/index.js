@@ -7,6 +7,8 @@ import Input from '../../../../components/common/Input/divStyled';
 import { changePassword } from '../../../../actions/brandActions';
 import { securityDetails } from '../../../../redux/Brand/Security/securitySelector';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { ToastContainer } from 'react-toastify';
+import { isEmpty } from 'lodash';
 
 const validationSchema = yup
   .object()
@@ -43,12 +45,19 @@ export default function BrandSecurity() {
   const userDetails = useSelector(selectUserDetails);
 
   const onSubmit = (data) => {
-    dispatch(changePassword({
-      "old_password": data.password,
-      "password": data.newpassword,
-      "confirm_password": data.confirmNewPassword
-    }, userDetails.id));
-    reset();
+    if (!isEmpty(data.password)) {
+      dispatch(
+        changePassword(
+          {
+            old_password: data.password,
+            password: data.newpassword,
+            confirm_password: data.confirmNewPassword,
+          },
+          userDetails.id
+        )
+      );
+      reset();
+    }
   };
 
   return (
@@ -68,30 +77,22 @@ export default function BrandSecurity() {
                 <h2>Change Password</h2>
                 <div className="form-area">
                   <div className="form-input mb-4">
-                    <label className="form-label">
-                      Old password
-                    </label>
+                    <label className="form-label">Old password</label>
                     <Input
-                      className={`${errors?.password
-                        ? 'is-invalid'
-                        : ''
-                        } form-control password`}
-                      type={
-                        passwordType
-                          ? 'password'
-                          : 'text'
-                      }
+                      className={`${
+                        errors?.password ? 'is-invalid' : ''
+                      } form-control password`}
+                      type={passwordType ? 'password' : 'text'}
                       name="password"
                       {...register('password', {
                         required: true,
                       })}
                     />
                     <span
-                      className={`password-show ${passwordType ? '' : 'active'
-                        }`}
-                      onClick={() =>
-                        setPasswordType(!passwordType)
-                      }
+                      className={`password-show ${
+                        passwordType ? '' : 'active'
+                      }`}
+                      onClick={() => setPasswordType(!passwordType)}
                     />
                     {errors?.password && (
                       <small className="invalid-feedback mb-0">
@@ -100,32 +101,22 @@ export default function BrandSecurity() {
                     )}
                   </div>
                   <div className="form-input mb-4 password-tooltip">
-                    <label className="form-label">
-                      New password
-                    </label>
+                    <label className="form-label">New password</label>
                     <Input
-                      className={`${errors?.newpassword
-                        ? 'is-invalid'
-                        : ''
-                        } form-control password`}
-                      type={
-                        passwordTypeNew
-                          ? 'password'
-                          : 'text'
-                      }
+                      className={`${
+                        errors?.newpassword ? 'is-invalid' : ''
+                      } form-control password`}
+                      type={passwordTypeNew ? 'password' : 'text'}
                       name="newpassword"
                       {...register('newpassword', {
                         required: true,
                       })}
                     />
                     <span
-                      className={`password-show ${passwordTypeNew ? '' : 'active'
-                        }`}
-                      onClick={() =>
-                        setPasswordTypeNew(
-                          !passwordTypeNew
-                        )
-                      }
+                      className={`password-show ${
+                        passwordTypeNew ? '' : 'active'
+                      }`}
+                      onClick={() => setPasswordTypeNew(!passwordTypeNew)}
                     />
                     {errors?.newpassword && (
                       <small className="invalid-feedback mb-0">
@@ -136,69 +127,40 @@ export default function BrandSecurity() {
                       <div className="tooltip-icon"></div>
                       <div className="tooltip_text">
                         <div className="tooltip-arrow"></div>
-                        <div className="pwd-info-title">
-                          Password must:
-                        </div>
+                        <div className="pwd-info-title">Password must:</div>
                         <div className="pwd-info">
-                          <label>
-                            - have at least 1 number
-                          </label>
-                          <label>
-                            - have at least 1
-                            uppercase character
-                          </label>
-                          <label>
-                            - have at least 1
-                            lowercase character
-                          </label>
-                          <label>
-                            - have at least 1
-                            special character
-                          </label>
-                          <label>
-                            - have 8 characters
-                            minimum
-                          </label>
+                          <label>- have at least 1 number</label>
+                          <label>- have at least 1 uppercase character</label>
+                          <label>- have at least 1 lowercase character</label>
+                          <label>- have at least 1 special character</label>
+                          <label>- have 8 characters minimum</label>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="form-input mb-4">
-                    <label className="form-label">
-                      Confirm new password
-                    </label>
+                    <label className="form-label">Confirm new password</label>
                     <Input
-                      className={`${errors?.confirmNewPassword
-                        ? 'is-invalid'
-                        : ''
-                        } form-control password`}
-                      type={
-                        passwordTypeConfirmNew
-                          ? 'password'
-                          : 'text'
-                      }
+                      className={`${
+                        errors?.confirmNewPassword ? 'is-invalid' : ''
+                      } form-control password`}
+                      type={passwordTypeConfirmNew ? 'password' : 'text'}
                       name="confirmNewPassword"
                       {...register('confirmNewPassword', {
                         required: true,
                       })}
                     />
                     <span
-                      className={`password-show ${passwordTypeConfirmNew
-                        ? ''
-                        : 'active'
-                        }`}
+                      className={`password-show ${
+                        passwordTypeConfirmNew ? '' : 'active'
+                      }`}
                       onClick={() =>
-                        setPasswordTypeConfirmNew(
-                          !passwordTypeConfirmNew
-                        )
+                        setPasswordTypeConfirmNew(!passwordTypeConfirmNew)
                       }
                     />
                     {errors?.confirmNewPassword && (
                       <small className="invalid-feedback mb-0">
-                        {
-                          errors?.confirmNewPassword
-                            ?.message
-                        }
+                        {errors?.confirmNewPassword?.message}
                       </small>
                     )}
                   </div>
@@ -208,14 +170,14 @@ export default function BrandSecurity() {
                     <button
                       onClick={() => reset()}
                       className="button button-grey cancel"
-                      disabled={security.changePasswordLoading}
+                      // disabled={security.changePasswordLoading}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       className="button"
-                      disabled={security.changePasswordLoading}
+                      // disabled={security.changePasswordLoading}
                     >
                       Save
                     </button>
@@ -226,6 +188,7 @@ export default function BrandSecurity() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

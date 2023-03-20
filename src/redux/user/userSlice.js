@@ -4,6 +4,7 @@ const initialState = {
   userDetails: null,
   personalizeLoading: false,
   roleUpdated: false,
+  notificationData: {},
 };
 
 const userSlice = createSlice({
@@ -22,6 +23,9 @@ const userSlice = createSlice({
     setPersonalizeLoading: () => {
       state.personalizeLoading = action.payload;
     },
+    setNotificationData: (state, action) => {
+      state.notificationData = action.payload;
+    },
   },
 });
 
@@ -34,6 +38,7 @@ export const {
   clearUserReducer,
   setPersonalizeLoading,
   clearUpdateReducer,
+  setNotificationData,
 } = userSlice.actions;
 
 /**

@@ -16,6 +16,7 @@ import { LinkMod } from '../../../../components/common/A';
 import { brandAsCustomerAction } from '../../../../actions/brandActions';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import moment from 'moment';
+import { ToastContainer } from 'react-toastify';
 
 export default function Summary({
   handleChangeTab,
@@ -37,6 +38,7 @@ export default function Summary({
     handleChangeTab(tabCode);
     setIsEdited(true);
   };
+
   const onSubmit = (data) => {
     let ein = '';
     let ssn = '';
@@ -91,7 +93,7 @@ export default function Summary({
         personalDetails.identification_state_of_issuance.value,
       countryOfIssuance: personalDetails.identification_state_of_issuance.value,
       identification_id: personalDetails.identification_id,
-      prior_bankruptcy: personalDetails.prior_bankruptcy == 'no' ? false : true,
+      prior_bankruptcy: businessDetails.prior_bankruptcy == 'no' ? false : true,
       average_sales_volume: businessDetails.average_sales_volume
         ? Number(businessDetails.average_sales_volume)
         : 0,
@@ -107,7 +109,7 @@ export default function Summary({
         : null,
       brand_user_id: useDetails.id,
       date_of_discharge: businessDetails.dateOfDischarge
-        ? businessDetails.dateOfDischarge
+        ? moment(businessDetails.dateOfDischarge).format('MM/DD/YYYY')
         : null,
     };
 
@@ -292,7 +294,7 @@ export default function Summary({
                 </label>
               </div>
             </div>
-            <div className="summary-item mt-3">
+            <div className="summary-item">
               <div className="summary-title">
                 <h4>
                   Bank Details
@@ -372,6 +374,7 @@ export default function Summary({
           </div>
         </div>
       </form>
+      <ToastContainer />
     </>
   );
 }

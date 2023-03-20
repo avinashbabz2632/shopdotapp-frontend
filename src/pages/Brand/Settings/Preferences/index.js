@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Select from 'react-select';
 import Info from '../../images/icons/info.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { updatePreferences } from '../../../../actions/brandActions';
+import {
+  getPreferencesAction,
+  updatePreferences,
+} from '../../../../actions/brandActions';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { ToastContainer } from 'react-toastify';
+import { selectPreferenceData } from '../../../../redux/Brand/Preference/preferenceSelector';
 
 export const PreferencesValidationSchema = yup.object().shape({
   wholesalePercentage: yup
@@ -83,16 +87,39 @@ export default function BrandPreference() {
   });
   const dispatch = useDispatch();
   const useDetails = useSelector(selectUserDetails);
+  const preferenceData = useSelector(selectPreferenceData);
   const wholesalePercentage = watch('wholesalePercentage');
   const inventoryPercentage = watch('inventoryPercentage');
+
+  useEffect(() => {
+    dispatch(getPreferencesAction(useDetails.id));
+  }, []);
+
+  useEffect(() => {
+    if (preferenceData) {
+      console.log(preferenceData, 'preferenceData');
+      initalCall();
+    }
+  }, [preferenceData]);
+
+  const initalCall = () => {
+    reset({
+      wholesalePercentage: preferenceData.wholesale_pricing,
+      inventoryPercentage: preferenceData.wholesale_pricing,
+      inventoryPercentage: preferenceData.inventory_buffer,
+      retunRefundPolicy: preferenceData.return_policy,
+      requirementsForRetailers: preferenceData.connect_brand,
+    });
+  };
 
   const onSubmit = (data) => {
     const formData = {
       brand_id: useDetails.id,
       wholesalePricing: data.wholesalePercentage,
+      // retailerPricing: data.returnPricing.value,
       retailerPricing: data.inventoryPercentage,
       inventoryBuffer: data.inventoryPercentage,
-      returnPolicy: data.returnPricing.value,
+      returnPolicy: data.retunRefundPolicy,
       connectBrand: data.requirementsForRetailers,
     };
     if (formData.connectBrand == '') {
