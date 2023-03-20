@@ -5,10 +5,14 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { shippingValidationSchema } from '../Paid/ValidationSchema';
 import Select from 'react-select';
-import { selectShippingData } from '../../../../redux/Brand/Shipping/shippingPaidSelector';
+import {
+  selectShippingData,
+  shippingTime,
+} from '../../../../redux/Brand/Shipping/shippingPaidSelector';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import {
   getBrandShippingAction,
+  getBrandShippingTime,
   updateShipping,
 } from '../../../../actions/brandActions';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
@@ -19,12 +23,6 @@ const stateOption = [
   { value: 'alberta', label: 'Alberta' },
 ];
 
-const daysOption = [
-  { value: '3-7 days', label: '3-7 days' },
-  { value: '7-14 days', label: '7-14 days' },
-  { value: '14-21 days', label: '14-21 days' },
-  { value: '>21 days', label: '>21 days' },
-];
 const categoryStyle = {
   control: (styles) => {
     return {
@@ -65,16 +63,32 @@ export default function Shipping() {
 
   const dispatch = useDispatch();
   const shippingDetails = useSelector(selectShippingData);
+  const shippingTimes = useSelector(shippingTime);
   const userDetails = useSelector(selectUserDetails);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
+  const formatShippingTime = () => {
+    if (shippingTimes && shippingTimes.length) {
+      return shippingTimes.map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));
+    } else {
+      return;
+    }
+  };
+
   useEffect(() => {
     dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
-    initalCall();
+    dispatch(getBrandShippingTime());
   }, []);
 
+  useEffect(() => {
+    initalCall();
+  }, [shippingDetails, shippingTimes]);
+
   const initalCall = () => {
-    if (shippingDetails?.street_address_1) {
+    if (shippingDetails && shippingTimes) {
       reset({
         address1: shippingDetails.street_address_1,
         address2: shippingDetails.street_address_2,
@@ -84,6 +98,9 @@ export default function Shipping() {
         zip: shippingDetails.zip,
         shippingfee: shippingDetails.ShippingRate.shipping_cost,
         incrementalfee: shippingDetails.ShippingRate.incremental_fee,
+        daystofulfill: formatShippingTime().find(
+          (item) => item.value === shippingDetails.shipping_time_id
+        ),
       });
     }
   };
@@ -101,7 +118,7 @@ export default function Shipping() {
         zip: data.zip,
         shipping_cost: parseFloat(data.shippingfee),
         incremental_fee: parseFloat(data.incrementalfee),
-        shipping_time_id: 1,
+        shipping_time_id: data.daystofulfill.value,
       })
     );
     reset();
@@ -377,7 +394,7 @@ export default function Shipping() {
                                     primary: '#bd6f34',
                                   },
                                 })}
-                                options={daysOption}
+                                options={formatShippingTime()}
                               />
                             )}
                           />
