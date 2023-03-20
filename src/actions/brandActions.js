@@ -36,7 +36,7 @@ export function connectShopifyAction(formData) {
             return res;
           }
         })
-        .catch(() => { });
+        .catch(() => {});
 
       // const response = await axios.get(
       //   `${API_END_POINT.PLATFORM}/shopify-integration`,
@@ -81,7 +81,7 @@ export function getPlatformCategoryAction() {
         );
       } else {
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 }
 
@@ -98,7 +98,7 @@ export function getBrandProfileAction(id) {
         );
       } else {
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 }
 
@@ -115,7 +115,7 @@ export function getPlatformValuesAction() {
         );
       } else {
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 }
 
@@ -130,7 +130,7 @@ export function syncProductAction(productId, userId) {
       if (response && response.data && response.data.code == 200) {
       } else {
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 }
 
@@ -269,6 +269,7 @@ export function updateShipping(data) {
     try {
       dispatch(setShippingLoading(true));
       const response = await axios.post(API_END_POINT.BRAND_SHIPPING, data);
+      dispatch(getBrandShippingAction(data.brand_id));
       toast.success(response.data.message);
     } catch (err) {
       toast.error(

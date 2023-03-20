@@ -20,7 +20,6 @@ const EditBankDetails = lazy(() => import('./EditBankDetails'));
 
 export default function BrandPaid() {
   const dispatch = useDispatch();
-  const useDetails = useSelector(selectUserDetails);
   const paidDetails = useSelector(selectPaidDetails);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const [tabCode, setTabCode] = useState('1');
@@ -38,12 +37,16 @@ export default function BrandPaid() {
 
   useEffect(() => {
     if (brandProfileDetails?.payment_detail?.customer_id) {
-      dispatch(
-        getBrandBankDetailsAction(
-          brandProfileDetails?.payment_detail?.customer_id,
-          brandProfileDetails?.payment_detail?.customer_id
-        )
-      );
+      if (brandProfileDetails?.payment_detail?.external_account_id) {
+        dispatch(
+          getBrandBankDetailsAction(
+            brandProfileDetails?.payment_detail?.customer_id,
+            brandProfileDetails?.payment_detail?.external_account_id
+          )
+        );
+      } else {
+        setIsCompleteApplication(true);
+      }
     }
   }, []);
 
@@ -192,7 +195,12 @@ export default function BrandPaid() {
                     <GettingPaid setEditBankDetails={setEditBankDetails} />
                   )}
                   {editBankDetails && (
-                    <EditBankDetails setEditBankDetails={setEditBankDetails} />
+                    <EditBankDetails
+                      setEditBankDetails={setEditBankDetails}
+                      customerId={
+                        brandProfileDetails?.payment_detail?.customer_id
+                      }
+                    />
                   )}
                   {!isCompleteApplication &&
                     !startingTab &&

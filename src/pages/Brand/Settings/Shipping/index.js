@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { shippingValidationSchema } from '../Paid/ValidationSchema';
 import Select from 'react-select';
-import { shippingData } from '../../../../redux/Brand/Shipping/shippingPaidSelector';
+import { selectShippingData } from '../../../../redux/Brand/Shipping/shippingPaidSelector';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import {
   getBrandShippingAction,
@@ -64,7 +64,7 @@ export default function Shipping() {
   });
 
   const dispatch = useDispatch();
-  const shippingDetails = useSelector(shippingData);
+  const shippingDetails = useSelector(selectShippingData);
   const userDetails = useSelector(selectUserDetails);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
@@ -72,8 +72,6 @@ export default function Shipping() {
     dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
     initalCall();
   }, []);
-
-  console.log(shippingDetails, 'shippingDetails');
 
   const initalCall = () => {
     if (shippingDetails?.street_address_1) {

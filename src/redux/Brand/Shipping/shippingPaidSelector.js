@@ -1,1 +1,1 @@
-export const shippingData = (state) => state.shipping.shippingData;
+export const selectShippingData = (state) => state.shipping.shippingData;

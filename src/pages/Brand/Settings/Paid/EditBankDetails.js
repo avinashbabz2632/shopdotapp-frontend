@@ -7,21 +7,22 @@ import { selectBankDetails } from '../../../../redux/Brand/GettingPaid/gettingPa
 import { setBankDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
 import Select from 'react-select';
 import { BankDetailsValidationSchema } from './ValidationSchema';
+import { brandBankDetailsAction } from '../../../../actions/brandActions';
 
 const accountTypeOption = [
+  { value: 'CURRENT', label: 'Current' },
   {
-    value: 'saving',
+    value: 'SAVINGS',
     label: 'Savings',
   },
-  { value: 'current', label: 'Current' },
 ];
 
 const accountRoleOption = [
+  { value: 'CORPORATE', label: 'Business' },
   {
-    value: 'personal',
+    value: 'CONSUMER',
     label: 'Personal',
   },
-  { value: 'business', label: 'Business' },
 ];
 
 const categoryStyle = {
@@ -50,7 +51,7 @@ const defaultValues = {
   purpose: accountRoleOption[0],
 };
 
-export default function EditBankDetail({ setEditBankDetails }) {
+export default function EditBankDetail({ setEditBankDetails, customerId }) {
   const {
     register,
     handleSubmit,
@@ -79,8 +80,16 @@ export default function EditBankDetail({ setEditBankDetails }) {
   }, []);
 
   const onSubmit = (data) => {
-    dispatch(setBankDetails(data));
-    setEditBankDetails(false);
+    dispatch(
+      brandBankDetailsAction({
+        ...data,
+        account_type: data.account_type.value,
+        purpose: data.purpose.value,
+        customer_id: customerId,
+      })
+    );
+    // dispatch(setBankDetails(data));
+    // setEditBankDetails(false);
   };
 
   return (
