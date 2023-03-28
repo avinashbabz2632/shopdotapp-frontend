@@ -88,16 +88,16 @@ export default function Shipping() {
   }, [shippingDetails, shippingTimes]);
 
   const initalCall = () => {
-    if (shippingDetails && shippingTimes) {
+    if (shippingDetails?.street_address_1 && shippingTimes) {
       reset({
-        address1: shippingDetails.street_address_1,
-        address2: shippingDetails.street_address_2,
-        country: shippingDetails.country,
-        state: shippingDetails.state,
-        city: shippingDetails.city,
-        zip: shippingDetails.zip,
-        shippingfee: shippingDetails.ShippingRate.shipping_cost,
-        incrementalfee: shippingDetails.ShippingRate.incremental_fee,
+        address1: shippingDetails?.street_address_1,
+        address2: shippingDetails?.street_address_2,
+        country: shippingDetails?.country,
+        state: shippingDetails?.state,
+        city: shippingDetails?.city,
+        zip: shippingDetails?.zip,
+        shippingfee: shippingDetails?.ShippingRate?.shipping_cost,
+        incrementalfee: shippingDetails?.ShippingRate?.incremental_fee,
         daystofulfill: formatShippingTime().find(
           (item) => item.value === shippingDetails.shipping_time_id
         ),

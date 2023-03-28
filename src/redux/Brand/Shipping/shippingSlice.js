@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   shippingLoading: false,
   shippingData: {},
-  shippingTimes: []
+  shippingTimes: [],
 };
 
 const shippingSlice = createSlice({
@@ -18,7 +18,7 @@ const shippingSlice = createSlice({
     },
     setShippingTimes: (state, action) => {
       state.shippingTimes = action.payload;
-    }
+    },
   },
 });
 

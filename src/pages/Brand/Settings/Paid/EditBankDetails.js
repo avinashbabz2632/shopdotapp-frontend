@@ -10,7 +10,7 @@ import { BankDetailsValidationSchema } from './ValidationSchema';
 import { brandBankDetailsAction } from '../../../../actions/brandActions';
 
 const accountTypeOption = [
-  { value: 'CURRENT', label: 'Current' },
+  { value: 'CHECKING', label: 'Current' },
   {
     value: 'SAVINGS',
     label: 'Savings',

@@ -5,13 +5,14 @@ import * as types from './actionTypes';
 import {
   setBrandShippingData,
   setShippingLoading,
-  setShippingTimes
+  setShippingTimes,
 } from '../redux/Brand/Shipping/shippingSlice';
 import { onChangePassword } from '../redux/Brand/Security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
   setBrandValues,
+  setProfileCompleted,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid/gettingPaidSlice';
@@ -95,6 +96,15 @@ export function getBrandProfileAction(id) {
           setBrandProfileDetails({
             type: types.BRAND_PROFILE,
             data: response.data.data,
+          })
+        );
+        dispatch(
+          setProfileCompleted({
+            preference: response?.data?.data?.brandPreference?.id,
+            profile: response?.data?.data?.brand_profile?.company_name,
+            paid: response?.data?.data?.payment_detail?.customer_id,
+            shipping: response?.data?.data?.shippingRate?.id,
+            integration: response?.data?.data?.shop_detail,
           })
         );
       } else {
@@ -227,6 +237,7 @@ export function brandBankDetailsAction(formData) {
             Number(response.data.data.external_account_id)
           )
         );
+        dispatch(setProfileCompleted({ paid: true }));
       } else {
         toast.error('Something went worng');
       }
@@ -271,6 +282,7 @@ export function updateShipping(data) {
       dispatch(setShippingLoading(true));
       const response = await axios.post(API_END_POINT.BRAND_SHIPPING, data);
       dispatch(getBrandShippingAction(data.brand_id));
+      dispatch(setProfileCompleted({ shipping: true }));
       toast.success(response.data.message);
     } catch (err) {
       toast.error(
@@ -298,7 +310,7 @@ export function getBrandShippingTime() {
           : 'Something went worng'
       );
     }
-  }
+  };
 }
 
 export function getBrandShippingAction(brandId) {
@@ -308,10 +320,12 @@ export function getBrandShippingAction(brandId) {
         `${API_END_POINT.BRAND_SHIPPING}/${brandId}`
       );
       if (response.status == 200) {
-        dispatch(setBrandShippingData({
-          ...response.data.data,
-          daystofulfill: response.data.data.shipping_time_id
-        }));
+        dispatch(
+          setBrandShippingData({
+            ...response.data.data,
+            daystofulfill: response.data.data.shipping_time_id,
+          })
+        );
       }
     } catch (err) {
       toast.error(
@@ -329,6 +343,7 @@ export function updatePreferences(data) {
       const response = await axios.post(API_END_POINT.PREFERENCES, data);
       if (response.status === 201) {
         dispatch(getPreferencesAction(data.brand_id));
+        dispatch(setProfileCompleted({ preference: true }));
         toast.success('Preferences Updated');
       }
     } catch (err) {

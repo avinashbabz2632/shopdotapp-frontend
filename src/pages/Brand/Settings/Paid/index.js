@@ -45,7 +45,7 @@ export default function BrandPaid() {
           )
         );
       } else {
-        setIsCompleteApplication(true);
+        setEditBankDetails(true);
       }
     }
   }, []);

@@ -176,9 +176,7 @@ export default function Summary({
               </div>
               <div className="sm-item">
                 <label>Employer identification number (EIN)</label>
-                <label>
-                  {get(businessDetails, 'employerIdentificationNumber', '-')}
-                </label>
+                <label>{get(businessDetails, 'ein', '-')}</label>
               </div>
               <div className="sm-item">
                 <label>State of incorporation</label>

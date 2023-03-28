@@ -5,6 +5,13 @@ const initialState = {
   brandProfileDetails: {},
   brandCategory: {},
   brandValues: {},
+  profileCompleted: {
+    profile: false,
+    preference: false,
+    paid: false,
+    shipping: false,
+    integration: false,
+  },
 };
 
 const brandProfileSlice = createSlice({
@@ -26,14 +33,21 @@ const brandProfileSlice = createSlice({
         state.brandValues = action.payload.data;
       }
     },
+    setProfileCompleted: (state, action) => {
+      state.profileCompleted = { ...state.profileCompleted, ...action.payload };
+    },
   },
 });
 
 /**
  * Actions
  */
-export const { setBrandProfileDetails, setBrandCategory, setBrandValues } =
-  brandProfileSlice.actions;
+export const {
+  setBrandProfileDetails,
+  setBrandCategory,
+  setBrandValues,
+  setProfileCompleted,
+} = brandProfileSlice.actions;
 
 /**
  * Reducers

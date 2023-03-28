@@ -13,7 +13,10 @@ import { signOutAction } from '../../../actions/authActions';
 import { createBrowserHistory } from 'history';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 import { getBrandProfileAction } from '../../../actions/brandActions';
-import { selectBrandProfileDetails } from '../../../redux/Brand/Profile/brandProfileSelectors';
+import {
+  selectBrandProfileDetails,
+  selectProfileCompleted,
+} from '../../../redux/Brand/Profile/brandProfileSelectors';
 
 const BrandShipping = lazy(() => import('./Shipping'));
 const BrandSecurity = lazy(() => import('./Security'));
@@ -32,6 +35,7 @@ export default function BrandSettingPage() {
   const useDetails = useSelector(selectUserDetails);
   const history = createBrowserHistory();
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
+  const profileCompleted = useSelector(selectProfileCompleted);
 
   useEffect(() => {
     if (activeTab == 'shipping') {
@@ -61,27 +65,24 @@ export default function BrandSettingPage() {
 
   useEffect(() => {
     const steps = [];
-    if (
-      brandProfileDetails.brand_profile &&
-      brandProfileDetails.brand_profile.company_name
-    ) {
+    if (profileCompleted.profile) {
       steps.push('profile');
     }
-    if (brandProfileDetails.shop_detail) {
+    if (profileCompleted.integration) {
       steps.push('integration');
     }
-    if (brandProfileDetails.shippingRate) {
+    if (profileCompleted.shipping) {
       steps.push('shipping');
     }
-    if (brandProfileDetails.payment_detail) {
+    if (profileCompleted.paid) {
       steps.push('payment');
     }
-    if (brandProfileDetails.brandPreference) {
+    if (profileCompleted.preference) {
       steps.push('preference');
     }
-    console.log(steps, brandProfileDetails, 'brandprofile')
+
     setCompletedStep(steps);
-  }, [brandProfileDetails]);
+  }, [profileCompleted]);
 
   const renderTab = (tabName) => {
     switch (tabName) {
