@@ -45,6 +45,10 @@ const UserInfo = lazy(() => import('./pages/Onboarding/UserInfo'));
 const BrandSettingPage = lazy(() => import('./pages/Brand/Settings'));
 const BrandOrdersPage = lazy(() => import('./pages/Brand/Orders'));
 const BrandProductsPage = lazy(() => import('./pages/Brand/Products'));
+const BrandProductDetails = lazy(() => import('./pages/Brand/ProductDetails'));
+const EditProductDetails = lazy(() =>
+  import('./pages/Brand/EditProductDetails')
+);
 
 //Retailer Portal Pages
 const RetailerSettingPage = lazy(() => import('./pages/Retailer/Settings'));
@@ -114,6 +118,14 @@ function App() {
           />
           <Route path="/brand/orders" element={<BrandOrdersPage />} />
           <Route path="/brand/products" element={<BrandProductsPage />} />
+          <Route
+            path="/brand/product-details/:id"
+            element={<BrandProductDetails />}
+          />
+          <Route
+            path="/brand/edit-product/:id"
+            element={<EditProductDetails />}
+          />
           {/* Brand Portal Routes::: end */}
 
           {/* Retailer Portal Routes:::start */}
