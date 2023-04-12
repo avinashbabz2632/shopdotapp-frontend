@@ -1,0 +1,1 @@
+{"version":3,"file":"static/js/912.fe74d754.chunk.js","mappings":"wKAEe,SAASA,IACpB,OAAOC,EAAAA,EAAAA,KAAA,OAAAC,SAAK,yBAChB,C","sources":["pages/Brand/Settings/Users/index.js"],"sourcesContent":["import React from 'react';\n\nexport default function BrandUsers() {\n    return <div>users Coming soon....</div>;\n}\n"],"names":["BrandUsers","_jsx","children"],"sourceRoot":""}

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkshopdot=self.webpackChunkshopdot||[]).push([[912],{912:function(n,s,u){u.r(s),u.d(s,{default:function(){return o}});u(2791);var e=u(184);function o(){return(0,e.jsx)("div",{children:"users Coming soon...."})}}}]);
+//# sourceMappingURL=912.fe74d754.chunk.js.map
