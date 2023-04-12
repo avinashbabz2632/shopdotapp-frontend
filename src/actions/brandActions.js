@@ -276,11 +276,16 @@ export function getBrandBankDetailsAction(customerId, externalAccountId) {
   };
 }
 
-export function updateShipping(data) {
+export function updateShipping(data, shippingId) {
   return async (dispatch) => {
     try {
       dispatch(setShippingLoading(true));
-      const response = await axios.post(API_END_POINT.BRAND_SHIPPING, data);
+      let response;
+      if (shippingId) {
+        response = await axios.put(`${API_END_POINT.BRAND_SHIPPING}`, data);
+      } else {
+        response = await axios.post(API_END_POINT.BRAND_SHIPPING, data);
+      }
       dispatch(getBrandShippingAction(data.brand_id));
       dispatch(setProfileCompleted({ shipping: true }));
       toast.success(response.data.message);

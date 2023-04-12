@@ -62,7 +62,7 @@ export default function Shipping() {
   });
 
   const dispatch = useDispatch();
-  const shippingDetails = useSelector(selectShippingData);
+  const shippingDetailsRes = useSelector(selectShippingData);
   const shippingTimes = useSelector(shippingTime);
   const userDetails = useSelector(selectUserDetails);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
@@ -83,43 +83,49 @@ export default function Shipping() {
     dispatch(getBrandShippingTime());
   }, []);
 
-  useEffect(() => {
-    initalCall();
-  }, [shippingDetails, shippingTimes]);
-
   const initalCall = () => {
-    if (shippingDetails?.street_address_1 && shippingTimes) {
+    if (shippingDetailsRes?.shippingDetails?.brand_details && shippingTimes) {
+      const shippingDetails =
+        shippingDetailsRes?.shippingDetails?.brand_details?.shipping_rate;
       reset({
-        address1: shippingDetails?.street_address_1,
-        address2: shippingDetails?.street_address_2,
-        country: shippingDetails?.country,
-        state: shippingDetails?.state,
-        city: shippingDetails?.city,
-        zip: shippingDetails?.zip,
-        shippingfee: shippingDetails?.ShippingRate?.shipping_cost,
-        incrementalfee: shippingDetails?.ShippingRate?.incremental_fee,
+        address1: shippingDetails?.shipping_address?.street_address_1,
+        address2: shippingDetails?.shipping_address?.street_address_2,
+        country: shippingDetails?.shipping_address?.country,
+        state: shippingDetails?.shipping_address?.state,
+        city: shippingDetails?.shipping_address?.city,
+        zip: shippingDetails?.shipping_address?.zip,
+        shippingfee: shippingDetails?.shipping_cost,
+        incrementalfee: shippingDetails?.incremental_fee,
         daystofulfill: formatShippingTime().find(
-          (item) => item.value === shippingDetails.shipping_time_id
+          (item) =>
+            item.value === shippingDetails?.shipping_address?.shipping_time_id
         ),
       });
     }
   };
 
+  useEffect(() => {
+    initalCall();
+  }, [shippingDetailsRes, shippingTimes]);
+
   const onSubmit = (data) => {
     dispatch(
-      updateShipping({
-        brand_id: brandProfileDetails?.brand_profile?.id,
-        user_id: userDetails.id,
-        street_address_1: data.address1,
-        street_address_2: data.address2,
-        country: data.country,
-        state: 'montana',
-        city: data.city,
-        zip: data.zip,
-        shipping_cost: parseFloat(data.shippingfee),
-        incremental_fee: parseFloat(data.incrementalfee),
-        shipping_time_id: data.daystofulfill.value,
-      })
+      updateShipping(
+        {
+          brand_id: brandProfileDetails?.brand_profile?.id,
+          user_id: userDetails.id,
+          street_address_1: data.address1,
+          street_address_2: data.address2,
+          country: data.country,
+          state: 'montana',
+          city: data.city,
+          zip: data.zip,
+          shipping_cost: parseFloat(data.shippingfee),
+          incremental_fee: parseFloat(data.incrementalfee),
+          shipping_time_id: data.daystofulfill.value,
+        },
+        shippingDetailsRes?.shippingDetails?.id
+      )
     );
     reset();
   };

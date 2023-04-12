@@ -50,22 +50,10 @@ export default function BrandProfile() {
     }, 350);
   }, []);
 
-  useEffect(() => {
-    if (
-      brandProfileDetails.brand_profile &&
-      brandProfileDetails.brand_profile.company_name
-    ) {
-      initialState(brandProfileDetails);
-    }
-  }, [brandProfileDetails]);
-
   const initialState = async (brandData) => {
-    if (
-      (brandData.brand_profile && brandData.brand_profile.company_name) ||
-      brandData.brand_profile.id
-    ) {
-      let categoryArray = [];
-      let valuesArray = [];
+    if (brandData?.brand_profile?.id) {
+      const categoryArray = [];
+      const valuesArray = [];
       if (brandData.brand_categories && brandData.brand_categories.length) {
         await map(brandData.brand_categories, (cat, key) => {
           categoryArray.push(cat.id);
@@ -95,12 +83,21 @@ export default function BrandProfile() {
     }
   };
 
+  useEffect(() => {
+    if (
+      brandProfileDetails.brand_profile &&
+      brandProfileDetails.brand_profile.id
+    ) {
+      initialState(brandProfileDetails);
+    }
+  }, [brandProfileDetails]);
+
   const handleCheckbox = (value, valueType) => {
     const valueParse = JSON.parse(value);
     const currentArray =
       valueType === 'category' ? selectedCategory : selectedValues;
 
-    let updateArray = cloneDeep(currentArray);
+    const updateArray = cloneDeep(currentArray);
     const isSelected = updateArray.includes(valueParse);
     if (isSelected) {
       remove(updateArray, (r, key) => {
@@ -143,11 +140,7 @@ export default function BrandProfile() {
           profile_picture: image,
           ...data,
         },
-        isEmpty(
-          brandProfileDetails.brand_profile
-            ? brandProfileDetails.brand_profile.company_name
-            : ''
-        )
+        brandProfileDetails?.id
       )
     );
     // reset();
