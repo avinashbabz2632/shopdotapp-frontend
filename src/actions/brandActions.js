@@ -190,6 +190,59 @@ export function changePassword(formData, id) {
   };
 }
 
+export function getBrandBankDetailsAction(customerId, externalAccountId) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalAccountId}`
+      );
+      if (response && response.data && response.data.code == 200) {
+        setPaidDetails(response.data.data);
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      const error = err?.response?.data?.errors;
+      if (error.startsWith(`customer with id`))
+      {
+      } else {
+        toast.error(
+          err && err.response && err.response.data && err.response.data.errors
+            ? err.response.data.errors
+            : 'Something went worng'
+        );
+      }
+    }
+  };
+}
+export function brandBankDetailsAction(formData) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        API_END_POINT.EXTERNAL_ACCOUNT,
+        formData
+      );
+      if (response && response.data && response.data.code == 201) {
+        // dispatch(setPaidCompleted(true));
+        dispatch(
+          getBrandBankDetailsAction(
+            formData.customer_id,
+            Number(response.data.data.external_account_id)
+          )
+        );
+        dispatch(setProfileCompleted({ paid: true }));
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
 export function brandAsCustomerAction(formData, bankDetails) {
   return async (dispatch) => {
     try {
@@ -222,24 +275,19 @@ export function brandAsCustomerAction(formData, bankDetails) {
   };
 }
 
-export function brandBankDetailsAction(formData) {
+export function getBrandShippingAction(brandId) {
   return async (dispatch) => {
     try {
-      const response = await axios.post(
-        API_END_POINT.EXTERNAL_ACCOUNT,
-        formData
+      const response = await axios.get(
+        `${API_END_POINT.BRAND_SHIPPING}/${brandId}`
       );
-      if (response && response.data && response.data.code == 201) {
-        // dispatch(setPaidCompleted(true));
+      if (response.status == 200) {
         dispatch(
-          getBrandBankDetailsAction(
-            formData.customer_id,
-            Number(response.data.data.external_account_id)
-          )
+          setBrandShippingData({
+            ...response.data.data,
+            daystofulfill: response.data.data.shipping_time_id,
+          })
         );
-        dispatch(setProfileCompleted({ paid: true }));
-      } else {
-        toast.error('Something went worng');
       }
     } catch (err) {
       toast.error(
@@ -247,31 +295,6 @@ export function brandBankDetailsAction(formData) {
           ? err.response.data.errors
           : 'Something went worng'
       );
-    }
-  };
-}
-
-export function getBrandBankDetailsAction(customerId, externalAccountId) {
-  return async (dispatch) => {
-    try {
-      const response = await axios.get(
-        `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalAccountId}`
-      );
-      if (response && response.data && response.data.code == 200) {
-        setPaidDetails(response.data.data);
-      } else {
-        toast.error('Something went worng');
-      }
-    } catch (err) {
-      const error = err?.response?.data?.errors;
-      if (error.startsWith(`customer with id`)) {
-      } else {
-        toast.error(
-          err && err.response && err.response.data && err.response.data.errors
-            ? err.response.data.errors
-            : 'Something went worng'
-        );
-      }
     }
   };
 }
@@ -317,22 +340,17 @@ export function getBrandShippingTime() {
     }
   };
 }
-
-export function getBrandShippingAction(brandId) {
+export function getPreferencesAction(brandId) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `${API_END_POINT.BRAND_SHIPPING}/${brandId}`
+        `${API_END_POINT.PREFERENCES}/${brandId}`
       );
-      if (response.status == 200) {
-        dispatch(
-          setBrandShippingData({
-            ...response.data.data,
-            daystofulfill: response.data.data.shipping_time_id,
-          })
-        );
+      if (response.status === 200) {
+        dispatch(setBrandPreferenceData(response.data.data));
       }
     } catch (err) {
+      console.log(err, 'err');
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
@@ -361,22 +379,4 @@ export function updatePreferences(data) {
   };
 }
 
-export function getPreferencesAction(brandId) {
-  return async (dispatch) => {
-    try {
-      const response = await axios.get(
-        `${API_END_POINT.PREFERENCES}/${brandId}`
-      );
-      if (response.status === 200) {
-        dispatch(setBrandPreferenceData(response.data.data));
-      }
-    } catch (err) {
-      console.log(err, 'err');
-      toast.error(
-        err && err.response && err.response.data && err.response.data.errors
-          ? err.response.data.errors
-          : 'Something went worng'
-      );
-    }
-  };
-}
+

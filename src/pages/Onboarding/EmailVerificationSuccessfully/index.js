@@ -17,7 +17,7 @@ function EmailVerification() {
 
   return (
     <>
-      <OnboardingLayout pageTitle="Create Your ShopDot Account">
+      <OnboardingLayout pageTitle="">
         <div className="form-area">
           <div className="form-group verify_email">
             <div className="verify-title">
@@ -39,7 +39,7 @@ function EmailVerification() {
               <Button
                 className="button w-100"
                 type="button"
-                onClick={""}
+                onClick={()=>navigate("/")}
               >
                  Next
               </Button>
