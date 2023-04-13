@@ -2,8 +2,8 @@ import axios from '../utils/axios';
 import { toast } from 'react-toastify';
 import * as API_END_POINT from '../constants/api';
 import * as types from './actionTypes';
-import { setShippingLoading } from '../redux/Brand/Shipping/shippingSlice';
-import { onChangePassword } from '../redux/Brand/Security/securitySlice';
+// import { setShippingLoading } from '../redux/Brand/Shipping/shippingSlice';
+// import { onChangePassword } from '../redux/Brand/Security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
