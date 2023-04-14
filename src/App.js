@@ -33,8 +33,12 @@ const CreateAccount = lazy(() => import('./pages/Onboarding/CreateAccount'));
 const EmailVerification = lazy(() =>
   import('./pages/Onboarding/EmailVerification')
 );
-const EmailVerificationSuccess = lazy(() => import('./pages/Onboarding/EmailVerificationSuccessfully'));
-const EmailVerificationFailure = lazy(() => import('./pages/Onboarding/EmailVerificationFailure'));
+const EmailVerificationSuccess = lazy(() =>
+  import('./pages/Onboarding/EmailVerificationSuccessfully')
+);
+const EmailVerificationFailure = lazy(() =>
+  import('./pages/Onboarding/EmailVerificationFailure')
+);
 const Personalize = lazy(() => import('./pages/Onboarding/Personalize'));
 const BrandOnBoarding = lazy(() =>
   import('./pages/Onboarding/BrandOnboarding')
@@ -62,6 +66,13 @@ function App() {
 
   useEffect(() => {
     const pathname = window.location.pathname;
+    if (
+      pathname.includes('/reset-password/') ||
+      pathname.includes('/forgot-password-sent')
+    ) {
+      return;
+    }
+
     if (isLogged) {
       if (pathname == '/sign-up' || pathname == '/') {
         history.replace('/brand-onboarding');
@@ -90,6 +101,7 @@ function App() {
             element={<ForgotPasswordSent />}
           />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset-password/:user_id" element={<ResetPassword />} />
           <Route
             path="/reset-password-success"
             element={<ResetPasswordSuccess />}
@@ -99,8 +111,14 @@ function App() {
           {/* Onboarding Routes:::start */}
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/verify-email" element={<EmailVerification />} />
-          <Route path="/email-verification-success" element={<EmailVerificationSuccess />} />
-          <Route path="/email-verification-failure" element = {<EmailVerificationFailure/>} />
+          <Route
+            path="/email-verification-success"
+            element={<EmailVerificationSuccess />}
+          />
+          <Route
+            path="/email-verification-failure"
+            element={<EmailVerificationFailure />}
+          />
           <Route path="/personalize" element={<Personalize />} />
           <Route
             path="/personalized-not-supported"

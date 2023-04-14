@@ -10,9 +10,11 @@ import Header from '../../../components/Header/Header';
 import PublicLayout from '../../../layout/PublicLayout';
 import Input from '../../../components/common/Input/divStyled';
 import Button from '../../../components/common/Button';
-import '../auth.style.scss';
 import { LinkMod } from '../../../components/common/A';
 import { useNavigate } from 'react-router';
+import { AuthApiService } from '../../../services/apis/authApis';
+
+import '../auth.style.scss';
 
 // Validation schema of form field
 const validationSchema = yup
@@ -28,6 +30,7 @@ const validationSchema = yup
 
 function ForgotPassword() {
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -35,9 +38,15 @@ function ForgotPassword() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
-  const onSubmit = (data) => {
-    navigate('/forgot-password-sent');
-    reset();
+  const onSubmit = async (data) => {
+    const response = await AuthApiService.forgotEmailVarification({
+      email: data.email,
+    });
+
+    if (response) {
+      reset();
+      navigate('/forgot-password-sent');
+    }
   };
 
   return (
