@@ -7,7 +7,7 @@ import {
   setShippingLoading,
   setShippingTimes,
 } from '../redux/Brand/Shipping/shippingSlice';
-import { onChangePassword } from '../redux/Brand/security/securitySlice';
+import { onChangePassword } from '../redux/Brand/Security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
@@ -203,8 +203,7 @@ export function getBrandBankDetailsAction(customerId, externalAccountId) {
       }
     } catch (err) {
       const error = err?.response?.data?.errors;
-      if (error.startsWith(`customer with id`))
-      {
+      if (error.startsWith(`customer with id`)) {
       } else {
         toast.error(
           err && err.response && err.response.data && err.response.data.errors
@@ -378,5 +377,3 @@ export function updatePreferences(data) {
     }
   };
 }
-
-
