@@ -7,7 +7,7 @@ export const VERIFICATION_EMAIL = `${BASE_URL}/auth/verification/send-mail`;
 export const VERIFY_USER = `${BASE_URL}/auth/verify`;
 export const SIGN_IN = `${BASE_URL}/auth/signin`;
 export const REFRESH_TOKEN = `${BASE_URL}/auth/refresh-token`;
-export const LOGOUT = `${BASE_URL}/auth/logout`;
+export const LOGOUT = `${BASE_URL}/auth/signout`;
 export const CHANGE_PASSWORD = (id) =>
   `${BASE_URL}/auth/user/${id}/change-password`;
 
