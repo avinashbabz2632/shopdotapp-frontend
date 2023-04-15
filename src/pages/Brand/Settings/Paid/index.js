@@ -186,7 +186,7 @@ export default function BrandPaid() {
                             </a>
                           </div>
                         </div>
-                        <Suspense fallback={<Loader />}>
+                        <Suspense>
                           {!isCompleteApplication && renderTab()}
                         </Suspense>
                       </div>

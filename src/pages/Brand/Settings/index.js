@@ -139,7 +139,7 @@ export default function BrandSettingPage() {
           style={{ background: 'white' }}
         >
           <BrandSidebar completedStep={completedStep} />
-          <Suspense fallback={<Loader />}>
+          <Suspense>
             {tab && renderTab(tab)}
             {!activeTab && <BrandProfile />}
           </Suspense>
