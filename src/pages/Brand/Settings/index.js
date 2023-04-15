@@ -1,22 +1,16 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import '../Style/brand.style.scss';
-import '../Style/brand.media.scss';
-import '../Style/brand.dev.scss';
-import { useNavigate, useNavigation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../../../components/Loader';
 import BrandHeader from '../common/components/BrandHeader';
 import BrandSidebar from '../common/components/Sidebar';
-import OnboardingLayout from '../../../layout/OnboardingLayout';
-import CommonLayout from '../../../layout/CommonLayout';
 import { useDispatch, useSelector } from 'react-redux';
-import { signOutAction } from '../../../actions/authActions';
 import { createBrowserHistory } from 'history';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 import { getBrandProfileAction } from '../../../actions/brandActions';
-import {
-  selectBrandProfileDetails,
-  selectProfileCompleted,
-} from '../../../redux/Brand/Profile/brandProfileSelectors';
+import { selectProfileCompleted } from '../../../redux/Brand/Profile/brandProfileSelectors';
+import { AuthApiService } from '../../../services/apis/authApis';
+import { logOut } from '../../../redux/auth/authSlice';
+import { toast } from 'react-toastify';
 
 const BrandShipping = lazy(() => import('./Shipping'));
 const BrandSecurity = lazy(() => import('./Security'));
@@ -27,15 +21,36 @@ const BrandNotification = lazy(() => import('./Notifications'));
 const BrandUsers = lazy(() => import('./Users'));
 const BrandSetting = lazy(() => import('./Integration'));
 
+import '../Style/brand.style.scss';
+import '../Style/brand.media.scss';
+import '../Style/brand.dev.scss';
+
 export default function BrandSettingPage() {
+  const navigate = useNavigate();
   const { activeTab } = useParams();
   const [tab, setTab] = useState('');
   const [completedStep, setCompletedStep] = useState([]);
   const dispatch = useDispatch();
   const useDetails = useSelector(selectUserDetails);
   const history = createBrowserHistory();
-  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const profileCompleted = useSelector(selectProfileCompleted);
+
+  const handleLogOut = async () => {
+    const fromData = {
+      user_id: useDetails.id,
+    };
+
+    const res = await AuthApiService.signOut({ fromData });
+
+    if (res) {
+      dispatch(logOut());
+      history.replace('/');
+      navigate('/');
+      return;
+    }
+
+    toast.error('Seomething went wrong while signing out!');
+  };
 
   useEffect(() => {
     if (activeTab == 'shipping') {
@@ -111,8 +126,7 @@ export default function BrandSettingPage() {
         useDetails={useDetails}
         callback={(callbackType) => {
           if (callbackType === 'logout') {
-            dispatch(signOutAction());
-            history.replace('/');
+            handleLogOut();
           }
         }}
       />

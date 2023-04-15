@@ -3,7 +3,6 @@ import * as API_END_POINT from '../constants/api';
 import { logOut, setLoggedIn, setRegister } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
 import { toast } from 'react-toastify';
-import { map } from 'lodash';
 
 export function loginAction(formData) {
   return async (dispatch) => {
@@ -74,8 +73,23 @@ export function sendVerifyEmailAction(formData) {
   };
 }
 
-export function signOutAction() {
+export function signOutAction(payload) {
   return async (dispatch) => {
-    dispatch(logOut());
+    try {
+      const response = await axios.post(API_END_POINT.LOGOUT, payload.fromData);
+
+      if (response && response.data && response.data.code == 200) {
+        payload.history.replace('/');
+        dispatch(logOut());
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
   };
 }

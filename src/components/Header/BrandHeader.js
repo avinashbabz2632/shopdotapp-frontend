@@ -2,16 +2,41 @@ import React from 'react';
 import Logo from '../../assets/images/icons/logo.svg';
 import SearchClear from '../../assets/images/icons/icon-search.svg';
 import '../../pages/Brand/Style/brand.style.scss';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import ArrowDown from '../../assets/images/sprite.svg';
 import IconMarket from '../../assets/images/icons/icon-retailers.svg';
 import IconMail from '../../assets/images/icons/icon-mail.svg';
 import IconNotification from '../../assets/images/icons/icon-notification.svg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../redux/user/userSelector';
+import { createBrowserHistory } from 'history';
+import { AuthApiService } from '../../services/apis/authApis';
+import { logOut } from '../../redux/auth/authSlice';
+import { toast } from 'react-toastify';
 
 export default function BrandHeader() {
+  const history = createBrowserHistory();
   const useDetails = useSelector(selectUserDetails);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogOut = async () => {
+    const fromData = {
+      user_id: useDetails.id,
+    };
+
+    const res = await AuthApiService.signOut({ fromData });
+
+    if (res) {
+      dispatch(logOut());
+      history.replace('/');
+      navigate('/');
+      return;
+    }
+
+    toast.error('Seomething went wrong while signing out!');
+  };
+
   return (
     <>
       <header className="header mp-header">
@@ -109,7 +134,9 @@ export default function BrandHeader() {
                     <div className="dropdown_header-text">
                       Hi,{' '}
                       <span className="username">
-                        {`${useDetails?.first_name}`}
+                        {useDetails?.first_name
+                          ? `${useDetails?.first_name}`
+                          : ''}
                       </span>
                     </div>
                     <div className="dropdown_header-icon">
@@ -133,7 +160,9 @@ export default function BrandHeader() {
                           <a href="#">Help Center</a>
                         </li>
                         <li>
-                          <a href="#">Sign out</a>
+                          <a>
+                            <span onClick={handleLogOut}>Sign out</span>
+                          </a>
                         </li>
                       </ul>
                     </div>
