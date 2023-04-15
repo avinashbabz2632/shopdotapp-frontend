@@ -52,7 +52,11 @@ function SignIn() {
   useEffect(() => {
     if (success) {
       if (userDetails.is_email_verified) {
-        navigate('/personalize');
+        if (userDetails.role.name) {
+          navigate('/brand-onboarding');
+        } else {
+          navigate('/personalize');
+        }
       } else {
         navigate('/verify-email');
       }

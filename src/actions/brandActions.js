@@ -13,6 +13,7 @@ import {
   setBrandProfileDetails,
   setBrandValues,
   setProfileCompleted,
+  setShopifyStatus,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid/gettingPaidSlice';
@@ -67,6 +68,21 @@ export function connectShopifyAction(formData) {
           : 'Something went worng'
       );
     }
+  };
+}
+
+export function disconnectShopifyAction(formData, userId) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        API_END_POINT.DISCONNECT_SHOPIFY,
+        formData
+      );
+      if (response && response.data && response.data.code == 200) {
+        dispatch(getBrandProfileAction(userId));
+      } else {
+      }
+    } catch (err) {}
   };
 }
 

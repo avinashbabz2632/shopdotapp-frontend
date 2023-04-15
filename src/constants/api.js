@@ -31,6 +31,7 @@ export const BRAND_SHIPPING_TIMES = `${BASE_URL}/platform/shipping-times`;
 export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
+export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
 
 // Retailer
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;

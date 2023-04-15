@@ -1,16 +1,33 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { connectShopifyAction } from '../../../../actions/brandActions';
+import {
+  connectShopifyAction,
+  disconnectShopifyAction,
+} from '../../../../actions/brandActions';
 import Warning from '../../../../assets/images/icons/icon-outline.svg';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { useEffect } from 'react';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 
 export default function BrandSetting() {
   const [storeUrl, setStoreUrl] = useState('');
   const [isValideStoreURL, setIsValidStoreUrl] = useState(false);
   const [isStoreConnected, setIsStoreConnected] = useState(false);
   const [storeStatus, setStoreStatus] = useState(true); //temporary for seeing a disconnect ui
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const useDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (brandProfileDetails?.shop_detail?.shop) {
+      setStoreUrl(brandProfileDetails?.shop_detail?.shop);
+      setIsStoreConnected(true);
+    } else {
+      setStoreUrl('');
+      setIsValidStoreUrl(false);
+      setIsStoreConnected(false);
+    }
+  }, [brandProfileDetails]);
 
   const connectStore = () => {
     if (storeUrl) {
@@ -34,9 +51,7 @@ export default function BrandSetting() {
   };
 
   const handleReconnect = () => {
-    setStoreUrl('');
-    setIsValidStoreUrl(false);
-    setIsStoreConnected(false);
+    dispatch(disconnectShopifyAction({ domain: storeUrl }, useDetails.id));
   };
 
   return (
@@ -108,7 +123,7 @@ export default function BrandSetting() {
                         &nbsp;
                         <label>
                           https:{'//'}
-                          {storeUrl}.myshopify.com{' '}
+                          {storeUrl}
                         </label>
                       </div>
                       <div className="integration_shopify small">
