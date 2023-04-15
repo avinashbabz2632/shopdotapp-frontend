@@ -20,8 +20,10 @@ export default function BrandSetting() {
 
   useEffect(() => {
     if (brandProfileDetails?.shop_detail?.shop) {
-      setStoreUrl(brandProfileDetails?.shop_detail?.shop);
-      setIsStoreConnected(true);
+      if (brandProfileDetails?.shop_detail.is_active) {
+        setStoreUrl(brandProfileDetails?.shop_detail?.shop);
+        setIsStoreConnected(true);
+      }
     } else {
       setStoreUrl('');
       setIsValidStoreUrl(false);
@@ -51,7 +53,9 @@ export default function BrandSetting() {
   };
 
   const handleReconnect = () => {
-    dispatch(disconnectShopifyAction({ domain: storeUrl }, useDetails.id));
+    dispatch(
+      disconnectShopifyAction({ domain: storeUrl, user_id: useDetails.id })
+    );
   };
 
   return (
@@ -131,7 +135,7 @@ export default function BrandSetting() {
                           onClick={() => handleReconnect()}
                           className="button button-dark"
                         >
-                          Reconnect Shopify
+                          Disconnect
                         </button>
                       </div>
                     </div>

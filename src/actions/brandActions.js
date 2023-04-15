@@ -71,7 +71,7 @@ export function connectShopifyAction(formData) {
   };
 }
 
-export function disconnectShopifyAction(formData, userId) {
+export function disconnectShopifyAction(formData) {
   return async (dispatch) => {
     try {
       const response = await axios.post(
@@ -79,7 +79,7 @@ export function disconnectShopifyAction(formData, userId) {
         formData
       );
       if (response && response.data && response.data.code == 200) {
-        dispatch(getBrandProfileAction(userId));
+        dispatch(getBrandProfileAction(formData.user_id));
       } else {
       }
     } catch (err) {}
@@ -120,7 +120,7 @@ export function getBrandProfileAction(id) {
             profile: response?.data?.data?.brand_profile?.company_name,
             paid: response?.data?.data?.payment_detail?.customer_id,
             shipping: response?.data?.data?.shippingRate?.id,
-            integration: response?.data?.data?.shop_detail,
+            integration: response?.data?.data?.shop_detail?.is_active,
           })
         );
       } else {

@@ -33,8 +33,12 @@ const CreateAccount = lazy(() => import('./pages/Onboarding/CreateAccount'));
 const EmailVerification = lazy(() =>
   import('./pages/Onboarding/EmailVerification')
 );
-const EmailVerificationSuccess = lazy(() => import('./pages/Onboarding/EmailVerificationSuccessfully'));
-const EmailVerificationFailure = lazy(() => import('./pages/Onboarding/EmailVerificationFailure'));
+const EmailVerificationSuccess = lazy(() =>
+  import('./pages/Onboarding/EmailVerificationSuccessfully')
+);
+const EmailVerificationFailure = lazy(() =>
+  import('./pages/Onboarding/EmailVerificationFailure')
+);
 const Personalize = lazy(() => import('./pages/Onboarding/Personalize'));
 const BrandOnBoarding = lazy(() =>
   import('./pages/Onboarding/BrandOnboarding')
@@ -77,7 +81,7 @@ function App() {
 
   return (
     <>
-      <Suspense fallback={<Loader />}>
+      <Suspense>
         <Routes>
           {/* Auth Routes:::start */}
           <Route path="/loader" element={<Loader />} />
@@ -99,8 +103,14 @@ function App() {
           {/* Onboarding Routes:::start */}
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/verify-email" element={<EmailVerification />} />
-          <Route path="/email-verification-success" element={<EmailVerificationSuccess />} />
-          <Route path="/email-verification-failure" element = {<EmailVerificationFailure/>} />
+          <Route
+            path="/email-verification-success"
+            element={<EmailVerificationSuccess />}
+          />
+          <Route
+            path="/email-verification-failure"
+            element={<EmailVerificationFailure />}
+          />
           <Route path="/personalize" element={<Personalize />} />
           <Route
             path="/personalized-not-supported"
