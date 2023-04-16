@@ -45,7 +45,8 @@
     "prettier": "prettier --write src/**/*.js",
     "lint": "eslint --cache --fix src/**/*.js",
     "format:check": "prettier --check ./*.js",
-    "format:write": "prettier --write ./*.js"
+    "format:write": "prettier --write ./*.js",
+    "dev-build":"npm run build && git add . && git commit -m 'dev push' && git push orign pre-dev "
   },
   "eslintConfig": {
     "extends": [
