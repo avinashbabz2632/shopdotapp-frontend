@@ -13,7 +13,9 @@ import Button from '../../../components/common/Button';
 import '../auth.style.scss';
 
 import { LinkMod } from '../../../components/common/A';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AuthApiService } from '../../../services/apis/authApis';
+import { toast } from 'react-toastify';
 
 // Validation schema of form field
 const validationSchema = yup.object({
@@ -31,6 +33,7 @@ const validationSchema = yup.object({
 });
 
 function ResetPassword() {
+  const params = useParams();
   const [passwordType, setPasswordType] = useState(true);
   const [confirmPasswordType, setConfirmPasswordType] = useState(true);
   const navigate = useNavigate();
@@ -42,9 +45,20 @@ function ResetPassword() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
-  const onSubmit = (data) => {
-    navigate('/reset-password-success');
-    reset();
+  const onSubmit = async (data) => {
+    const userId = params?.user_id?.split('~')?.[1] ?? '';
+
+    const response = await AuthApiService.changePassword({
+      userId,
+      password: data.password,
+      conformPassword: data.passwordConfirmation,
+    });
+
+    if (response) {
+      reset();
+      navigate('/reset-password-success');
+      return;
+    }
   };
 
   return (
