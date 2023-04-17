@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -51,7 +51,11 @@ const defaultValues = {
   purpose: accountRoleOption[0],
 };
 
-export default function EditBankDetail({ setEditBankDetails, customerId }) {
+export default function EditBankDetail({
+  setEditBankDetails,
+  customerId,
+  externalId,
+}) {
   const {
     register,
     handleSubmit,
@@ -81,12 +85,17 @@ export default function EditBankDetail({ setEditBankDetails, customerId }) {
 
   const onSubmit = (data) => {
     dispatch(
-      brandBankDetailsAction({
-        ...data,
-        account_type: data.account_type.value,
-        purpose: data.purpose.value,
-        customer_id: customerId,
-      })
+      brandBankDetailsAction(
+        {
+          ...data,
+          account_type: data.account_type.value,
+          purpose: data.purpose.value,
+          customer_id: customerId,
+        },
+        true,
+        customerId,
+        externalId
+      )
     );
     // dispatch(setBankDetails(data));
     // setEditBankDetails(false);
@@ -222,7 +231,3 @@ export default function EditBankDetail({ setEditBankDetails, customerId }) {
     </form>
   );
 }
-
-EditBankDetail.propTypes = {
-  setEditBankDetails: PropTypes.func,
-};

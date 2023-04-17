@@ -79,9 +79,7 @@ export default function Summary({
         ? businessDetails.textIdType.value
         : null,
       brand_user_id: useDetails.id,
-      date_of_discharge: businessDetails.dateOfDischarge
-        ? moment(businessDetails.dateOfDischarge).format('MM/DD/YYYY')
-        : null,
+      date_of_discharge: businessDetails.dateOfDischarge,
       account_type: bankDetails.account_type.value,
       purpose: bankDetails.purpose.value,
     };

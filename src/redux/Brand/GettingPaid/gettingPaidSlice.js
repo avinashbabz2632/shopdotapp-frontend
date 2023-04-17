@@ -25,6 +25,7 @@ const gettingPaidSlice = createSlice({
       state.bankDetails = action.payload;
     },
     setPaidDetails: (state, action) => {
+      console.log(action.payload, 'action.payload');
       state.paidDetails = action.payload;
     },
     setGettingPaidPreferance: (state, action) => {

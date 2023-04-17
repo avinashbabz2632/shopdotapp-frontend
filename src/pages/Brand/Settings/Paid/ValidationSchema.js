@@ -169,7 +169,7 @@ export const BankDetailsValidationSchema = yup.object().shape({
     .nullable()
     .required('Bank Account type is required.'),
   purpose: yup.object().nullable().required('Purpose is required.'),
-  account_number: yup.string().required('Account number is required.'),
+  account_number: yup.string().max(12).required('Account number is required.'),
   routing_number: yup.string().required('Routing number is require'),
 });
 

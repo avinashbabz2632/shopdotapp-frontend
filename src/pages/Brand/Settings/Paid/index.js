@@ -80,8 +80,8 @@ export default function BrandPaid() {
   }, []);
 
   useEffect(() => {
-    if (paidDetails?.external) {
-      setEditBankDetails(paidDetails);
+    if (paidDetails?.id) {
+      // setEditBankDetails(paidDetails);
       setIsCompleteApplication(true);
     }
   }, [paidDetails]);
@@ -393,6 +393,9 @@ export default function BrandPaid() {
                       setEditBankDetails={setEditBankDetails}
                       customerId={
                         brandProfileDetails?.payment_detail?.customer_id
+                      }
+                      externalId={
+                        brandProfileDetails?.payment_detail?.external_account_id
                       }
                     />
                   )}

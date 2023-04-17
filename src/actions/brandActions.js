@@ -13,7 +13,6 @@ import {
   setBrandProfileDetails,
   setBrandValues,
   setProfileCompleted,
-  setShopifyStatus,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid/gettingPaidSlice';
@@ -212,8 +211,8 @@ export function getBrandBankDetailsAction(customerId, externalAccountId) {
       const response = await axios.get(
         `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalAccountId}`
       );
-      if (response && response.data && response.data.code == 200) {
-        setPaidDetails(response.data.data);
+      if (response && response.data && response.data.code == 201) {
+        dispatch(setPaidDetails(response.data.data));
       } else {
         toast.error('Something went worng');
       }
@@ -230,14 +229,24 @@ export function getBrandBankDetailsAction(customerId, externalAccountId) {
     }
   };
 }
-export function brandBankDetailsAction(formData) {
+export function brandBankDetailsAction(
+  formData,
+  isEdit,
+  customerId,
+  externalId
+) {
   return async (dispatch) => {
     try {
-      const response = await axios.post(
-        API_END_POINT.EXTERNAL_ACCOUNT,
-        formData
-      );
-      if (response && response.data && response.data.code == 201) {
+      let response;
+      if (isEdit) {
+        response = await axios.put(
+          `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalId}`,
+          formData
+        );
+      } else {
+        response = await axios.post(API_END_POINT.EXTERNAL_ACCOUNT, formData);
+      }
+      if (response && response.status === 201) {
         // dispatch(setPaidCompleted(true));
         dispatch(
           getBrandBankDetailsAction(
