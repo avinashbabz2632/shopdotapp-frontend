@@ -39,48 +39,11 @@ export default function Summary({
   };
 
   const onSubmit = (data) => {
-    let ein = '';
-    let ssn = '';
-    let owner_phone = '';
-    if (businessDetails.ein) {
-      ein = `${businessDetails.ein.substring(
-        0,
-        2
-      )}-${businessDetails.ein.substring(2, 9)}`;
-    }
-    if (businessDetails.ssn) {
-      ssn = `${businessDetails.ssn.substring(
-        0,
-        3
-      )}-${businessDetails.ssn.substring(3, 5)}-${businessDetails.ssn.substring(
-        5,
-        9
-      )}`;
-    }
-    if (personalDetails.ssn) {
-      ssn = `${personalDetails.ssn.substring(
-        0,
-        3
-      )}-${personalDetails.ssn.substring(3, 5)}-${personalDetails.ssn.substring(
-        5,
-        9
-      )}`;
-    }
-    if (personalDetails.owner_phone) {
-      owner_phone = `${personalDetails.owner_phone.substring(
-        0,
-        3
-      )}-${personalDetails.owner_phone.substring(
-        3,
-        6
-      )}-${personalDetails.owner_phone.substring(6, 10)}`;
-    }
-
     const formData = {
       legal_name: businessDetails.legal_name,
       doing_business_as: businessDetails.doing_business_as,
       business_category: businessDetails.business_category.value,
-      ein: ein,
+      ein: businessDetails.ein,
       state_of_incorporation: businessDetails.state_of_incorporation.value,
       date_of_incorporation: moment(
         businessDetails.date_of_incorporation
@@ -92,9 +55,9 @@ export default function Summary({
       zip: personalDetails.zip,
       owner_first_name: personalDetails.owner_first_name,
       owner_last_name: personalDetails.owner_last_name,
-      owner_phone: owner_phone,
-      owner_dob: moment(businessDetails.owner_dob).format('MM/DD/YYYY'),
-      ssn: ssn,
+      owner_phone: personalDetails.owner_phone,
+      owner_dob: personalDetails.owner_dob,
+      ssn: personalDetails.ssn,
       secondary_identification_type:
         personalDetails.secondary_identification_type.value,
       identification_state_of_issuance:
@@ -119,6 +82,8 @@ export default function Summary({
       date_of_discharge: businessDetails.dateOfDischarge
         ? moment(businessDetails.dateOfDischarge).format('MM/DD/YYYY')
         : null,
+      account_type: bankDetails.account_type.value,
+      purpose: bankDetails.purpose.value,
     };
 
     if (!formData.taxIdType) {
@@ -260,7 +225,7 @@ export default function Summary({
               </div>
               <div className="sm-item">
                 <label>Date of birth</label>
-                <label>{get(personalDetails, 'dob', '-')}</label>
+                <label>{get(personalDetails, 'owner_dob', '-')}</label>
               </div>
               <div className="sm-item">
                 <label>Address</label>

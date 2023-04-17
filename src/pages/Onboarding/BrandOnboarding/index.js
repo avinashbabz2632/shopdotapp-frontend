@@ -10,7 +10,10 @@ import { map } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 import { useEffect } from 'react';
-import { selectProfileCompleted } from '../../../redux/Brand/Profile/brandProfileSelectors';
+import {
+  selectBrandProfileDetails,
+  selectProfileCompleted,
+} from '../../../redux/Brand/Profile/brandProfileSelectors';
 import {
   connectShopifyAction,
   getBrandProfileAction,
@@ -47,6 +50,7 @@ const list = [
 export default function BrandOnBoarding() {
   const useDetails = useSelector(selectUserDetails);
   const profileCompleted = useSelector(selectProfileCompleted);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const dispatch = useDispatch();
   const [storeName, setStoreName] = useState('');
   const [isStoreNameValid, setIsStoreNameValid] = useState(false);
@@ -76,6 +80,7 @@ export default function BrandOnBoarding() {
     if (profileCompleted.integration) {
       setBrandStep([1, 2]);
       setActiveStep(3);
+      setStoreName(brandProfileDetails?.shop_detail?.shop);
     }
   };
 

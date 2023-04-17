@@ -5,6 +5,7 @@ const initialState = {
   representativeDetails: {},
   bankDetails: {},
   paidDetails: {},
+  gettingPaidPreferance: {},
 };
 
 const gettingPaidSlice = createSlice({
@@ -26,6 +27,9 @@ const gettingPaidSlice = createSlice({
     setPaidDetails: (state, action) => {
       state.paidDetails = action.payload;
     },
+    setGettingPaidPreferance: (state, action) => {
+      state.gettingPaidPreferance = action.payload;
+    },
     resetToInitial: (state) => {
       state.businessDetails = {};
       state.representativeDetails = {};
@@ -44,6 +48,7 @@ export const {
   setBankDetails,
   resetToInitial,
   setPaidDetails,
+  setGettingPaidPreferance,
 } = gettingPaidSlice.actions;
 
 /**
