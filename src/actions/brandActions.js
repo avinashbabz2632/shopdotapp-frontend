@@ -283,6 +283,8 @@ export function brandAsCustomerAction(formData, bankDetails) {
               purpose: bankDetails.purpose.value,
               customer_id: Number(response.data.data.customer_id),
             },
+            false,
+            null,
             formData.brand_user_id
           )
         );
