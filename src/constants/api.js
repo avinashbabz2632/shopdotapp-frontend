@@ -30,7 +30,9 @@ export const EXTERNAL_ACCOUNT = `${BASE_URL}/payment/customer/external-account`;
 export const PAYMENT_CUSTOMER = `${BASE_URL}/payment/customer`;
 export const BRAND_SHIPPING = `${BASE_URL}/user/brand-shipping`;
 export const BRAND_SHIPPING_TIMES = `${BASE_URL}/platform/shipping-times`;
-export const SYNC_PRODUCT = (id) => `${BASE_URL}/shopify/sync-all-product?&user_id=${id}`;
+export const SYNC_PRODUCT_ALL = (id) =>
+  `${BASE_URL}/shopify/sync-all-product?&user_id=${id}`;
+export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-all-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;

@@ -145,15 +145,15 @@ export function getPlatformValuesAction() {
   };
 }
 
-export function syncProductAction(productId, userId) {
+export function syncProductAction(userId) {
   return async (dispatch) => {
     const params = {
-      product_id: productId,
       user_id: userId,
     };
     try {
       const response = await axios.get(API_END_POINT.SYNC_PRODUCT, { params });
       if (response && response.data && response.data.code == 200) {
+        dispatch(getBrandProfileAction(userId));
       } else {
       }
     } catch (err) {}

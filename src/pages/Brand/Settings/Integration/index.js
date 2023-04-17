@@ -7,22 +7,27 @@ import {
 import Warning from '../../../../assets/images/icons/icon-outline.svg';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { useEffect } from 'react';
+import Avtar1 from '../../images/shopify_logo_whitebg.jpg';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 
 export default function BrandSetting() {
   const [storeUrl, setStoreUrl] = useState('');
   const [isValideStoreURL, setIsValidStoreUrl] = useState(false);
   const [isStoreConnected, setIsStoreConnected] = useState(false);
-  const [storeStatus, setStoreStatus] = useState(true); //temporary for seeing a disconnect ui
+  const [storeStatus, setStoreStatus] = useState('');
+  //temporary for seeing a disconnect ui
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const useDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (brandProfileDetails?.shop_detail?.shop) {
+      setStoreUrl(brandProfileDetails?.shop_detail?.shop);
+      setIsStoreConnected(true);
       if (brandProfileDetails?.shop_detail.is_active) {
-        setStoreUrl(brandProfileDetails?.shop_detail?.shop);
-        setIsStoreConnected(true);
+        setStoreStatus('active');
+      } else {
+        setStoreStatus('inactive');
       }
     } else {
       setStoreUrl('');
@@ -67,10 +72,10 @@ export default function BrandSetting() {
               <div id="integration">
                 <div className="integration_info">
                   <h2 className="heading">Integration</h2>
-                  {!isStoreConnected && storeStatus && (
+                  {!isStoreConnected && (
                     <div className="integration_item">
                       <div className="email_edit-section">
-                        <label>Connect your Shopify Store</label>
+                        <img src={Avtar1} alt="shopify"></img>
                         <span className="status-pill pill_not_connected">
                           Not Connected
                         </span>
@@ -114,10 +119,14 @@ export default function BrandSetting() {
                     </div>
                   )}
 
-                  {isStoreConnected && (
+                  {isStoreConnected && storeStatus === 'active' && (
                     <div className="integration_item">
                       <div className="email_edit-section">
-                        <label>Connect your Shopify Store</label>
+                        <img
+                          src={Avtar1}
+                          className="shopify-logo"
+                          alt="shopify"
+                        />
                         <span className="status-pill pill_connected">
                           Connected
                         </span>
@@ -142,10 +151,14 @@ export default function BrandSetting() {
                   )}
 
                   {/* {true && (   :: For the Disconnected UI  */}
-                  {!isStoreConnected && !storeStatus && (
+                  {storeStatus === 'inactive' && (
                     <div className="integration_item">
                       <div className="email_edit-section">
-                        <label>Connect your Shopify Store</label>
+                        <img
+                          src={Avtar1}
+                          className="shopify-logo"
+                          alt="shopify"
+                        />
                         <span className="status-pill pill_declined">
                           Disconnected
                         </span>

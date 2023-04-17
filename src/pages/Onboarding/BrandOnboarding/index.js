@@ -20,7 +20,6 @@ import {
   syncProductAction,
 } from '../../../actions/brandActions';
 
-
 const list = [
   {
     text1: 'Configure your mandatory',
@@ -84,21 +83,18 @@ export default function BrandOnBoarding() {
       setActiveStep(3);
       setStoreName(brandProfileDetails?.shop_detail?.shop);
     }
+    if (brandProfileDetails?.brand_profile?.is_initial_sync_done) {
+      setBrandStep([1, 2, 3]);
+      setActiveStep(4);
+    }
   };
 
   const handleSetStoreName = (e) => {
     setStoreName(e.target.value);
   };
 
-  const doSyncProduct = async() => {
-  const response = await dispatch(syncProductAction(useDetails.id));
-  console.log(response);
-  if(response){
-    setBrandStep([1, 2, 3]);
-    setActiveStep(4);
-
-  }
-
+  const doSyncProduct = async () => {
+    dispatch(syncProductAction(useDetails.id));
   };
 
   const handleStoreConnect = () => {
@@ -137,6 +133,7 @@ export default function BrandOnBoarding() {
                           shopifyConnected={
                             curentKey == 2 && brandStep.includes(2)
                           }
+                          activeStep={activeStep}
                           handleConnect={handleStoreConnect}
                           storeName={storeName}
                           btnCallback={doSyncProduct}
