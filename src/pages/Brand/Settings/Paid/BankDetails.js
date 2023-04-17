@@ -10,7 +10,7 @@ import { selectBankDetails } from '../../../../redux/Brand/GettingPaid/gettingPa
 import { BankDetailsValidationSchema } from './ValidationSchema';
 
 const accountTypeOption = [
-  { value: 'CURRENT', label: 'Current' },
+  { value: 'CHECKING', label: 'Current' },
   {
     value: 'SAVINGS',
     label: 'Savings',

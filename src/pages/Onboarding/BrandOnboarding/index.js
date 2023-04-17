@@ -7,8 +7,17 @@ import '../../Brand/Style/brand.media.scss';
 import BrandHeader from '../../../components/Header/BrandHeader';
 import OnboardListUI from './UI/OnboardListUI';
 import { map } from 'lodash';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../redux/user/userSelector';
+import { useEffect } from 'react';
+import {
+  selectBrandProfileDetails,
+  selectProfileCompleted,
+} from '../../../redux/Brand/Profile/brandProfileSelectors';
+import {
+  connectShopifyAction,
+  getBrandProfileAction,
+} from '../../../actions/brandActions';
 
 const list = [
   {
@@ -40,6 +49,9 @@ const list = [
 
 export default function BrandOnBoarding() {
   const useDetails = useSelector(selectUserDetails);
+  const profileCompleted = useSelector(selectProfileCompleted);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
+  const dispatch = useDispatch();
   const [storeName, setStoreName] = useState('');
   const [isStoreNameValid, setIsStoreNameValid] = useState(false);
 
@@ -47,19 +59,46 @@ export default function BrandOnBoarding() {
   const [activeStep, setActiveStep] = useState(1);
   const [productId, setProductId] = useState('8019618038038');
 
+  useEffect(() => {
+    dispatch(getBrandProfileAction(useDetails.id));
+  }, []);
+
+  useEffect(() => {
+    handleComplete();
+  }, [profileCompleted]);
+
+  const handleComplete = () => {
+    if (
+      profileCompleted.profile &&
+      profileCompleted.shipping &&
+      profileCompleted.preference &&
+      profileCompleted.paid
+    ) {
+      setBrandStep([1]);
+      setActiveStep(2);
+    }
+    if (profileCompleted.integration) {
+      setBrandStep([1, 2]);
+      setActiveStep(3);
+      setStoreName(brandProfileDetails?.shop_detail?.shop);
+    }
+  };
+
   const handleSetStoreName = (e) => {
-    const fixedSuffix = ['myshopify', 'com'];
-    const storeName = e.target.value;
-    const isValid = storeName
-      .split('.')
-      .some((item) => !fixedSuffix.includes(item));
-    console.log(e.target.value, 'e.target.value', isValid);
-    setIsStoreNameValid(isValid);
     setStoreName(e.target.value);
   };
 
   const doSyncProduct = () => {
     dispatch(syncProductAction(productId, useDetails.id));
+  };
+
+  const handleStoreConnect = () => {
+    dispatch(
+      connectShopifyAction({
+        name: `${storeName}.myshopify.com`,
+        user_id: useDetails.id,
+      })
+    );
   };
 
   return (
@@ -89,6 +128,7 @@ export default function BrandOnBoarding() {
                           shopifyConnected={
                             curentKey == 2 && brandStep.includes(2)
                           }
+                          handleConnect={handleStoreConnect}
                           storeName={storeName}
                           btnCallback={doSyncProduct}
                         />

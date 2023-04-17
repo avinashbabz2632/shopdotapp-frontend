@@ -13,6 +13,7 @@ import {
   setBrandProfileDetails,
   setBrandValues,
   setProfileCompleted,
+  setShopifyStatus,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid/gettingPaidSlice';
@@ -70,6 +71,21 @@ export function connectShopifyAction(formData) {
   };
 }
 
+export function disconnectShopifyAction(formData) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        API_END_POINT.DISCONNECT_SHOPIFY,
+        formData
+      );
+      if (response && response.data && response.data.code == 200) {
+        dispatch(getBrandProfileAction(formData.user_id));
+      } else {
+      }
+    } catch (err) {}
+  };
+}
+
 export function getPlatformCategoryAction() {
   return async (dispatch) => {
     try {
@@ -104,7 +120,7 @@ export function getBrandProfileAction(id) {
             profile: response?.data?.data?.brand_profile?.company_name,
             paid: response?.data?.data?.payment_detail?.customer_id,
             shipping: response?.data?.data?.shippingRate?.id,
-            integration: response?.data?.data?.shop_detail,
+            integration: response?.data?.data?.shop_detail?.is_active,
           })
         );
       } else {

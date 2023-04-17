@@ -88,7 +88,7 @@ function App() {
 
   return (
     <>
-      <Suspense fallback={<Loader />}>
+      <Suspense>
         <Routes>
           {/* Auth Routes:::start */}
           <Route path="/loader" element={<Loader />} />

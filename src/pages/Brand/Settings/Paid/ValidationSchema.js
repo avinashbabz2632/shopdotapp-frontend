@@ -2,6 +2,12 @@ import * as yup from 'yup';
 
 export const BusinessDetailsValidationSchema = yup.object().shape({
   legal_name: yup.string().required('Legal Business name is required.'),
+  email: yup
+    .string()
+    .email('Must be a valid email.')
+    .max(255)
+    .required('Contact email is required.'),
+  store_website: yup.string().required('Must be a valid website.'),
   doing_business_as: yup
     .string()
     .required('Doing Business is required.')
@@ -12,22 +18,12 @@ export const BusinessDetailsValidationSchema = yup.object().shape({
         return business ? business !== this.parent.legal_name : true;
       }
     ),
-  business_category: yup
-    .object()
-    .shape({
-      label: yup.string().required('Business Category is required.'),
-      value: yup.string().required('Business Category is required.'),
-    })
-    .nullable()
-    .required('Business Category is required.'),
+  business_category: yup.object().required('Business Category is required.'),
   textIdType: yup.object().when('businessCategory', {
     is: (businessCategory) => businessCategory?.value === 'signle_member_llc',
     then: yup.object().nullable().required('TextID is required'),
   }),
-  ein: yup.string().when('textIdType', {
-    is: (textIdType) => textIdType?.value === 'ein',
-    then: yup.string().required('Employer Identification Number is required'),
-  }),
+  ein: yup.string().required('Employer Identification Number is required'),
   // .when('businessCategory', {
   //     is: (businessCategory) =>
   //         businessCategory?.value !== 'solo_proprietor',

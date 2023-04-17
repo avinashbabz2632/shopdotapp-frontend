@@ -19,7 +19,7 @@ const BrandPreference = lazy(() => import('./Preferences'));
 const BrandPaid = lazy(() => import('./Paid'));
 const BrandNotification = lazy(() => import('./Notifications'));
 const BrandUsers = lazy(() => import('./Users'));
-const BrandSetting = lazy(() => import('./Integration'));
+const BrandIntegration = lazy(() => import('./Integration'));
 
 import '../Style/brand.style.scss';
 import '../Style/brand.media.scss';
@@ -106,7 +106,7 @@ export default function BrandSettingPage() {
       case 'security':
         return <BrandSecurity />;
       case 'integration':
-        return <BrandSetting />;
+        return <BrandIntegration />;
       case 'preference':
         return <BrandPreference />;
       case 'paid':
@@ -139,7 +139,7 @@ export default function BrandSettingPage() {
           style={{ background: 'white' }}
         >
           <BrandSidebar completedStep={completedStep} />
-          <Suspense fallback={<Loader />}>
+          <Suspense>
             {tab && renderTab(tab)}
             {!activeTab && <BrandProfile />}
           </Suspense>

@@ -8,6 +8,9 @@ import GpArrowWhiteIcon from '../../images/gp-arrow-white.svg';
 import { setRepresentativeDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
 import { selectRepresentativeDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
 import { BusinessRepresentativeValidationSchema } from './ValidationSchema';
+import { ExampleCustomInput } from '../../../../utils/utils';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
 const countryOptions = [
   {
@@ -73,6 +76,8 @@ export default function BusinessRepresentative({
   handleChangeTab,
 }) {
   const personalDetails = useSelector(selectRepresentativeDetails);
+  const [dateOfBirth, setDateOfBirth] = useState(null);
+
   const dispatch = useDispatch();
   const {
     control,
@@ -81,6 +86,8 @@ export default function BusinessRepresentative({
     reset,
     setValue,
     watch,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -107,6 +114,7 @@ export default function BusinessRepresentative({
         'identification_state_of_issuance',
         'identification_id',
         'secondary_identification_type',
+        'usCitizen',
       ];
 
       fields.forEach((field) => setValue(field, personalDetails[field]));
@@ -116,6 +124,83 @@ export default function BusinessRepresentative({
       setIsEdited(false);
     };
   }, [isEdited]);
+
+  const handlePhoneChange = (event) => {
+    const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
+    let formattedValue = '';
+    if (rawValue.length < 4) {
+      formattedValue = rawValue;
+    } else if (rawValue.length < 7) {
+      formattedValue = `${rawValue.slice(0, 3)}-${rawValue.slice(3)}`;
+    } else {
+      formattedValue = `${rawValue.slice(0, 3)}-${rawValue.slice(
+        3,
+        6
+      )}-${rawValue.slice(6, 10)}`;
+    }
+    setValue('owner_phone', formattedValue);
+    if (formattedValue === '000-000-0000') {
+      setError('owner_phone', {
+        type: 'custom',
+        message: 'Should be in XXX-XXX-XXXX format and Cannot be all zeroes.',
+      });
+    } else if (formattedValue.length < 12) {
+      setError('owner_phone', {
+        type: 'custom',
+        message: 'Phone should be 10 digits.',
+      });
+    } else {
+      clearErrors('owner_phone');
+      event.target.blur();
+    }
+  };
+
+  const handleSSNChange = (event) => {
+    const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
+    let formattedValues = '';
+    if (rawValue.length < 4) {
+      formattedValues = rawValue;
+    } else if (rawValue.length < 6) {
+      formattedValues = `${rawValue.slice(0, 3)}-${rawValue.slice(3)}`;
+    } else {
+      formattedValues = `${rawValue.slice(0, 3)}-${rawValue.slice(
+        3,
+        5
+      )}-${rawValue.slice(5, 9)}`;
+    }
+    setValue('ssn', formattedValues);
+    if (formattedValues.length < 3) {
+      setError('ssn', {
+        type: 'custom',
+        message: 'should be in XXX-XX-XXXX format.',
+      });
+    } else if (formattedValues.length < 11) {
+      setError('ssn', {
+        type: 'custom',
+        message: 'SSN should be 9 digit',
+      });
+    } else {
+      clearErrors('ssn');
+      event.target.blur();
+    }
+  };
+
+  const handleDateOfBirthChange = (date, event) => {
+    if (date) {
+      const isoDate = new Date(date).toISOString();
+      const formatedDate = moment(isoDate).format('MM/DD/YYYY');
+      setDateOfBirth(date);
+      setValue('owner_dob', formatedDate);
+      clearErrors('owner_dob');
+    } else {
+      setValue('owner_dob', null);
+      setError('owner_dob', {
+        type: 'custom',
+        message: 'Date of birth is required',
+      });
+    }
+    event.target.blur();
+  };
 
   const onSubmit = (data) => {
     dispatch(setRepresentativeDetails(data));
@@ -174,10 +259,12 @@ export default function BusinessRepresentative({
             <span className="asterisk-red">*</span>
           </label>
           <input
-            type="number"
+            type="tel"
             className="form-control mb-0"
             name="owner_phone"
+            placeholder="(123) 456-7899"
             {...register('owner_phone', { required: true })}
+            onChange={handlePhoneChange}
           />
           {errors.owner_phone && (
             <span className="error-text">{errors.owner_phone?.message}</span>
@@ -188,10 +275,12 @@ export default function BusinessRepresentative({
             SSN&nbsp;<span className="asterisk-red">*</span>
           </label>
           <input
-            type="number"
+            type="tel"
+            placeholder="123-44-5678"
             className="form-control mb-0"
             name="ssn"
             {...register('ssn', { required: true })}
+            onChange={handleSSNChange}
           />
           {errors.ssn && (
             <span className="error-text">{errors.ssn?.message}</span>
@@ -202,13 +291,32 @@ export default function BusinessRepresentative({
             Date of birth&nbsp;
             <span className="asterisk-red">*</span>
           </label>
-          <input
-            type="date"
-            className="form-control mb-0"
+          <Controller
             name="owner_dob"
-            placeholder="MM-DD-YY"
-            {...register('owner_dob', { required: true })}
+            control={control}
+            render={({ field }) => (
+              <>
+                <DatePicker
+                  {...field}
+                  closeOnScroll
+                  maxDate={new Date()}
+                  customInput={<ExampleCustomInput />}
+                  placeholderText="MM/DD/YYYY"
+                  selected={dateOfBirth}
+                  showYearDropdown
+                  yearDropdownItemNumber={100}
+                  scrollableYearDropdown
+                  onChange={(date, event) => {
+                    setDateOfBirth(date);
+                    handleDateOfBirthChange(date, event);
+                  }}
+                  dateFormat="MM-dd-yyyy"
+                  // showPopperArrow={false}
+                />
+              </>
+            )}
           />
+
           {errors.owner_dob && (
             <span className="error-text">{errors.owner_dob?.message}</span>
           )}
@@ -460,6 +568,44 @@ export default function BusinessRepresentative({
               {errors.identification_id?.message}
             </span>
           )}
+        </div>
+      </div>
+      <div className="form-input return_select-item mb-4 radio-row">
+        <p className="mb-0">
+          U.S. citizen <span className="asterisk-red">*</span>
+        </p>
+        <div className="mt-2 radio-flex">
+          <label className="radiobox">
+            <input
+              type="radio"
+              id="citizen"
+              name="usCitizen"
+              control={control}
+              value="yes"
+              {...register('usCitizen', {
+                required: true,
+              })}
+            />
+            <div className="radiobox-text">
+              <span>Yes</span>
+            </div>
+          </label>
+          <label className="radiobox">
+            <input
+              type="radio"
+              name="usCitizen"
+              id="citizen-one"
+              control={control}
+              defaultChecked
+              value="no"
+              {...register('usCitizen', {
+                required: true,
+              })}
+            />
+            <div className="radiobox-text">
+              <span>No</span>
+            </div>
+          </label>
         </div>
       </div>
       <div className="form-area">
