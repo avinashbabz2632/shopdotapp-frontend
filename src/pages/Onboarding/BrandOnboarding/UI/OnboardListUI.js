@@ -45,7 +45,11 @@ export default function OnboardListUI({
           {text2}
         </span>
         {btnText ? (
-          <button onClick={btnCallback} className="button button-blue">
+          <button
+            type="button"
+            onClick={btnCallback}
+            className="button button-blue"
+          >
             {btnText}
           </button>
         ) : (
