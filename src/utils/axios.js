@@ -136,7 +136,7 @@ axios.interceptors.response.use(undefined, async (error) => {
     error.response.status == 401 &&
     error.response.data.code != 904
   ) {
-    // location.reload();
+
   } else {
     return Promise.reject(error);
   }
