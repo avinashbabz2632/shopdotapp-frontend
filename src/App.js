@@ -66,6 +66,13 @@ function App() {
 
   useEffect(() => {
     const pathname = window.location.pathname;
+    if (
+      pathname.includes('/reset-password/') ||
+      pathname.includes('/forgot-password-sent')
+    ) {
+      return;
+    }
+
     if (isLogged) {
       if (pathname == '/sign-up' || pathname == '/') {
         history.replace('/brand-onboarding');
@@ -94,6 +101,7 @@ function App() {
             element={<ForgotPasswordSent />}
           />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset-password/:user_id" element={<ResetPassword />} />
           <Route
             path="/reset-password-success"
             element={<ResetPasswordSuccess />}

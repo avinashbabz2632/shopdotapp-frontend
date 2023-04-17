@@ -10,7 +10,9 @@ export const REFRESH_TOKEN = `${BASE_URL}/auth/refresh-token`;
 export const LOGOUT = `${BASE_URL}/auth/signout`;
 export const CHANGE_PASSWORD = (id) =>
   `${BASE_URL}/auth/user/${id}/change-password`;
-
+export const RESET_PASSWORD = (id) =>
+  `${BASE_URL}/auth/user/${id}/reset-password`;
+export const FORGOTEMAILVARIFICATION = `${BASE_URL}/auth/send-reset-link`;
 // User
 export const USER_ROLE = `${BASE_URL}/user/roles`;
 export const USER_PLATFORM = `${BASE_URL}/user/platform`;

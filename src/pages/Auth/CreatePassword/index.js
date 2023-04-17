@@ -10,6 +10,12 @@ import Header from '../../../components/Header/Header';
 import PublicLayout from '../../../layout/PublicLayout';
 import Input from '../../../components/common/Input/divStyled';
 import Button from '../../../components/common/Button';
+import { AuthApiService } from '../../../services/apis/authApis';
+import { useSelector } from 'react-redux';
+import { selectUserDetails } from '../../../redux/user/userSelector';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 import '../auth.style.scss';
 
 // Validation schema of form field
@@ -27,7 +33,8 @@ const validationSchema = yup
 function CreatePassword() {
   const [passwordType, setPasswordType] = useState(true);
   const [confirmPasswordType, setConfirmPasswordType] = useState(true);
-
+  const useDetails = useSelector(selectUserDetails);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -35,8 +42,13 @@ function CreatePassword() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
-  const onSubmit = (data) => {
-    reset();
+  const onSubmit = async (data) => {
+    const response = await AuthApiService.changePassword(data, useDetails.id);
+    if (response) {
+      navigate('/reset-password-success');
+    } else {
+      toast.error('Something went wrong');
+    }
   };
 
   return (
