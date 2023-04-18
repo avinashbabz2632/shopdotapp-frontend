@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../Style/brand.style.scss';
 import '../Style/brand.media.scss';
 import '../Style/brand.dev.scss';
-import BrandHeader from '../common/components/BrandHeader';
+import BrandHeader from '../../.././components/Header/BrandHeader';
 import ProductsFilters from './ProductsFilter';
 import ProductTable from './ProductTable';
 import iconClose from '../../../assets/images/icons/info-blue.svg';
