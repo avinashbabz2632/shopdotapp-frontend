@@ -7,13 +7,12 @@ import {
   setShippingLoading,
   setShippingTimes,
 } from '../redux/Brand/Shipping/shippingSlice';
-import { onChangePassword } from '../redux/Brand/Security/securitySlice';
+import { onChangePassword } from '../redux/Brand/security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
   setBrandValues,
   setProfileCompleted,
-  setShopifyStatus,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid/gettingPaidSlice';
@@ -146,18 +145,31 @@ export function getPlatformValuesAction() {
   };
 }
 
-export function syncProductAction(productId, userId) {
-  return async (dispatch) => {
-    const params = {
-      product_id: productId,
-      user_id: userId,
-    };
+export function syncProductAction(userId) {
+  return async () => {
+
     try {
-      const response = await axios.get(API_END_POINT.SYNC_PRODUCT, { params });
+      const response = await axios.get(API_END_POINT.SYNC_PRODUCT(userId));
       if (response && response.data && response.data.code == 200) {
-      } else {
+        return true;
       }
-    } catch (err) {}
+      return false;
+    } catch (err) {
+      return false;
+    }
+  };
+}
+export function syncProductProfile(userId){
+  return async () => {
+    try {
+      const response = await axios.get(API_END_POINT.USER_BRAND_PROFILE(userId));
+      if (response && response.data && response.data.code == 200) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      return false;
+    }
   };
 }
 
