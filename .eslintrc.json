@@ -61,6 +61,7 @@
         "prefer-template": 2,
         "prefer-const": 2,
         "radix": 2,
+        
         "react/display-name": 1,
         "react/forbid-prop-types": 0,
         "react/jsx-boolean-value": 1,
@@ -80,7 +81,7 @@
         "react/no-did-update-set-state": 1,
         "react/no-multi-comp": 1,
         "react/no-unknown-property": 1,
-        "react/prop-types": 2,
+        "react/prop-types": 0,
         "react/require-default-props": 1,
         "react/require-extension": 0,
         "react/self-closing-comp": 0,

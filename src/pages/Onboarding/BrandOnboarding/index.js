@@ -10,14 +10,16 @@ import { map } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 import { useEffect } from 'react';
-import { selectProfileCompleted } from '../../../redux/Brand/Profile/brandProfileSelectors';
+import {
+  selectBrandProfileDetails,
+  selectProfileCompleted,
+} from '../../../redux/Brand/Profile/brandProfileSelectors';
 import {
   connectShopifyAction,
   getBrandProfileAction,
   syncProductAction,
   syncProductProfile,
 } from '../../../actions/brandActions';
-
 
 const list = [
   {
@@ -50,6 +52,7 @@ const list = [
 export default function BrandOnBoarding() {
   const useDetails = useSelector(selectUserDetails);
   const profileCompleted = useSelector(selectProfileCompleted);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const dispatch = useDispatch();
   const [storeName, setStoreName] = useState('');
   const [isStoreNameValid, setIsStoreNameValid] = useState(false);
@@ -79,6 +82,11 @@ export default function BrandOnBoarding() {
     if (profileCompleted.integration) {
       setBrandStep([1, 2]);
       setActiveStep(3);
+      setStoreName(brandProfileDetails?.shop_detail?.shop);
+    }
+    if (brandProfileDetails?.brand_profile?.is_initial_sync_done) {
+      setBrandStep([1, 2, 3]);
+      setActiveStep(4);
     }
   };
 
@@ -99,7 +107,6 @@ export default function BrandOnBoarding() {
   });
 
 
-  };
 
   const handleStoreConnect = () => {
     dispatch(
@@ -137,6 +144,7 @@ export default function BrandOnBoarding() {
                           shopifyConnected={
                             curentKey == 2 && brandStep.includes(2)
                           }
+                          activeStep={activeStep}
                           handleConnect={handleStoreConnect}
                           storeName={storeName}
                           btnCallback={doSyncProduct}
