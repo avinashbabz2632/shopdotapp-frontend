@@ -37,8 +37,10 @@ export function registerAction(formData) {
     try {
       const response = await axios.post(API_END_POINT.REGISTER, formData);
       if (response && response.data && response.data.code == 201) {
-        dispatch(setRegister());
+
         dispatch(setUserInfo(response.data.data));
+        dispatch(setRegister());
+
       } else {
         toast.error('Something went worng');
       }

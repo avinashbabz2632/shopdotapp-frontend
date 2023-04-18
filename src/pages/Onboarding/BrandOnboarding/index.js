@@ -18,6 +18,7 @@ import {
   connectShopifyAction,
   getBrandProfileAction,
   syncProductAction,
+  syncProductProfile,
 } from '../../../actions/brandActions';
 
 const list = [
@@ -93,9 +94,19 @@ export default function BrandOnBoarding() {
     setStoreName(e.target.value);
   };
 
-  const doSyncProduct = async () => {
-    dispatch(syncProductAction(useDetails.id));
-  };
+  const doSyncProduct = async() => {
+  const productresponse = await dispatch(syncProductAction(useDetails.id));
+  const profilerespose = await dispatch(syncProductProfile(useDetails.id));
+
+  Promise.all([ productresponse,profilerespose]) .then((response)=>{
+    setBrandStep([1, 2, 3]);
+   setActiveStep(4);
+  }).catch((err) =>{
+    console.log(err);
+
+  });
+
+
 
   const handleStoreConnect = () => {
     dispatch(

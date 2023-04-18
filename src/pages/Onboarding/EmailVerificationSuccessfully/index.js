@@ -39,7 +39,7 @@ function EmailVerification() {
               <Button
                 className="button w-100"
                 type="button"
-                onClick={()=>navigate("/")}
+                onClick={()=>navigate("/personalize")}
               >
                  Next
               </Button>
