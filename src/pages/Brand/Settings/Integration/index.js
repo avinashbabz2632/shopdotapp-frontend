@@ -182,7 +182,7 @@ export default function BrandSetting() {
                       </div>
                       <div className="integration_shopify small">
                         <button
-                          onClick={() => handleReconnect()}
+                          onClick={connectStore}
                           className="button button-dark"
                         >
                           Reconnect Shopify

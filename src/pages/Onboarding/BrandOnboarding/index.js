@@ -70,7 +70,14 @@ export default function BrandOnBoarding() {
   }, [profileCompleted]);
 
   const handleComplete = () => {
-    if (
+    if (brandProfileDetails?.brand_profile?.is_initial_sync_done) {
+      setBrandStep([1, 2, 3]);
+      setActiveStep(4);
+    } else if (profileCompleted.integration) {
+      setBrandStep([1, 2]);
+      setActiveStep(3);
+      setStoreName(brandProfileDetails?.shop_detail?.shop);
+    } else if (
       profileCompleted.profile &&
       profileCompleted.shipping &&
       profileCompleted.preference &&
@@ -79,34 +86,25 @@ export default function BrandOnBoarding() {
       setBrandStep([1]);
       setActiveStep(2);
     }
-    if (profileCompleted.integration) {
-      setBrandStep([1, 2]);
-      setActiveStep(3);
-      setStoreName(brandProfileDetails?.shop_detail?.shop);
-    }
-    if (brandProfileDetails?.brand_profile?.is_initial_sync_done) {
-      setBrandStep([1, 2, 3]);
-      setActiveStep(4);
-    }
   };
 
   const handleSetStoreName = (e) => {
     setStoreName(e.target.value);
   };
 
-  const doSyncProduct = async() => {
-  const productresponse = await dispatch(syncProductAction(useDetails.id));
-  const profilerespose = await dispatch(syncProductProfile(useDetails.id));
+  const doSyncProduct = async () => {
+    const productresponse = await dispatch(syncProductAction(useDetails.id));
+    const profilerespose = await dispatch(syncProductProfile(useDetails.id));
 
-  Promise.all([ productresponse,profilerespose]) .then((response)=>{
-    setBrandStep([1, 2, 3]);
-   setActiveStep(4);
-  }).catch((err) =>{
-    console.log(err);
-
-  });
-
-
+    Promise.all([productresponse, profilerespose])
+      .then((response) => {
+        setBrandStep([1, 2, 3]);
+        setActiveStep(4);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleStoreConnect = () => {
     dispatch(

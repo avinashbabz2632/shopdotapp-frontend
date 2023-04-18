@@ -7,7 +7,7 @@ import {
   setShippingLoading,
   setShippingTimes,
 } from '../redux/Brand/Shipping/shippingSlice';
-import { onChangePassword } from '../redux/Brand/security/securitySlice';
+import { onChangePassword } from '../redux/Brand/Security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
@@ -145,10 +145,8 @@ export function getPlatformValuesAction() {
   };
 }
 
-
 export function syncProductAction(userId) {
   return async () => {
-
     try {
       const response = await axios.get(API_END_POINT.SYNC_PRODUCT(userId));
       if (response && response.data && response.data.code == 200) {
@@ -160,10 +158,12 @@ export function syncProductAction(userId) {
     }
   };
 }
-export function syncProductProfile(userId){
+export function syncProductProfile(userId) {
   return async () => {
     try {
-      const response = await axios.get(API_END_POINT.USER_BRAND_PROFILE(userId));
+      const response = await axios.get(
+        API_END_POINT.USER_BRAND_PROFILE(userId)
+      );
       if (response && response.data && response.data.code == 200) {
         return true;
       }
