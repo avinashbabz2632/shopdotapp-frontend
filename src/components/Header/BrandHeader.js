@@ -40,10 +40,7 @@ export default function BrandHeader() {
   return (
     <>
       <header className="header mp-header">
-        <div
-          className="header_block header_block-top mp-header_block-top"
-          style={{ width: '100%' }}
-        >
+        <div className="header_block header_block-top mp-header_block-top">
           <div className="header_container">
             <div className="header_logo">
               <a href="/brand-onboarding" className="logo">

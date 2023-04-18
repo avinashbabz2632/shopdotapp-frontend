@@ -108,8 +108,8 @@ export default function BrandOnBoarding() {
 
   return (
     <>
-      <BrandHeader />
       <div className="wrapper onbording">
+        <BrandHeader />
         <main>
           <section>
             <div className="ob-head oh-setting">
