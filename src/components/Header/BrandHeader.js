@@ -72,9 +72,9 @@ export default function BrandHeader() {
                   </NavLink>
                 </li>
                 <li className="menu_item">
-                  <a href="#" className="menu_link">
+                  <NavLink  to="/brand/products" className="menu_link">
                     Products
-                  </a>
+                  </NavLink>
                 </li>
                 <li className="menu_item">
                   <div className="dropdown">
