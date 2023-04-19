@@ -3,7 +3,6 @@ import { LinkMod } from '../../../../components/common/A';
 import { useParams } from 'react-router-dom';
 
 export default function BrandSidebar({ completedStep }) {
-  console.log(completedStep);
   const { activeTab } = useParams();
 
   const [tab, setTab] = useState(activeTab);

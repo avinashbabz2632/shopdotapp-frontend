@@ -9,7 +9,6 @@ import '../../Style/retail.dev.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectBrandValues } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import { getPlatformValuesAction } from '../../../../actions/brandActions';
-import { getRetailerProfileAction } from '../../../../actions/retailerActions';
 import { cloneDeep, remove } from 'lodash';
 
 const retailerCategoryList = [
