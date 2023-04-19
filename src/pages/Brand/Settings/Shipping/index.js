@@ -54,7 +54,8 @@ export default function Shipping() {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors , isDirty, isValid  },
+
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(shippingValidationSchema),
@@ -77,7 +78,7 @@ export default function Shipping() {
       return;
     }
   };
-
+console.log(shippingDetailsRes);
   useEffect(() => {
     dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
     dispatch(getBrandShippingTime());
@@ -103,6 +104,7 @@ export default function Shipping() {
       });
     }
   };
+
 
   useEffect(() => {
     initalCall();
@@ -462,8 +464,9 @@ export default function Shipping() {
                         Cancel
                       </button>
                       <button
-                        type="submit"
-                        // disabled={shippingDetails.shippingLoading}
+
+                         type="submit"
+                         disabled={!isDirty || !isValid}
                         className="button"
                       >
                         Save
