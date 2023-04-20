@@ -17,7 +17,7 @@ import {
   syncProductAction,
   syncProductProfile,
 } from '../../../actions/brandActions';
-
+import Loader from '../../../components/Loader';
 
 const list = [
   {
@@ -52,12 +52,14 @@ export default function BrandOnBoarding() {
   const profileCompleted = useSelector(selectProfileCompleted);
   const dispatch = useDispatch();
   const [storeName, setStoreName] = useState('');
-  const [isStoreNameValid, setIsStoreNameValid] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const [brandStep, setBrandStep] = useState([]);
   const [activeStep, setActiveStep] = useState(1);
   const [productId, setProductId] = useState('8019618038038');
-
+  const [productSynced, setProductSynced] = useState(false);
+  const productresponse = dispatch(syncProductAction(useDetails.id));
+  const profilerespose = dispatch(syncProductProfile(useDetails.id));
   useEffect(() => {
     dispatch(getBrandProfileAction(useDetails.id));
   }, []);
@@ -65,7 +67,9 @@ export default function BrandOnBoarding() {
   useEffect(() => {
     handleComplete();
   }, [profileCompleted]);
-
+  useEffect(() => {
+    doSyncProductProfiler();
+  }, []);
   const handleComplete = () => {
     if (
       profileCompleted.profile &&
@@ -85,20 +89,32 @@ export default function BrandOnBoarding() {
   const handleSetStoreName = (e) => {
     setStoreName(e.target.value);
   };
+  const doSyncProduct = async () => {
+    productresponse
+      .then((response) => {
+        setBrandStep([1, 2, 3]);
+        setActiveStep(4);
+        setProductSynced(true);
+        setloading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setProductSynced(false);
+        setloading(false);
+      });
+  };
 
-  const doSyncProduct = async() => {
-  const productresponse = await dispatch(syncProductAction(useDetails.id));
-  const profilerespose = await dispatch(syncProductProfile(useDetails.id));
-
-  Promise.all([ productresponse,profilerespose]) .then((response)=>{
-    setBrandStep([1, 2, 3]);
-   setActiveStep(4);
-  }).catch((err) =>{
-    console.log(err);
-
-  });
-
-
+  const doSyncProductProfiler = async () => {
+    setloading(true);
+    profilerespose
+      .then((response) => {
+        doSyncProduct();
+      })
+      .catch((err) => {
+        console.log(err);
+        setProductSynced(false);
+        setloading(false);
+      });
   };
 
   const handleStoreConnect = () => {
@@ -113,9 +129,13 @@ export default function BrandOnBoarding() {
   return (
     <>
       <BrandHeader />
+
+
       <div className="wrapper onbording">
         <main>
+          {loading  ?       <div className="ob-body" style={{padding:"5%"}} > <Loader/>  </div>:
           <section>
+
             <div className="ob-head oh-setting">
               <h1>Getting Started</h1>
             </div>
@@ -139,7 +159,8 @@ export default function BrandOnBoarding() {
                           }
                           handleConnect={handleStoreConnect}
                           storeName={storeName}
-                          btnCallback={doSyncProduct}
+                          btnCallback={doSyncProductProfiler}
+                          productSynced={productSynced}
                         />
                       );
                     })}
@@ -187,7 +208,7 @@ export default function BrandOnBoarding() {
                 </div>
               </div> */}
             </div>
-          </section>
+          </section> }
         </main>
       </div>
     </>

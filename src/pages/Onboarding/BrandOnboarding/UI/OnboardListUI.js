@@ -22,6 +22,7 @@ export default function OnboardListUI({
   handleStore,
   shopifyConnected,
   btnCallback,
+  productSynced
 }) {
   return (
     <div
@@ -47,10 +48,11 @@ export default function OnboardListUI({
         {btnText ? (
           <button
             type="button"
+            disabled={productSynced}
             onClick={btnCallback}
-            className="button button-blue"
+            className={`button ${!productSynced ? "button-blue" : "button-white"}`}
           >
-            {btnText}
+            { productSynced ? "Synced" : btnText}
           </button>
         ) : (
           <div />
