@@ -15,7 +15,6 @@ import {
 } from '../../../../redux/Brand/Orders/orderSelectors';
 import { getOrderList } from '../../../../actions/orderActions';
 import {
-  resetToInitial,
   retailerClear,
   fulFillmentClear,
   dateRangeClear,

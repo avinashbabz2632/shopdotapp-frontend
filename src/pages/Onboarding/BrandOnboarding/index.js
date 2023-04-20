@@ -17,7 +17,7 @@ import {
   syncProductAction,
   syncProductProfile,
 } from '../../../actions/brandActions';
-
+import { async } from 'q';
 
 const list = [
   {
@@ -57,9 +57,12 @@ export default function BrandOnBoarding() {
   const [brandStep, setBrandStep] = useState([]);
   const [activeStep, setActiveStep] = useState(1);
   const [productId, setProductId] = useState('8019618038038');
-
+  const [productSync, setProductSync] = useState(false);
+  const productresponse = dispatch(syncProductAction(useDetails.id));
+  const profilerespose = dispatch(syncProductProfile(useDetails.id));
   useEffect(() => {
     dispatch(getBrandProfileAction(useDetails.id));
+    doSyncProductProfiler();
   }, []);
 
   useEffect(() => {
@@ -86,19 +89,28 @@ export default function BrandOnBoarding() {
     setStoreName(e.target.value);
   };
 
-  const doSyncProduct = async() => {
-  const productresponse = await dispatch(syncProductAction(useDetails.id));
-  const profilerespose = await dispatch(syncProductProfile(useDetails.id));
-
-  Promise.all([ productresponse,profilerespose]) .then((response)=>{
-    setBrandStep([1, 2, 3]);
-   setActiveStep(4);
-  }).catch((err) =>{
-    console.log(err);
-
-  });
-
-
+  const doSyncProduct = async () => {
+       productresponse
+      .then((response) => {
+        setBrandStep([1, 2, 3]);
+        setActiveStep(4);
+        setProductSync(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const doSyncProductProfiler = async () => {
+    setProductSync(true);
+    profilerespose
+      .then((res) => {
+        doSyncProduct();
+      })
+      .catch((err) => {
+        setBrandStep([]);
+        setActiveStep(1);
+        setProductSync(false);
+      });
   };
 
   const handleStoreConnect = () => {
@@ -139,7 +151,8 @@ export default function BrandOnBoarding() {
                           }
                           handleConnect={handleStoreConnect}
                           storeName={storeName}
-                          btnCallback={doSyncProduct}
+                          btnCallback={doSyncProductProfiler}
+                          productSync={productSync}
                         />
                       );
                     })}
