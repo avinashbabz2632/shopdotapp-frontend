@@ -130,44 +130,47 @@ export default function BrandOnBoarding() {
     <>
       <BrandHeader />
 
-
       <div className="wrapper onbording">
         <main>
-          {loading  ?       <div className="ob-body" style={{padding:"5%"}} > <Loader/>  </div>:
-          <section>
-
-            <div className="ob-head oh-setting">
-              <h1>Getting Started</h1>
+          {loading ? (
+            <div className="ob-body" style={{ padding: '5%' }}>
+              {' '}
+              <Loader />{' '}
             </div>
-            <div className="ob-body">
-              <div className="form-wrapper fw-wide">
-                <form className="form" id="">
-                  <div className="w-100 form-area">
-                    {map(list, (l, key) => {
-                      const curentKey = key + 1;
-                      const isCompleted = brandStep.includes(curentKey);
-                      return (
-                        <OnboardListUI
-                          {...l}
-                          key={curentKey}
-                          isCompleted={isCompleted}
-                          isActive={curentKey == activeStep}
-                          openGuide={curentKey == 2 && activeStep == 2}
-                          handleStore={handleSetStoreName}
-                          shopifyConnected={
-                            curentKey == 2 && brandStep.includes(2)
-                          }
-                          handleConnect={handleStoreConnect}
-                          storeName={storeName}
-                          btnCallback={doSyncProductProfiler}
-                          productSynced={productSynced}
-                        />
-                      );
-                    })}
-                  </div>
-                </form>
+          ) : (
+            <section>
+              <div className="ob-head oh-setting">
+                <h1>Getting Started</h1>
               </div>
-              {/* <div className="steps step-left">
+              <div className="ob-body">
+                <div className="form-wrapper fw-wide">
+                  <form className="form" id="">
+                    <div className="w-100 form-area">
+                      {map(list, (l, key) => {
+                        const curentKey = key + 1;
+                        const isCompleted = brandStep.includes(curentKey);
+                        return (
+                          <OnboardListUI
+                            {...l}
+                            key={curentKey}
+                            isCompleted={isCompleted}
+                            isActive={curentKey == activeStep}
+                            openGuide={curentKey == 2 && activeStep == 2}
+                            handleStore={handleSetStoreName}
+                            shopifyConnected={
+                              curentKey == 2 && brandStep.includes(2)
+                            }
+                            handleConnect={handleStoreConnect}
+                            storeName={storeName}
+                            btnCallback={doSyncProductProfiler}
+                            productSynced={productSynced}
+                          />
+                        );
+                      })}
+                    </div>
+                  </form>
+                </div>
+                {/* <div className="steps step-left">
                 <div className="step-indicator">
                   <h6>Getting Started</h6>
                   <div className="si-info">
@@ -207,8 +210,9 @@ export default function BrandOnBoarding() {
                   </div>
                 </div>
               </div> */}
-            </div>
-          </section> }
+              </div>
+            </section>
+          )}
         </main>
       </div>
     </>

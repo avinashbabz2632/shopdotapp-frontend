@@ -232,12 +232,6 @@ input[type='number'] {
 
 //Orders Page
 
-.table-icon {
-    width: 8px;
-    margin-left: 10px;
-    height: 5px;
-}
-
 .mp-content .datalist-table_wrap {
     height: auto;
 }
@@ -313,16 +307,6 @@ input[type='number'] {
     height: 25px;
 }
 
-.tracking_num {
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.ant-modal-content {
-    width: 640px;
-    height: 100%;
-}
-
 .main {
     display: flex;
     flex-wrap: wrap;
@@ -356,12 +340,12 @@ input[type='number'] {
     gap: 1rem;
 }
 
-.button.button-dark,
-.button.button-red {
-    width: 283px;
-    height: 45px;
-    font-size: 18px;
-}
+// .button.button-dark,
+// .button.button-red {
+//     width: 283px;
+//     height: 45px;
+//     font-size: 18px;
+// }
 
 .iconinfo {
     display: flex;
@@ -881,7 +865,257 @@ a {
     z-index: 100 !important;
 }
 
-.mp-content .datalist-table thead {
+.mp-content .retailer thead {
     background: #fff;
-    z-index: 0 !important;
+    z-index: 9 !important;
+}
+
+.retailer-select {
+    display: block !important;
+}
+
+.dropdown_inner ul a {
+    position: relative !important;
+    padding: 0.2rem 0rem;
+    display: flex !important;
+    align-items: center !important;
+    align-content: center !important;
+    justify-content: inherit !important;
+    flex-wrap: nowrap !important;
+    gap: 0.8rem !important;
+    color: var(--color-orange-100) !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease-in-out !important;
+}
+
+// .mp-header_block-top .menu_link:before {
+//     background: var(--m--active) none !important;
+// }
+
+.dropdown_inner ul a:hover {
+    color: var(--color-navy) !important;
+}
+
+.dark {
+    --btn-background: var(--color-navy);
+    --btn-color: var(--color-white);
+    gap: 0.8rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.icon-info {
+    transform: rotate(180deg);
+    filter: brightness(0) saturate(100%) invert(40%) sepia(95%) saturate(528%)
+        hue-rotate(176deg) brightness(97%) contrast(98%);
+}
+
+.icon-info:hover {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(44%) saturate(469%)
+        hue-rotate(167deg) brightness(90%) contrast(91%);
+}
+
+.icon-left-right:hover {
+    filter: brightness(0) saturate(100%) invert(23%) sepia(11%) saturate(1394%)
+        hue-rotate(174deg) brightness(91%) contrast(87%);
+}
+
+.icon-info-down {
+    transform: rotate(180deg);
+}
+
+.swiper-wrapper.swiper-second {
+    transform: translate3d(-500px, 0px, 0px);
+    transition-duration: 300ms;
+}
+
+.swiper-wrapper.swiper-first {
+    transform: translate3d(0px, 0px, 0px);
+    transition-duration: 300ms;
+}
+
+.swiper-wrapper.swiper-third {
+    transform: translate3d(-1000px, 0px, 0px);
+    transition-duration: 300ms;
+}
+
+.button.button-dark.black {
+    width: auto;
+    height: 4rem;
+    font-size: 1.4rem;
+}
+
+.danger-red {
+    filter: brightness(0) saturate(100%) invert(59%) sepia(28%) saturate(3040%)
+        hue-rotate(319deg) brightness(87%) contrast(118%);
+}
+
+.icon-zoom:hover {
+    filter: brightness(0) saturate(100%) invert(16%) sepia(24%) saturate(854%)
+        hue-rotate(162deg) brightness(102%) contrast(86%);
+}
+
+.swiper-wrapper.swipe-second {
+    transform: translate3d(-480px, 0px, 0px);
+    transition-duration: 300ms;
+}
+
+.swiper-wrapper.swipe-first {
+    transform: translate3d(0px, 0px, 0px);
+    transition-duration: 300ms;
+}
+
+.swiper-wrapper.swipe-third {
+    transform: translate3d(-960px, 0px, 0px);
+    transition-duration: 300ms;
+}
+
+// --------------------------- edit product details -----------------------------------------------------
+.icon-Blue {
+    transform: rotate(180deg);
+    filter: brightness(0) saturate(100%) invert(40%) sepia(95%) saturate(528%)
+        hue-rotate(176deg) brightness(97%) contrast(98%);
+    width: 2.2rem;
+    height: 2.1rem;
+}
+
+.editor__editable,
+main .ck-editor[role='application'] .ck.ck-content,
+.ck.editor__editable[role='textbox'],
+.ck.ck-editor__editable[role='textbox'],
+.ck.editor[role='textbox'] {
+    width: 100%;
+    background: #fff;
+    font-size: 1em;
+    line-height: 1.6em;
+    height: 256px;
+    padding: 0.5em 1em;
+    border-bottom-right-radius: 8px solid #bd6f34 !important;
+    border-bottom-left-radius: 8px solid #bd6f34 !important;
+}
+
+.ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable) {
+    border-color: #bd6f34 !important;
+}
+
+.styled_drop_down > ul a {
+    position: relative !important;
+    padding: 1rem 0.8rem !important;
+    display: flex !important;
+    align-items: center !important;
+    align-content: center !important;
+    justify-content: inherit !important;
+    flex-wrap: nowrap !important;
+    gap: 0.8rem !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease-in-out !important;
+}
+
+.icon_info:hover {
+    filter: brightness(0) saturate(100%) invert(21%) sepia(51%) saturate(312%)
+        hue-rotate(174deg) brightness(93%) contrast(88%);
+}
+
+.close {
+    position: absolute;
+    width: 2.6rem;
+    right: 0.5rem;
+    top: 0.5rem;
+    color: var(--color-navy);
+}
+
+.close:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.icon_info {
+    filter: brightness(0) saturate(100%) invert(49%) sepia(80%) saturate(484%)
+        hue-rotate(341deg) brightness(89%) contrast(91%);
+}
+
+.form-control-wrapper > .input_disabled {
+    color: #cccbcd !important;
+}
+
+.gettingpaid-tab .wp-right .form-control {
+    padding-left: 3rem !important;
+}
+
+// .react-datepicker__calendar-icon {
+//     width: 3.2rem !important;
+//     height: 3.2rem !important;
+//     right: 0;
+//     top: 10px;
+//     background: url('../images/date-picker.svg') no-repeat right;
+// }
+
+.example-custom-input {
+    background: url('../images/date-picker.svg') no-repeat right center !important;
+    background-size: 13px !important;
+    background-position: 98.5% 12px !important;
+}
+
+.react-datepicker__calendar-icon {
+    width: 3.2rem !important;
+    height: 3.2rem !important;
+    right: 0;
+    top: 10px;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+    width: 40px !important;
+    line-height: 33px !important;
+    font-size: 13px !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+    font-size: 13px !important;
+}
+
+.react-datepicker {
+    font-family: Mulish, sans-serif !important;
+    border: 1px solid #b3b2b5 !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range,
+.react-datepicker__month-text--selected,
+.react-datepicker__month-text--in-selecting-range,
+.react-datepicker__month-text--in-range,
+.react-datepicker__quarter-text--selected,
+.react-datepicker__quarter-text--in-selecting-range,
+.react-datepicker__quarter-text--in-range,
+.react-datepicker__year-text--selected,
+.react-datepicker__year-text--in-selecting-range,
+.react-datepicker__year-text--in-range {
+    background-color: var(--btn-background) !important;
+}
+
+.react-datepicker__header {
+    background-color: #fbf5f0 !important;
+    border-bottom: 1px solid #b3b2b5 !important;
+}
+
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected,
+.react-datepicker__year-text--keyboard-selected {
+    background-color: #fbf5f0 !important;
+}
+
+.react-datepicker__day:hover,
+.react-datepicker__month-text:hover,
+.react-datepicker__quarter-text:hover,
+.react-datepicker__year-text:hover {
+    background-color: var(--btn-background) !important;
+    color: #fff !important;
 }

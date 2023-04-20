@@ -17,6 +17,7 @@ import {
 } from '../../../../actions/brandActions';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import { ToastContainer } from 'react-toastify';
+import { map } from 'lodash';
 
 const stateOption = [
   { value: 'manitoba', label: 'Manitoba' },
@@ -87,6 +88,12 @@ export default function Shipping() {
     if (shippingDetailsRes?.shippingDetails?.brand_details && shippingTimes) {
       const shippingDetails =
         shippingDetailsRes?.shippingDetails?.brand_details?.shipping_rate;
+      if (shippingTimes && shippingTimes.length) {
+        // map(shippingTimes,(ship)=>{
+        //   if(){
+        //   }
+        // })
+      }
       reset({
         address1: shippingDetails?.shipping_address?.street_address_1,
         address2: shippingDetails?.shipping_address?.street_address_2,
@@ -96,10 +103,13 @@ export default function Shipping() {
         zip: shippingDetails?.shipping_address?.zip,
         shippingfee: shippingDetails?.shipping_cost,
         incrementalfee: shippingDetails?.incremental_fee,
-        daystofulfill: formatShippingTime().find(
-          (item) =>
-            item.value === shippingDetails?.shipping_address?.shipping_time_id
-        ),
+        daystofulfill: shippingDetails?.shipping_address?.shipping_time_id
+          ? formatShippingTime().find(
+              (item) =>
+                item.value ===
+                shippingDetails?.shipping_address?.shipping_time_id
+            )
+          : false,
       });
     }
   };
@@ -127,7 +137,7 @@ export default function Shipping() {
         shippingDetailsRes?.shippingDetails?.id
       )
     );
-    reset();
+    // reset();
   };
 
   return (
