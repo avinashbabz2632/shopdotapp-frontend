@@ -19,6 +19,7 @@ export default function BrandSetting() {
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const useDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
+  console.log('YOU-1-storeUrl--', storeUrl);
 
   useEffect(() => {
     if (brandProfileDetails?.shop_detail?.shop) {
@@ -36,11 +37,14 @@ export default function BrandSetting() {
     }
   }, [brandProfileDetails]);
 
+  // alert(storeUrl);
+
   const connectStore = () => {
+  console.log('YOU-2-storeUrl--', storeUrl);
     if (storeUrl) {
       dispatch(
         connectShopifyAction({
-          name: `${storeUrl}.myshopify.com`,
+          name: storeUrl,
           user_id: useDetails.id,
         })
       );
@@ -168,7 +172,7 @@ export default function BrandSetting() {
                         &nbsp;
                         <label>
                           https:{'//'}
-                          {storeUrl}.myshopify.com
+                          {storeUrl}
                         </label>
                       </div>
                       <div
