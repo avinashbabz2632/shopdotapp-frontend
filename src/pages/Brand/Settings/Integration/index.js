@@ -40,7 +40,7 @@ export default function BrandSetting() {
     if (storeUrl) {
       dispatch(
         connectShopifyAction({
-          name: `${storeUrl}.myshopify.com`,
+          name: storeUrl,
           user_id: useDetails.id,
         })
       );
@@ -168,7 +168,7 @@ export default function BrandSetting() {
                         &nbsp;
                         <label>
                           https:{'//'}
-                          {storeUrl}.myshopify.com
+                          {storeUrl}
                         </label>
                       </div>
                       <div
