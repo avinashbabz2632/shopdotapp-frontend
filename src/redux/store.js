@@ -13,6 +13,7 @@ import { orderReducer } from './Brand/Orders/orderSlice';
 import { brandProfileReducer } from './Brand/Profile/brandProfileSlice';
 import { productReducer } from './Brand/Products/productSlice';
 import { preferenceReducer } from './Brand/Preference/preferenceSlice';
+import { getCountriesReducer } from './General/Countries/getCountriesSlice';
 
 const persistConfig = {
   // configuration object for redux-persist
@@ -38,6 +39,7 @@ const combinedReducer = combineReducers({
   brandProfile: brandProfileReducer,
   brandProduct: productReducer,
   preference: preferenceReducer,
+  countries: getCountriesReducer,
 });
 
 const rootReducer = (state, action) => {

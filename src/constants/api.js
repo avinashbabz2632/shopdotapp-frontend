@@ -51,3 +51,7 @@ export const VALUES = `${BASE_URL}/platform/values`;
 // Order
 export const LISTORDER = `${BASE_URL}/brand/orders`;
 export const ORDERDETAILS = `${BASE_URL}/order/details`;
+
+// General
+export const COUNTRIES = `/countries`;
+export const STATES = ``;
