@@ -635,15 +635,16 @@ input[type='submit'] {
 .row > div {
     padding: 0 var(--gap);
 }
-.header {
-    position: var(--h-pos);
-    width: 100%;
-    background: var(--h-bg);
-    font-size: var(--h-fz);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
-    z-index: var(--h-z);
+.header_main {
+    position: var(--h-pos) ;
+    width: 100% ;
+    background: var(--h-bg) ;
+    font-size: var(--h-fz) ;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12) ;
+    z-index: var(--h-z) ;
     height: var(--h-height);
 }
+
 .header_block {
     position: relative;
 }
@@ -9550,6 +9551,7 @@ a.remove-logo:hover {
     padding: 12px 0;
     margin-bottom: 16px;
     color: #283b49;
+    width: 100%;
 }
 .gettingpaid-tab .gp-right h3 .subtext {
     font-size: 14px;
@@ -11852,7 +11854,7 @@ html,
 .mp-content {
     padding-top: var(--h-mp-height);
 }
-.header.mp-header {
+.header_main.mp-header {
     height: var(--h-mp-height);
 }
 .mp-section {
@@ -12429,7 +12431,7 @@ html,
     margin-left: auto;
     position: absolute;
     right: 0;
-    top: -55px;
+    top: -95px;
 }
 
 .radio-authorizedsign {
