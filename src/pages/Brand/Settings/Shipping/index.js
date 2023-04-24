@@ -125,7 +125,7 @@ export default function Shipping() {
           brand_id: brandProfileDetails?.brand_profile?.id,
           user_id: userDetails.id,
           street_address_1: data.address1,
-          street_address_2: data.address2,
+          street_address_2: data.address2 ? data.address2 : null,
           country: data.country,
           state: 'montana',
           city: data.city,

@@ -9,6 +9,7 @@ import Loader from './components/Loader';
 import ResetPasswordSuccess from './pages/Auth/ResetPassword/ResetPassworeSuccess';
 import SiteMap from './pages/Sitemap';
 import { isLoggedIn } from './redux/auth/authSelector';
+import { selectRoleUpdated } from './redux/user/userSelector';
 
 // Auth Pages
 const SignIn = lazy(() => import('./pages/Auth/SignIn'));
@@ -63,6 +64,8 @@ function App() {
   const navigate = useNavigate();
   const history = createBrowserHistory();
   const isLogged = useSelector(isLoggedIn);
+  const isRoleUpdated = useSelector(selectRoleUpdated);
+  console.log('isRoleUpdated----',isRoleUpdated);
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -74,7 +77,10 @@ function App() {
     }
 
     if (isLogged) {
-      if (pathname == '/sign-up' || pathname == '/') {
+      if (pathname == '/sign-up' || (pathname == '/' && !isRoleUpdated)) {
+        history.replace('/personalize');
+        navigate('/personalize');
+      } else if(pathname == '/sign-up' || (pathname == '/' && isRoleUpdated)) {
         history.replace('/brand-onboarding');
         navigate('/brand-onboarding');
       }
