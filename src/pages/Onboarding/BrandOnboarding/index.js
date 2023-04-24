@@ -4,7 +4,7 @@ import exclmenationIcon from '../../../assets/images/icons/acculturation.svg';
 import '../../Brand/Style/brand.style.scss';
 import '../../Brand/Style/brand.dev.scss';
 import '../../Brand/Style/brand.media.scss';
-import BrandHeader from '../../../components/Header/BrandHeader';
+import BrandHeader from '../../Brand/common/components/BrandHeader';
 import OnboardListUI from './UI/OnboardListUI';
 import { map } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';

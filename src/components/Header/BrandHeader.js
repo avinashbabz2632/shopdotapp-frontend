@@ -69,7 +69,7 @@ export default function BrandHeader() {
                   </NavLink>
                 </li>
                 <li className="menu_item">
-                  <NavLink  to="/brand/products" className="menu_link">
+                  <NavLink to="/brand/products" className="menu_link">
                     Products
                   </NavLink>
                 </li>

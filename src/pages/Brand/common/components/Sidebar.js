@@ -13,8 +13,7 @@ export default function BrandSidebar({ completedStep }) {
   };
 
   const checkStepCompleted = (step) => {
-    if (completedStep.includes(step))
-      return 'checked';
+    if (completedStep.includes(step)) return 'checked';
     return 'required';
   };
 
@@ -36,8 +35,9 @@ export default function BrandSidebar({ completedStep }) {
                   <LinkMod
                     to={'/brand/setting'}
                     data-link="Account"
-                    className={`tab-links ${completedStep.includes('profile') ? 'checked' : 'required'
-                      } ${tab === 'profile' || tab == undefined ? 'active' : ''}`}
+                    className={`tab-links ${
+                      completedStep.includes('profile') ? 'checked' : 'required'
+                    } ${tab === 'profile' || tab == undefined ? 'active' : ''}`}
                     onClick={() => handleChangTab('profile')}
                   >
                     Brand Profile
@@ -51,8 +51,9 @@ export default function BrandSidebar({ completedStep }) {
                   <LinkMod
                     to={'/brand/setting/preference'}
                     data-link="Preferences"
-                    className={`tab-links required ${checkStepCompleted('preference')} ${tab === 'preference' ? 'active' : ''
-                      }`}
+                    className={`tab-links required ${checkStepCompleted(
+                      'preference'
+                    )} ${tab === 'preference' ? 'active' : ''}`}
                     onClick={() => handleChangTab('preference')}
                   >
                     Preferences
@@ -66,8 +67,9 @@ export default function BrandSidebar({ completedStep }) {
                   <LinkMod
                     to={'/brand/setting/paid'}
                     data-link="GettingPaid"
-                    className={`tab-links required ${checkStepCompleted('payment')} ${tab === 'paid' ? 'active' : ''
-                      }`}
+                    className={`tab-links required ${checkStepCompleted(
+                      'payment'
+                    )} ${tab === 'paid' ? 'active' : ''}`}
                     onClick={() => handleChangTab('paid')}
                   >
                     Getting Paid
@@ -81,8 +83,9 @@ export default function BrandSidebar({ completedStep }) {
                   <LinkMod
                     to={'/brand/setting/shipping'}
                     data-link="Shipping"
-                    className={`tab-links required ${checkStepCompleted('shipping')} ${tab === 'shipping' ? 'active' : ''
-                      }`}
+                    className={`tab-links required ${checkStepCompleted(
+                      'shipping'
+                    )} ${tab === 'shipping' ? 'active' : ''}`}
                     onClick={() => handleChangTab('shipping')}
                   >
                     Shipping
@@ -96,8 +99,9 @@ export default function BrandSidebar({ completedStep }) {
                   <LinkMod
                     to={'/brand/setting/integration'}
                     data-link="Integration"
-                    className={`tab-links required ${checkStepCompleted('integration')} ${tab == 'integration' ? 'active' : ''
-                      }`}
+                    className={`tab-links required ${checkStepCompleted(
+                      'integration'
+                    )} ${tab == 'integration' ? 'active' : ''}`}
                     onClick={() => handleChangTab('integration')}
                   >
                     Integration
@@ -119,8 +123,9 @@ export default function BrandSidebar({ completedStep }) {
                   <LinkMod
                     to={'/brand/setting/security'}
                     data-link="Security"
-                    className={`tab-links ${tab === 'security' ? 'active' : ''
-                      }`}
+                    className={`tab-links ${
+                      tab === 'security' ? 'active' : ''
+                    }`}
                     onClick={() => handleChangTab('security')}
                   >
                     Security
@@ -128,8 +133,9 @@ export default function BrandSidebar({ completedStep }) {
                   <LinkMod
                     to={'/brand/setting/notification'}
                     data-link="AlertsNotifications"
-                    className={`tab-links ${tab === 'notification' ? 'active' : ''
-                      }`}
+                    className={`tab-links ${
+                      tab === 'notification' ? 'active' : ''
+                    }`}
                     onClick={() => handleChangTab('notification')}
                   >
                     Notifications
