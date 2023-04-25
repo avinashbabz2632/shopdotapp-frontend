@@ -36,6 +36,9 @@ const gettingPaidSlice = createSlice({
       state.representativeDetails = {};
       state.bankDetails = {};
     },
+    clearPaidLogout: (state) => {
+      state = initialState;
+    },
   },
 });
 
@@ -50,6 +53,7 @@ export const {
   resetToInitial,
   setPaidDetails,
   setGettingPaidPreferance,
+  clearPaidLogout,
 } = gettingPaidSlice.actions;
 
 /**

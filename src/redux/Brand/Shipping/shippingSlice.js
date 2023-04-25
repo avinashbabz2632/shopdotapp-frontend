@@ -19,14 +19,21 @@ const shippingSlice = createSlice({
     setShippingTimes: (state, action) => {
       state.shippingTimes = action.payload;
     },
+    clearShippingLogout: (state) => {
+      state = initialState;
+    },
   },
 });
 
 /**
  * Actions
  */
-export const { setShippingLoading, setBrandShippingData, setShippingTimes } =
-  shippingSlice.actions;
+export const {
+  setShippingLoading,
+  setBrandShippingData,
+  setShippingTimes,
+  clearShippingLogout,
+} = shippingSlice.actions;
 
 /**
  * Reducers

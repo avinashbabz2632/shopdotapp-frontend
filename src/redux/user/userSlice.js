@@ -26,6 +26,9 @@ const userSlice = createSlice({
     setNotificationData: (state, action) => {
       state.notificationData = action.payload;
     },
+    clearUserLogout: (state) => {
+      state = initialState;
+    },
   },
 });
 
@@ -39,6 +42,7 @@ export const {
   setPersonalizeLoading,
   clearUpdateReducer,
   setNotificationData,
+  clearUserLogout,
 } = userSlice.actions;
 
 /**

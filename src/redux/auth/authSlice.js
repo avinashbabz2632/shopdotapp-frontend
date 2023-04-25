@@ -39,14 +39,23 @@ const authSlice = createSlice({
       state.isRegisterSuccess = false;
       state.isVerifyEmailSent = false;
     },
+    clearAuthLogout: (state) => {
+      state = initialState;
+    },
   },
 });
 
 /**
  * Actions
  */
-export const { logOut, setLoggedIn, setRegister, clearAuthReducer, setToken } =
-  authSlice.actions;
+export const {
+  logOut,
+  setLoggedIn,
+  setRegister,
+  clearAuthReducer,
+  setToken,
+  clearAuthLogout,
+} = authSlice.actions;
 
 /**
  * Reducers

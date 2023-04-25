@@ -19,6 +19,16 @@ import '../../Style/brand.dev.scss';
 import { createBrowserHistory } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { AuthApiService } from '../../../../services/apis/authApis';
+import { clearAuthLogout, logOut } from '../../../../redux/auth/authSlice';
+import { clearUserLogout } from '../../../../redux/user/userSlice';
+import { clearPaidLogout } from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
+import { clearOrderLogout } from '../../../../redux/Brand/Orders/orderSlice';
+import { clearProductLogout } from '../../../../redux/Brand/Products/productSlice';
+import { clearProfileLogout } from '../../../../redux/Brand/Profile/brandProfileSlice';
+import { clearSecurityLogout } from '../../../../redux/Brand/Security/securitySlice';
+import { clearShippingLogout } from '../../../../redux/Brand/Shipping/shippingSlice';
+import { clearPreferenceLogout } from '../../../../redux/Brand/Preference/preferenceSlice';
 
 function BrandHeader(props) {
   const location = useLocation();
@@ -40,6 +50,16 @@ function BrandHeader(props) {
 
     if (res) {
       dispatch(logOut());
+      dispatch(clearAuthLogout());
+      dispatch(clearUserLogout());
+      dispatch(clearPaidLogout());
+      dispatch(clearOrderLogout());
+      dispatch(clearProductLogout());
+      dispatch(clearProfileLogout());
+      dispatch(clearSecurityLogout());
+      dispatch(clearShippingLogout());
+      dispatch(clearPreferenceLogout());
+      dispatch({ type: 'LOGOUT' });
       history.replace('/');
       navigate('/');
       return;
@@ -256,7 +276,9 @@ function BrandHeader(props) {
                           <Link to="/">Help Center</Link>
                         </li>
                         <li>
-                          <Link to="/">Sign out</Link>
+                          <a>
+                            <span onClick={handleLogOut}>Sign out</span>
+                          </a>
                         </li>
                       </ul>
                     </div>

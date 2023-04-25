@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  changePasswordLoading: false
+  changePasswordLoading: false,
 };
 
 const securitySlice = createSlice({
@@ -11,15 +11,16 @@ const securitySlice = createSlice({
     onChangePassword: (state, action) => {
       state.changePasswordLoading = action.payload;
     },
+    clearSecurityLogout: (state) => {
+      state = initialState;
+    },
   },
 });
 
 /**
  * Actions
  */
-export const {
-  onChangePassword
-} = securitySlice.actions;
+export const { onChangePassword, clearSecurityLogout } = securitySlice.actions;
 
 /**
  * Reducers

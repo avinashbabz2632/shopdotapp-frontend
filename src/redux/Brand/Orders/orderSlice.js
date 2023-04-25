@@ -33,10 +33,13 @@ const orderSlice = createSlice({
     },
     setOrderList: (state, action) => {
       state.orderList = action.payload.rows;
-      state.orderCount = action.payload.count
+      state.orderCount = action.payload.count;
     },
     setOrderLoading: (state, action) => {
       state.orderLoading = action.payload;
+    },
+    clearOrderLogout: (state) => {
+      state = initialState;
     },
   },
 });
@@ -52,6 +55,7 @@ export const {
   dateRangeClear,
   setOrderList,
   setOrderLoading,
+  clearOrderLogout,
 } = orderSlice.actions;
 
 /**

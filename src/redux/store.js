@@ -41,10 +41,12 @@ const combinedReducer = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === 'auth/logOut') {
+  console.log(action, 'actionaction');
+  if (action.type === 'LOGOUT') {
     return combinedReducer(undefined, { type: undefined });
+  } else {
+    return combinedReducer(state, action);
   }
-  return combinedReducer(state, action);
 };
 
 // TODO: for future use - if we want to remove store from localstorage

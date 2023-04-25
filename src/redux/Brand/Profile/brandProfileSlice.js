@@ -36,6 +36,9 @@ const brandProfileSlice = createSlice({
     setProfileCompleted: (state, action) => {
       state.profileCompleted = { ...state.profileCompleted, ...action.payload };
     },
+    clearProfileLogout: (state) => {
+      state = initialState;
+    },
   },
 });
 
@@ -47,6 +50,7 @@ export const {
   setBrandCategory,
   setBrandValues,
   setProfileCompleted,
+  clearProfileLogout,
 } = brandProfileSlice.actions;
 
 /**
