@@ -7,7 +7,7 @@ import { encryptTransform } from 'redux-persist-transform-encrypt';
 import { authReducer } from './auth/authSlice';
 import { gettingPaidReducer } from './Brand/GettingPaid/gettingPaidSlice';
 import { userReducer } from './user/userSlice';
-import { securityReducer } from './Brand/security/securitySlice';
+import { securityReducer } from './Brand/Security/securitySlice';
 import { shippingReducer } from './Brand/Shipping/shippingSlice';
 import { orderReducer } from './Brand/Orders/orderSlice';
 import { brandProfileReducer } from './Brand/Profile/brandProfileSlice';
@@ -45,10 +45,12 @@ const combinedReducer = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === 'auth/logOut') {
+  console.log(action, 'actionaction');
+  if (action.type === 'LOGOUT') {
     return combinedReducer(undefined, { type: undefined });
+  } else {
+    return combinedReducer(state, action);
   }
-  return combinedReducer(state, action);
 };
 
 // TODO: for future use - if we want to remove store from localstorage

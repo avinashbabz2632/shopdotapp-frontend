@@ -11,13 +11,17 @@ const preferenceSlice = createSlice({
     setBrandPreferenceData: (state, action) => {
       state.preferenceData = action.payload;
     },
+    clearPreferenceLogout: (state) => {
+      state = initialState;
+    },
   },
 });
 
 /**
  * Actions
  */
-export const { setBrandPreferenceData } = preferenceSlice.actions;
+export const { setBrandPreferenceData, clearPreferenceLogout } =
+  preferenceSlice.actions;
 
 /**
  * Reducers
