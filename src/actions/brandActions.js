@@ -407,7 +407,7 @@ export function updatePreferences(data) {
       if (response.status === 201) {
         dispatch(getPreferencesAction(data.brand_id));
         dispatch(setProfileCompleted({ preference: true }));
-        toast.success('Preferences Updated');
+        toast.success(response.data?.message);
       }
     } catch (err) {
       toast.error(

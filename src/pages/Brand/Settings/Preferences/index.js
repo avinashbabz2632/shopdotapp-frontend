@@ -26,16 +26,16 @@ export const PreferencesValidationSchema = yup.object().shape({
     .number()
     .typeError('Inventory Buffer Percentage is required.')
     .required('Inventory Buffer Percentage is required.')
-    .min(0, 'Minimum atleast 0')
+    .min(1, 'Minimum atleast 1')
     .max(100, 'Allowed maximum is 100'),
   retunRefundPolicy: yup
     .string()
     .nullable()
     .required('Prior Bankruptcy is required.'),
-  requirementsForRetailers: yup
-    .string()
-    .nullable()
-    .required('Requirements for retailers is required.'),
+  // requirementsForRetailers: yup
+  //   .string()
+  //   .nullable()
+  //   .required('Requirements for retailers is required.'),
 });
 
 const categoryStyle = {
@@ -81,7 +81,7 @@ export default function BrandPreference() {
     defaultValues: {
       wholesalePercentage: 50,
       inventoryPercentage: 70,
-      returnPricing: options[0],
+      returnPricing: options[1],
       retunRefundPolicy: 'yes',
       connectBrand: null,
     },
@@ -346,7 +346,7 @@ export default function BrandPreference() {
                           type="radio"
                           control={control}
                           name="retunRefundPolicy"
-                          value="yes"
+                          value="no"
                           {...register('retunRefundPolicy', {
                             required: true,
                           })}
@@ -360,7 +360,7 @@ export default function BrandPreference() {
                           type="radio"
                           control={control}
                           name="retunRefundPolicy"
-                          value="no"
+                          value="yes"
                           {...register('retunRefundPolicy', {
                             required: true,
                           })}

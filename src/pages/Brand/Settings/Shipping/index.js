@@ -59,6 +59,8 @@ export default function Shipping() {
   const defaultValues = {
     // statelist: transformStatesOption ? transformStatesOption[0] : null,
     // countrylist: transformCountriesOption ? transformCountriesOption[0] : null,
+    shippingfee: '0.00',
+    incrementalfee: '0.00',
   };
 
   const {
@@ -66,6 +68,7 @@ export default function Shipping() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -100,12 +103,13 @@ export default function Shipping() {
   }, []);
 
   useEffect(() => {
-    if(watchCountry){
+    if(watchCountry && watchCountry.value){
       dispatch(getStatesAction(watchCountry?.value));
     }
   }, [watchCountry]);
 
   const initalCall = () => {
+    console.log('shippingDetailsRes-----', shippingDetailsRes);
     if (shippingDetailsRes?.shippingDetails?.brand_details && shippingTimes) {
       const shippingDetails =
         shippingDetailsRes?.shippingDetails?.brand_details?.shipping_rate;
@@ -118,8 +122,12 @@ export default function Shipping() {
       reset({
         address1: shippingDetails?.shipping_address?.street_address_1,
         address2: shippingDetails?.shipping_address?.street_address_2,
-        country: shippingDetails?.shipping_address?.country,
-        state: shippingDetails?.shipping_address?.state,
+        country: transformCountriesOption.find(country => {
+          return shippingDetails?.shipping_address?.country === country.label;
+        }),
+        state: transformStatesOption.find(state => {
+          return shippingDetails?.shipping_address?.state === state.label;
+        }),
         city: shippingDetails?.shipping_address?.city,
         zip: shippingDetails?.shipping_address?.zip,
         shippingfee: shippingDetails?.shipping_cost,
@@ -160,6 +168,26 @@ export default function Shipping() {
     );
     reset();
   };
+
+  const formatCurrency = (value) => {
+    const containsDot = value.includes(".");
+    let result;
+    if(containsDot){
+      const splits = value.split('.');
+      const integerValue = `${splits[0]}`;
+      let decimalValue;
+      if(splits[1].length >= 2){
+        decimalValue = splits[1].substr(0,2);
+      } else {
+        decimalValue = `${splits[1]}0`;
+      }
+      result = `${integerValue}.${decimalValue}`;
+    } else {
+      const _result = value.substr(0,2);
+      result = `${_result}.00`;
+    }
+    return result;
+  }
 
   return (
     <div className="pc_tabs-content tabs_body">
@@ -364,11 +392,22 @@ export default function Shipping() {
                               </div>
                             </div>
                           </label>
-                          <input
-                            className="form-control mb-0"
-                            name="shippingfee"
-                            {...register('shippingfee', { required: true })}
-                          />
+                          <div className='input-wrapper'>
+                            <div className='prefix'>$</div>
+                            <input
+                              className="currency-input mb-0"
+                              name="shippingfee"
+                              {...register('shippingfee', { required: true, onBlur: (e) => {
+                                const value = e.target.value;
+                                if(value){
+                                  const result = formatCurrency(value);
+                                  setValue('shippingfee', result);
+                                } else {
+                                  setValue('shippingfee', `0.00`)
+                                }
+                              }})}
+                            />
+                          </div>
                           {errors.shippingfee && (
                             <span className="error-text">
                               {errors.shippingfee?.message}
@@ -396,11 +435,23 @@ export default function Shipping() {
                               </div>
                             </div>
                           </label>
-                          <input
-                            className="form-control mb-0"
-                            name="incrementalfee"
-                            {...register('incrementalfee', { required: true })}
-                          />
+                          <div className='input-wrapper'>
+                            <div className='prefix'>$</div>
+                            <input
+                              className="currency-input mb-0"
+                              name="incrementalfee"
+                              {...register('incrementalfee', { required: true, onBlur: (e) => {
+                                const value = e.target.value;
+                                if(value){
+                                  const result = formatCurrency(value);
+                                  setValue('incrementalfee', result);
+                                } else {
+                                  setValue('incrementalfee', `0.00`)
+                                }
+                              } })}
+                            />
+                          </div>
+                          
                           {errors.incrementalfee && (
                             <span className="error-text">
                               {errors.incrementalfee?.message}
