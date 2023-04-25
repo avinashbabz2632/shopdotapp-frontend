@@ -48,11 +48,11 @@ const categoryStyle = {
 export default function Shipping() {
   const countriesOption = useSelector(selectCountries);
   const transformCountriesOption = countriesOption?.map(el => {
-    return {value: `${el.id}`, label: el.name};
+    return {value: el.id, label: el.name};
   });
   const statesOption = useSelector(selectStates);
   const transformStatesOption = statesOption?.map(el => {
-    return {label: el.name, value: `${el.country_id}`}
+    return {label: el.name, value: el.country_id}
   });
   
 
@@ -140,20 +140,19 @@ export default function Shipping() {
   }, [shippingDetailsRes, shippingTimes]);
 
   const onSubmit = (data) => {
-    console.log('data-------', data);
     dispatch(
       updateShipping(
         {
           brand_id: brandProfileDetails?.brand_profile?.id,
           user_id: userDetails.id,
           street_address_1: data.address1,
-          street_address_2: data.address2,
+          street_address_2: data.address2 ? data.address2 : null,
           country: data.country.label,
           state: data.state.label,
           city: data.city,
           zip: data.zip,
-          shipping_cost: parseFloat(data.shippingfee),
-          incremental_fee: parseFloat(data.incrementalfee),
+          shipping_cost: parseFloat(data.shippingfee).toFixed(2),
+          incremental_fee: parseFloat(data.incrementalfee).toFixed(2),
           shipping_time_id: data.daystofulfill.value,
         },
         shippingDetailsRes?.shippingDetails?.id
@@ -366,7 +365,6 @@ export default function Shipping() {
                             </div>
                           </label>
                           <input
-                            type="number"
                             className="form-control mb-0"
                             name="shippingfee"
                             {...register('shippingfee', { required: true })}
@@ -399,7 +397,6 @@ export default function Shipping() {
                             </div>
                           </label>
                           <input
-                            type="number"
                             className="form-control mb-0"
                             name="incrementalfee"
                             {...register('incrementalfee', { required: true })}
