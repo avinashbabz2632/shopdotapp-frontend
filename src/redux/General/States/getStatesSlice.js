@@ -25,4 +25,4 @@ export const {
   /**
    * Reducers
    */
-export const getCountriesReducer = getStatesSlice.reducer;
+export const getStatesReducer = getStatesSlice.reducer;

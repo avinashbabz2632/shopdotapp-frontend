@@ -20,7 +20,7 @@ const getCountriesSlice = createSlice({
  */
 export const {
     setCountries,
-} = gettingPaidSlice.actions;
+} = getCountriesSlice.actions;
   
   /**
    * Reducers
