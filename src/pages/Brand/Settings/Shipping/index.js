@@ -109,7 +109,6 @@ export default function Shipping() {
   }, [watchCountry]);
 
   const initalCall = () => {
-    console.log('shippingDetailsRes-----', shippingDetailsRes);
     if (shippingDetailsRes?.shippingDetails?.brand_details && shippingTimes) {
       const shippingDetails =
         shippingDetailsRes?.shippingDetails?.brand_details?.shipping_rate;
