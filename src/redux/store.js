@@ -7,12 +7,14 @@ import { encryptTransform } from 'redux-persist-transform-encrypt';
 import { authReducer } from './auth/authSlice';
 import { gettingPaidReducer } from './Brand/GettingPaid2/gettingPaidSlice';
 import { userReducer } from './user/userSlice';
-import { securityReducer } from './Brand/Security/securitySlice';
+import { securityReducer } from './Brand/security/securitySlice';
 import { shippingReducer } from './Brand/Shipping/shippingSlice';
 import { orderReducer } from './Brand/Orders/orderSlice';
 import { brandProfileReducer } from './Brand/Profile/brandProfileSlice';
 import { productReducer } from './Brand/Products/productSlice';
 import { preferenceReducer } from './Brand/Preference/preferenceSlice';
+import { getCountriesReducer } from './General/Countries/getCountriesSlice';
+import { getStatesReducer } from './General/States/getStatesSlice';
 
 const persistConfig = {
   // configuration object for redux-persist
@@ -38,6 +40,8 @@ const combinedReducer = combineReducers({
   brandProfile: brandProfileReducer,
   brandProduct: productReducer,
   preference: preferenceReducer,
+  countries: getCountriesReducer,
+  states: getStatesReducer,
 });
 
 const rootReducer = (state, action) => {

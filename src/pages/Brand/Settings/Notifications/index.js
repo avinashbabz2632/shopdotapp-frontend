@@ -52,12 +52,12 @@ export default function BrandNotification() {
           id: notificationData?.id,
           brand_id: userDetails.id,
           newOrder: data.isNotification ? 1 : 0,
-          stockWarning: data.lowStock,
+          stockWarning: data.lowStock ? data.lowStock : null,
         }
       : {
           brand_id: userDetails.id,
           newOrder: data.isNotification ? 1 : 0,
-          stockWarning: data.lowStock,
+          stockWarning: data.lowStock ? data.lowStock : null,
         };
     dispatch(updateNotificationAction(currentData));
   };
