@@ -16,7 +16,7 @@ const BrandShipping = lazy(() => import('./Shipping'));
 const BrandSecurity = lazy(() => import('./Security'));
 const BrandProfile = lazy(() => import('./Profile'));
 const BrandPreference = lazy(() => import('./Preferences'));
-const BrandPaid = lazy(() => import('./Paid'));
+const BrandPaid = lazy(() => import('./Paid2'));
 const BrandNotification = lazy(() => import('./Notifications'));
 const BrandUsers = lazy(() => import('./Users'));
 const BrandIntegration = lazy(() => import('./Integration'));

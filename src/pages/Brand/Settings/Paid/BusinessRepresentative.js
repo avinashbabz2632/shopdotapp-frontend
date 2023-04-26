@@ -1,123 +1,99 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react/prop-types */
+import React, { useEffect, Fragment, useMemo } from 'react';
 import Select from 'react-select';
-import { useForm, useWatch, Controller } from 'react-hook-form';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import GpArrowWhiteIcon from '../../images/gp-arrow-white.svg';
 import { setRepresentativeDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
-import { selectRepresentativeDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
-import { BusinessRepresentativeValidationSchema } from './ValidationSchema';
-import { ExampleCustomInput } from '../../../../utils/utils';
+import {
+  selectGettingPaidPreferance,
+  selectRepresentativeDetails,
+  selectBusinessDetails,
+} from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
+import {
+  BusinessRepresentativeValidationSchema,
+  getRepresentativeValidation,
+} from './ValidationSchema';
+import rightArrow from '../../../../assets/images/icons/Vector.11.svg';
+import info from '../../images/icons/icon-info-red.svg';
+import plusprimary from '../../images/icons/plus.svg';
+import {
+  countryOptions,
+  stateIncorporationOptions,
+  identityOptions,
+  categoryStyle,
+  ExampleCustomInput,
+} from '../../common/utils/utils';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
-
-const countryOptions = [
-  {
-    value: 'US',
-    label: 'United States',
-  },
-  { value: 'CA', label: 'Canada' },
-];
-
-const stateOptions = [
-  {
-    value: 'AL',
-    label: 'Alaska',
-  },
-  { value: 'NY', label: 'New York' },
-];
-
-const countryOfIssurenceOptions = [
-  {
-    value: 'US',
-    label: 'United States           ',
-  },
-  { value: 'CA', label: 'Canada' },
-];
-const identityOptions = [
-  {
-    value: 'DRIVER_LICENSE',
-    label: 'Driver’s License',
-  },
-  { value: 'PASSPORT', label: 'Passport' },
-  { value: 'ALIEN_REGISTRATION_CARD', label: 'Alien Registration Card' },
-];
-
-const categoryStyle = {
-  control: (styles) => {
-    return {
-      ...styles,
-      boxShadow: 'none',
-      minHeight: '40px',
-      '&:hover': {
-        boxShadow: 'none',
-      },
-    };
-  },
-  container: (style) => {
-    return {
-      ...style,
-      marginTop: '5xp',
-      marginRight: '1px',
-    };
-  },
-};
-
-const defaultValues = {
-  state: stateOptions[0],
-  citySelect: stateOptions[0],
-  countryAddress: countryOptions[0],
-};
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function BusinessRepresentative({
   setIsEdited,
   isEdited,
   handleChangeTab,
+  handleConfirmationModelClose,
 }) {
+  const businessDetails = useSelector(selectBusinessDetails);
   const personalDetails = useSelector(selectRepresentativeDetails);
-  const [dateOfBirth, setDateOfBirth] = useState(null);
-
+  const gettingPaidPreferance = useSelector(selectGettingPaidPreferance);
   const dispatch = useDispatch();
+
   const {
     control,
     register,
     handleSubmit,
     reset,
     setValue,
-    watch,
     setError,
+    watch,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
+    resolver: yupResolver(
+      gettingPaidPreferance?.publiclyTraded === 'yes'
+        ? BusinessRepresentativeValidationSchema
+        : getRepresentativeValidation()
+    ),
+    defaultValues: {
+      representativeDetails: [
+        {
+          fname: '',
+          lname: '',
+          phoneNumber: '',
+          ssn: '',
+          dob: '',
+          email: '',
+          addressLine1: '',
+          addressLine2: '',
+          countryAddress: countryOptions[0],
+          stateAddress: null,
+          zipcode: '',
+          secondaryIdentificationType: null,
+          soInsurence: null,
+          idNumber: '',
+          UScitizen: 'yes',
+          percentageOwnership: '',
+        },
+      ],
+    },
     mode: 'onChange',
-    resolver: yupResolver(BusinessRepresentativeValidationSchema),
-    defaultValues,
+    shouldFocusError: true,
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'representativeDetails',
   });
 
   useEffect(() => {
-    const isFormValuePresent = Object.keys(personalDetails).length;
+    const isFormValuePresent = personalDetails && personalDetails.length > 0;
     if (isFormValuePresent) {
-      const fields = [
-        'owner_first_name',
-        'owner_last_name',
-        'owner_phone',
-        'ssn',
-        'owner_dob',
-        'socialSecurityNumber',
-        'state',
-        'address_line_1',
-        'address_line_2',
-        'city',
-        'citySelect',
-        'zip',
-        'identification_state_of_issuance',
-        'identification_id',
-        'secondary_identification_type',
-        'usCitizen',
-      ];
-
-      fields.forEach((field) => setValue(field, personalDetails[field]));
+      reset({
+        representativeDetails: personalDetails.map((ele) => {
+          return { ...ele, dob: new Date(ele?.dob) };
+        }),
+      });
     }
 
     return () => {
@@ -125,7 +101,14 @@ export default function BusinessRepresentative({
     };
   }, [isEdited]);
 
-  const handlePhoneChange = (event) => {
+  const onSubmit = (data) => {
+    console.log('Business Representative(page-2)', data?.representativeDetails);
+    dispatch(setRepresentativeDetails(data?.representativeDetails));
+    reset();
+    handleChangeTab('3');
+  };
+
+  const handlePhoneChange = (event, i) => {
     const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
     let formattedValue = '';
     if (rawValue.length < 4) {
@@ -138,24 +121,24 @@ export default function BusinessRepresentative({
         6
       )}-${rawValue.slice(6, 10)}`;
     }
-    setValue('owner_phone', formattedValue);
+    setValue(`representativeDetails.${i}.phoneNumber`, formattedValue);
     if (formattedValue === '000-000-0000') {
-      setError('owner_phone', {
+      setError(`representativeDetails.${i}.phoneNumber`, {
         type: 'custom',
         message: 'Should be in XXX-XXX-XXXX format and Cannot be all zeroes.',
       });
     } else if (formattedValue.length < 12) {
-      setError('owner_phone', {
+      setError(`representativeDetails.${i}.phoneNumber`, {
         type: 'custom',
         message: 'Phone should be 10 digits.',
       });
     } else {
-      clearErrors('owner_phone');
+      clearErrors(`representativeDetails.${i}.phoneNumber`);
       event.target.blur();
     }
   };
 
-  const handleSSNChange = (event) => {
+  const handleSSNChange = (event, i) => {
     const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
     let formattedValues = '';
     if (rawValue.length < 4) {
@@ -168,457 +151,678 @@ export default function BusinessRepresentative({
         5
       )}-${rawValue.slice(5, 9)}`;
     }
-    setValue('ssn', formattedValues);
-    if (formattedValues.length < 3) {
-      setError('ssn', {
+    setValue(`representativeDetails.${i}.ssn`, formattedValues);
+
+    if (!formattedValues) {
+      setError(`representativeDetails.${i}.ssn`, {
         type: 'custom',
-        message: 'should be in XXX-XX-XXXX format.',
+        message: 'SSN is required',
+      });
+    } else if (formattedValues.length < 3) {
+      setError(`representativeDetails.${i}.ssn`, {
+        type: 'custom',
+        message: 'SSN should be in XXX-XX-XXXX format.',
       });
     } else if (formattedValues.length < 11) {
-      setError('ssn', {
+      setError(`representativeDetails.${i}.ssn`, {
         type: 'custom',
-        message: 'SSN should be 9 digit',
+        message: 'SSN should be 9 digits',
       });
     } else {
-      clearErrors('ssn');
+      clearErrors(`representativeDetails.${i}.ssn`);
       event.target.blur();
     }
   };
 
-  const handleDateOfBirthChange = (date, event) => {
-    if (date) {
-      const isoDate = new Date(date).toISOString();
-      const formatedDate = moment(isoDate).format('MM/DD/YYYY');
-      setDateOfBirth(date);
-      setValue('owner_dob', formatedDate);
-      clearErrors('owner_dob');
+  const representativeDetailsWatch = watch('representativeDetails');
+
+  const getTotalPercentage = () => {
+    const percentage =
+      (representativeDetailsWatch &&
+        representativeDetailsWatch
+          .map((ele) => ele?.percentageOwnership)
+          .reduce((acc, currentPrice) => acc + parseFloat(currentPrice), 0)) ||
+      0;
+    return percentage;
+  };
+
+  const checkTotalPercentage = () => {
+    const totalCent = getTotalPercentage();
+    const isAbletoAddNew = totalCent < 100;
+    return isAbletoAddNew;
+  };
+
+  const disabledSubmitButton = () => {
+    const totalCent = getTotalPercentage();
+    if (gettingPaidPreferance?.publiclyTraded === 'no') {
+      if (businessDetails?.businessCategory?.value === 'partnership') {
+        if (totalCent >= 50) {
+          return false;
+        }
+        return true;
+      } else if (
+        businessDetails?.businessCategory?.value !== 'single_member_llc' ||
+        businessDetails?.businessCategory?.value !== 'sole_proprietor'
+      ) {
+        if (totalCent >= 25) {
+          return false;
+        }
+        return true;
+      }
     } else {
-      setValue('owner_dob', null);
-      setError('owner_dob', {
-        type: 'custom',
-        message: 'Date of birth is required',
+      return false;
+    }
+  };
+
+  const handleAddRepresentative = (e) => {
+    e.stopPropagation();
+    const isAbletoAddNew = checkTotalPercentage();
+    if (isAbletoAddNew) {
+      append({
+        fname: '',
+        lname: '',
+        phoneNumber: '',
+        ssn: '',
+        dob: '',
+        email: '',
+        addressLine1: '',
+        addressLine2: '',
+        countryAddress: countryOptions[0],
+        stateAddress: null,
+        zipcode: '',
+        secondaryIdentificationType: null,
+        soInsurence: null,
+        idNumber: '',
+        UScitizen: 'yes',
+        percentageOwnership: '',
       });
     }
-    event.target.blur();
   };
-
-  const onSubmit = (data) => {
-    dispatch(setRepresentativeDetails(data));
-    reset();
-    handleChangeTab('3');
-  };
-
-  const businessCategoryWatch = watch('secondary_identification_type');
 
   return (
     <form className="gp-right" onSubmit={handleSubmit(onSubmit)}>
-      <h3 className="heading">Business Representative</h3>
-      <div className="form-area">
-        <div className="category-form-input">
-          <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
-              Legal name of person&nbsp;
-              <span className="asterisk-red">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-control mb-0"
-              id=""
-              name="owner_first_name"
-              placeholder="First name"
-              {...register('owner_first_name', { required: true })}
-            />
-            {errors.owner_first_name && (
-              <span className="error-text">
-                {errors.owner_first_name?.message}
-              </span>
+      {fields.map((item, index) => {
+        return (
+          <Fragment key={item?.id}>
+            <div className="d-flex justify-content-between align-items-center">
+              <h3 className="heading">
+                Business Representative <span>#{index + 1}</span>
+              </h3>
+            </div>
+            {gettingPaidPreferance?.publiclyTraded === 'no' ? (
+              index === 0 ? (
+                <p>
+                  As business owner and authorized signer please complete the
+                  information below.
+                </p>
+              ) : (
+                <p>As a business owner complete the information below.</p>
+              )
+            ) : (
+              <p>As an authorized signer complete the information below.</p>
             )}
-          </div>
-          <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
-              &nbsp;
-            </label>
-            <input
-              type="text"
-              className="form-control mb-0"
-              id=""
-              name="owner_last_name"
-              placeholder="Last name"
-              {...register('owner_last_name', { required: true })}
-            />
-            {errors.owner_last_name && (
-              <span className="error-text">
-                {errors.owner_last_name?.message}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="form-input mb-4">
-          <label htmlFor="" className="form-label">
-            Phone number&nbsp;
-            <span className="asterisk-red">*</span>
-          </label>
-          <input
-            type="tel"
-            className="form-control mb-0"
-            name="owner_phone"
-            placeholder="(123) 456-7899"
-            {...register('owner_phone', { required: true })}
-            onChange={handlePhoneChange}
-          />
-          {errors.owner_phone && (
-            <span className="error-text">{errors.owner_phone?.message}</span>
-          )}
-        </div>
-        <div className="form-input mb-4">
-          <label htmlFor="" className="form-label">
-            SSN&nbsp;<span className="asterisk-red">*</span>
-          </label>
-          <input
-            type="tel"
-            placeholder="123-44-5678"
-            className="form-control mb-0"
-            name="ssn"
-            {...register('ssn', { required: true })}
-            onChange={handleSSNChange}
-          />
-          {errors.ssn && (
-            <span className="error-text">{errors.ssn?.message}</span>
-          )}
-        </div>
-        <div className="form-input mb-4">
-          <label htmlFor="" className="form-label">
-            Date of birth&nbsp;
-            <span className="asterisk-red">*</span>
-          </label>
-          <Controller
-            name="owner_dob"
-            control={control}
-            render={({ field }) => (
-              <>
-                <DatePicker
-                  {...field}
-                  closeOnScroll
-                  maxDate={new Date()}
-                  customInput={<ExampleCustomInput />}
-                  placeholderText="MM/DD/YYYY"
-                  selected={dateOfBirth}
-                  showYearDropdown
-                  yearDropdownItemNumber={100}
-                  scrollableYearDropdown
-                  onChange={(date, event) => {
-                    setDateOfBirth(date);
-                    handleDateOfBirthChange(date, event);
-                  }}
-                  dateFormat="MM-dd-yyyy"
-                  // showPopperArrow={false}
-                />
-              </>
-            )}
-          />
-
-          {errors.owner_dob && (
-            <span className="error-text">{errors.owner_dob?.message}</span>
-          )}
-        </div>
-        <div className="form-input mb-4">
-          <label htmlFor="" className="form-label">
-            Address line 1 <span className="asterisk-red">*</span>
-          </label>
-          <input
-            type="text"
-            className="form-control mb-0"
-            name="address_line_1"
-            placeholder=""
-            {...register('address_line_1', { required: true })}
-          />
-          {errors.address_line_1 && (
-            <span className="error-text">{errors.address_line_1?.message}</span>
-          )}
-        </div>
-        <div className="form-input mb-4">
-          <label htmlFor="" className="form-label">
-            Address line 2 <span className="asterisk-red">*</span>
-          </label>
-          <input
-            type="text"
-            className="form-control mb-0"
-            name="address_line_2"
-            placeholder=""
-            {...register('address_line_2', { required: true })}
-          />
-          {errors.address_line_2 && (
-            <span className="error-text">{errors.address_line_2?.message}</span>
-          )}
-        </div>
-        <div className="category-form-input">
-          <div className="form-input mb-4">
-            <label className="form-label">
-              Country <span className="asterisk-red">*</span>
-            </label>
-            <Controller
-              name="countryAddress"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  className="basic-single"
-                  classNamePrefix="select"
-                  styles={categoryStyle}
-                  components={{
-                    IndicatorSeparator: () => null,
-                  }}
-                  theme={(theme) => ({
-                    ...theme,
-                    colors: {
-                      ...theme.colors,
-                      primary25: '#fbf5f0',
-                      primary: '#bd6f34',
-                    },
-                  })}
-                  options={countryOptions}
-                />
-              )}
-            />
-            {errors.countryAddress && (
-              <span className="error-text">
-                {errors.countryAddress?.message}
-              </span>
-            )}
-          </div>
-          <div className="form-input mb-2">
-            <label className="form-label">
-              State <span className="asterisk-red">*</span>
-            </label>
-            <Controller
-              name="state"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  className="basic-single"
-                  classNamePrefix="select"
-                  styles={categoryStyle}
-                  components={{
-                    IndicatorSeparator: () => null,
-                  }}
-                  theme={(theme) => ({
-                    ...theme,
-                    colors: {
-                      ...theme.colors,
-                      primary25: '#fbf5f0',
-                      primary: '#bd6f34',
-                    },
-                  })}
-                  options={stateOptions}
-                />
-              )}
-            />
-            {errors.state && (
-              <span className="error-text">{errors.state?.message}</span>
-            )}
-          </div>
-        </div>
-        <div className="category-form-input">
-          <div className="form-input mb-2">
-            <label htmlFor="" className="form-label">
-              City <span className="asterisk-red">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-control mb-2 mt-0"
-              name="city"
-              {...register('city', { required: true })}
-            />
-            {errors.city && (
-              <span className="error-text">{errors.city?.message}</span>
-            )}
-          </div>
-          <div className="form-input mb-2">
-            <label htmlFor="" className="form-label">
-              ZIP <span className="asterisk-red">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-control mb-2 mt-0"
-              name="zip"
-              {...register('zip', { required: true })}
-            />
-            {errors.zip && (
-              <span className="error-text">{errors.zip?.message}</span>
-            )}
-          </div>
-        </div>
-        <div className="form-input mb-4 secondary_identification">
-          <label htmlFor="" className="form-label">
-            Secondary identification&nbsp;
-            <span className="asterisk-red">*</span>
-          </label>
-          <Controller
-            name="secondary_identification_type"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                placeholder="Identification type"
-                className="basic-single"
-                classNamePrefix="select"
-                styles={categoryStyle}
-                components={{ IndicatorSeparator: () => null }}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: '#fbf5f0',
-                    primary: '#bd6f34',
-                  },
-                })}
-                options={identityOptions}
-              />
-            )}
-          />
-          {errors.secondary_identification_type && (
-            <span className="error-text">
-              {errors.secondary_identification_type?.message}
-            </span>
-          )}
-
-          {businessCategoryWatch?.value === 'DRIVER_LICENSE' && (
-            <div className="form-input mb-2 state_issuance mt-2">
-              <Controller
-                name="identification_state_of_issuance"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    className="basic-single"
-                    classNamePrefix="select"
-                    styles={categoryStyle}
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: '#fbf5f0',
-                        primary: '#bd6f34',
-                      },
+            <div className="form-area position-relative">
+              <button
+                onClick={() => remove(index)}
+                className={`button remove-br ${
+                  index === 0 ? 'd-none' : 'd-block'
+                }`}
+              >
+                Remove
+              </button>
+              <div className="category-form-input">
+                <div className="form-input mb-4">
+                  <label className="form-label">
+                    Legal name of business representative.&nbsp;
+                    <span className="asterisk-red">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control mb-0"
+                    id=""
+                    placeholder="First name"
+                    name={`representativeDetails.${index}.fname`}
+                    {...register(`representativeDetails.${index}.fname`, {
+                      required: true,
                     })}
-                    options={stateOptions}
                   />
-                )}
-              />
-              {errors.identification_state_of_issuance && (
-                <span className="error-text">
-                  {errors.identification_state_of_issuance?.message}
-                </span>
-              )}
-            </div>
-          )}
-
-          {(businessCategoryWatch?.value === 'PASSPORT' ||
-            businessCategoryWatch?.value === 'ALIEN_REGISTRATION_CARD') && (
-            <div className="form-input mb-2 country_issuance mt-4">
-              <label htmlFor="" className="form-label">
-                Country of issuance
-                <span className="asterisk-red">*</span>
-              </label>
-              <Controller
-                name="identification_state_of_issuance"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    className="basic-single"
-                    classNamePrefix="select"
-                    styles={categoryStyle}
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary25: '#fbf5f0',
-                        primary: '#bd6f34',
-                      },
+                  {errors?.representativeDetails?.[index]?.fname && (
+                    <span className="error-text">
+                      {errors?.representativeDetails?.[index]?.fname?.message}
+                    </span>
+                  )}
+                </div>
+                <div className="form-input mb-4">
+                  <label className="form-label">&nbsp;</label>
+                  <input
+                    type="text"
+                    className="form-control mb-0"
+                    id=""
+                    placeholder="Last name"
+                    name={`representativeDetails.${index}.lname`}
+                    {...register(`representativeDetails.${index}.lname`, {
+                      required: true,
                     })}
-                    options={countryOfIssurenceOptions}
                   />
+                  {errors?.representativeDetails?.[index]?.lname && (
+                    <span className="error-text">
+                      {errors?.representativeDetails?.[index]?.lname?.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="form-input mb-4">
+                <label className="form-label">
+                  Phone number&nbsp;
+                  <span className="asterisk-red">*</span>
+                </label>
+                <Controller
+                  name={`representativeDetails.${index}.phoneNumber`}
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <input
+                      type="tel"
+                      value={value}
+                      className="form-control mb-0"
+                      placeholder="(123) 456-7899"
+                      onChange={(e) => {
+                        onChange(e);
+                        handlePhoneChange(e, index);
+                      }}
+                      onBlur={onBlur}
+                    />
+                  )}
+                />
+                {errors?.representativeDetails?.[index]?.phoneNumber && (
+                  <span className="error-text">
+                    {
+                      errors?.representativeDetails?.[index]?.phoneNumber
+                        ?.message
+                    }
+                  </span>
                 )}
-              />
-              {errors.identification_state_of_issuance && (
-                <span className="error-text">
-                  {errors.identification_state_of_issuance?.message}
-                </span>
+              </div>
+              <div className="form-input mb-4">
+                <label className="form-label">
+                  Social Security Number (SSN)&nbsp;
+                  <span className="asterisk-red">*</span>
+                </label>
+                <Controller
+                  name={`representativeDetails.${index}.ssn`}
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <input
+                      type="tel"
+                      value={value}
+                      placeholder="123-44-5678"
+                      className="form-control mb-0"
+                      onChange={(e) => {
+                        onChange(e);
+                        handleSSNChange(e, index);
+                      }}
+                      onBlur={onBlur}
+                    />
+                  )}
+                />
+                {errors?.representativeDetails?.[index]?.ssn && (
+                  <span className="error-text">
+                    {errors?.representativeDetails?.[index]?.ssn?.message}
+                  </span>
+                )}
+              </div>
+              <div className="form-input mb-4">
+                <label className="form-label">
+                  Date of birth&nbsp;
+                  <span className="asterisk-red">*</span>
+                </label>
+
+                <Controller
+                  name={`representativeDetails.${index}.dob`}
+                  control={control}
+                  render={({
+                    field: { onChange, onBlur, value },
+                    ...props
+                  }) => (
+                    <>
+                      <DatePicker
+                        closeOnScroll
+                        maxDate={new Date()}
+                        customInput={<ExampleCustomInput />}
+                        placeholderText="MM-DD-YYYY"
+                        dateFormat="MM-dd-yyyy"
+                        showPopperArrow={false}
+                        {...props}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        selected={value}
+                      />
+                    </>
+                  )}
+                />
+                {errors?.representativeDetails?.[index]?.dob && (
+                  <span className="error-text">
+                    {errors?.representativeDetails?.[index]?.dob?.message}
+                  </span>
+                )}
+              </div>
+              <div className="form-input mb-4">
+                <label className="form-label">
+                  Email address <span className="asterisk-red">*</span>{' '}
+                </label>
+                <input
+                  name={`representativeDetails.${index}.email`}
+                  type="text"
+                  className="form-control mb-0"
+                  placeholder="yourname@email.com"
+                  {...register(`representativeDetails.${index}.email`, {
+                    required: true,
+                  })}
+                />
+                {errors?.representativeDetails?.[index]?.email && (
+                  <span className="error-text">
+                    {errors?.representativeDetails?.[index]?.email?.message}
+                  </span>
+                )}
+              </div>
+              <div className="form-input mb-4">
+                <label className="form-label">
+                  Address line 1 <span className="asterisk-red">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control mb-0"
+                  name={`representativeDetails.${index}.addressLine1`}
+                  {...register(`representativeDetails.${index}.addressLine1`, {
+                    required: true,
+                  })}
+                />
+                {errors?.representativeDetails?.[index]?.addressLine1 && (
+                  <span className="error-text">
+                    {
+                      errors?.representativeDetails?.[index]?.addressLine1
+                        ?.message
+                    }
+                  </span>
+                )}
+              </div>
+              <div className="form-input mb-4">
+                <label className="form-label">Address line 2</label>
+                <input
+                  type="text"
+                  className="form-control mb-0"
+                  name={`representativeDetails.${index}.addressLine2`}
+                  {...register(`representativeDetails.${index}.addressLine2`, {
+                    required: false,
+                  })}
+                  placeholder=""
+                />
+                {errors?.representativeDetails?.[index]?.addressLine2 && (
+                  <span className="error-text">
+                    {
+                      errors?.representativeDetails?.[index]?.addressLine2
+                        ?.message
+                    }
+                  </span>
+                )}
+              </div>
+              <div className="category-form-input mb-4">
+                <div className="form-input">
+                  <label className="form-label">
+                    Country <span className="asterisk-red">*</span>
+                  </label>
+                  <Controller
+                    name={`representativeDetails.${index}.countryAddress`}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        className="basic-single_top"
+                        classNamePrefix="select"
+                        styles={categoryStyle}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: '#fbf5f0',
+                            primary: '#bd6f34',
+                          },
+                        })}
+                        options={countryOptions}
+                      />
+                    )}
+                  />
+                  {errors?.representativeDetails?.[index]?.countryAddress && (
+                    <span className="error-text">
+                      {
+                        errors?.representativeDetails?.[index]?.countryAddress
+                          ?.message
+                      }
+                    </span>
+                  )}
+                </div>
+                <div className="form-input mb-2">
+                  <label className="form-label">
+                    State <span className="asterisk-red">*</span>
+                  </label>
+                  <Controller
+                    name={`representativeDetails.${index}.stateAddress`}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        className="basic-single_top"
+                        classNamePrefix="select"
+                        placeholder="Select State"
+                        styles={categoryStyle}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: '#fbf5f0',
+                            primary: '#bd6f34',
+                          },
+                        })}
+                        options={stateIncorporationOptions}
+                      />
+                    )}
+                  />
+                  {errors?.representativeDetails?.[index]?.stateAddress && (
+                    <span className="error-text">
+                      {
+                        errors?.representativeDetails?.[index]?.stateAddress
+                          ?.message
+                      }
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="category-form-input mb-4">
+                <div className="form-input">
+                  <label className="form-label">
+                    City <span className="asterisk-red">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control mb-0"
+                    id=""
+                    placeholder="New York"
+                    name={`representativeDetails.${index}.city`}
+                    {...register(`representativeDetails.${index}.city`, {
+                      required: true,
+                    })}
+                  />
+                  {errors?.representativeDetails?.[index]?.city && (
+                    <span className="error-text">
+                      {errors?.representativeDetails?.[index]?.city?.message}
+                    </span>
+                  )}
+                </div>
+                <div className="form-input">
+                  <label className="form-label">
+                    ZIP <span className="asterisk-red">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control mb-0"
+                    id=""
+                    placeholder="10014"
+                    name={`representativeDetails.${index}.zipcode`}
+                    {...register(`representativeDetails.${index}.zipcode`, {
+                      required: true,
+                    })}
+                  />
+                  {errors?.representativeDetails?.[index]?.zipcode && (
+                    <span className="error-text">
+                      {errors?.representativeDetails?.[index]?.zipcode?.message}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="form-input mb-4 secondary_identification mt-3">
+                <label className="form-label">
+                  Secondary identification&nbsp;
+                  <span className="asterisk-red">*</span>
+                </label>
+                <Controller
+                  name={`representativeDetails.${index}.secondaryIdentificationType`}
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      placeholder="Identification type"
+                      className="basic-single"
+                      classNamePrefix="select"
+                      styles={categoryStyle}
+                      components={{
+                        IndicatorSeparator: () => null,
+                      }}
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary25: '#fbf5f0',
+                          primary: '#bd6f34',
+                        },
+                      })}
+                      options={identityOptions}
+                    />
+                  )}
+                />
+                {errors?.representativeDetails?.[index]
+                  ?.secondaryIdentificationType && (
+                  <span className="error-text">
+                    {
+                      errors?.representativeDetails?.[index]
+                        ?.secondaryIdentificationType?.message
+                    }
+                  </span>
+                )}
+                {representativeDetailsWatch?.[index]
+                  ?.secondaryIdentificationType?.value === 'DRIVER_LICENSE' && (
+                  <div className="form-input mb-2 state_issuance mt-2">
+                    <Controller
+                      name={`representativeDetails.${index}.soInsurence`}
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          placeholder="Select State"
+                          className="basic-single"
+                          classNamePrefix="select"
+                          styles={categoryStyle}
+                          components={{
+                            IndicatorSeparator: () => null,
+                          }}
+                          theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                              ...theme.colors,
+                              primary25: '#fbf5f0',
+                              primary: '#bd6f34',
+                            },
+                          })}
+                          options={stateIncorporationOptions}
+                        />
+                      )}
+                    />
+                    {errors?.representativeDetails?.[index]?.soInsurence && (
+                      <span className="error-text">
+                        {
+                          errors?.representativeDetails?.[index]?.soInsurence
+                            ?.message
+                        }
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <input
+                  type="text"
+                  className="form-control mb-2"
+                  placeholder="ID Number"
+                  name={`representativeDetails.${index}.idNumber`}
+                  {...register(`representativeDetails.${index}.idNumber`, {
+                    required: true,
+                  })}
+                />
+                {errors?.representativeDetails?.[index]?.idNumber && (
+                  <span className="error-text">
+                    {errors?.representativeDetails?.[index]?.idNumber?.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="form-input return_select-item mb-4 radio-row">
+              <p className="mb-0">
+                U.S. citizen <span className="asterisk-red">*</span>
+              </p>
+              <div className="mt-2 radio-flex">
+                <label className="radiobox">
+                  <input
+                    type="radio"
+                    id="citizen"
+                    control={control}
+                    value="yes"
+                    name={`representativeDetails.${index}.UScitizen`}
+                    {...register(`representativeDetails.${index}.UScitizen`, {
+                      required: true,
+                    })}
+                  />
+                  <div className="radiobox-text">
+                    <span>Yes</span>
+                  </div>
+                </label>
+                <label className="radiobox">
+                  <input
+                    type="radio"
+                    id="citizen-one"
+                    control={control}
+                    value="no"
+                    name={`representativeDetails.${index}.UScitizen`}
+                    {...register(`representativeDetails.${index}.UScitizen`, {
+                      required: true,
+                    })}
+                  />
+                  <div className="radiobox-text">
+                    <span>No</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div>
+              <div
+                className={`form-input mb-4 percentage-input form-area ${
+                  gettingPaidPreferance?.publiclyTraded === 'no'
+                    ? 'd-block'
+                    : 'd-none'
+                }`}
+              >
+                <label className="form-label">
+                  Percentage ownership&nbsp;
+                  <span className="asterisk-red">*</span>
+                </label>
+                <div className="wp-right">
+                  <span className="percentage-lbl">%</span>
+                  <Controller
+                    name={`representativeDetails.${index}.percentageOwnership`}
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <input
+                        type="number"
+                        value={value}
+                        placeholder="14"
+                        className="form-control"
+                        onChange={(e) => {
+                          onChange(e);
+                        }}
+                        onBlur={onBlur}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+              {errors?.representativeDetails?.[index]?.percentageOwnership && (
+                <div className="form-area">
+                  <div
+                    className="alert alert-error sd_alert-error"
+                    role="alert"
+                  >
+                    <div className="icon">
+                      <img src={info} alt="info" />
+                    </div>
+                    <div>
+                      {
+                        errors?.representativeDetails?.[index]
+                          ?.percentageOwnership?.message
+                      }
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
-          )}
+          </Fragment>
+        );
+      })}
+      <div className="form-area position-relative">
+        {gettingPaidPreferance?.publiclyTraded === 'no' &&
+          (businessDetails?.businessCategory?.value === 'partnership' ? (
+            <p>
+              <strong>
+                Complete for any individuals with 25% or more ownership. If
+                none, add additional business owners (with less that 25%
+                ownership share) until the combined total of all reported
+                business owners&apos; share of the business is greater than 50%.
+              </strong>
+            </p>
+          ) : businessDetails?.businessCategory?.value !==
+              'single_member_llc' &&
+            businessDetails?.businessCategory?.value !== 'sole_proprietor' ? (
+            <p>
+              <strong>
+                Complete for any individuals with 25% or more ownership of the
+                business entity.
+              </strong>
+            </p>
+          ) : null)}
 
-          <input
-            type="text"
-            className="form-control mb-2"
-            name="identification_id"
-            placeholder="ID Number"
-            {...register('identification_id', { required: true })}
-          />
-          {errors.identification_id && (
-            <span className="error-text">
-              {errors.identification_id?.message}
-            </span>
+        {gettingPaidPreferance?.publiclyTraded === 'no' &&
+          businessDetails?.businessCategory?.value !== 'single_member_llc' &&
+          businessDetails?.businessCategory?.value !== 'sole_proprietor' && (
+            <button
+              type="button"
+              onClick={(e) => handleAddRepresentative(e)}
+              className={'button button-border large add-owner mt-0'}
+            >
+              <img className="icon" src={plusprimary} /> Add a business owner
+            </button>
           )}
-        </div>
       </div>
-      <div className="form-input return_select-item mb-4 radio-row">
-        <p className="mb-0">
-          U.S. citizen <span className="asterisk-red">*</span>
-        </p>
-        <div className="mt-2 radio-flex">
-          <label className="radiobox">
-            <input
-              type="radio"
-              id="citizen"
-              name="usCitizen"
-              control={control}
-              value="yes"
-              {...register('usCitizen', {
-                required: true,
-              })}
-            />
-            <div className="radiobox-text">
-              <span>Yes</span>
-            </div>
-          </label>
-          <label className="radiobox">
-            <input
-              type="radio"
-              name="usCitizen"
-              id="citizen-one"
-              control={control}
-              defaultChecked
-              value="no"
-              {...register('usCitizen', {
-                required: true,
-              })}
-            />
-            <div className="radiobox-text">
-              <span>No</span>
-            </div>
-          </label>
-        </div>
-      </div>
+
       <div className="form-area">
         <div className="form-input form-submit">
           <button
+            type="button"
             className="button button-grey cancel"
-            onClick={() => handleChangeTab('1')}
+            onClick={() => handleConfirmationModelClose()}
           >
             Back
           </button>
-          <button className="button summary-icon">
+          <button
+            className="button summary-icon"
+            type="submit"
+            disabled={!isValid || disabledSubmitButton()}
+          >
             Save and Next
-            <img src={GpArrowWhiteIcon} />
+            <img src={rightArrow} alt="Arrow" />
           </button>
         </div>
       </div>
@@ -627,7 +831,8 @@ export default function BusinessRepresentative({
 }
 
 BusinessRepresentative.propTypes = {
-  isEdited: PropTypes.String,
+  isEdited: PropTypes.bool,
   handleChangeTab: PropTypes.func,
   setIsEdited: PropTypes.func,
+  handleConfirmationModelClose: PropTypes.func,
 };

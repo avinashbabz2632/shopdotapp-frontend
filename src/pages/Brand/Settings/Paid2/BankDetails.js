@@ -4,26 +4,57 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import GpArrowWhiteIcon from '../../images/gp-arrow-white.svg';
 import { setBankDetails } from '../../../../redux/Brand/GettingPaid2/gettingPaidSlice';
 import { selectBankDetails } from '../../../../redux/Brand/GettingPaid2/gettingPaidSelector';
 import { BankDetailsValidationSchema } from './ValidationSchema';
-import rightArrow from '../../../../assets/images/icons/Vector.11.svg';
-import {
-  accountRoleOption,
-  accountTypeOption,
-  categoryStyle,
-} from '../../common/utils/utils';
+
+const accountTypeOption = [
+  { value: 'CHECKING', label: 'Current' },
+  {
+    value: 'SAVINGS',
+    label: 'Savings',
+  },
+];
+
+const accountRoleOption = [
+  { value: 'CORPORATE', label: 'Business' },
+  {
+    value: 'CONSUMER',
+    label: 'Personal',
+  },
+];
+
+const categoryStyle = {
+  control: (styles) => {
+    return {
+      ...styles,
+      boxShadow: 'none',
+      minHeight: '40px',
+      '&:hover': {
+        boxShadow: 'none',
+      },
+    };
+  },
+  container: (style) => {
+    return {
+      ...style,
+      marginTop: '5xp',
+      marginRight: '1px',
+    };
+  },
+};
 
 const defaultValues = {
-  accountType: accountTypeOption[0],
-  accountRole: accountRoleOption[0],
+  account_type: accountTypeOption[0],
+  purpose: accountRoleOption[0],
 };
 
 export default function BankDetails({
   isEdited,
   setIsEdited,
   handleChangeTab,
-  handleConfirmationModelClose,
+  formData,
 }) {
   const bankDetails = useSelector(selectBankDetails);
   const dispatch = useDispatch();
@@ -33,7 +64,7 @@ export default function BankDetails({
     handleSubmit,
     reset,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(BankDetailsValidationSchema),
@@ -44,11 +75,12 @@ export default function BankDetails({
     const isFormValuePresent = Object.keys(bankDetails).length;
     if (isFormValuePresent) {
       const fields = [
-        'accountHolderName',
-        'accountType',
-        'accountRole',
-        'accountNumber',
-        'routingNumber',
+        'account_holder_name',
+        'account_type',
+        'purpose',
+        'account_number',
+        'socialSecurityNumber',
+        'routing_number',
       ];
 
       fields.forEach((field) => setValue(field, bankDetails[field]));
@@ -60,7 +92,6 @@ export default function BankDetails({
   }, [isEdited]);
 
   const onSubmit = (data) => {
-    console.log('Bank Details(page-3)', data);
     dispatch(setBankDetails(data));
     reset();
     handleChangeTab('4');
@@ -79,29 +110,28 @@ export default function BankDetails({
           <input
             type="text"
             className="form-control mb-0"
-            name="accountHolderName"
+            name="account_holder_name"
             placeholder=""
-            {...register('accountHolderName', { required: true })}
+            {...register('account_holder_name', { required: true })}
           />
-          {errors.accountHolderName && (
+          {errors.account_holder_name && (
             <span className="error-text">
-              {errors.accountHolderName?.message}
+              {errors.account_holder_name?.message}
             </span>
           )}
         </div>
 
         <div className="form-input mb-4">
-          <label className="form-label">
+          <label htmlFor="" className="form-label">
             Bank account type&nbsp;
             <span className="asterisk-red">*</span>
           </label>
           <Controller
-            name="accountType"
+            name="account_type"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
-                placeholder="Select Business Category"
                 className="basic-single"
                 classNamePrefix="select"
                 styles={categoryStyle}
@@ -118,27 +148,24 @@ export default function BankDetails({
               />
             )}
           />
-          {errors.accountType && (
-            <span className="error-text">{errors.accountType?.message}</span>
+          {errors.account_type && (
+            <span className="error-text">{errors.account_type?.message}</span>
           )}
         </div>
-        <div className="form-input mb-4 form-control-wrapper">
-          <label className="form-label input_disabled">
-            Purpose
-            <span className="asterisk-red">*</span>
+
+        <div className="form-input mb-4">
+          <label htmlFor="" className="form-label">
+            Purpose&nbsp;<span className="asterisk-red">*</span>
           </label>
           <Controller
-            name="accountRole"
+            name="purpose"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
-                placeholder="Select Business Category"
                 className="basic-single"
                 classNamePrefix="select"
-                isDisabled
                 styles={categoryStyle}
-                isOptionDisabled={(option) => option}
                 components={{ IndicatorSeparator: () => null }}
                 theme={(theme) => ({
                   ...theme,
@@ -152,42 +179,42 @@ export default function BankDetails({
               />
             )}
           />
-          {errors.accountRole && (
-            <span className="error-text">{errors.accountRole?.message}</span>
+          {errors.purpose && (
+            <span className="error-text">{errors.purpose?.message}</span>
           )}
         </div>
 
         <div className="form-input mb-4">
-          <label className="form-label">
-            Account number <span className="asterisk-red">*</span>
-          </label>
-          <input
-            type="number"
-            className="form-control mb-0"
-            id=""
-            placeholder=""
-            name="accountNumber"
-            {...register('accountNumber', { required: true })}
-          />
-          {errors.accountNumber && (
-            <span className="error-text">{errors.accountNumber?.message}</span>
-          )}
-        </div>
-
-        <div className="form-input mb-4">
-          <label className="form-label">
-            Routing number&nbsp;
+          <label htmlFor="" className="form-label">
+            Account number&nbsp;
             <span className="asterisk-red">*</span>
           </label>
           <input
             type="number"
             className="form-control mb-0"
-            name="routingNumber"
+            name="account_number"
             placeholder=""
-            {...register('routingNumber', { required: true })}
+            {...register('account_number', { required: true })}
           />
-          {errors.routingNumber && (
-            <span className="error-text">{errors.routingNumber?.message}</span>
+          {errors.account_number && (
+            <span className="error-text">{errors.account_number?.message}</span>
+          )}
+        </div>
+
+        <div className="form-input mb-4">
+          <label htmlFor="" className="form-label">
+            Routing number&nbsp;
+            <span className="asterisk-red">*</span>
+          </label>
+          <input
+            type="text"
+            className="form-control mb-0"
+            name="routing_number"
+            placeholder=""
+            {...register('routing_number', { required: true })}
+          />
+          {errors.routing_number && (
+            <span className="error-text">{errors.routing_number?.message}</span>
           )}
           <small>
             9-digit Routing number of the account used for ACH transactions.
@@ -198,18 +225,13 @@ export default function BankDetails({
         <div className="form-input form-submit">
           <button
             className="button button-grey cancel"
-            type="button"
-            onClick={() => handleConfirmationModelClose()}
+            onClick={() => handleChangeTab('2')}
           >
             Back
           </button>
-          <button
-            className="button summary-icon"
-            type="submit"
-            disabled={!isValid}
-          >
+          <button className="button summary-icon">
             Save and Next
-            <img src={rightArrow} alt="Arrow" />
+            <img src={GpArrowWhiteIcon} />
           </button>
         </div>
       </div>
@@ -218,8 +240,7 @@ export default function BankDetails({
 }
 
 BankDetails.propTypes = {
-  isEdited: PropTypes.bool,
+  isEdited: PropTypes.String,
   handleChangeTab: PropTypes.func,
   setIsEdited: PropTypes.func,
-  handleConfirmationModelClose: PropTypes.func,
 };

@@ -5,7 +5,7 @@ import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { encryptTransform } from 'redux-persist-transform-encrypt';
 import { authReducer } from './auth/authSlice';
-import { gettingPaidReducer } from './Brand/GettingPaid/gettingPaidSlice';
+import { gettingPaidReducer } from './Brand/GettingPaid2/gettingPaidSlice';
 import { userReducer } from './user/userSlice';
 import { securityReducer } from './Brand/Security/securitySlice';
 import { shippingReducer } from './Brand/Shipping/shippingSlice';
