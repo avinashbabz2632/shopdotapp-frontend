@@ -2,8 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   businessDetails: {},
-  representativeDetails: [],
+  representativeDetails: {},
   bankDetails: {},
+  paidDetails: {},
   gettingPaidPreferance: {},
 };
 
@@ -20,13 +21,20 @@ const gettingPaidSlice = createSlice({
     setBankDetails: (state, action) => {
       state.bankDetails = action.payload;
     },
-    resetToInitial: (state) => {
-      state.businessDetails = {};
-      state.representativeDetails = [];
-      state.bankDetails = {};
+    setPaidCompleted: (state, action) => {
+      state.bankDetails = action.payload;
+    },
+    setPaidDetails: (state, action) => {
+      console.log(action.payload, 'action.payload');
+      state.paidDetails = action.payload;
     },
     setGettingPaidPreferance: (state, action) => {
       state.gettingPaidPreferance = action.payload;
+    },
+    resetToInitial: (state) => {
+      state.businessDetails = {};
+      state.representativeDetails = {};
+      state.bankDetails = {};
     },
     clearPaidLogout: (state) => {
       state = initialState;
@@ -40,8 +48,10 @@ const gettingPaidSlice = createSlice({
 export const {
   setBusinessDetails,
   setRepresentativeDetails,
+  setPaidCompleted,
   setBankDetails,
   resetToInitial,
+  setPaidDetails,
   setGettingPaidPreferance,
   clearPaidLogout,
 } = gettingPaidSlice.actions;

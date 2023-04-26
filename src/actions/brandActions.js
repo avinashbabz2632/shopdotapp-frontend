@@ -15,7 +15,7 @@ import {
   setProfileCompleted,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
-import { setPaidDetails } from '../redux/Brand/GettingPaid/gettingPaidSlice';
+import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {

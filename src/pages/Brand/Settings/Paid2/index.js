@@ -1,24 +1,20 @@
-import React, { lazy, useState, Suspense, useCallback, useEffect } from 'react';
+import React, { lazy, useState, Suspense, useEffect, useCallback } from 'react';
 import gpLogo from '../../images/gp-logo.jpg';
+import Loader from '../../../../components/Loader';
+import GpInfoIcon from '../../images/gp-info.svg';
+import GpTimeIcon from '../../images/gp-time.svg';
 import BusinessOwnerModel from './businessOwnerModel';
 import AuthorizedSignerModel from './AuthorizedSignerModel';
+import merchantServices from '../../../../../src/assets/merchant.pdf';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  setGettingPaidPreferance,
-  setRepresentativeDetails,
-  setBankDetails,
-  setBusinessDetails,
-} from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
+import { getBrandBankDetailsAction } from '../../../../actions/brandActions';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { ToastContainer } from 'react-toastify';
+import { selectPaidDetails } from '../../../../redux/Brand/GettingPaid2/gettingPaidSelector';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import merchantServices from '../../../../../src/assets/merchant.pdf';
-import ConfirmationModel from './ConfirmationModel';
-import { isEmpty, isNil } from 'lodash';
-import {
-  selectBusinessDetails,
-  selectRepresentativeDetails,
-  selectBankDetails,
-} from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
+import { setGettingPaidPreferance } from '../../../../redux/Brand/GettingPaid2/gettingPaidSlice';
 
 //paid component
 const BusinessDetails = lazy(() => import('./BusinessDetails'));
@@ -29,6 +25,9 @@ const GettingPaid = lazy(() => import('./GettingPaid'));
 const EditBankDetails = lazy(() => import('./EditBankDetails'));
 
 export default function BrandPaid() {
+  const dispatch = useDispatch();
+  const paidDetails = useSelector(selectPaidDetails);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalOpen, setOpen] = useState(false);
   const [isConfirmBackModel, setIsConfirmBackModel] = useState(false);
@@ -37,23 +36,55 @@ export default function BrandPaid() {
   const [isCompleteApplication, setIsCompleteApplication] = useState(false);
   const [editBankDetails, setEditBankDetails] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
-  const businessDetails = useSelector(selectBusinessDetails);
-  const personalDetails = useSelector(selectRepresentativeDetails);
-  const bankDetails = useSelector(selectBankDetails);
 
-  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
+
   // eslint-disable-next-line no-shadow
   const handleChangeTab = (tabCode) => {
     const myDiv = document.getElementById('content-wrapper');
     myDiv.scrollTop = 0;
     setTabCode(tabCode);
   };
+
+  const onSubmit = (data) => {
+    dispatch(setGettingPaidPreferance(data));
+    setStartingTab(true);
+  };
+
+  const opencloseRetailerModal = useCallback(() => {
+    setIsOpen(!modalIsOpen);
+  }, [modalIsOpen]);
+
+  const opencloseModal = useCallback(() => {
+    setOpen(!modalOpen);
+  }, [modalOpen]);
+
+  useEffect(() => {
+    if (brandProfileDetails?.payment_detail?.customer_id) {
+      if (brandProfileDetails?.payment_detail?.external_account_id) {
+        dispatch(
+          getBrandBankDetailsAction(
+            brandProfileDetails?.payment_detail?.customer_id,
+            brandProfileDetails?.payment_detail?.external_account_id
+          )
+        );
+      } else {
+        setEditBankDetails(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (paidDetails?.id) {
+      // setEditBankDetails(paidDetails);
+      setIsCompleteApplication(true);
+    }
+  }, [paidDetails]);
 
   const publiclyTraded = watch('publiclyTraded');
   const authorizedSign = watch('authorizedSign');
@@ -73,42 +104,6 @@ export default function BrandPaid() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publiclyTraded, authorizedSign, businessOwner]);
 
-  const onSubmit = (data) => {
-    dispatch(setGettingPaidPreferance(data));
-    setStartingTab(true);
-  };
-  const opencloseRetailerModal = useCallback(() => {
-    setIsOpen(!modalIsOpen);
-  }, [modalIsOpen]);
-
-  const opencloseModal = useCallback(() => {
-    setOpen(!modalOpen);
-  }, [modalOpen]);
-
-  const handleConfirmationModelClose = useCallback(() => {
-    setIsConfirmBackModel(false);
-  }, [isConfirmBackModel]);
-
-  const handleConfirmationModelOpen = useCallback(() => {
-    setIsConfirmBackModel(true);
-  }, [isConfirmBackModel]);
-
-  const handleConfirmModel = useCallback(() => {
-    if (Number(tabCode) === 1) {
-      setStartingTab(false);
-      dispatch(setBusinessDetails({}));
-    } else {
-      handleChangeTab(Number(tabCode) - 1);
-      if (Number(tabCode) === 2) {
-        dispatch(setRepresentativeDetails([]));
-      }
-      if (Number(tabCode) === 3) {
-        dispatch(setBankDetails({}));
-      }
-    }
-    setIsConfirmBackModel(false);
-  }, [isConfirmBackModel]);
-
   const renderTab = () => {
     const renderComponent = {
       1: (
@@ -117,7 +112,6 @@ export default function BrandPaid() {
           setIsEdited={setIsEdited}
           setStartingTab={setStartingTab}
           handleChangeTab={handleChangeTab}
-          handleConfirmationModelClose={handleConfirmationModelOpen}
         />
       ),
       2: (
@@ -125,7 +119,6 @@ export default function BrandPaid() {
           isEdited={isEdited}
           setIsEdited={setIsEdited}
           handleChangeTab={handleChangeTab}
-          handleConfirmationModelClose={handleConfirmationModelOpen}
         />
       ),
       3: (
@@ -133,7 +126,6 @@ export default function BrandPaid() {
           isEdited={isEdited}
           setIsEdited={setIsEdited}
           handleChangeTab={handleChangeTab}
-          handleConfirmationModelClose={handleConfirmationModelOpen}
         />
       ),
       4: (
@@ -141,7 +133,6 @@ export default function BrandPaid() {
           setIsEdited={setIsEdited}
           handleChangeTab={handleChangeTab}
           setIsCompleteApplication={setIsCompleteApplication}
-          handleConfirmationModelClose={handleConfirmationModelOpen}
         />
       ),
     };
@@ -355,6 +346,7 @@ export default function BrandPaid() {
                     startingTab && (
                       <div className="gettingpaid-tab">
                         <div className="gp-left">
+                          <h4>Add Business Info</h4>
                           <div className="gp-link-area">
                             <a
                               className={tabCode == '1' ? 'active' : ''}
@@ -364,54 +356,48 @@ export default function BrandPaid() {
                             </a>
                             <a
                               className={tabCode == '2' ? 'active' : ''}
-                              onClick={() => {
-                                !isNil(businessDetails) &&
-                                  !isEmpty(businessDetails) &&
-                                  handleChangeTab('2');
-                              }}
+                              onClick={() => handleChangeTab('2')}
                             >
                               Business Representative
                             </a>
                           </div>
+                          <h4 className="mt-5">ADD YOUR BANK</h4>
                           <div className="gp-link-area">
                             <a
                               className={tabCode == '3' ? 'active' : ''}
-                              onClick={() => {
-                                !isNil(personalDetails) &&
-                                  !isEmpty(personalDetails) &&
-                                  handleChangeTab('3');
-                              }}
+                              onClick={() => handleChangeTab('3')}
                             >
                               Bank Details
                             </a>
                           </div>
+                          <h4 className="mt-5">REVIEW AND FINISH</h4>
                           <div className="gp-link-area">
                             <a
                               className={tabCode == '4' ? 'active' : ''}
-                              onClick={() => {
-                                !isNil(bankDetails) &&
-                                  !isEmpty(bankDetails) &&
-                                  handleChangeTab('4');
-                              }}
+                              onClick={() => handleChangeTab('4')}
                             >
                               Summary
                             </a>
                           </div>
                         </div>
-                        <Suspense fallback={null}>
+                        <Suspense>
                           {!isCompleteApplication && renderTab()}
                         </Suspense>
                       </div>
                     )}
                   {isCompleteApplication && !editBankDetails && (
-                    <GettingPaid
-                      setEditBankDetails={setEditBankDetails}
-                      handleChangeTab={handleChangeTab}
-                      setIsCompleteApplication={setIsCompleteApplication}
-                    />
+                    <GettingPaid setEditBankDetails={setEditBankDetails} />
                   )}
                   {editBankDetails && (
-                    <EditBankDetails setEditBankDetails={setEditBankDetails} />
+                    <EditBankDetails
+                      setEditBankDetails={setEditBankDetails}
+                      customerId={
+                        brandProfileDetails?.payment_detail?.customer_id
+                      }
+                      externalId={
+                        brandProfileDetails?.payment_detail?.external_account_id
+                      }
+                    />
                   )}
                   {!isCompleteApplication &&
                     !startingTab &&
@@ -423,11 +409,7 @@ export default function BrandPaid() {
           </div>
         </div>
       </div>
-      <ConfirmationModel
-        modalIsOpen={isConfirmBackModel}
-        closeConfirmationModal={handleConfirmationModelClose}
-        handleConfirmModel={handleConfirmModel}
-      />
+      <ToastContainer />
     </div>
   );
 }

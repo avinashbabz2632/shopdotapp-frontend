@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { brandProfileValidationSchema } from '../Paid/ValidationSchema';
+import { brandProfileValidationSchema } from '../Paid2/ValidationSchema';
 import EditIcon from '../../images/icons/icon-edit.svg';
 import Brandlogo from '../../images/profile-avatar.jpg';
 import { useDispatch, useSelector } from 'react-redux';

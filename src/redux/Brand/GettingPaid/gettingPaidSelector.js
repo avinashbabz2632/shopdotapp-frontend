@@ -1,8 +1,10 @@
 export const selectBankDetails = (state) => state.gettingPaid.bankDetails;
 
 export const selectBusinessDetails = (state) =>
-  state.gettingPaid.businessDetails;
+    state.gettingPaid.businessDetails;
 
 export const selectRepresentativeDetails = (state) =>
-  state.gettingPaid.representativeDetails;
-export const selectPaidDetails = (state) => state.gettingPaid.paidDetails;
+    state.gettingPaid.representativeDetails;
+
+export const selectGettingPaidPreferance = (state) =>
+    state.gettingPaid.gettingPaidPreferance;

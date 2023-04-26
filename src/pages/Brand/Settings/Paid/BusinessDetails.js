@@ -1,95 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { useForm, useWatch, Controller } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Select, { components } from 'react-select';
-import * as yup from 'yup';
-import PropTypes, { oneOf } from 'prop-types';
+import Select from 'react-select';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import GpArrowWhiteIcon from '../../images/gp-arrow-white.svg';
-import { get } from 'lodash';
 import { setBusinessDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
-import { selectBusinessDetails } from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
+import {
+  selectBusinessDetails,
+  selectGettingPaidPreferance,
+} from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
 import { BusinessDetailsValidationSchema } from './ValidationSchema';
-import tAndCDoc from '../../../../assets/ShopDot-Online-Business-Services-Agreement-09-01-2022.pdf';
-import { LinkMod } from '../../../../components/common/A';
-import moment from 'moment';
-import { ExampleCustomInput } from '../../../../utils/utils';
+import rightArrow from '../../../../assets/images/icons/Vector.11.svg';
+import {
+  businessCategoryOptions,
+  stateIncorporationOptions,
+  deliveryTimeOptions,
+  merchantOptions,
+  salesOptions,
+  categoryStyle,
+  ExampleCustomInput,
+  businessCategoryOptionsNew,
+  textIdOptions,
+  countryOptions,
+} from '../../common/utils/utils';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-const businessCategoryOptions = [
-  { value: 'C_CORP', label: 'C_CORP - Publicly Traded' },
-  { value: 'GOVERNMENT_ORGANISATION', label: 'Government Organization' },
-  { value: 'NON_PROFIT', label: 'Non Profit' },
-  { value: 'TAX_EXEMPT', label: 'Tax Exempt' },
-];
-
-const textIdOptions = [
-  {
-    value: 'ein',
-    label: 'Employer Identification Number (EIN)',
-  },
-  { value: 'ssn', label: 'Social Security Number (SSN)' },
-];
-
-const stateIncorporationOptions = [
-  {
-    value: 'AL',
-    label: 'Alaska',
-  },
-  { value: 'NY', label: 'New York' },
-];
-
-const deliveryTimeOptions = [
-  {
-    value: 'WEEK',
-    label: 'Week',
-  },
-  { value: 'FORTNIGHT', label: '2 Weeks' },
-  { value: 'MONTH', label: 'Month' },
-  { value: 'TWO_MONTHS', label: '2 Months' },
-  { value: 'OVER_TWO_MONTHS', label: 'Over 2 Months' },
-];
-
-const merchantOptions = [
-  {
-    value: '5099',
-    label: '5099 (Durable goods - not else classified)',
-  },
-  { value: '5199', label: '5199 (Nondurable goods - not else classified)' },
-];
-
-const salesOptions = [
-  {
-    value: 'ECOM',
-    label: '100% Digital Transaction',
-  },
-];
+import { isEmpty, isNil } from 'lodash';
 
 const defaultValues = {
-  state_of_incorporation: stateIncorporationOptions[0],
-  average_delivery_time: deliveryTimeOptions[0],
-  merchant_category_code: merchantOptions[0],
-  sales_method: salesOptions[0],
-};
-const categoryStyle = {
-  control: (styles) => {
-    return {
-      ...styles,
-      boxShadow: 'none',
-      minHeight: '40px',
-      '&:hover': {
-        boxShadow: 'none',
-      },
-    };
-  },
-  container: (style) => {
-    return {
-      ...style,
-      marginTop: '5xp',
-      marginRight: '1px',
-    };
-  },
+  averageDeliveryTime: deliveryTimeOptions[0],
+  merchantCategoryCode: merchantOptions[0],
+  countryAddress: countryOptions[0],
+  salesMethod: salesOptions[0],
+  bankruptcy: 'no',
 };
 
 export default function BusinessDetails({
@@ -97,232 +40,269 @@ export default function BusinessDetails({
   setStartingTab,
   handleChangeTab,
   setIsEdited,
-  formData,
+  handleConfirmationModelClose,
 }) {
   const businessDetails = useSelector(selectBusinessDetails);
+  const gettingPaidPreferance = useSelector(selectGettingPaidPreferance);
+  const bussinessCategoryOptions =
+    !isEmpty(gettingPaidPreferance) &&
+    !isNil(gettingPaidPreferance) &&
+    gettingPaidPreferance?.publiclyTraded === 'no'
+      ? businessCategoryOptionsNew
+      : businessCategoryOptions;
+
   const dispatch = useDispatch();
-  const [incorporationDate, setIncorporationDate] = useState(null);
-  const [dischargeDate, setDischargeDate] = useState(null);
 
   const {
     control,
     register,
     handleSubmit,
     reset,
-    value,
     setValue,
     watch,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
+    mode: 'onChange',
     resolver: yupResolver(BusinessDetailsValidationSchema),
     defaultValues,
   });
-  const DropdownIndicator = (props) => {
-    return (
-      <components.DropdownIndicator {...props}>
-        <i className="dropdown-icon" />
-      </components.DropdownIndicator>
-    );
-  };
 
   useEffect(() => {
     const isFormValuePresent = Object.keys(businessDetails).length;
-    if (isFormValuePresent != null) {
+    if (isFormValuePresent !== 0) {
       const fields = [
-        'legal_name',
-        'doing_business_as',
+        'businessName',
         'textIdType',
-        'ein',
-        'ssn',
-        'date_of_incorporation',
-        'prior_bankruptcy',
+        'socialSecurityNumber',
+        'businessAs',
+        'employerIdentificationNumber',
+        'bankruptcy',
+        'averageSales',
+        'averageSalePrice',
+        'productionDescription',
+        'businessCategory',
+        'salesMethod',
+        'merchantCategoryCode',
+        'averageDeliveryTime',
+        'website',
+        'businessEmail',
+        'stateOfIncorportation',
+        'phoneNumber',
+        'addressLine1',
+        'addressLine2',
+        'countryAddress',
+        'stateAddress',
+        'city',
+        'zipcode',
         'dateOfDischarge',
-        'average_sales_volume',
-        'average_purchase',
-        'product_description',
-        'business_category',
-        'sales_method',
-        'merchant_category_code',
-        'average_delivery_time',
-        'email',
-        'store_website',
       ];
-
       fields.forEach((field) => setValue(field, businessDetails[field]));
+      setValue(
+        'dateOfIncorportation',
+        businessDetails['dateOfIncorportation']
+          ? new Date(businessDetails['dateOfIncorportation'])
+          : ''
+      );
+
+      setValue(
+        'dateOfDischarge',
+        businessDetails['dateOfDischarge']
+          ? new Date(businessDetails['dateOfDischarge'])
+          : ''
+      );
     }
 
     return () => {
       setIsEdited(false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdited]);
+
+  const onSubmit = (data) => {
+    console.log('Business Details(page-1)', data);
+    dispatch(setBusinessDetails(data));
+    reset();
+    handleChangeTab('2');
+  };
 
   const handleEINChange = (event) => {
     const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
+    if (rawValue === '') {
+      // Check if the input is empty
+      setError('employerIdentificationNumber', {
+        type: 'custom',
+        message: 'Please enter an EIN',
+      });
+      return;
+    }
     let formattedValues = '';
     if (rawValue.length < 3) {
       formattedValues = rawValue;
     } else {
       formattedValues = `${rawValue.slice(0, 2)}-${rawValue.slice(2, 9)}`;
     }
-    setValue('ein', formattedValues);
-    if (formattedValues.length < 2) {
-      setError('ein', {
+    setValue('employerIdentificationNumber', formattedValues);
+    if (formattedValues?.length < 2) {
+      setError('employerIdentificationNumber', {
         type: 'custom',
         message: 'should be in XX-XXXXXXX format.',
       });
-    } else if (formattedValues.length < 10) {
-      setError('ein', {
+    } else if (formattedValues?.length < 10) {
+      setError('employerIdentificationNumber', {
         type: 'custom',
         message: 'EIN should be 9 digit',
       });
     } else {
-      clearErrors('ein');
+      clearErrors('employerIdentificationNumber');
       event.target.blur();
     }
   };
 
-  const handleDateChange = (date, event) => {
-    if (date) {
-      const isoDate = new Date(date).toISOString();
-      const formatedDate = moment(isoDate).format('MM-DD-YYYY');
-      setIncorporationDate(date);
-      setValue('date_of_incorporation', formatedDate);
-      clearErrors('date_of_incorporation');
-    } else {
-      setValue('date_of_incorporation', null);
-      setError('date_of_incorporation', {
+  const handleSSNChange = (event) => {
+    const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
+    if (rawValue === '') {
+      // Check if the input is empty
+      setError('socialSecurityNumber', {
         type: 'custom',
-        message: 'Date of Incorporation is required',
+        message: 'Please enter an SSN',
       });
+      return;
     }
-    event.target.blur();
-  };
-
-  const handleDateOfDischargeChange = (date, event) => {
-    if (date) {
-      const isoDate = new Date(date).toISOString();
-      const formatedDate = moment(isoDate).format('MM-DD-YYYY');
-      setIncorporationDate(date);
-      setValue('dateOfDischarge', formatedDate);
-      clearErrors('dateOfDischarge');
+    let formattedValues = '';
+    if (rawValue.length < 4) {
+      formattedValues = rawValue;
+    } else if (rawValue.length < 6) {
+      formattedValues = `${rawValue.slice(0, 3)}-${rawValue.slice(3)}`;
     } else {
-      setValue('dateOfDischarge', null);
-      setError('dateOfDischarge', {
-        type: 'custom',
-        message: 'Date of Incorporation is required',
-      });
+      formattedValues = `${rawValue.slice(0, 3)}-${rawValue.slice(
+        3,
+        5
+      )}-${rawValue.slice(5, 9)}`;
     }
-    event.target.blur();
+    setValue('socialSecurityNumber', formattedValues);
+    if (formattedValues.length < 3) {
+      setError('socialSecurityNumber', {
+        type: 'custom',
+        message: 'should be in XXX-XX-XXXX format.',
+      });
+    } else if (formattedValues.length < 11) {
+      setError('socialSecurityNumber', {
+        type: 'custom',
+        message: 'SSN should be 9 digit',
+      });
+    } else {
+      clearErrors('socialSecurityNumber');
+      event.target.blur();
+    }
+  };
+  const handlePhoneChange = (event, i) => {
+    const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
+    let formattedValue = '';
+    if (rawValue.length < 4) {
+      formattedValue = rawValue;
+    } else if (rawValue.length < 7) {
+      formattedValue = `${rawValue.slice(0, 3)}-${rawValue.slice(3)}`;
+    } else {
+      formattedValue = `${rawValue.slice(0, 3)}-${rawValue.slice(
+        3,
+        6
+      )}-${rawValue.slice(6, 10)}`;
+    }
+    setValue('phoneNumber', formattedValue);
   };
 
-  const onSubmit = (data) => {
-    dispatch(setBusinessDetails(data));
-    reset();
-    handleChangeTab('2');
-  };
-
-  const businessCategoryWatch = watch('business_category');
+  const businessCategoryWatch = watch('businessCategory');
+  const bankruptcy = watch('bankruptcy');
   const textIdTypeWatch = watch('textIdType');
-  const prior_bankruptcy = watch('prior_bankruptcy');
 
   return (
     <>
       <form className="gp-right" onSubmit={handleSubmit(onSubmit)}>
         <h3 className="heading">Business Details</h3>
-        <p>
-          The information Priority Holdings collects about your business helps
-          them meet requirements from regulators, and their{' '}
-          <LinkMod to={tAndCDoc} target="_blank">
-            Terms and Conditions
-          </LinkMod>
-          .
-        </p>
         <div className="form-area">
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
-              Legal business name&nbsp;
+            <label className="form-label">
+              Legal name of business&nbsp;
               <span className="asterisk-red">*</span>
             </label>
             <input
               type="text"
               className="form-control mb-0"
-              name="legal_name"
+              name="businessName"
               placeholder=""
-              {...register('legal_name', { required: true })}
+              {...register('businessName', { required: true })}
             />
-            {errors.legal_name && (
-              <span className="error-text">{errors.legal_name?.message}</span>
+            {errors?.businessName && (
+              <span className="error-text">
+                {errors?.businessName?.message}
+              </span>
             )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
-              Doing business as
-            </label>
+            <label className="form-label">Doing business as</label>
             <input
               type="text"
               className="form-control mb-0"
-              name="doing_business_as"
+              name="businessAs"
               placeholder=""
-              {...register('doing_business_as', { required: true })}
+              {...register('businessAs', { required: true })}
             />
             <small>
-              The operating name of your company, if it&nbsp;s different than
+              The operating name of your company if it&lsquo;s different than
               the legal name.{' '}
             </small>
-            {errors.doing_business_as && (
-              <span className="error-text">
-                {errors.doing_business_as?.message}
-              </span>
+            {errors?.businessAs && (
+              <span className="error-text">{errors?.businessAs?.message}</span>
             )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
-              Business website address&nbsp;
-              <span className="asterisk-red">*</span>
+            <label className="form-label">
+              Business website address <span className="asterisk-red">*</span>{' '}
             </label>
             <input
+              {...register('website', { required: true })}
+              name="website"
               type="text"
               className="form-control mb-0"
-              name="store_website"
+              id=""
               placeholder=""
-              {...register('store_website', { required: true })}
             />
-            {errors.store_website && (
-              <span className="error-text">
-                {errors.store_website?.message}
-              </span>
+            {errors?.website && (
+              <span className="error-text">{errors?.website?.message}</span>
             )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
-              Business email address&nbsp;
-              <span className="asterisk-red">*</span>
+            <label className="form-label">
+              Business email address <span className="asterisk-red">*</span>{' '}
             </label>
             <input
+              {...register('businessEmail', { required: true })}
+              name="businessEmail"
               type="text"
               className="form-control mb-0"
-              name="email"
+              id=""
               placeholder=""
-              {...register('email', { required: true })}
             />
-            {errors.email && (
-              <span className="error-text">{errors.email?.message}</span>
+            {errors?.businessEmail && (
+              <span className="error-text">
+                {errors?.businessEmail?.message}
+              </span>
             )}
           </div>
           <div className="form-input mb-4 business_category">
-            <label htmlFor="" className="form-label">
+            <label className="form-label">
               Business category&nbsp;
               <span className="asterisk-red">*</span>
             </label>
             <Controller
-              name="business_category"
+              name="businessCategory"
               control={control}
               render={({ field }) => (
                 <Select
                   {...field}
-                  placeholder=""
+                  placeholder="Select Business Category"
                   className="basic-single"
                   classNamePrefix="select"
                   styles={categoryStyle}
@@ -337,17 +317,18 @@ export default function BusinessDetails({
                       primary: '#bd6f34',
                     },
                   })}
-                  options={businessCategoryOptions}
+                  options={bussinessCategoryOptions}
                 />
               )}
             />
-            {errors.business_category && (
+            {errors?.businessCategory && (
               <span className="error-text">
-                {errors.business_category?.message}
+                {errors?.businessCategory?.message}
               </span>
             )}
           </div>
-          {/* {businessCategoryWatch?.value === 'SINGLE_MEMBER_LLC' && (
+          {(businessCategoryWatch?.value === 'single_member_llc' ||
+            businessCategoryWatch?.value === 'sole_proprietor') && (
             <>
               <div className="form-input mb-4 signle_member_llc">
                 <label htmlFor="" className="form-label">
@@ -358,103 +339,284 @@ export default function BusinessDetails({
                   name="textIdType"
                   control={control}
                   render={({ field }) => (
-                    <Select
-                      {...field}
-                      className="basic-single"
-                      classNamePrefix="select"
-                      placeholder=""
-                      styles={categoryStyle}
-                      components={{
-                        IndicatorSeparator: () => null,
-                      }}
-                      theme={(theme) => ({
-                        ...theme,
-                        colors: {
-                          ...theme.colors,
-                          primary25: '#fbf5f0',
-                          primary: '#bd6f34',
-                        },
-                      })}
-                      options={textIdOptions}
-                    />
+                    <>
+                      <Select
+                        {...field}
+                        className="basic-single"
+                        classNamePrefix="select"
+                        placeholder={'Select Text ID'}
+                        styles={categoryStyle}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
+                        theme={(theme) => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            primary25: '#fbf5f0',
+                            primary: '#bd6f34',
+                          },
+                        })}
+                        options={textIdOptions}
+                      />
+                    </>
                   )}
                 />
-                {errors.textIdType && (
+                {errors?.textIdType && (
                   <span className="error-text">
-                    {errors.textIdType?.message}
+                    {errors?.textIdType?.message}
                   </span>
                 )}
               </div>
             </>
-          )} */}
-          {(businessCategoryWatch?.value === 'SINGLE_MEMBER_LLC' ||
-            businessCategoryWatch?.value === 'SOLE_PROPRIETOR' ||
-            businessCategoryWatch?.value === 'LLC' ||
-            businessCategoryWatch?.value === 'LLP' ||
-            businessCategoryWatch?.value === 'PARTNERSHIP' ||
-            businessCategoryWatch?.value === 'C_CORP' ||
-            businessCategoryWatch?.value === 'S_CORP' ||
-            businessCategoryWatch?.value === 'GOVERNMENT_ORGANISATION' ||
-            businessCategoryWatch?.value === 'NON_PROFIT' ||
-            businessCategoryWatch?.value === 'TAX_EXEMPT') && (
+          )}
+          {(businessCategoryWatch?.value === 'c_corp_publicly_traded' ||
+            businessCategoryWatch?.value === 'goverment_organization' ||
+            businessCategoryWatch?.value === 'non_profit' ||
+            businessCategoryWatch?.value === 'tax_exempt' ||
+            businessCategoryWatch?.value === 'llc' ||
+            businessCategoryWatch?.value === 'llp' ||
+            businessCategoryWatch?.value === 'partnership' ||
+            businessCategoryWatch?.value === 'c_corp_not_publicly_traded' ||
+            businessCategoryWatch?.value === 's_crop' ||
+            textIdTypeWatch?.value === 'ein') && (
             <div className="form-input mb-4 ein">
-              <label htmlFor="" className="form-label">
+              <label className="form-label">
                 Employer Identification Number (EIN)&nbsp;
                 <span className="asterisk-red">*</span>
               </label>
               <input
                 type="tel"
                 placeholder="12-3456789"
-                name="ein"
+                name="employerIdentificationNumber"
                 className="form-control mb-0"
                 id=""
-                {...register('ein', {
+                {...register('employerIdentificationNumber', {
                   required: true,
                 })}
                 onChange={(event) => handleEINChange(event)}
               />
-              {errors.ein && (
-                <span className="error-text">{errors.ein?.message}</span>
+              {errors?.employerIdentificationNumber && (
+                <span className="error-text">
+                  {errors?.employerIdentificationNumber?.message}
+                </span>
               )}
             </div>
           )}
 
-          {/* {(textIdTypeWatch?.value === 'ssn' ||
-            businessCategoryWatch?.value === 'SOLE_PROPRIETOR') &&
-            businessCategoryWatch?.value !== 'LLC' &&
-            businessCategoryWatch?.value !== 'LLP' &&
-            businessCategoryWatch?.value !== 'PARTNERSHIP' &&
-            businessCategoryWatch?.value !== 'C_CORP' &&
-            businessCategoryWatch?.value !== 'S_CORP' &&
-            businessCategoryWatch?.value !== 'GOVERNMENT_ORGANISATION' &&
-            businessCategoryWatch?.value !== 'NON_PROFIT' &&
-            businessCategoryWatch?.value !== 'TAX_EXEMPT' && (
-              <div className="form-input mb-4 ssn">
+          {(businessCategoryWatch?.value === 'single_member_llc' ||
+            businessCategoryWatch?.value === 'sole_proprietor') &&
+            textIdTypeWatch?.value === 'ssn' && (
+              <div className="form-input mb-4">
                 <label htmlFor="" className="form-label">
                   Social Security Number (SSN)&nbsp;
                   <span className="asterisk-red">*</span>
                 </label>
-                <input
-                  type="number"
-                  name="ssn"
-                  className="form-control mb-0"
-                  {...register('ssn', {
-                    required: true,
-                  })}
+                <Controller
+                  name="socialSecurityNumber"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="tel"
+                      name="socialSecurityNumber"
+                      className="form-control mb-0"
+                      placeholder="123-44-5678"
+                      onChange={(event) => {
+                        handleSSNChange(event);
+                      }}
+                    />
+                  )}
                 />
-                {errors.ssn && (
-                  <span className="error-text">{errors.ssn?.message}</span>
+                {errors?.socialSecurityNumber && (
+                  <span className="error-text">
+                    {errors?.socialSecurityNumber?.message}
+                  </span>
                 )}
               </div>
-            )} */}
-
+            )}
+          <div className="form-input mb-4">
+            <label className="form-label">
+              Business phone number&nbsp;
+              <span className="asterisk-red">*</span>
+            </label>
+            <Controller
+              name={'phoneNumber'}
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <input
+                  type="tel"
+                  value={value}
+                  className="form-control mb-0"
+                  placeholder="(123) 456-7899"
+                  onChange={(e) => {
+                    onChange(e);
+                    handlePhoneChange(e);
+                  }}
+                  onBlur={onBlur}
+                />
+              )}
+            />
+            {errors?.phoneNumber && (
+              <span className="error-text">{errors?.phoneNumber?.message}</span>
+            )}
+          </div>
+          <div className="form-input">
+            <label className="fw-700 mb-2 mt-4 d-flex">
+              Business mailing address <span className="asterisk-red">*</span>
+            </label>
+          </div>
+          <div className="form-input mb-4">
+            <label className="form-label">
+              Address line 1 <span className="asterisk-red">*</span>
+            </label>
+            <input
+              type="text"
+              className="form-control mb-0"
+              name={'addressLine1'}
+              {...register('addressLine1', {
+                required: true,
+              })}
+            />
+            {errors?.addressLine1 && (
+              <span className="error-text">
+                {errors?.addressLine1?.message}
+              </span>
+            )}
+          </div>
+          <div className="form-input mb-4">
+            <label className="form-label">Address line 2</label>
+            <input
+              type="text"
+              className="form-control mb-0"
+              name={'addressLine2'}
+              {...register('addressLine2', {
+                required: false,
+              })}
+              placeholder=""
+            />
+            {errors?.addressLine2 && (
+              <span className="error-text">
+                {errors?.addressLine2?.message}
+              </span>
+            )}
+          </div>
+          <div className="category-form-input mb-4">
+            <div className="form-input">
+              <label className="form-label">
+                Country <span className="asterisk-red">*</span>
+              </label>
+              <Controller
+                name={'countryAddress'}
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    className="basic-single_top"
+                    classNamePrefix="select"
+                    styles={categoryStyle}
+                    components={{
+                      IndicatorSeparator: () => null,
+                    }}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: '#fbf5f0',
+                        primary: '#bd6f34',
+                      },
+                    })}
+                    options={countryOptions}
+                  />
+                )}
+              />
+              {errors?.countryAddress && (
+                <span className="error-text">
+                  {errors?.countryAddress?.message}
+                </span>
+              )}
+            </div>
+            <div className="form-input mb-2">
+              <label className="form-label">
+                State <span className="asterisk-red">*</span>
+              </label>
+              <Controller
+                name={'stateAddress'}
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    className="basic-single_top"
+                    classNamePrefix="select"
+                    placeholder="Select State"
+                    styles={categoryStyle}
+                    components={{
+                      IndicatorSeparator: () => null,
+                    }}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: '#fbf5f0',
+                        primary: '#bd6f34',
+                      },
+                    })}
+                    options={stateIncorporationOptions}
+                  />
+                )}
+              />
+              {errors?.stateAddress && (
+                <span className="error-text">
+                  {errors?.stateAddress?.message}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="category-form-input mb-4">
+            <div className="form-input">
+              <label className="form-label">
+                City <span className="asterisk-red">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control mb-0"
+                id=""
+                placeholder="New York"
+                name={'city'}
+                {...register('city', {
+                  required: true,
+                })}
+              />
+              {errors?.city && (
+                <span className="error-text">{errors?.city?.message}</span>
+              )}
+            </div>
+            <div className="form-input">
+              <label className="form-label">
+                ZIP <span className="asterisk-red">*</span>
+              </label>
+              <input
+                type="number"
+                className="form-control mb-0"
+                id=""
+                placeholder="10014"
+                name={'zipcode'}
+                {...register('zipcode', {
+                  required: true,
+                })}
+              />
+              {errors?.zipcode && (
+                <span className="error-text">{errors?.zipcode?.message}</span>
+              )}
+            </div>
+          </div>
           <div className="form-input mb-4">
             <label className="form-label">
               State of incorporation&nbsp;
               <span className="asterisk-red">*</span>
             </label>
             <Controller
-              name="state_of_incorporation"
+              name="stateOfIncorportation"
               control={control}
               render={({ field }) => (
                 <Select
@@ -478,92 +640,87 @@ export default function BusinessDetails({
                 />
               )}
             />
-            {errors.state_of_incorporation && (
+            {errors?.stateOfIncorportation && (
               <span className="error-text">
-                {errors.state_of_incorporation?.message}
+                {errors?.stateOfIncorportation?.message}
               </span>
             )}
           </div>
-
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
+            <label className="form-label">
               Date of incorporation&nbsp;
               <span className="asterisk-red">*</span>
             </label>
 
             <Controller
-              name="date_of_incorporation"
               control={control}
-              render={({ field }) => (
+              name="dateOfIncorportation"
+              render={({ field: { onChange, onBlur, value }, ...props }) => (
                 <>
                   <DatePicker
-                    {...field}
                     closeOnScroll
                     maxDate={new Date()}
                     customInput={<ExampleCustomInput />}
                     placeholderText="MM-DD-YYYY"
-                    selected={incorporationDate}
-                    onChange={(date, event) => {
-                      setIncorporationDate(date);
-                      handleDateChange(date, event);
-                    }}
                     dateFormat="MM-dd-yyyy"
                     showPopperArrow={false}
+                    {...props}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    selected={value}
                   />
                 </>
               )}
             />
-
-            {errors.date_of_incorporation && (
+            {errors?.dateOfIncorportation && (
               <span className="error-text">
-                {errors.date_of_incorporation?.message}
+                {errors?.dateOfIncorportation?.message}
               </span>
             )}
           </div>
-          <div className="form-input return_select-item mb-4">
+          <div className="form-input return_select-item mb-4 radio-row">
             <p className="mb-0">
               Prior bankruptcy&nbsp;
               <span className="asterisk-red">*</span>
             </p>
             <div className="pe_radio mt-2">
-              <label htmlFor="radio-return" className="radiobox">
-                <input
-                  type="radio"
-                  control={control}
-                  name="prior_bankruptcy"
-                  id="radio-return"
-                  value="yes"
-                  {...register('prior_bankruptcy', {
-                    required: true,
-                  })}
-                />
-                <div className="radiobox-text">
-                  <span>Yes</span>
-                </div>
-              </label>
-              <label htmlFor="radio-return-one" className="radiobox">
-                <input
-                  control={control}
-                  type="radio"
-                  name="prior_bankruptcy"
-                  id="radio-return-one"
-                  value="no"
-                  {...register('prior_bankruptcy', {
-                    required: true,
-                  })}
-                />
+              <div className="radio-flex">
+                <label className="radiobox">
+                  <input
+                    type="radio"
+                    id="radio-return"
+                    name="bankruptcy"
+                    value="yes"
+                    {...register('bankruptcy', {
+                      required: true,
+                    })}
+                  />
+                  <div className="radiobox-text">
+                    <span>Yes</span>
+                  </div>
+                </label>
+                <label className="radiobox">
+                  <input
+                    type="radio"
+                    id="radio-return-one"
+                    name="bankruptcy"
+                    value="no"
+                    {...register('bankruptcy', {
+                      required: true,
+                    })}
+                  />
 
-                <div className="radiobox-text">
-                  <span>No</span>
-                </div>
-              </label>
-              {errors.prior_bankruptcy && (
-                <span className="error-text">
-                  {errors.prior_bankruptcy?.message}
-                </span>
-              )}
-
-              {prior_bankruptcy === 'yes' && (
+                  <div className="radiobox-text">
+                    <span>No</span>
+                  </div>
+                </label>
+                {errors?.bankruptcy && (
+                  <span className="error-text">
+                    {errors?.bankruptcy?.message}
+                  </span>
+                )}
+              </div>
+              {bankruptcy === 'yes' && (
                 <div className="radio-data-info mt-3">
                   <div className="form-input">
                     <label className="form-label">
@@ -572,31 +729,31 @@ export default function BusinessDetails({
                     </label>
 
                     <Controller
-                      name="dateOfDischarge"
                       control={control}
-                      render={({ field }) => (
+                      name="dateOfDischarge"
+                      render={({
+                        field: { onChange, onBlur, value },
+                        ...props
+                      }) => (
                         <>
                           <DatePicker
+                            closeOnScroll
                             maxDate={new Date()}
                             customInput={<ExampleCustomInput />}
-                            {...field}
-                            closeOnScroll
                             placeholderText="MM-DD-YYYY"
-                            selected={dischargeDate}
-                            onChange={(date, event) => {
-                              setDischargeDate(date);
-                              handleDateOfDischargeChange(date, event);
-                            }}
                             dateFormat="MM-dd-yyyy"
                             showPopperArrow={false}
+                            {...props}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            selected={value}
                           />
                         </>
                       )}
                     />
-
-                    {errors.dateOfDischarge && (
+                    {errors?.dateOfDischarge && (
                       <span className="error-text">
-                        {errors.dateOfDischarge?.message}
+                        {errors?.dateOfDischarge?.message}
                       </span>
                     )}
                   </div>
@@ -613,50 +770,50 @@ export default function BusinessDetails({
               <span className="doller-lbl">$</span>
               <input
                 type="number"
-                name="average_sales_volume"
+                name="averageSales"
                 className="form-control mb-0"
                 id=""
-                {...register('average_sales_volume', {
+                {...register('averageSales', {
                   required: true,
                 })}
               />
+              {errors?.averageSales && (
+                <span className="error-text">
+                  {errors?.averageSales?.message}
+                </span>
+              )}
             </div>
-            {errors.average_sales_volume && (
-              <span className="error-text">
-                {errors.average_sales_volume?.message}
-              </span>
-            )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
-              Estimate average wholesale price on ShopDot&nbsp;
+            <label className="form-label">
+              Estimated average wholesale price on ShopDot&nbsp;(per item)
               <span className="asterisk-red">*</span>
             </label>
             <div className="wp-right">
               <span className="doller-lbl">$</span>
               <input
                 type="number"
-                name="average_purchase"
+                name="averageSalePrice"
                 className="form-control mb-0"
                 id=""
-                {...register('average_purchase', {
+                {...register('averageSalePrice', {
                   required: true,
                 })}
               />
+              {errors?.averageSalePrice && (
+                <span className="error-text">
+                  {errors?.averageSalePrice?.message}
+                </span>
+              )}
             </div>
-            {errors.average_purchase && (
-              <span className="error-text">
-                {errors.average_purchase?.message}
-              </span>
-            )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
+            <label className="form-label">
               Average delivery time&nbsp;
               <span className="asterisk-red">*</span>
             </label>
             <Controller
-              name="average_delivery_time"
+              name="averageDeliveryTime"
               control={control}
               render={({ field }) => (
                 <Select
@@ -679,20 +836,20 @@ export default function BusinessDetails({
                 />
               )}
             />
-            {errors.average_delivery_time && (
+            {errors?.averageDeliveryTime && (
               <span className="error-text">
-                {errors.average_delivery_time?.message}
+                {errors?.averageDeliveryTime?.message}
               </span>
             )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
+            <label className="form-label">
               Merchant category code&nbsp;
               <span className="asterisk-red">*</span>
             </label>
 
             <Controller
-              name="merchant_category_code"
+              name="merchantCategoryCode"
               control={control}
               render={({ field }) => (
                 <Select
@@ -715,19 +872,19 @@ export default function BusinessDetails({
                 />
               )}
             />
-            {errors.merchant_category_code && (
+            {errors?.merchantCategoryCode && (
               <span className="error-text">
-                {errors.merchant_category_code?.message}
+                {errors?.merchantCategoryCode?.message}
               </span>
             )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
+            <label className="form-label">
               Sales method&nbsp;
               <span className="asterisk-red">*</span>
             </label>
             <Controller
-              name="sales_method"
+              name="salesMethod"
               control={control}
               render={({ field }) => (
                 <Select
@@ -750,30 +907,30 @@ export default function BusinessDetails({
                 />
               )}
             />
-            {errors.sales_method && (
-              <span className="error-text">{errors.sales_method?.message}</span>
+            {errors?.salesMethod && (
+              <span className="error-text">{errors?.salesMethod?.message}</span>
             )}
           </div>
           <div className="form-input mb-4">
-            <label htmlFor="" className="form-label">
+            <label className="form-label">
               Product description&nbsp;
               <span className="asterisk-red">*</span>
             </label>
             <textarea
-              name="product_description"
+              name="productionDescription"
               className="textarea-item"
               id="message"
               rows="3"
               cols="5"
               required=""
               placeholder=""
-              {...register('product_description', {
+              {...register('productionDescription', {
                 required: true,
               })}
             ></textarea>
-            {errors.product_description && (
+            {errors?.productionDescription && (
               <span className="error-text">
-                {errors.product_description?.message}
+                {errors?.productionDescription?.message}
               </span>
             )}
           </div>
@@ -781,14 +938,19 @@ export default function BusinessDetails({
         <div className="form-area">
           <div className="form-input form-submit">
             <button
+              type="button"
+              onClick={() => handleConfirmationModelClose()}
               className="button button-grey cancel"
-              onClick={() => setStartingTab(false)}
             >
               Back
             </button>
-            <button className="button summary-icon" type="submit">
+            <button
+              className="button summary-icon"
+              type="submit"
+              disabled={!isValid}
+            >
               Save and Next
-              <img src={GpArrowWhiteIcon} />
+              <img src={rightArrow} alt="Arrow" />
             </button>
           </div>
         </div>
@@ -798,8 +960,9 @@ export default function BusinessDetails({
 }
 
 BusinessDetails.propTypes = {
-  isEdited: PropTypes.String,
+  isEdited: PropTypes.bool,
   setStartingTab: PropTypes.func,
   handleChangeTab: PropTypes.func,
   setIsEdited: PropTypes.func,
+  handleConfirmationModelClose: PropTypes.func,
 };

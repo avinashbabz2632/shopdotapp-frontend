@@ -22,7 +22,7 @@ import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { AuthApiService } from '../../../../services/apis/authApis';
 import { clearAuthLogout, logOut } from '../../../../redux/auth/authSlice';
 import { clearUserLogout } from '../../../../redux/user/userSlice';
-import { clearPaidLogout } from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
+import { clearPaidLogout } from '../../../../redux/Brand/GettingPaid2/gettingPaidSlice';
 import { clearOrderLogout } from '../../../../redux/Brand/Orders/orderSlice';
 import { clearProductLogout } from '../../../../redux/Brand/Products/productSlice';
 import { clearProfileLogout } from '../../../../redux/Brand/Profile/brandProfileSlice';
