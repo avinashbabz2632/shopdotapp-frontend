@@ -19,11 +19,11 @@ export default function BrandSetting() {
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const useDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
-  console.log('YOU-1-storeUrl--', storeUrl);
 
   useEffect(() => {
     if (brandProfileDetails?.shop_detail?.shop) {
-      setStoreUrl(brandProfileDetails?.shop_detail?.shop);
+      const onlyBranName = brandProfileDetails?.shop_detail?.shop.replace('.myshopify.com', '');
+      setStoreUrl(onlyBranName);
       setIsStoreConnected(true);
       if (brandProfileDetails?.shop_detail.is_active) {
         setStoreStatus('active');
@@ -40,11 +40,10 @@ export default function BrandSetting() {
   // alert(storeUrl);
 
   const connectStore = () => {
-  console.log('YOU-2-storeUrl--', storeUrl);
     if (storeUrl) {
       dispatch(
         connectShopifyAction({
-          name: storeUrl,
+          name: `${storeUrl}.myshopify.com`,
           user_id: useDetails.id,
         })
       );
@@ -140,7 +139,7 @@ export default function BrandSetting() {
                         &nbsp;
                         <label>
                           https:{'//'}
-                          {storeUrl}
+                          {`${storeUrl}.myshopify.com`}
                         </label>
                       </div>
                       <div className="integration_shopify small">
@@ -172,7 +171,7 @@ export default function BrandSetting() {
                         &nbsp;
                         <label>
                           https:{'//'}
-                          {storeUrl}
+                          {`${storeUrl}.myshopify.com`}
                         </label>
                       </div>
                       <div
