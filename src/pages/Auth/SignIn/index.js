@@ -58,7 +58,8 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        navigate('/verify-email');
+        // navigate('/verify-email');
+        navigate('/personalize');
       }
       dispatch(clearAuthReducer());
     }

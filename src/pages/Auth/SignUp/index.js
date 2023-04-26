@@ -62,7 +62,8 @@ function SignUp() {
   useEffect(() => {
     if (success) {
       dispatch(clearAuthReducer());
-      navigate('/verify-email');
+      // navigate('/verify-email');
+      navigate('/personalize');
     }
   }, [success]);
 
