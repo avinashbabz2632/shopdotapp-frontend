@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Info from '../../images/icons/info.svg';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { shippingValidationSchema } from '../Paid/ValidationSchema';
 import Select from 'react-select';
@@ -15,14 +15,12 @@ import {
   getBrandShippingTime,
   updateShipping,
 } from '../../../../actions/brandActions';
+import {getCountriesAction, getStatesAction} from '../../../../actions/generalActions';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import {selectCountries} from '../../../../redux/General/Countries/getCountriesSelector';
+import {selectStates} from '../../../../redux/General/States/getStatesSelector';
 import { ToastContainer } from 'react-toastify';
 import { map } from 'lodash';
-
-const stateOption = [
-  { value: 'manitoba', label: 'Manitoba' },
-  { value: 'alberta', label: 'Alberta' },
-];
 
 const categoryStyle = {
   control: (styles) => {
@@ -45,16 +43,32 @@ const categoryStyle = {
   },
 };
 
-const defaultValues = {
-  statelist: stateOption[0],
-};
+
 
 export default function Shipping() {
+  const countriesOption = useSelector(selectCountries);
+  const transformCountriesOption = countriesOption?.map(el => {
+    return {value: el.id, label: el.name};
+  });
+  const statesOption = useSelector(selectStates);
+  const transformStatesOption = statesOption?.map(el => {
+    return {label: el.name, value: el.country_id}
+  });
+  
+
+  const defaultValues = {
+    // statelist: transformStatesOption ? transformStatesOption[0] : null,
+    // countrylist: transformCountriesOption ? transformCountriesOption[0] : null,
+    shippingfee: '0.00',
+    incrementalfee: '0.00',
+  };
+
   const {
     control,
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -62,11 +76,14 @@ export default function Shipping() {
     defaultValues,
   });
 
+  const watchCountry = useWatch({name: "country", control: control});
+
   const dispatch = useDispatch();
   const shippingDetailsRes = useSelector(selectShippingData);
   const shippingTimes = useSelector(shippingTime);
   const userDetails = useSelector(selectUserDetails);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
+
 
   const formatShippingTime = () => {
     if (shippingTimes && shippingTimes.length) {
@@ -80,9 +97,16 @@ export default function Shipping() {
   };
 
   useEffect(() => {
+    dispatch(getCountriesAction());
     dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
     dispatch(getBrandShippingTime());
   }, []);
+
+  useEffect(() => {
+    if(watchCountry && watchCountry.value){
+      dispatch(getStatesAction(watchCountry?.value));
+    }
+  }, [watchCountry]);
 
   const initalCall = () => {
     if (shippingDetailsRes?.shippingDetails?.brand_details && shippingTimes) {
@@ -97,8 +121,12 @@ export default function Shipping() {
       reset({
         address1: shippingDetails?.shipping_address?.street_address_1,
         address2: shippingDetails?.shipping_address?.street_address_2,
-        country: shippingDetails?.shipping_address?.country,
-        state: shippingDetails?.shipping_address?.state,
+        country: transformCountriesOption.find(country => {
+          return shippingDetails?.shipping_address?.country === country.label;
+        }),
+        state: transformStatesOption.find(state => {
+          return shippingDetails?.shipping_address?.state === state.label;
+        }),
         city: shippingDetails?.shipping_address?.city,
         zip: shippingDetails?.shipping_address?.zip,
         shippingfee: shippingDetails?.shipping_cost,
@@ -126,19 +154,39 @@ export default function Shipping() {
           user_id: userDetails.id,
           street_address_1: data.address1,
           street_address_2: data.address2 ? data.address2 : null,
-          country: data.country,
-          state: 'montana',
+          country: data.country.label,
+          state: data.state.label,
           city: data.city,
           zip: data.zip,
-          shipping_cost: parseFloat(data.shippingfee),
-          incremental_fee: parseFloat(data.incrementalfee),
+          shipping_cost: parseFloat(data.shippingfee).toFixed(2),
+          incremental_fee: parseFloat(data.incrementalfee).toFixed(2),
           shipping_time_id: data.daystofulfill.value,
         },
         shippingDetailsRes?.shippingDetails?.id
       )
     );
-    // reset();
+    reset();
   };
+
+  const formatCurrency = (value) => {
+    const containsDot = value.includes(".");
+    let result;
+    if(containsDot){
+      const splits = value.split('.');
+      const integerValue = `${splits[0]}`;
+      let decimalValue;
+      if(splits[1].length >= 2){
+        decimalValue = splits[1].substr(0,2);
+      } else {
+        decimalValue = `${splits[1]}0`;
+      }
+      result = `${integerValue}.${decimalValue}`;
+    } else {
+      const _result = value.substr(0,2);
+      result = `${_result}.00`;
+    }
+    return result;
+  }
 
   return (
     <div className="pc_tabs-content tabs_body">
@@ -196,7 +244,7 @@ export default function Shipping() {
                             Country &nbsp;
                             <span className="asterisk-red">*</span>
                           </label>
-                          <input
+                          {/* <input
                             type="text"
                             className="form-control mb-0"
                             name="country"
@@ -204,19 +252,10 @@ export default function Shipping() {
                             {...register('country', {
                               required: true,
                             })}
-                          />
-                          {errors.country && (
-                            <span className="error-text">
-                              {errors.country?.message}
-                            </span>
-                          )}
-                        </div>
-                        <div className="form-input">
-                          <label className="form-label">
-                            State <span className="asterisk-red">*</span>
-                          </label>
+                          /> */}
+                          
                           <Controller
-                            name="statelist"
+                            name="country"
                             control={control}
                             render={({ field }) => (
                               <Select
@@ -235,10 +274,49 @@ export default function Shipping() {
                                     primary: '#bd6f34',
                                   },
                                 })}
-                                options={stateOption}
+                                options={transformCountriesOption}
                               />
                             )}
                           />
+                          {errors.country && (
+                            <span className="error-text">
+                              {errors.country?.message}
+                            </span>
+                          )}
+                        </div>
+                        <div className="form-input">
+                          <label className="form-label">
+                            State <span className="asterisk-red">*</span>
+                          </label>
+                          <Controller
+                            name="state"
+                            control={control}
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                className="basic-single"
+                                classNamePrefix="select"
+                                styles={categoryStyle}
+                                components={{
+                                  IndicatorSeparator: () => null,
+                                }}
+                                theme={(theme) => ({
+                                  ...theme,
+                                  colors: {
+                                    ...theme.colors,
+                                    primary25: '#fbf5f0',
+                                    primary: '#bd6f34',
+                                  },
+                                })}
+                                options={transformStatesOption}
+                              />
+                            )}
+                          />
+                          {errors.state && (
+                            <span className="error-text">
+                              {errors.state?.message}
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="category-form-input mt-4">
@@ -313,12 +391,22 @@ export default function Shipping() {
                               </div>
                             </div>
                           </label>
-                          <input
-                            type="number"
-                            className="form-control mb-0"
-                            name="shippingfee"
-                            {...register('shippingfee', { required: true })}
-                          />
+                          <div className='input-wrapper'>
+                            <div className='prefix'>$</div>
+                            <input
+                              className="currency-input mb-0"
+                              name="shippingfee"
+                              {...register('shippingfee', { required: true, onBlur: (e) => {
+                                const value = e.target.value;
+                                if(value){
+                                  const result = formatCurrency(value);
+                                  setValue('shippingfee', result);
+                                } else {
+                                  setValue('shippingfee', `0.00`)
+                                }
+                              }})}
+                            />
+                          </div>
                           {errors.shippingfee && (
                             <span className="error-text">
                               {errors.shippingfee?.message}
@@ -346,12 +434,23 @@ export default function Shipping() {
                               </div>
                             </div>
                           </label>
-                          <input
-                            type="number"
-                            className="form-control mb-0"
-                            name="incrementalfee"
-                            {...register('incrementalfee', { required: true })}
-                          />
+                          <div className='input-wrapper'>
+                            <div className='prefix'>$</div>
+                            <input
+                              className="currency-input mb-0"
+                              name="incrementalfee"
+                              {...register('incrementalfee', { required: true, onBlur: (e) => {
+                                const value = e.target.value;
+                                if(value){
+                                  const result = formatCurrency(value);
+                                  setValue('incrementalfee', result);
+                                } else {
+                                  setValue('incrementalfee', `0.00`)
+                                }
+                              } })}
+                            />
+                          </div>
+                          
                           {errors.incrementalfee && (
                             <span className="error-text">
                               {errors.incrementalfee?.message}

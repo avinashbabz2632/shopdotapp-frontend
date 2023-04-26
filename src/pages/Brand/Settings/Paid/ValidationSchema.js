@@ -188,18 +188,25 @@ export const shippingValidationSchema = yup.object().shape({
     .object()
     .nullable()
     .required('Days to fultill  is required.'),
-  statelist: yup
+  state: yup
     .object()
-    .shape({
-      label: yup.string().required('State Category is required.'),
-      value: yup.string().required('State Category is required.'),
-    })
+    // .shape({
+    //   label: yup.string().required('State Category is required.'),
+    //   value: yup.string().required('State Category is required.'),
+    // })
     .nullable()
-    .required('State Category is required.'),
-  country: yup.string().required('Country is required.'),
+    .required('State is required.'),
+  country: yup
+    .object()
+    // .shape({
+    //   label: yup.string().required('Country is required.'),
+    //   value: yup.string().required('Country is required.'),
+    // })
+    .nullable()
+    .required('Country is required.'),
   city: yup.string().required('City is required.'),
-  shippingfee: yup.string().required('Shipping fee is require.'),
-  incrementalfee: yup.string().required('Incremental fee is require.'),
+  shippingfee: yup.string().required('Shipping fee is required.'),
+  incrementalfee: yup.string().required('Incremental fee is required.'),
   zip: yup.string().required('Zip-code is required.'),
 });
 

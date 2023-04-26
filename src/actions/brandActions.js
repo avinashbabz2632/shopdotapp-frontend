@@ -7,7 +7,7 @@ import {
   setShippingLoading,
   setShippingTimes,
 } from '../redux/Brand/Shipping/shippingSlice';
-import { onChangePassword } from '../redux/Brand/Security/securitySlice';
+import { onChangePassword } from '../redux/Brand/security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
@@ -407,7 +407,7 @@ export function updatePreferences(data) {
       if (response.status === 201) {
         dispatch(getPreferencesAction(data.brand_id));
         dispatch(setProfileCompleted({ preference: true }));
-        toast.success('Preferences Updated');
+        toast.success(response.data?.message);
       }
     } catch (err) {
       toast.error(

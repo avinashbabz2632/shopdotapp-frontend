@@ -82,8 +82,8 @@ export function updateNotificationAction(formData) {
   return async (dispatch) => {
     try {
       const response = await axios.post(API_END_POINT.NOTIFICATION, formData);
-      if (response && response.data && response.data.code == 201) {
-        toast.success('Notification Updated');
+      if (response && response.data && response.data.code == 200) {
+        toast.success(response.data?.message);
         dispatch(getNotificationAction(formData.brand_id));
       } else {
         toast.error('Something went worng');
