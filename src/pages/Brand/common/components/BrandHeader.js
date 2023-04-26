@@ -26,7 +26,7 @@ import { clearPaidLogout } from '../../../../redux/Brand/GettingPaid2/gettingPai
 import { clearOrderLogout } from '../../../../redux/Brand/Orders/orderSlice';
 import { clearProductLogout } from '../../../../redux/Brand/Products/productSlice';
 import { clearProfileLogout } from '../../../../redux/Brand/Profile/brandProfileSlice';
-import { clearSecurityLogout } from '../../../../redux/Brand/security/securitySlice';
+import { clearSecurityLogout } from '../../../../redux/Brand/Security/securitySlice';
 import { clearShippingLogout } from '../../../../redux/Brand/Shipping/shippingSlice';
 import { clearPreferenceLogout } from '../../../../redux/Brand/Preference/preferenceSlice';
 

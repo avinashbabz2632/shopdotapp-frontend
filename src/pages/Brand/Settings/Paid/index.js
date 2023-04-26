@@ -19,6 +19,7 @@ import {
   selectRepresentativeDetails,
   selectBankDetails,
 } from '../../../../redux/Brand/GettingPaid/gettingPaidSelector';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 
 //paid component
 const BusinessDetails = lazy(() => import('./BusinessDetails'));
@@ -40,6 +41,7 @@ export default function BrandPaid() {
   const businessDetails = useSelector(selectBusinessDetails);
   const personalDetails = useSelector(selectRepresentativeDetails);
   const bankDetails = useSelector(selectBankDetails);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
   const dispatch = useDispatch();
   const {
@@ -60,7 +62,10 @@ export default function BrandPaid() {
   const businessOwner = watch('businessOwner');
   useEffect(() => {
     if (publiclyTraded === 'yes' && authorizedSign === 'no') {
-      setOpen(true);
+      if (brandProfileDetails?.brand_profile?.id) {
+      } else {
+        setOpen(true);
+      }
     } else if (publiclyTraded === 'no' && authorizedSign === 'no') {
       setIsOpen(true);
     } else if (
@@ -74,6 +79,7 @@ export default function BrandPaid() {
   }, [publiclyTraded, authorizedSign, businessOwner]);
 
   const onSubmit = (data) => {
+    console.log('RADIO(PAGE 1)', data);
     dispatch(setGettingPaidPreferance(data));
     setStartingTab(true);
   };
@@ -299,7 +305,10 @@ export default function BrandPaid() {
                 </p>
               </div>
             )}
-          {(publiclyTraded === 'no' &&
+          {(publiclyTraded === 'yes' &&
+            authorizedSign === 'no' &&
+            brandProfileDetails?.brand_profile?.id) ||
+          (publiclyTraded === 'no' &&
             authorizedSign === 'yes' &&
             businessOwner === 'yes') ||
           (publiclyTraded === 'yes' && authorizedSign === 'yes') ? (

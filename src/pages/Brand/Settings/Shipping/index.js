@@ -15,10 +15,13 @@ import {
   getBrandShippingTime,
   updateShipping,
 } from '../../../../actions/brandActions';
-import {getCountriesAction, getStatesAction} from '../../../../actions/generalActions';
+import {
+  getCountriesAction,
+  getStatesAction,
+} from '../../../../actions/generalActions';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
-import {selectCountries} from '../../../../redux/General/Countries/getCountriesSelector';
-import {selectStates} from '../../../../redux/General/States/getStatesSelector';
+import { selectCountries } from '../../../../redux/General/Countries/getCountriesSelector';
+import { selectStates } from '../../../../redux/General/States/getStatesSelector';
 import { ToastContainer } from 'react-toastify';
 import { map } from 'lodash';
 
@@ -43,18 +46,15 @@ const categoryStyle = {
   },
 };
 
-
-
 export default function Shipping() {
   const countriesOption = useSelector(selectCountries);
-  const transformCountriesOption = countriesOption?.map(el => {
-    return {value: el.id, label: el.name};
+  const transformCountriesOption = countriesOption?.map((el) => {
+    return { value: el.id, label: el.name };
   });
   const statesOption = useSelector(selectStates);
-  const transformStatesOption = statesOption?.map(el => {
-    return {label: el.name, value: el.country_id}
+  const transformStatesOption = statesOption?.map((el) => {
+    return { label: el.name, value: el.country_id };
   });
-  
 
   const defaultValues = {
     // statelist: transformStatesOption ? transformStatesOption[0] : null,
@@ -76,14 +76,13 @@ export default function Shipping() {
     defaultValues,
   });
 
-  const watchCountry = useWatch({name: "country", control: control});
+  const watchCountry = useWatch({ name: 'country', control: control });
 
   const dispatch = useDispatch();
   const shippingDetailsRes = useSelector(selectShippingData);
   const shippingTimes = useSelector(shippingTime);
   const userDetails = useSelector(selectUserDetails);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
-
 
   const formatShippingTime = () => {
     if (shippingTimes && shippingTimes.length) {
@@ -103,7 +102,7 @@ export default function Shipping() {
   }, []);
 
   useEffect(() => {
-    if(watchCountry && watchCountry.value){
+    if (watchCountry && watchCountry.value) {
       dispatch(getStatesAction(watchCountry?.value));
     }
   }, [watchCountry]);
@@ -121,10 +120,10 @@ export default function Shipping() {
       reset({
         address1: shippingDetails?.shipping_address?.street_address_1,
         address2: shippingDetails?.shipping_address?.street_address_2,
-        country: transformCountriesOption.find(country => {
+        country: transformCountriesOption.find((country) => {
           return shippingDetails?.shipping_address?.country === country.label;
         }),
-        state: transformStatesOption.find(state => {
+        state: transformStatesOption.find((state) => {
           return shippingDetails?.shipping_address?.state === state.label;
         }),
         city: shippingDetails?.shipping_address?.city,
@@ -169,24 +168,24 @@ export default function Shipping() {
   };
 
   const formatCurrency = (value) => {
-    const containsDot = value.includes(".");
+    const containsDot = value.includes('.');
     let result;
-    if(containsDot){
+    if (containsDot) {
       const splits = value.split('.');
       const integerValue = `${splits[0]}`;
       let decimalValue;
-      if(splits[1].length >= 2){
-        decimalValue = splits[1].substr(0,2);
+      if (splits[1].length >= 2) {
+        decimalValue = splits[1].substr(0, 2);
       } else {
         decimalValue = `${splits[1]}0`;
       }
       result = `${integerValue}.${decimalValue}`;
     } else {
-      const _result = value.substr(0,2);
+      const _result = value.substr(0, 2);
       result = `${_result}.00`;
     }
     return result;
-  }
+  };
 
   return (
     <div className="pc_tabs-content tabs_body">
@@ -253,7 +252,7 @@ export default function Shipping() {
                               required: true,
                             })}
                           /> */}
-                          
+
                           <Controller
                             name="country"
                             control={control}
@@ -391,20 +390,23 @@ export default function Shipping() {
                               </div>
                             </div>
                           </label>
-                          <div className='input-wrapper'>
-                            <div className='prefix'>$</div>
+                          <div className="input-wrapper">
+                            <div className="prefix">$</div>
                             <input
                               className="currency-input mb-0"
                               name="shippingfee"
-                              {...register('shippingfee', { required: true, onBlur: (e) => {
-                                const value = e.target.value;
-                                if(value){
-                                  const result = formatCurrency(value);
-                                  setValue('shippingfee', result);
-                                } else {
-                                  setValue('shippingfee', `0.00`)
-                                }
-                              }})}
+                              {...register('shippingfee', {
+                                required: true,
+                                onBlur: (e) => {
+                                  const value = e.target.value;
+                                  if (value) {
+                                    const result = formatCurrency(value);
+                                    setValue('shippingfee', result);
+                                  } else {
+                                    setValue('shippingfee', `0.00`);
+                                  }
+                                },
+                              })}
                             />
                           </div>
                           {errors.shippingfee && (
@@ -434,23 +436,26 @@ export default function Shipping() {
                               </div>
                             </div>
                           </label>
-                          <div className='input-wrapper'>
-                            <div className='prefix'>$</div>
+                          <div className="input-wrapper">
+                            <div className="prefix">$</div>
                             <input
                               className="currency-input mb-0"
                               name="incrementalfee"
-                              {...register('incrementalfee', { required: true, onBlur: (e) => {
-                                const value = e.target.value;
-                                if(value){
-                                  const result = formatCurrency(value);
-                                  setValue('incrementalfee', result);
-                                } else {
-                                  setValue('incrementalfee', `0.00`)
-                                }
-                              } })}
+                              {...register('incrementalfee', {
+                                required: true,
+                                onBlur: (e) => {
+                                  const value = e.target.value;
+                                  if (value) {
+                                    const result = formatCurrency(value);
+                                    setValue('incrementalfee', result);
+                                  } else {
+                                    setValue('incrementalfee', `0.00`);
+                                  }
+                                },
+                              })}
                             />
                           </div>
-                          
+
                           {errors.incrementalfee && (
                             <span className="error-text">
                               {errors.incrementalfee?.message}
