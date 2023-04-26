@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Info from '../../images/icons/info.svg';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { shippingValidationSchema } from '../Paid2/ValidationSchema';
+import { shippingValidationSchema } from '../Paid/ValidationSchema';
 import Select from 'react-select';
 import {
   selectShippingData,
