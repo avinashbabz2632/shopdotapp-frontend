@@ -7,7 +7,7 @@ import { encryptTransform } from 'redux-persist-transform-encrypt';
 import { authReducer } from './auth/authSlice';
 import { gettingPaidReducer } from './Brand/GettingPaid/gettingPaidSlice';
 import { userReducer } from './user/userSlice';
-import { securityReducer } from './Brand/Security/securitySlice';
+import { securityReducer } from './Brand/security/securitySlice';
 import { shippingReducer } from './Brand/Shipping/shippingSlice';
 import { orderReducer } from './Brand/Orders/orderSlice';
 import { brandProfileReducer } from './Brand/Profile/brandProfileSlice';
