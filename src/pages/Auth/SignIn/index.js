@@ -58,7 +58,12 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        navigate('/personalize');
+        if (userDetails.role.name) {
+          navigate('/brand-onboarding');
+        } else {
+          navigate('/personalize');
+        }
+        // navigate('/personalize');
         // navigate('/verify-email');
       }
       dispatch(clearAuthReducer());
