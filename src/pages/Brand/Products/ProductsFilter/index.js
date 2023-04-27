@@ -16,6 +16,7 @@ export default function ProductsFilters() {
     const dispatch = useDispatch();
     const productFilterValue = useSelector(selectProductFilter);
     const productCategory = useSelector(selectProductCategory);
+    console.log('productCategory----', productCategory);
     const productTags = useSelector(selectProductTags);
     const stockOptions = useSelector(selectStockOptions);
     const [show, setShow] = useState(true);

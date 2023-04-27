@@ -42,6 +42,10 @@ const orderSlice = createSlice({
     clearProductLogout: (state) => {
       state = initialState;
     },
+    setProductCatOptions: (state, action) => {
+      console.log('product-cat-options-----', action.payload);
+      state.productCatOptions = action.payload;
+    }
   },
 });
 
@@ -56,6 +60,7 @@ export const {
   stockClear,
   statusViseClear,
   clearProductLogout,
+  setProductCatOptions,
 } = orderSlice.actions;
 
 /**

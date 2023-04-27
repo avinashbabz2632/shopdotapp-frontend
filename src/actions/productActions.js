@@ -2,6 +2,7 @@ import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
 import { setLoggedIn } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
+import { setProductCatOptions } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
 export function getProductListAction(formData) {
@@ -16,20 +17,21 @@ export function getProductListAction(formData) {
         query: {
           category_id: 48,
         },
-        filter: [
-          {
-            field: 'status',
-            operator: 'eq',
-            value: '1',
-          },
-          {
-            field: 'inventory_quantity',
-            operator: 'lte',
-            value: '7',
-          },
-        ],
+        filter: [],
       });
       if (response && response.data && response.data.code == 200) {
+        // const data = response.data?.data;
+        // console.log('data----', data);
+        // if(data) {
+        //   if(Array.isArray(data.records) && data.records.length > 0){
+        //     // Get First Record
+        //     const firstRecord = data.records[0];
+        //     console.log('firstRecord----', firstRecord);
+        //     if(firstRecord){
+        //       dispatch(setProductCatOptions(firstRecord.product_categories));
+        //     }
+        //   }
+        // }
       } else {
         toast.error('Something went worng');
       }
