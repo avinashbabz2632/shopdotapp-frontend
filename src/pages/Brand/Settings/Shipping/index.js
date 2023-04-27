@@ -120,12 +120,12 @@ export default function Shipping() {
       reset({
         address1: shippingDetails?.shipping_address?.street_address_1,
         address2: shippingDetails?.shipping_address?.street_address_2,
-        country: transformCountriesOption.find((country) => {
+        country: transformCountriesOption ? transformCountriesOption?.find((country) => {
           return shippingDetails?.shipping_address?.country === country.label;
-        }),
-        state: transformStatesOption.find((state) => {
+        }): '',
+        state: transformStatesOption ? transformStatesOption?.find((state) => {
           return shippingDetails?.shipping_address?.state === state.label;
-        }),
+        }): '',
         city: shippingDetails?.shipping_address?.city,
         zip: shippingDetails?.shipping_address?.zip,
         shippingfee: shippingDetails?.shipping_cost,
