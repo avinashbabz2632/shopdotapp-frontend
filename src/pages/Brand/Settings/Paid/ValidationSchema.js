@@ -479,7 +479,14 @@ export const shippingValidationSchema = yup.object().shape({
         })
         .nullable()
         .required('State category is required.'),
-    country: yup.string().required('Country is required.'),
+    country: yup
+        .object()
+        .shape({
+            label: yup.string().required('Country is required.'),
+            value: yup.string().required('Country is required.'),
+        })
+        .nullable()
+        .required('State category is required.'),
     city: yup.string().required('City is required.'),
     shippingfee: yup.string().required('Shipping fee is require.'),
     incrementalfee: yup.string().required('Incremental fee is require.'),
