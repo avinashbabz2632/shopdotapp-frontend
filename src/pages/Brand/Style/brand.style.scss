@@ -463,7 +463,7 @@ input[type='submit'] {
 .checkbox {
     position: relative;
     width: 100%;
-    width: 100%;
+    padding:0 !important;
 }
 .checkbox input {
     position: absolute;
@@ -610,7 +610,7 @@ input[type='submit'] {
     flex-direction: column;
     min-height: 100vh;
 }
-.content {
+.content_main {
     flex: 1 0 auto;
     flex-direction: column;
     padding-top: var(--h-height);

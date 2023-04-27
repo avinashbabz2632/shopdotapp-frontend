@@ -131,7 +131,7 @@ export default function BrandSettingPage() {
         }}
       />
       <main
-        className="content mp-content setting-section"
+        className="content_main mp-content setting-section"
         style={{ background: 'white' }}
       >
         <section

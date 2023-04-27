@@ -58,8 +58,8 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        // navigate('/verify-email');
         navigate('/personalize');
+        // navigate('/verify-email');
       }
       dispatch(clearAuthReducer());
     }
