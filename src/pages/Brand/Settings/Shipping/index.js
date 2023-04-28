@@ -85,13 +85,13 @@ export default function Shipping() {
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
   const formatShippingTime = () => {
-    if (shippingTimes && shippingTimes.length) {
+    if (shippingTimes && shippingTimes.length > 0) {
       return shippingTimes.map((item) => ({
         value: item.id,
         label: item.name,
       }));
     } else {
-      return;
+      return [{value: '', label: ''}];
     }
   };
 
@@ -131,7 +131,7 @@ export default function Shipping() {
         shippingfee: shippingDetails?.shipping_cost,
         incrementalfee: shippingDetails?.incremental_fee,
         daystofulfill: shippingDetails?.shipping_address?.shipping_time_id
-          ? formatShippingTime().find(
+          ? formatShippingTime()?.find(
               (item) =>
                 item.value ===
                 shippingDetails?.shipping_address?.shipping_time_id
