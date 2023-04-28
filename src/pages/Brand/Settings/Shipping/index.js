@@ -243,16 +243,6 @@ export default function Shipping() {
                             Country &nbsp;
                             <span className="asterisk-red">*</span>
                           </label>
-                          {/* <input
-                            type="text"
-                            className="form-control mb-0"
-                            name="country"
-                            placeholder=""
-                            {...register('country', {
-                              required: true,
-                            })}
-                          /> */}
-
                           <Controller
                             name="country"
                             control={control}
@@ -261,6 +251,7 @@ export default function Shipping() {
                                 {...field}
                                 className="basic-single"
                                 classNamePrefix="select"
+                                menuPortalTarget={document.body}
                                 styles={categoryStyle}
                                 components={{
                                   IndicatorSeparator: () => null,
@@ -295,6 +286,7 @@ export default function Shipping() {
                                 {...field}
                                 className="basic-single"
                                 classNamePrefix="select"
+                                menuPortalTarget={document.body}
                                 styles={categoryStyle}
                                 components={{
                                   IndicatorSeparator: () => null,
