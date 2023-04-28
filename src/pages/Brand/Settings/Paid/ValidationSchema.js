@@ -467,7 +467,7 @@ export const brandProfileValidationSchema = yup.object().shape({
     .string()
     .nullable()
     .required('Contact phone number is required.')
-    .min(12, 'Contact phone should be 10 digits.'),
+    .min(12, 'Contact phone should be 12 digits.'),
   store_name: yup.string().required('Brand name is required.'),
   store_website: yup
     .string()
