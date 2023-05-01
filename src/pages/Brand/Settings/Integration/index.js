@@ -22,7 +22,10 @@ export default function BrandSetting() {
 
   useEffect(() => {
     if (brandProfileDetails?.shop_detail?.shop) {
-      const onlyBranName = brandProfileDetails?.shop_detail?.shop.replace('.myshopify.com', '');
+      const onlyBranName = brandProfileDetails?.shop_detail?.shop.replace(
+        '.myshopify.com',
+        ''
+      );
       setStoreUrl(onlyBranName);
       setIsStoreConnected(true);
       if (brandProfileDetails?.shop_detail.is_active) {
@@ -62,7 +65,10 @@ export default function BrandSetting() {
 
   const handleReconnect = () => {
     dispatch(
-      disconnectShopifyAction({ domain: storeUrl, user_id: useDetails.id })
+      disconnectShopifyAction({
+        domain: `${storeUrl}.myshopify.com`,
+        user_id: useDetails.id,
+      })
     );
   };
 
