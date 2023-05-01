@@ -476,13 +476,10 @@ export const brandProfileValidationSchema = yup.object().shape({
   brand_categories: yup
     .array()
     .min(1, 'At least 1 category required')
+    .max(3, 'Select max 3 category.')
     .nullable()
     .required('Select max 3 category.'),
-  brand_values: yup
-    .array()
-    .min(1, 'At least 1 value required')
-    .nullable()
-    .required('Select max 3 values.'),
+  brand_values: yup.array(),
   brand_story: yup.string().required('About the brand is required.'),
   brand_promo: yup.string().url('Please enter a valid URL'),
 });
