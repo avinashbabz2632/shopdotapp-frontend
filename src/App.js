@@ -83,7 +83,11 @@ function App() {
     if (isLogged) {
       if (pathname == '/sign-up' || (pathname == '/' && !isRoleUpdated)) {
         if (userDetails.role.name) {
-          navigate('/brand-onboarding');
+          if (userDetails.role.name === 'retailer') {
+            navigate('/retailer-onboarding');
+          } else {
+            navigate('/brand-onboarding');
+          }
         } else {
           navigate('/personalize');
         }
