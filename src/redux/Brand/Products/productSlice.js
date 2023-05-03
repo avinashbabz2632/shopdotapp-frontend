@@ -7,9 +7,14 @@ const initialState = {
     stockFilter: [],
     statusViseFilter: [],
   },
+  productCatFilter: [],
+  productTagFilter: [],
+  stockFilter: [],
+  productStatusFilter: [],
   productCatOptions: ['Baby & Kids', 'Men', 'Women'],
   productTagOptions: ['Chips', 'Summer', 'Summer Activities', 'Summer Toys'],
   stockOptions: ['< 10 units', '11-50 units', '> 50 units'],
+  brandProductList: [],
 };
 
 const orderSlice = createSlice({
@@ -20,21 +25,18 @@ const orderSlice = createSlice({
       state.productFilter = action.payload;
     },
     resetToInitial: (state) => {
-      state.productFilter = {
-        productCatFilter: [],
-        productTagFilter: [],
-        stockFilter: [],
-        statusViseFilter: [],
-      };
+      state.productCatFilter = [];
+      state.productTagFilter = [];
+      state.stockFilter = [];
     },
     productCatClear: (state) => {
-      state.productFilter.productCatFilter = [];
+      state.productCatFilter = [];
     },
     productTagClear: (state) => {
-      state.productFilter.productTagFilter = [];
+      state.productTagFilter = [];
     },
     stockClear: (state) => {
-      state.productFilter.stockFilter = [];
+      state.stockFilter = [];
     },
     statusViseClear: (state) => {
       state.productFilter.statusViseFilter = [];
@@ -42,10 +44,27 @@ const orderSlice = createSlice({
     clearProductLogout: (state) => {
       state = initialState;
     },
+    setBrandProductList: (state, action) => {
+      state.brandProductList = action.payload;
+    },
     setProductCatOptions: (state, action) => {
-      console.log('product-cat-options-----', action.payload);
       state.productCatOptions = action.payload;
-    }
+    },
+    setProductTagOptions: (state, action) => {
+      state.productTagOptions = action.payload;
+    },
+    setProductCatFilter: (state, action) => {
+      state.productCatFilter = [...action.payload];
+    },
+    setProductTagsFilter: (state, action) => {
+      state.productTagFilter = [...action.payload];
+    },
+    setStockFilter: (state, action) => {
+      state.stockFilter = [...action.payload];
+    },
+    setProductStatusFilter: (state, action) => {
+      state.productStatusFilter = action.payload;
+    },
   },
 });
 
@@ -61,6 +80,13 @@ export const {
   statusViseClear,
   clearProductLogout,
   setProductCatOptions,
+  setBrandProductList,
+  setProductTagOptions,
+  //
+  setProductCatFilter,
+  setProductTagsFilter,
+  setStockFilter,
+  setProductStatusFilter
 } = orderSlice.actions;
 
 /**

@@ -2,36 +2,16 @@ import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
 import { setLoggedIn } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
-import { setProductCatOptions } from '../redux/Brand/Products/productSlice';
+import { setProductCatOptions, setBrandProductList, setProductTagOptions } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
-export function getProductListAction(formData) {
+export function getProductListAction(data) {
   return async (dispatch) => {
     try {
-      const response = await axios.post(API_END_POINT.PRODUCT_LIST, {
-        paging: {
-          limit: 10,
-          offset: 0,
-        },
-        sort: [['shopify_product_id', 'DESC']],
-        query: {
-          category_id: 48,
-        },
-        filter: [],
-      });
+      const response = await axios.post(API_END_POINT.PRODUCT_LIST, data);
       if (response && response.data && response.data.code == 200) {
-        // const data = response.data?.data;
-        // console.log('data----', data);
-        // if(data) {
-        //   if(Array.isArray(data.records) && data.records.length > 0){
-        //     // Get First Record
-        //     const firstRecord = data.records[0];
-        //     console.log('firstRecord----', firstRecord);
-        //     if(firstRecord){
-        //       dispatch(setProductCatOptions(firstRecord.product_categories));
-        //     }
-        //   }
-        // }
+        const data = response.data?.data;
+        dispatch(setBrandProductList(data.records));
       } else {
         toast.error('Something went worng');
       }
@@ -49,6 +29,54 @@ export function getProductListAction(formData) {
           ? err.response.data.errors
           : 'Something went worng'
       );
+    }
+  };
+}
+
+export function getProductTagsAction() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.PRODUCT_TAGS}`
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+          dispatch(setProductTagOptions(response.data.data));
+        }
+      } else {
+      }
+      return response;
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+      throw err;
+    }
+  };
+}
+
+export function getProductCategoriesAction() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.PRODUCT_CATEGORIES}`
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+          dispatch(setProductCatOptions(response.data.data));
+        }
+      } else {
+      }
+      return response;
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+      throw err;
     }
   };
 }

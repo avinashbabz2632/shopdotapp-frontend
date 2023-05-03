@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
 import {
-    setProductFilter,
     resetToInitial,
+    setProductCatFilter,
+    setProductTagsFilter,
+    setStockFilter,
 } from '../../../../redux/Brand/Products/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,97 +13,71 @@ import {
     selectProductTags,
     selectStockOptions,
 } from '../../../../redux/Brand/Products/productSelectors';
+import { getProductTagsAction, getProductCategoriesAction } from '../../../../actions/productActions';
 
 export default function ProductsFilters() {
     const dispatch = useDispatch();
     const productFilterValue = useSelector(selectProductFilter);
     const productCategory = useSelector(selectProductCategory);
-    console.log('productCategory----', productCategory);
     const productTags = useSelector(selectProductTags);
     const stockOptions = useSelector(selectStockOptions);
     const [show, setShow] = useState(true);
-    const [productCatOption, setProductCatOption] = useState([]);
-    const [productTagOption, setProductTagOption] = useState([]);
-    const [stockOption, setStockOption] = useState([]);
-    const [productsFilter, setProductsFilter] = useState(productFilterValue);
-    const [productCatFilterVal, setProductCatFilterVal] = useState('');
-    const [productTagFilterVal, setProductTagFilterVal] = useState('');
-    const [stockFilterVal, setStockFilterVal] = useState('');
+    const [categoryIdsToFilter, setCategoryIdsToFilter] = useState([]);
+    const [productTagsToFilter, setProductTagsToFilter] = useState([]);
+    const [stockToFilter, setStockToFilter] = useState([]);
+
 
     useEffect(() => {
-        setProductCatOption(productCategory);
-        setProductTagOption(productTags);
-        setStockOption(stockOptions);
+        dispatch(getProductCategoriesAction());
+        dispatch(getProductTagsAction());
     }, []);
 
-    useEffect(() => {
-        setProductsFilter(productFilterValue);
-        setProductCatFilterVal(productFilterValue?.productCatFilter);
-        setProductTagFilterVal(productFilterValue?.productTagFilter);
-        setStockFilterVal(productFilterValue?.stockFilter);
-    }, [productFilterValue]);
-
-    const handleProductCatOption = (item) => {
-        const isChecked = item.target.checked;
-        const value = item.target.value;
-        const newData = JSON.parse(JSON.stringify(productsFilter));
-        if (isChecked) {
-            newData.productCatFilter.push(value);
-            setProductsFilter({ ...newData });
-            setProductCatFilterVal((prev) => [...prev, value]);
-        } else {
-            const newCategory = newData.productCatFilter.filter(
-                (product) => product !== value
-            );
-            newData.productCatFilter = newCategory;
-            setProductsFilter({ ...newData });
-            setProductCatFilterVal(newCategory);
-        }
-        dispatch(setProductFilter({ ...newData }));
-    };
-
-    const handleProductTagOption = (e) => {
+    const handleProductCatOption = (e, i) => {
         const isChecked = e.target.checked;
         const value = e.target.value;
-        const newData = JSON.parse(JSON.stringify(productsFilter));
-        if (isChecked) {
-            newData.productTagFilter.push(value);
-            setProductsFilter({ ...newData });
-            setProductTagFilterVal((prev) => [...prev, value]);
+        const categoryIdsCopy = categoryIdsToFilter;
+        if(isChecked){
+            categoryIdsCopy.push(value);
+            setCategoryIdsToFilter(categoryIdsCopy);
+            dispatch(setProductCatFilter(categoryIdsCopy));
         } else {
-            const newCategory = newData.productTagFilter.filter(
-                (product) => product !== value
-            );
-            newData.productTagFilter = newCategory;
-            setProductsFilter({ ...newData });
-            setProductTagFilterVal(newCategory);
+            const filter = categoryIdsCopy.filter(catId => catId !== value);
+            setCategoryIdsToFilter(filter);
+            dispatch(setProductCatFilter(filter));
         }
-        dispatch(setProductFilter({ ...newData }));
+    };
+
+    const handleProductTagOption = (e, i) => {
+        const isChecked = e.target.checked;
+        const value = e.target.value;
+        const productTagsToFilterCopy = productTagsToFilter;
+        if (isChecked) {
+            productTagsToFilterCopy.push(value);
+            setProductTagsToFilter(productTagsToFilterCopy);
+            dispatch(setProductTagsFilter(productTagsToFilterCopy));
+        } else {
+            const filter = productTagsToFilterCopy.filter(pTag => pTag !== value);
+            setProductTagsToFilter(filter);
+            dispatch(setProductTagsFilter(filter));
+        }
     };
 
     const handleStockOption = (e) => {
         const isChecked = e.target.checked;
         const value = e.target.value;
-        const newData = JSON.parse(JSON.stringify(productsFilter));
+        const stockToFilterCopy = stockToFilter;
         if (isChecked) {
-            newData.stockFilter.push(value);
-            setProductsFilter({ ...newData });
-            setStockFilterVal((prev) => [...prev, value]);
+            stockToFilterCopy.push(value);
+            setStockToFilter(stockToFilterCopy);
+            dispatch(setStockFilter(stockToFilterCopy))
         } else {
-            const newCategory = newData.stockFilter.filter(
-                (product) => product !== value
-            );
-            newData.stockFilter = newCategory;
-            setProductsFilter({ ...newData });
-            setStockFilterVal(newCategory);
+            const filter = stockToFilterCopy.filter(pTag => pTag !== value);
+            setStockToFilter(filter);
+            dispatch(setStockFilter(filter));
         }
-        dispatch(setProductFilter({ ...newData }));
     };
 
     const handleClearFilter = () => {
-        setProductCatFilterVal([]);
-        setProductTagFilterVal([]);
-        setStockFilterVal([]);
         dispatch(resetToInitial());
     };
 
@@ -136,7 +112,7 @@ export default function ProductsFilters() {
                                     </div>
                                     <div className="subfilter_body">
                                         <div className="filter_form-items">
-                                            {productCatOption.map((item, i) => {
+                                            {(productCategory || []).map((item, i) => {
                                                 return (
                                                     <div
                                                         key={i}
@@ -145,17 +121,14 @@ export default function ProductsFilters() {
                                                         <label>
                                                             <input
                                                                 type="checkbox"
-                                                                value={item}
+                                                                value={item.id}
                                                                 name="bs"
-                                                                onChange={
-                                                                    handleProductCatOption
-                                                                }
-                                                                checked={productCatFilterVal.includes(
-                                                                    item
-                                                                )}
+                                                                onChange={(event) => {
+                                                                    handleProductCatOption(event, i);
+                                                                }}
                                                             />
                                                             <div className="checkbox-text">
-                                                                {item}
+                                                                {item?.name}
                                                             </div>
                                                         </label>
                                                     </div>
@@ -171,7 +144,7 @@ export default function ProductsFilters() {
                                     </div>
                                     <div className="subfilter_body">
                                         <div className="filter_form-items">
-                                            {(productTagOption || []).map(
+                                            {(productTags || []).map(
                                                 (item, i) => {
                                                     return (
                                                         <div
@@ -182,16 +155,13 @@ export default function ProductsFilters() {
                                                                 <input
                                                                     type="checkbox"
                                                                     name="bsa"
-                                                                    value={item}
-                                                                    onChange={
-                                                                        handleProductTagOption
-                                                                    }
-                                                                    checked={productTagFilterVal.includes(
-                                                                        item
-                                                                    )}
+                                                                    value={item?.tag}
+                                                                    onChange={(event) => {
+                                                                        handleProductTagOption(event, i)
+                                                                    }}
                                                                 />
                                                                 <div className="checkbox-text">
-                                                                    {item}
+                                                                    {item.tag}
                                                                 </div>
                                                             </label>
                                                         </div>
@@ -205,7 +175,7 @@ export default function ProductsFilters() {
                                 <div className="subfilter">
                                     <div className="subfilter_head">Stock</div>
                                     <div className="subfilter_body">
-                                        {(stockOption || []).map((item, i) => {
+                                        {(stockOptions || []).map((item, i) => {
                                             return (
                                                 <div
                                                     className="checkbox checkbox--no-decor"
@@ -216,12 +186,7 @@ export default function ProductsFilters() {
                                                             type="checkbox"
                                                             name="bsa"
                                                             value={item}
-                                                            onChange={
-                                                                handleStockOption
-                                                            }
-                                                            checked={stockFilterVal.includes(
-                                                                item
-                                                            )}
+                                                            onChange={handleStockOption}
                                                         />
                                                         <div className="checkbox-text">
                                                             {item}
