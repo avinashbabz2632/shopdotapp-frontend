@@ -131,6 +131,7 @@ export default function BrandProfile() {
   };
 
   const onSubmit = (data) => {
+    console.log('data 2', data);
     dispatch(
       updateBrandProfileAction(
         {
@@ -145,6 +146,8 @@ export default function BrandProfile() {
     );
     // reset();
   };
+
+  console.log(image, 'image');
 
   return (
     <div className="pc_tabs-content tabs_body">
@@ -236,42 +239,47 @@ export default function BrandProfile() {
                   <div className="my_store">
                     <h2>Brand Information </h2>
                     <div className="form-area">
-                      <div className="form-input form-upload-image">
-                        <a href="#" className="upload-logo">
-                          <label>
-                            <input
-                              className="d-none"
-                              id=""
-                              type="file"
-                              onChange={onChangeImage}
-                            />
-                            <img src={EditIcon} className="icon" />
-                            <div className="profile-user-avtar">
-                              <img src={image} />
-                            </div>
-                          </label>
-                        </a>
-                        <label>
-                          Upload logo
-                          <span className="asterisk-red"> *</span>
-                          <a
-                            href="#"
-                            className="remove-logo"
-                            onClick={() => {
-                              if (!profileLoading) {
-                                setImage(Brandlogo);
-                              }
-                            }}
-                          >
-                            Remove logo{' '}
+                      <div>
+                        <div className="form-input form-upload-image">
+                          <a href="#" className="upload-logo">
+                            <label>
+                              <input
+                                className="d-none"
+                                id=""
+                                type="file"
+                                onChange={onChangeImage}
+                              />
+                              <img src={EditIcon} className="icon" />
+                              <div className="profile-user-avtar">
+                                <img src={image} />
+                              </div>
+                            </label>
                           </a>
-                          <span className="logo-instruction">
-                            Format Type:
-                            <b>JPEG or PNG</b>. Maximum size is <b>5MB</b>, No
-                            less than <b>512 x 512</b> pixels and no more than{' '}
-                            <b>1024 x 1024</b> pixels.
-                          </span>
-                        </label>
+                          <label>
+                            Upload logo
+                            <span className="asterisk-red"> *</span>
+                            <a
+                              href="#"
+                              className="remove-logo"
+                              onClick={() => {
+                                if (!profileLoading) {
+                                  setImage('');
+                                }
+                              }}
+                            >
+                              Remove logo{' '}
+                            </a>
+                            <span className="logo-instruction">
+                              Format Type:
+                              <b>JPEG or PNG</b>. Maximum size is <b>5MB</b>, No
+                              less than <b>512 x 512</b> pixels and no more than{' '}
+                              <b>1024 x 1024</b> pixels.
+                            </span>
+                          </label>
+                        </div>
+                        {isEmpty(image) && (
+                          <span className="error-text">Please add logo</span>
+                        )}
                       </div>
                       <div className="form-input mb-4">
                         <label className="form-label">
@@ -463,7 +471,13 @@ export default function BrandProfile() {
                         >
                           Cancel
                         </button>
-                        <button type="submit" className="button">
+                        <button
+                          onClick={() => {
+                            handleSubmit();
+                          }}
+                          type="submit"
+                          className="button"
+                        >
                           Save
                         </button>
                       </div>

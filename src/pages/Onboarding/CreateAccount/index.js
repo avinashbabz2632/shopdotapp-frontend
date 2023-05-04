@@ -9,8 +9,8 @@ import OnboardingLayout from '../../../layout/OnboardingLayout';
 import { LinkMod } from '../../../components/common/A';
 import Input from '../../../components/common/Input/divStyled';
 import Button from '../../../components/common/Button';
-// import '../onboarding.style.scss';
-import '../../Auth/auth.style.scss';
+import '../onboarding.style.scss';
+// import '../../Auth/auth.style.scss';
 
 // Validation schema of form field
 const validationSchema = yup

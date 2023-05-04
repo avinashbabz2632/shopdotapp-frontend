@@ -9,7 +9,10 @@ import Loader from './components/Loader';
 import ResetPasswordSuccess from './pages/Auth/ResetPassword/ResetPassworeSuccess';
 import SiteMap from './pages/Sitemap';
 import { isLoggedIn } from './redux/auth/authSelector';
-import { selectRoleUpdated } from './redux/user/userSelector';
+import {
+  selectRoleUpdated,
+  selectUserDetails,
+} from './redux/user/userSelector';
 
 // Auth Pages
 const SignIn = lazy(() => import('./pages/Auth/SignIn'));
@@ -65,7 +68,8 @@ function App() {
   const history = createBrowserHistory();
   const isLogged = useSelector(isLoggedIn);
   const isRoleUpdated = useSelector(selectRoleUpdated);
-  console.log('isRoleUpdated----',isRoleUpdated);
+  const userDetails = useSelector(selectUserDetails);
+  console.log('isRoleUpdated----', isRoleUpdated);
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -78,11 +82,15 @@ function App() {
 
     if (isLogged) {
       if (pathname == '/sign-up' || (pathname == '/' && !isRoleUpdated)) {
-        history.replace('/personalize');
-        navigate('/personalize');
-      } else if(pathname == '/sign-up' || (pathname == '/' && isRoleUpdated)) {
-        history.replace('/brand-onboarding');
-        navigate('/brand-onboarding');
+        if (userDetails.role.name) {
+          if (userDetails.role.name === 'retailer') {
+            navigate('/retailer-onboarding');
+          } else {
+            navigate('/brand-onboarding');
+          }
+        } else {
+          navigate('/personalize');
+        }
       }
     } else {
       if (pathname !== '/sign-up') {

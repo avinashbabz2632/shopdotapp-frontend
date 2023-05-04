@@ -53,13 +53,26 @@ function SignIn() {
     if (success) {
       if (userDetails.is_email_verified) {
         if (userDetails.role.name) {
-          navigate('/brand-onboarding');
+          if (userDetails.role.name === 'retailer') {
+            navigate('/retailer-onboarding');
+          } else {
+            navigate('/brand-onboarding');
+          }
         } else {
           navigate('/personalize');
         }
       } else {
+        if (userDetails.role.name) {
+          if (userDetails.role.name === 'retailer') {
+            navigate('/retailer-onboarding');
+          } else {
+            navigate('/brand-onboarding');
+          }
+        } else {
+          navigate('/personalize');
+        }
+        // navigate('/personalize');
         // navigate('/verify-email');
-        navigate('/personalize');
       }
       dispatch(clearAuthReducer());
     }
