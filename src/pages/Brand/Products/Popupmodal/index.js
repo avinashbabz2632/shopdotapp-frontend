@@ -6,6 +6,8 @@ import stockRedAlert from '../../../../assets/images/icons/red-warning.svg';
 import stockYellowAlert from '../../../../assets/images/icons/yellow-warning.svg';
 import saveIcon from '../../../../assets/images/icons/save.svg';
 import info from '../../../../assets/images/icons/info-blue.svg';
+import logoPng from '../../../../assets/images/logos/logo-png.png';
+
 
 export default function PopupModal(props) {
     const { variantdata, handalPopup } = props;
@@ -159,9 +161,9 @@ export default function PopupModal(props) {
                                                         <picture>
                                                             <img
                                                                 src={
-                                                                    e.productUrl
+                                                                    e.image ? e.image : logoPng
                                                                 }
-                                                                alt=""
+                                                                alt="V Img"
                                                             />
                                                         </picture>
                                                     </div>
@@ -173,7 +175,7 @@ export default function PopupModal(props) {
                                                 </td>
                                                 <td>
                                                     <div className="txt">
-                                                        {e.color}
+                                                        {e.title}
                                                     </div>
                                                 </td>
                                                 <td>
@@ -188,14 +190,14 @@ export default function PopupModal(props) {
                                                 </td>
                                                 <td>
                                                     <div className="txt">
-                                                        {e.stock}
-                                                        {+e.stock == 0 ? (
+                                                        {e.inventory_quantity}
+                                                        {+e.inventory_quantity == 0 ? (
                                                             <img
                                                                 src={
                                                                     stockRedAlert
                                                                 }
                                                             />
-                                                        ) : +e.stock < 10 ? (
+                                                        ) : +e.inventory_quantity < 10 ? (
                                                             <img
                                                                 src={
                                                                     stockYellowAlert
@@ -210,6 +212,7 @@ export default function PopupModal(props) {
                                                             type="text"
                                                             className="tabel-text"
                                                             placeholder="$10.95"
+                                                            value={e.wsp}
                                                         />
                                                     </div>
                                                 </td>
@@ -219,6 +222,7 @@ export default function PopupModal(props) {
                                                             type="text"
                                                             className="tabel-text"
                                                             placeholder="$15.95"
+                                                            value={e.price}
                                                         />
                                                     </div>
                                                 </td>
