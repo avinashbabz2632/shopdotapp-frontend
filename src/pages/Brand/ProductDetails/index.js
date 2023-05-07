@@ -14,6 +14,12 @@ import LeftArrow from '../images/icons/icon-chevron--left.svg';
 import ZoomIcon from '../images/icons/icon-zoom.svg';
 import ProductZoomModal from './ProductZoomModal';
 import info from '../images/icons/icon-info-red.svg';
+import {getProductDetailsAction} from '../../../actions/productActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectProductDetails} from '../../../redux/Brand/Products/productSelectors';
+import logoPng from '../../../assets/images/logos/logo-png.png';
+import dummyProductDetails from './dummy-product-details.json';
+
 
 export default function ProductDetails() {
     const [image, setimage] = useState(ProductUrl);
@@ -21,12 +27,18 @@ export default function ProductDetails() {
     const [swipedImage, setSwipedImage] = useState(1);
     const [product, setProduct] = useState([]);
     const params = useParams();
+    // const productDetails = useSelector(selectProductDetails);
+    const productDetails = dummyProductDetails.data;
+
+    console.log('productDetails------', productDetails);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        const data = Datas.find((ele) => ele.id === params.id);
-        setProduct(data);
-        setimage(data.productImages[0]);
+        // const data = Datas.find((ele) => ele.id === params.id);
+        // setProduct(data);
+        // setimage(data.productImages[0]);
         // eslint-disable-next-line react-hooks/exhaustive-deps
+        dispatch(getProductDetailsAction(14));
     }, []);
 
     const handalProductZoomModal = () => {
@@ -50,6 +62,53 @@ export default function ProductDetails() {
             setSwipedImage(3);
         }
     };
+
+    const getBrandName = () => {
+        const {user} = productDetails?.productDetails || {};
+        const {brand_details} = user || {};
+        const {company_name} = brand_details || {};
+        return company_name;
+    }
+
+    const getBrandLogo = () => {
+        let brandLogo = logoPng;
+        const {user} = productDetails?.productDetails || {};
+        const {brand_details} = user || {};
+        const {store_logo} = brand_details || {};
+        if(store_logo){
+            brandLogo = store_logo;
+        }
+        return brandLogo;
+    }
+
+    const getWSP = () => {
+        let wsp = 0;
+        const {price_wps} = productDetails?.productDetails || {};
+        if(price_wps){
+            wsp = price_wps;
+        }
+        return wsp;
+    }
+
+    const getMSRP = () => {
+        let msrp = 0;
+        const {price_msrp} = productDetails?.productDetails || {};
+        if(price_msrp){
+            msrp = price_msrp;
+        }
+        return msrp;
+    }
+
+    const getShippingFrom = () => {
+        let brandLogo = logoPng;
+        const {user} = productDetails?.productDetails || {};
+        const {brand_details} = user || {};
+        const {shipping_rate} = brand_details || {};
+        const {shipping_address} = shipping_rate || {};
+        const {country, state, city, zip} = shipping_address || {};
+        return `${city}, ${state}`;
+    }
+
     return (
         <div className="wrapper">
             <BrandHeader />
@@ -69,7 +128,7 @@ export default function ProductDetails() {
                                         />
                                     </NavLink>
                                     <div className="title">
-                                        <h1>{product.productName}</h1>
+                                        <h1>{productDetails?.productDetails?.title}</h1>
                                         {/* <div className="product_status">
                                             <div className="my-toggle-btn">
                                                 <input
@@ -176,8 +235,8 @@ export default function ProductDetails() {
                                             <div className="image image--cover image--1-1">
                                                 <picture>
                                                     <img
-                                                        src={product.brandImage}
-                                                        alt=""
+                                                        src={getBrandLogo()}
+                                                        alt="Logo"
                                                     />
                                                 </picture>
                                             </div>
@@ -185,7 +244,7 @@ export default function ProductDetails() {
                                         <div className="product-detail_info">
                                             <div className="ttl">Brand</div>
                                             <p className="txt">
-                                                {product.brand}
+                                                {getBrandName()}
                                             </p>
                                         </div>
                                     </div>
@@ -215,7 +274,7 @@ export default function ProductDetails() {
                                                 </div>
                                             </div>
                                             <p className="txt txt-dark">
-                                                {product.stock}
+                                                {productDetails?.total_stock_quantity}
                                             </p>
                                         </div>
                                     </div>
@@ -241,14 +300,14 @@ export default function ProductDetails() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p className="txt">{product.wsp}</p>
+                                            <p className="txt">{getWSP()}</p>
                                         </div>
                                     </div>
                                     <div className="product-detail product-detail--msrp">
                                         <div className="product-detail_info">
                                             <div className="ttl">MSRP</div>
                                             <p className="txt txt-dark">
-                                                {product.msrp}
+                                                {getMSRP()}
                                             </p>
                                         </div>
                                     </div>
@@ -258,7 +317,7 @@ export default function ProductDetails() {
                                                 Ships From
                                             </div>
                                             <p className="txt">
-                                                {product.shipsFrom}
+                                                {getShippingFrom()}
                                             </p>
                                         </div>
                                     </div>
@@ -565,9 +624,9 @@ export default function ProductDetails() {
                                         </div>
                                     </div>
                                 </div>
-                                {product.variants && (
+                                {productDetails?.productDetails?.product_variants && (
                                     <ProductVariantTable
-                                        productVariant={product.variants}
+                                        productVariants={productDetails?.productDetails?.product_variants}
                                     />
                                 )}
                                 <div className="pv-update product_shipping">
