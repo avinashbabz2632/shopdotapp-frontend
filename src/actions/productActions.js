@@ -2,7 +2,12 @@ import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
 import { setLoggedIn } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
-import { setProductCatOptions, setBrandProductList, setProductTagOptions } from '../redux/Brand/Products/productSlice';
+import { 
+  setProductCatOptions, 
+  setBrandProductList, 
+  setProductTagOptions,
+  setProductDetails,
+} from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
 export function getProductListAction(data) {
@@ -66,6 +71,30 @@ export function getProductCategoriesAction() {
       if (response && response.data && response.data.code == 200) {
         if (response.data.data) {
           dispatch(setProductCatOptions(response.data.data));
+        }
+      } else {
+      }
+      return response;
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+      throw err;
+    }
+  };
+}
+
+export function getProductDetailsAction(productId) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.PRODUCT_DETAILS(productId)}`
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+          dispatch(setProductDetails(response.data.data));
         }
       } else {
       }

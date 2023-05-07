@@ -15,6 +15,7 @@ const initialState = {
   productTagOptions: ['Chips', 'Summer', 'Summer Activities', 'Summer Toys'],
   stockOptions: ['< 10 units', '11-50 units', '> 50 units'],
   brandProductList: [],
+  productDetails: null,
 };
 
 const orderSlice = createSlice({
@@ -65,6 +66,9 @@ const orderSlice = createSlice({
     setProductStatusFilter: (state, action) => {
       state.productStatusFilter = action.payload;
     },
+    setProductDetails: (state, action) => {
+      state.productDetails = action.payload;
+    }
   },
 });
 
@@ -86,7 +90,8 @@ export const {
   setProductCatFilter,
   setProductTagsFilter,
   setStockFilter,
-  setProductStatusFilter
+  setProductStatusFilter,
+  setProductDetails
 } = orderSlice.actions;
 
 /**
