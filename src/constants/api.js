@@ -47,6 +47,10 @@ export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
 export const DOWNLOAD_PRODUCT = `${BASE_URL}/brand/product/download`;
 export const UPLOAD_PRODUCT = `${BASE_URL}/brand/product/upload`;
+export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
+export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;
+export const PRODUCT_DETAILS = (product_id) =>
+  `${BASE_URL}/brand/product/${product_id}`;
 
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;
@@ -59,5 +63,6 @@ export const ORDERDETAILS = `${BASE_URL}/order/details`;
 // General
 export const COUNTRIES = `${BASE_URL}/countries`;
 export const STATES = (id) => `${BASE_URL}/countries/${id}/states`;
-export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
-export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;
+
+// export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
+// export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;

@@ -4,7 +4,8 @@ import info1 from '../../images/icons/icon-info-red.svg';
 import down from '../../images/icons/icon-chevron--up.svg';
 
 export default function ProductVariantTable(props) {
-    const { productVariant } = props;
+    const { productVariants } = props;
+    console.log('productVariants-----', productVariants);
     return (
         <div className="product_vars pv-update" id="vars">
             <div className="product_extra-head">
@@ -155,7 +156,7 @@ export default function ProductVariantTable(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {productVariant.map((ele, i) => (
+                    {productVariants.map((ele, i) => (
                         <tr key={i}>
                             <td>
                                 <div className="image image--cover image--1-1">
@@ -183,7 +184,7 @@ export default function ProductVariantTable(props) {
                                 <div className="txt">{ele.wsp} </div>
                             </td>
                             <td>
-                                <div className="txt">{ele.msrp} </div>
+                                <div className="txt">{ele.price} </div>
                             </td>
                         </tr>
                     ))}
@@ -194,5 +195,5 @@ export default function ProductVariantTable(props) {
 }
 
 ProductVariantTable.propTypes = {
-    productVariant: PropTypes.any,
+    productVariants: PropTypes.any,
 };
