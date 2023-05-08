@@ -2,18 +2,11 @@ import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
 import { setLoggedIn } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
-<<<<<<< HEAD
 import {
   setProductCatOptions,
   setBrandProductList,
   setProductTagOptions,
-=======
-import { 
-  setProductCatOptions, 
-  setBrandProductList, 
-  setProductTagOptions,
   setProductDetails,
->>>>>>> c0e3f608c7734bf4149ed9dedfca03837811cd2c
 } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
