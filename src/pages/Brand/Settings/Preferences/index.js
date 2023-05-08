@@ -82,7 +82,7 @@ export default function BrandPreference() {
       wholesalePercentage: 50,
       inventoryPercentage: 70,
       returnPricing: options[1],
-      retunRefundPolicy: 'yes',
+      retunRefundPolicy: 'no',
       connectBrand: null,
     },
   });
@@ -94,7 +94,9 @@ export default function BrandPreference() {
   const inventoryPercentage = watch('inventoryPercentage');
 
   useEffect(() => {
-    dispatch(getPreferencesAction(brandProfileDetails?.brand_profile?.id));
+    if (brandProfileDetails?.brand_profile?.id) {
+      dispatch(getPreferencesAction(brandProfileDetails?.brand_profile?.id));
+    }
   }, []);
 
   useEffect(() => {
@@ -105,13 +107,15 @@ export default function BrandPreference() {
   }, [preferenceData]);
 
   const initalCall = () => {
-    reset({
-      wholesalePercentage: preferenceData.wholesale_pricing,
-      inventoryPercentage: preferenceData.wholesale_pricing,
-      inventoryPercentage: preferenceData.inventory_buffer,
-      retunRefundPolicy: preferenceData.return_policy,
-      requirementsForRetailers: preferenceData.connect_brand,
-    });
+    if (preferenceData?.wholesale_pricing) {
+      reset({
+        wholesalePercentage: preferenceData.wholesale_pricing,
+        inventoryPercentage: preferenceData.wholesale_pricing,
+        inventoryPercentage: preferenceData.inventory_buffer,
+        retunRefundPolicy: preferenceData.return_policy,
+        requirementsForRetailers: preferenceData.connect_brand,
+      });
+    }
   };
   const onSubmit = (data) => {
     const formData = {

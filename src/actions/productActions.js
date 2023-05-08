@@ -2,7 +2,11 @@ import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
 import { setLoggedIn } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
-import { setProductCatOptions, setBrandProductList, setProductTagOptions } from '../redux/Brand/Products/productSlice';
+import {
+  setProductCatOptions,
+  setBrandProductList,
+  setProductTagOptions,
+} from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
 export function getProductListAction(data) {
@@ -36,9 +40,7 @@ export function getProductListAction(data) {
 export function getProductTagsAction() {
   return async (dispatch) => {
     try {
-      const response = await axios.get(
-        `${API_END_POINT.PRODUCT_TAGS}`
-      );
+      const response = await axios.get(`${API_END_POINT.PRODUCT_TAGS}`);
       if (response && response.data && response.data.code == 200) {
         if (response.data.data) {
           dispatch(setProductTagOptions(response.data.data));
@@ -60,9 +62,7 @@ export function getProductTagsAction() {
 export function getProductCategoriesAction() {
   return async (dispatch) => {
     try {
-      const response = await axios.get(
-        `${API_END_POINT.PRODUCT_CATEGORIES}`
-      );
+      const response = await axios.get(`${API_END_POINT.PRODUCT_CATEGORIES}`);
       if (response && response.data && response.data.code == 200) {
         if (response.data.data) {
           dispatch(setProductCatOptions(response.data.data));
@@ -70,6 +70,74 @@ export function getProductCategoriesAction() {
       } else {
       }
       return response;
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+      throw err;
+    }
+  };
+}
+
+export function syncSingleProductAction(params) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(`${API_END_POINT.SYNC_SINGLE_PRODUCT}`, {
+        params,
+      });
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+        }
+      } else {
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+      throw err;
+    }
+  };
+}
+
+export function downloadProductAction(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        `${API_END_POINT.DOWNLOAD_PRODUCT}`,
+        data
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+        }
+      } else {
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+      throw err;
+    }
+  };
+}
+
+export function uploadProductAction(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        `${API_END_POINT.UPLOAD_PRODUCT}`,
+        data
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+        }
+      } else {
+      }
     } catch (err) {
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
