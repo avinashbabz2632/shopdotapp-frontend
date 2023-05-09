@@ -148,11 +148,10 @@ export function getPlatformValuesAction() {
 export function syncProductAction(userId) {
   return async () => {
     try {
-      const response = await axios.get(API_END_POINT.SYNC_PRODUCT(userId));
+      const response = await axios.get(API_END_POINT.SYNC_PRODUCT_ALL(userId));
       if (response && response.data && response.data.code == 200) {
         return true;
       }
-      return false;
     } catch (err) {
       return false;
     }
