@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { brandProfileValidationSchema } from '../Paid/ValidationSchema';
 import EditIcon from '../../images/icons/icon-edit.svg';
@@ -29,6 +29,7 @@ export default function BrandProfile() {
     handleSubmit,
     reset,
     setValue,
+    control,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -118,15 +119,14 @@ export default function BrandProfile() {
       setProfileLoading(true);
       const data = new FormData();
       data.append('file', e.target.files[0]);
-      dispatch(
-        uploadImageAction(data)
-          .then((res) => {
-            setImage(res.url);
-          })
-          .finally(() => {
-            setProfileLoading(false);
-          })
-      );
+
+      uploadImageAction(data)
+        .then((res) => {
+          setImage(res.url);
+        })
+        .finally(() => {
+          setProfileLoading(false);
+        });
     }
   };
 
@@ -147,7 +147,21 @@ export default function BrandProfile() {
     // reset();
   };
 
-  console.log(image, 'image');
+  const handlePhoneChange = (event, i) => {
+    const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
+    let formattedValue = '';
+    if (rawValue.length < 4) {
+      formattedValue = rawValue;
+    } else if (rawValue.length < 7) {
+      formattedValue = `${rawValue.slice(0, 3)}-${rawValue.slice(3)}`;
+    } else {
+      formattedValue = `${rawValue.slice(0, 3)}-${rawValue.slice(
+        3,
+        6
+      )}-${rawValue.slice(6, 10)}`;
+    }
+    setValue('company_phone_number', formattedValue);
+  };
 
   return (
     <div className="pc_tabs-content tabs_body">
@@ -217,16 +231,36 @@ export default function BrandProfile() {
                           Contact phone number{' '}
                           <span className="asterisk-red">*</span>
                         </label>
-                        <input
-                          type="number"
+
+                        <Controller
+                          name={'company_phone_number'}
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <input
+                              type="tel"
+                              value={value}
+                              className="form-control mb-0"
+                              placeholder="(123) 456-7899"
+                              onChange={(e) => {
+                                onChange(e);
+                                handlePhoneChange(e);
+                              }}
+                              onBlur={onBlur}
+                            />
+                          )}
+                        />
+                        {/* <input
+                          type="tel"
                           className="form-control mb-0"
-                          id=""
+                          onChange={(e) => {
+                            handlePhoneChange(e);
+                          }}
                           name="company_phone_number"
-                          placeholder=""
+                          placeholder="(123) 456-7899"
                           {...register('company_phone_number', {
                             required: true,
                           })}
-                        />
+                        /> */}
 
                         {errors?.company_phone_number && (
                           <span className="error-text">
