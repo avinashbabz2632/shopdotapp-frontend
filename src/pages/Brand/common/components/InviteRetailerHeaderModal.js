@@ -2,9 +2,17 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import closeBlackIcon from '../../images/icons/close-icon.svg';
+import {useSelector} from 'react-redux';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 function InviteRetailer(props) {
     const [retailerMail, setRetailerMail] = useState('');
+    const userDetails = useSelector(selectUserDetails);
+
+    const getReferralUrl = () => {
+        const {referal_url} = userDetails || {};
+        return referal_url ? referal_url : '';
+    }
 
     const copyRetilerInfo = (copyType) => {
         if (copyType == 'email') {
@@ -44,7 +52,7 @@ function InviteRetailer(props) {
                                         type="email"
                                         name=""
                                         id=""
-                                        value={retailerMail}
+                                        value={getReferralUrl()}
                                         placeholder="shopdotapp.com/signup/retaileshopxyz"
                                         onChange={(e) =>
                                             setRetailerMail(e.target.value)
