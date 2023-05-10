@@ -13,6 +13,7 @@ import {
   selectProductTagFilter,
   selectStockFilter,
 } from '../../../redux/Brand/Products/productSelectors';
+import { ToastContainer } from 'react-toastify';
 
 export default function ProductsList() {
   const dispatch = useDispatch();
@@ -32,50 +33,66 @@ export default function ProductsList() {
     //   const catFilter = {field: 'category', operator: 'in', value: productCatFilter};
     //   filter.push(catFilter);
     // }
-    if(productTagsFilter && productTagsFilter.length > 0) {
-      const tagFilter = {field: 'tag', operator: 'in', value: productTagsFilter};
+    if (productTagsFilter && productTagsFilter.length > 0) {
+      const tagFilter = {
+        field: 'tag',
+        operator: 'in',
+        value: productTagsFilter,
+      };
       filter.push(tagFilter);
     }
-    if(stockFilter && stockFilter.length > 0) {
-      stockFilter.forEach(sf => {
-        if(sf === '< 10 units'){
-          const _stockFilter = {field: 'inventory_quantity', operator: 'lt', value: 10};
+    if (stockFilter && stockFilter.length > 0) {
+      stockFilter.forEach((sf) => {
+        if (sf === '< 10 units') {
+          const _stockFilter = {
+            field: 'inventory_quantity',
+            operator: 'lt',
+            value: 10,
+          };
           filter.push(_stockFilter);
-        } else if(sf === '11-50 units'){
-          const _stockFilter = {field: 'inventory_quantity', operator: 'between', value: "11-50"};
+        } else if (sf === '11-50 units') {
+          const _stockFilter = {
+            field: 'inventory_quantity',
+            operator: 'between',
+            value: '11-50',
+          };
           filter.push(_stockFilter);
-        } else if(sf === '> 50 units'){
-          const _stockFilter = {field: 'inventory_quantity', operator: 'gt', value: 50};
+        } else if (sf === '> 50 units') {
+          const _stockFilter = {
+            field: 'inventory_quantity',
+            operator: 'gt',
+            value: 50,
+          };
           filter.push(_stockFilter);
         }
-      })
+      });
     }
     return filter;
-  }
+  };
 
   const fetchProducts = () => {
     const data = {
       paging: {
         limit: limit,
-        offset: offset
+        offset: offset,
       },
       sort: [['shopify_product_id', 'DESC']],
       query: {
         category_ids: productCatFilter,
-        // search: "free text need to send here"
       },
       filter: prepareFilter(),
     };
     dispatch(getProductListAction(data));
-  }
+  };
 
   useEffect(() => {
-    fetchProducts();
+    // fetchProducts();
+    console.log('test');
   }, []);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [productCatFilter, productTagsFilter, stockFilter]);
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, [productCatFilter, productTagsFilter, stockFilter]);
 
   const handleAction = (type, howMuch) => {
     if (type == 'active') {
@@ -112,6 +129,7 @@ export default function ProductsList() {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }
