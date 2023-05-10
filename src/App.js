@@ -69,7 +69,6 @@ function App() {
   const isLogged = useSelector(isLoggedIn);
   const isRoleUpdated = useSelector(selectRoleUpdated);
   const userDetails = useSelector(selectUserDetails);
-  console.log('isRoleUpdated----', isRoleUpdated);
 
   useEffect(() => {
     const pathname = window.location.pathname;

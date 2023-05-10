@@ -82,7 +82,7 @@ export default function ProductTable(props) {
     //   filter.push(catFilter);
     // }
     if(productStatusFilter !== "" && productStatusFilter !== "all") {
-      const status = productStatusFilter === "active" ? 1 : 0;
+      const status = productStatusFilter === "active" ? "1" : "0";
       const statusFilter = {field: 'status', operator: 'eq', value: status};
       filter.push(statusFilter);
     }
@@ -91,8 +91,20 @@ export default function ProductTable(props) {
       filter.push(tagFilter);
     }
     if(stockFilter && stockFilter.length > 0) {
-      const _stockFilter = {field: 'inventory_quantity', operator: 'eq', value: stockFilter};
-      filter.push(_stockFilter);
+      stockFilter.forEach(sf => {
+        if(sf === '< 10 units'){
+          const _stockFilter = {field: 'inventory_quantity', operator: 'lt', value: 10};
+          filter.push(_stockFilter);
+        } else if(sf === '11-50 units'){
+          const _stockFilter = {field: 'inventory_quantity', operator: 'between', value: "11-50"};
+          filter.push(_stockFilter);
+        } else if(sf === '> 50 units'){
+          const _stockFilter = {field: 'inventory_quantity', operator: 'gt', value: 50};
+          filter.push(_stockFilter);
+        }
+      })
+      // const _stockFilter = {field: 'inventory_quantity', operator: 'gt', value: 50};
+      
     }
     return filter;
   }
@@ -105,13 +117,21 @@ export default function ProductTable(props) {
       },
       sort: [['shopify_product_id', 'DESC']],
       query: {
-        category_id: productCatFilter,
+        category_ids: productCatFilter,
         search: searchVal
       },
       filter: prepareFilter(),
     };
     dispatch(getProductListAction(data));
   }
+
+  useEffect(() => {
+    if(searchVal && searchVal.length >= 3) {
+      fetchProducts();
+    } else if (searchVal.length === 0){
+      fetchProducts();
+    }
+  }, [searchVal]);
 
   useEffect(() => {
     const otherDivs =

@@ -109,3 +109,28 @@ export function getProductDetailsAction(productId) {
     }
   };
 }
+
+export function editProductDetailsAction(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.patch(
+        `${API_END_POINT.EDIT_PRODUCT_DETAILS(productId)}`,
+        data
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+          dispatch(setProductDetails(response.data.data));
+        }
+      } else {
+      }
+      return response;
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+      throw err;
+    }
+  };
+}

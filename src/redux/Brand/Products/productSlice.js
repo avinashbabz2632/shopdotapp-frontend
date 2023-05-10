@@ -16,6 +16,10 @@ const initialState = {
   stockOptions: ['< 10 units', '11-50 units', '> 50 units'],
   brandProductList: [],
   productDetails: null,
+  //Product Update
+  updatingProduct: false,
+  updateProductSuccess: false,
+  productUpdateResult: null,
 };
 
 const orderSlice = createSlice({
@@ -68,6 +72,14 @@ const orderSlice = createSlice({
     },
     setProductDetails: (state, action) => {
       state.productDetails = action.payload;
+    },
+    setUpdatingProduct: (state, action) => {
+      state.updatingProduct = true;
+    },
+    setProductUpdateResult: (state, action) => {
+      state.updatingProduct = false;
+      state.updateProductSuccess = true;
+      state.productUpdateResult = action.payload;
     }
   },
 });
