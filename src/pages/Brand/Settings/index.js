@@ -83,7 +83,7 @@ export default function BrandSettingPage() {
     if (profileCompleted.profile) {
       steps.push('profile');
     }
-    if (profileCompleted?.shop_detail?.is_active) {
+    if (profileCompleted?.integration) {
       steps.push('integration');
     }
     if (profileCompleted.shipping) {

@@ -25,7 +25,8 @@ export const RETAIL_PROFILE = `${BASE_URL}/user/retailer-profile`;
 // Brand
 export const PLATFORM = `${BASE_URL}/platform`;
 export const BRAND_PROFILE = `${BASE_URL}/user/brand-profile`;
-export const USER_BRAND_PROFILE = (id) => `${BASE_URL}/user/brand-profile/${id}`;
+export const USER_BRAND_PROFILE = (id) =>
+  `${BASE_URL}/user/brand-profile/${id}`;
 export const BRAND_AS_CUSTOMER = `${BASE_URL}/payment/create-brand-as-customer`;
 export const EXTERNAL_ACCOUNT = `${BASE_URL}/payment/customer/external-account`;
 export const PAYMENT_CUSTOMER = `${BASE_URL}/payment/customer`;
@@ -34,6 +35,7 @@ export const BRAND_SHIPPING_TIMES = `${BASE_URL}/platform/shipping-times`;
 export const SYNC_PRODUCT_ALL = (id) =>
   `${BASE_URL}/shopify/sync-all-product?&user_id=${id}`;
 export const SYNC_PRODUCT = `${BASE_URL}/shopify/sync-all-product`;
+export const SYNC_SINGLE_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
@@ -43,6 +45,8 @@ export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
+export const DOWNLOAD_PRODUCT = `${BASE_URL}/brand/product/download`;
+export const UPLOAD_PRODUCT = `${BASE_URL}/brand/product/upload`;
 export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
 export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;
 export const PRODUCT_DETAILS = (product_id) => `${BASE_URL}/brand/product/${product_id}`;
@@ -60,6 +64,5 @@ export const ORDERDETAILS = `${BASE_URL}/order/details`;
 export const COUNTRIES = `${BASE_URL}/countries`;
 export const STATES = (id) => `${BASE_URL}/countries/${id}/states`;
 
-
-
-
+// export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
+// export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;

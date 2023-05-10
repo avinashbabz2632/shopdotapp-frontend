@@ -70,7 +70,7 @@ export default function BrandOnBoarding() {
   }, [profileCompleted]);
 
   const handleComplete = () => {
-    if (brandProfileDetails?.brand_profile?.is_initial_sync_done) {
+    if (brandProfileDetails?.user_detail?.is_initial_sync_done) {
       setBrandStep([1, 2, 3]);
       setActiveStep(4);
     } else if (profileCompleted.integration) {

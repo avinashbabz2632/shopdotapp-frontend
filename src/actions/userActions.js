@@ -67,7 +67,6 @@ export async function uploadImageAction(formData) {
     } else {
       toast.error('Something went worng');
     }
-    return response;
   } catch (err) {
     toast.error(
       err && err.response && err.response.data && err.response.data.errors
