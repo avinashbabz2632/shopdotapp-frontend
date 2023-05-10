@@ -37,7 +37,7 @@ export default function ProductsFilters() {
         const value = e.target.value;
         const categoryIdsCopy = categoryIdsToFilter;
         if(isChecked){
-            categoryIdsCopy.push(value);
+            categoryIdsCopy.push(parseInt(value));
             setCategoryIdsToFilter(categoryIdsCopy);
             dispatch(setProductCatFilter(categoryIdsCopy));
         } else {

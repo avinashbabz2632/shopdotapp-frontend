@@ -19,3 +19,9 @@ export const selectStockFilter = (state) => state.brandProduct.stockFilter;
 export const selectProductStatusFilter = (state) => state.brandProduct.productStatusFilter;
 
 export const selectProductDetails = (state) => state.brandProduct.productDetails;
+
+export const selectUpdatingProduct = (state) => state.brandProduct.updatingProduct;
+
+export const selectProductUpdateResult = (state) => state.brandProduct.productUpdateResult;
+
+export const selectUpdateProductSuccess = (state) => state.brandProduct.updateProductSuccess;

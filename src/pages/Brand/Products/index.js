@@ -37,8 +37,18 @@ export default function ProductsList() {
       filter.push(tagFilter);
     }
     if(stockFilter && stockFilter.length > 0) {
-      const _stockFilter = {field: 'inventory_quantity', operator: 'eq', value: stockFilter};
-      filter.push(_stockFilter);
+      stockFilter.forEach(sf => {
+        if(sf === '< 10 units'){
+          const _stockFilter = {field: 'inventory_quantity', operator: 'lt', value: 10};
+          filter.push(_stockFilter);
+        } else if(sf === '11-50 units'){
+          const _stockFilter = {field: 'inventory_quantity', operator: 'between', value: "11-50"};
+          filter.push(_stockFilter);
+        } else if(sf === '> 50 units'){
+          const _stockFilter = {field: 'inventory_quantity', operator: 'gt', value: 50};
+          filter.push(_stockFilter);
+        }
+      })
     }
     return filter;
   }
@@ -51,7 +61,7 @@ export default function ProductsList() {
       },
       sort: [['shopify_product_id', 'DESC']],
       query: {
-        category_id: productCatFilter,
+        category_ids: productCatFilter,
         // search: "free text need to send here"
       },
       filter: prepareFilter(),

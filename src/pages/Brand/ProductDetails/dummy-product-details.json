@@ -13,7 +13,7 @@
             "processing_time": "3-7",
             "shipping_time": "3-7",
             "body_html": "best winter clothing for everyone",
-            "tags": "shirt, t-shirt",
+            "tags": ["shirt", "t-shirt"],
             "user": {
                 "id": 12205,
                 "brand_details": {
