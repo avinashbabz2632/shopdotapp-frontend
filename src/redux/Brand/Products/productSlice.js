@@ -20,6 +20,8 @@ const initialState = {
   updatingProduct: false,
   updateProductSuccess: false,
   productUpdateResult: null,
+  productSubCatOptions: [],
+  productGroupOptions: [],
 };
 
 const orderSlice = createSlice({
@@ -80,6 +82,12 @@ const orderSlice = createSlice({
       state.updatingProduct = false;
       state.updateProductSuccess = true;
       state.productUpdateResult = action.payload;
+    },
+    setProductSubCatOptions: (state, action) => {
+      state.productSubCatOptions = action.payload;
+    },
+    setProductGroupOptions: (state, action) => {
+      state.productGroupOptions = action.payload;
     }
   },
 });
@@ -103,7 +111,9 @@ export const {
   setProductTagsFilter,
   setStockFilter,
   setProductStatusFilter,
-  setProductDetails
+  setProductDetails,
+  setProductSubCatOptions,
+  setProductGroupOptions
 } = orderSlice.actions;
 
 /**
