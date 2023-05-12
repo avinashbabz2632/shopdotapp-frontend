@@ -11,6 +11,7 @@ import {
   setProductGroupOptions,
 } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
+import download from 'js-file-download';
 
 export function getProductListAction(data) {
   return async (dispatch) => {
@@ -65,14 +66,16 @@ export function getProductTagsAction() {
 export function getProductCategoriesAction(type, id) {
   return async (dispatch) => {
     try {
-      const response = await axios.get(`${API_END_POINT.PRODUCT_CATEGORIES(id)}`);
+      const response = await axios.get(
+        `${API_END_POINT.PRODUCT_CATEGORIES(id)}`
+      );
       if (response && response.data && response.data.code == 200) {
         if (response.data.data) {
-          if(type === 'category') {
+          if (type === 'category') {
             dispatch(setProductCatOptions(response.data.data));
-          } else if(type === 'subcategory') {
+          } else if (type === 'subcategory') {
             dispatch(setProductSubCatOptions(response.data.data));
-          } else if(type === 'group') {
+          } else if (type === 'group') {
             dispatch(setProductGroupOptions(response.data.data));
           }
         }
@@ -115,15 +118,13 @@ export function downloadProductAction(data) {
     try {
       const response = await axios.post(
         `${API_END_POINT.DOWNLOAD_PRODUCT}`,
-        data
+        data,
+        {
+          responseType: 'blob',
+        }
       );
       if (response && response.status == 200) {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'template.xlsx');
-        document.body.appendChild(link);
-        link.click();
+        download(response.data, `${Date.now()}.xlsx`);
       } else {
       }
     } catch (err) {

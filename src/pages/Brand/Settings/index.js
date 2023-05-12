@@ -135,7 +135,7 @@ export default function BrandSettingPage() {
         style={{ background: 'white' }}
       >
         <section
-          className="section products pc_tabs tabs"
+          className="section_main products pc_tabs tabs"
           style={{ background: 'white' }}
         >
           <BrandSidebar completedStep={completedStep} />
