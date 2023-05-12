@@ -28,7 +28,7 @@ export default function ProductsFilters() {
 
 
     useEffect(() => {
-        dispatch(getProductCategoriesAction());
+        dispatch(getProductCategoriesAction('category', 0));
         dispatch(getProductTagsAction());
     }, []);
 

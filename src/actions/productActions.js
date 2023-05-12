@@ -7,6 +7,8 @@ import {
   setBrandProductList,
   setProductTagOptions,
   setProductDetails,
+  setProductSubCatOptions,
+  setProductGroupOptions,
 } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 
@@ -60,15 +62,20 @@ export function getProductTagsAction() {
   };
 }
 
-export function getProductCategoriesAction() {
+export function getProductCategoriesAction(type, id) {
   return async (dispatch) => {
     try {
-      const response = await axios.get(`${API_END_POINT.PRODUCT_CATEGORIES}`);
+      const response = await axios.get(`${API_END_POINT.PRODUCT_CATEGORIES(id)}`);
       if (response && response.data && response.data.code == 200) {
         if (response.data.data) {
-          dispatch(setProductCatOptions(response.data.data));
+          if(type === 'category') {
+            dispatch(setProductCatOptions(response.data.data));
+          } else if(type === 'subcategory') {
+            dispatch(setProductSubCatOptions(response.data.data));
+          } else if(type === 'group') {
+            dispatch(setProductGroupOptions(response.data.data));
+          }
         }
-      } else {
       }
       return response;
     } catch (err) {
