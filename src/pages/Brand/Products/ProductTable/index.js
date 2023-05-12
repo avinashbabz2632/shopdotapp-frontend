@@ -14,14 +14,14 @@ import MoreIcon from '../../images/icons/icon-more.svg';
 import emptyTable from '../../images/product-card-empty.svg';
 import { Datas } from '../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  selectProductFilter, 
+import {
+  selectProductFilter,
   selectBrandProductList,
   selectProductCatFilter,
   selectProductTagFilter,
   selectStockFilter,
   selectProductStatusFilter,
- } from '../../../../redux/Brand/Products/productSelectors';
+} from '../../../../redux/Brand/Products/productSelectors';
 import {
   resetToInitial,
   productTagClear,
@@ -35,8 +35,11 @@ import CategoryTagPopupModal from '../CategoryTagPopup';
 import RetailerPopup from '../RetailerPopup';
 import stockRedAlert from '../../../../assets/images/icons/red-warning.svg';
 import stockYellowAlert from '../../../../assets/images/icons/yellow-warning.svg';
-import { getProductListAction } from '../../../../actions/productActions';
-
+import {
+  downloadProductAction,
+  getProductListAction,
+  uploadProductAction,
+} from '../../../../actions/productActions';
 
 export default function ProductTable(props) {
   const dispatch = useDispatch();
@@ -81,54 +84,73 @@ export default function ProductTable(props) {
     //   const catFilter = {field: 'category', operator: 'in', value: productCatFilter};
     //   filter.push(catFilter);
     // }
-    if(productStatusFilter !== "" && productStatusFilter !== "all") {
-      const status = productStatusFilter === "active" ? "1" : "0";
-      const statusFilter = {field: 'status', operator: 'eq', value: status};
+    if (productStatusFilter !== '' && productStatusFilter !== 'all') {
+      const status = productStatusFilter === 'active' ? '1' : '0';
+      const statusFilter = { field: 'status', operator: 'eq', value: status };
       filter.push(statusFilter);
     }
-    if(productTagsFilter && productTagsFilter.length > 0) {
-      const tagFilter = {field: 'tag', operator: 'in', value: productTagsFilter};
+    if (productTagsFilter && productTagsFilter.length > 0) {
+      const tagFilter = {
+        field: 'tag',
+        operator: 'in',
+        value: productTagsFilter,
+      };
       filter.push(tagFilter);
     }
-    if(stockFilter && stockFilter.length > 0) {
-      stockFilter.forEach(sf => {
-        if(sf === '< 10 units'){
-          const _stockFilter = {field: 'inventory_quantity', operator: 'lt', value: 10};
+    if (stockFilter && stockFilter.length > 0) {
+      stockFilter.forEach((sf) => {
+        if (sf === '< 10 units') {
+          const _stockFilter = {
+            field: 'inventory_quantity',
+            operator: 'lt',
+            value: 10,
+          };
           filter.push(_stockFilter);
-        } else if(sf === '11-50 units'){
-          const _stockFilter = {field: 'inventory_quantity', operator: 'between', value: "11-50"};
+        } else if (sf === '11-50 units') {
+          const _stockFilter = {
+            field: 'inventory_quantity',
+            operator: 'between',
+            value: '11-50',
+          };
           filter.push(_stockFilter);
-        } else if(sf === '> 50 units'){
-          const _stockFilter = {field: 'inventory_quantity', operator: 'gt', value: 50};
+        } else if (sf === '> 50 units') {
+          const _stockFilter = {
+            field: 'inventory_quantity',
+            operator: 'gt',
+            value: 50,
+          };
           filter.push(_stockFilter);
         }
-      })
+      });
       // const _stockFilter = {field: 'inventory_quantity', operator: 'gt', value: 50};
-      
     }
     return filter;
-  }
+  };
 
   const fetchProducts = () => {
     const data = {
       paging: {
         limit: limit,
-        offset: offset
+        offset: offset,
       },
       sort: [['shopify_product_id', 'DESC']],
-      query: {
-        category_ids: productCatFilter,
-        search: searchVal
-      },
+      query: searchVal
+        ? {
+            category_ids: productCatFilter,
+            search: searchVal,
+          }
+        : {
+            category_ids: productCatFilter,
+          },
       filter: prepareFilter(),
     };
     dispatch(getProductListAction(data));
-  }
+  };
 
   useEffect(() => {
-    if(searchVal && searchVal.length >= 3) {
+    if (searchVal && searchVal.length >= 3) {
       fetchProducts();
-    } else if (searchVal.length === 0){
+    } else if (searchVal.length === 0) {
       fetchProducts();
     }
   }, [searchVal]);
@@ -232,7 +254,7 @@ export default function ProductTable(props) {
   //   });
   // }, [productFilter]);
 
-  useEffect(()=> {
+  useEffect(() => {
     fetchProducts();
   }, [productStatusFilter, offset, limit]);
 
@@ -269,8 +291,10 @@ export default function ProductTable(props) {
     if (e === 'replace') {
       setUploadFile('');
     } else {
-      const file = e.target.file;
-      setUploadFile(file);
+      const file = e.target.files;
+      console.log(file[0], 'file');
+      // setUploadFile(file);
+      handleUploadProduct(file[0]);
     }
   };
 
@@ -346,48 +370,72 @@ export default function ProductTable(props) {
   };
 
   const getProductImage = (item) => {
-    const {product_images} = item;
+    const { product_images } = item;
     let image_url = '';
-    if(product_images && product_images?.length > 0) {
+    if (product_images && product_images?.length > 0) {
       image_url = product_images[0]?.src;
     }
     return image_url;
-  }
+  };
 
   const getProductStock = (item) => {
     const { product_variants } = item;
     let stockCount = 0;
-    if(product_variants && product_variants?.length > 0) {
+    if (product_variants && product_variants?.length > 0) {
       stockCount = product_variants?.reduce((acc, c) => {
-        return acc+= c.inventory_quantity;
-      },0);
+        return (acc += c.inventory_quantity);
+      }, 0);
     }
     return stockCount;
-  }
+  };
 
   const showProductTags = (item) => {
-    const {product_tags} = item;
+    const { product_tags } = item;
     let tags = '';
-    if(product_tags && product_tags.length > 0) {
+    if (product_tags && product_tags.length > 0) {
       tags = `${product_tags[0]?.tag} +${product_tags?.length} More...`;
     }
     return tags;
-  }
+  };
 
   const onPageChange = (e) => {
     const currentPage = e.target.value;
-    if(currentPage === 1) {
+    if (currentPage === 1) {
       setOffset(0);
     } else {
-      const newOffset = (currentPage -1) * 20;
+      const newOffset = (currentPage - 1) * 20;
       setOffset(newOffset);
     }
-  }
+  };
 
   const onItemsPerPageChange = (e) => {
     const _itemsPerPage = e.target.value;
     setLimit(_itemsPerPage);
-  }
+  };
+
+  const handleUploadProduct = async (data) => {
+    dispatch(uploadProductAction(data));
+  };
+
+  const handleDownloadProduct = async () => {
+    const data = {
+      paging: {
+        limit: limit,
+        offset: offset,
+      },
+      sort: [['shopify_product_id', 'DESC']],
+      query: searchVal
+        ? {
+            category_ids: productCatFilter,
+            search: searchVal,
+          }
+        : {
+            category_ids: productCatFilter,
+          },
+      filter: prepareFilter(),
+    };
+    dispatch(downloadProductAction(data));
+  };
 
   return (
     <>
@@ -531,7 +579,10 @@ export default function ProductTable(props) {
               </form>
             </div>
             <div className="action-button-right">
-              <button className="button button-blue small">
+              <button
+                className="button button-blue small"
+                onClick={handleDownloadProduct}
+              >
                 Download All Products
               </button>
               <button
@@ -554,9 +605,7 @@ export default function ProductTable(props) {
               <a
                 href="#"
                 className={`brand-type ${
-                  productStatusFilter === 'active'
-                    ? 'active'
-                    : ''
+                  productStatusFilter === 'active' ? 'active' : ''
                 }`}
                 onClick={() => productStatusViseFilter('active')}
               >
@@ -565,9 +614,7 @@ export default function ProductTable(props) {
               <a
                 href="#"
                 className={`brand-type ${
-                  productStatusFilter === 'inactive'
-                    ? 'active'
-                    : ''
+                  productStatusFilter === 'inactive' ? 'active' : ''
                 }`}
                 onClick={() => productStatusViseFilter('inactive')}
               >
@@ -933,14 +980,18 @@ export default function ProductTable(props) {
                         {ele?.product_tags?.length === 0 ? (
                           <p
                             className="add-item-label add-tags cursor-pointer"
-                            onClick={() => handalCategoryPopup(ele?.product_tags, 'tag')}
+                            onClick={() =>
+                              handalCategoryPopup(ele?.product_tags, 'tag')
+                            }
                           >
                             <span>+</span> Tags
                           </p>
                         ) : (
                           <p
                             className="value_added cursor-pointer"
-                            onClick={() => handalCategoryPopup(ele?.product_tags, 'tag')}
+                            onClick={() =>
+                              handalCategoryPopup(ele?.product_tags, 'tag')
+                            }
                           >
                             {showProductTags(ele)}
                           </p>
@@ -1042,7 +1093,7 @@ export default function ProductTable(props) {
                 <div className="pagination-title">page</div>
                 <select name="per" id="per" onChange={onPageChange}>
                   {productList.map((_, i) => {
-                    return <option value={i+1}>{i+1}</option>
+                    return <option value={i + 1}>{i + 1}</option>;
                   })}
                 </select>
                 <div className="pagination-title">{`of ${productList.length}`}</div>

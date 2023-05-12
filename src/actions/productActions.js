@@ -134,12 +134,15 @@ export function downloadProductAction(data) {
   };
 }
 
-export function uploadProductAction(data) {
+export function uploadProductAction(file) {
   return async (dispatch) => {
     try {
+      let formData = new FormData();
+
+      formData.append('file', file);
       const response = await axios.post(
         `${API_END_POINT.UPLOAD_PRODUCT}`,
-        data
+        formData
       );
       if (response && response.data && response.data.code == 200) {
         if (response.data.data) {
@@ -152,7 +155,6 @@ export function uploadProductAction(data) {
           ? err.response.data.errors
           : 'Something went worng'
       );
-      throw err;
     }
   };
 }
@@ -176,7 +178,6 @@ export function getProductDetailsAction(productId) {
           ? err.response.data.errors
           : 'Something went worng'
       );
-      throw err;
     }
   };
 }
