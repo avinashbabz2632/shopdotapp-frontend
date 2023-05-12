@@ -624,6 +624,16 @@ input[type='submit'] {
     background: var(--section-bg);
     overflow: hidden;
 }
+
+.section_main {
+    --section-pd: 0 0;
+    --section-bg: transparent;
+    position: relative;
+    width: 100%;
+    padding: var(--section-pd);
+    background: var(--section-bg);
+    overflow: hidden;
+}
 .container {
     position: relative;
     z-index: 1;

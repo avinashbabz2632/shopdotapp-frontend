@@ -109,7 +109,7 @@ export default function ProductsList() {
   return (
     <div className="wrapper">
       <BrandHeader />
-      <main className="content mp-content">
+      <main className="content_main mp-content">
         <section className="section products mp-section">
           <ProductsFilters />
           <ProductTable handleAction={handleAction} />

@@ -48,7 +48,8 @@ export default function OnboardListUI({
         {btnText ? (
           <button
             type="button"
-            onClick={activeStep > 3 ? null : btnCallback}
+            // onClick={activeStep > 3 ? null : btnCallback}
+            onClick={btnCallback}
             className="button button-blue"
           >
             {activeStep > 3 ? 'Synced' : btnText}

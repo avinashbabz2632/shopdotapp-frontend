@@ -40,9 +40,11 @@ import {
   getProductListAction,
   uploadProductAction,
 } from '../../../../actions/productActions';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProductTable(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const productCatFilter = useSelector(selectProductCatFilter);
   const productTagsFilter = useSelector(selectProductTagFilter);
   const stockFilter = useSelector(selectStockFilter);
@@ -84,6 +86,7 @@ export default function ProductTable(props) {
     //   const catFilter = {field: 'category', operator: 'in', value: productCatFilter};
     //   filter.push(catFilter);
     // }
+    console.log(productStatusFilter, 'productStatusFilter');
     if (productStatusFilter !== '' && productStatusFilter !== 'all') {
       const status = productStatusFilter === 'active' ? '1' : '0';
       const statusFilter = { field: 'status', operator: 'eq', value: status };
@@ -414,6 +417,7 @@ export default function ProductTable(props) {
   };
 
   const handleUploadProduct = async (data) => {
+    setUploadModalShow(false);
     dispatch(uploadProductAction(data));
   };
 
@@ -895,7 +899,12 @@ export default function ProductTable(props) {
                           </a>
                         </div>
                         <div>
-                          <p className="my_list-product-title cursor-pointer">
+                          <p
+                            onClick={() => {
+                              navigate(`/brand/product-details/${ele.id}`);
+                            }}
+                            className="my_list-product-title cursor-pointer"
+                          >
                             {ele.title}
                           </p>
                           {ele.product_variants && (
