@@ -9,6 +9,7 @@ import {
   setBrandProfileDetails,
   setBrandValues,
 } from '../redux/Brand/Profile/brandProfileSlice';
+import {setRetailerProfileSaveResult, setRetailerProfileSaving} from '../redux/Retailer/Profile/retailerProfileSlice';
 
 export function getRetailerProfileAction(id) {
   return async (dispatch) => {
@@ -32,6 +33,7 @@ export function getRetailerProfileAction(id) {
 export function updateRetailerProfileAction(formData, isCreate) {
   return async (dispatch) => {
     try {
+      dispatch(setRetailerProfileSaving());
       let response;
       if (isCreate) {
         response = await axios.post(API_END_POINT.RETAILER_PROFILE, formData);
@@ -44,7 +46,8 @@ export function updateRetailerProfileAction(formData, isCreate) {
         (response.status == 201 || response.status == 200)
       ) {
         toast.success('Retailer Profile Details Updated');
-        dispatch(getRetailerProfileAction(formData.user_id));
+        // dispatch(getRetailerProfileAction(formData.user_id));
+        dispatch(setRetailerProfileSaveResult(response.data.data));
       } else {
         toast.error('Something went worng');
       }
