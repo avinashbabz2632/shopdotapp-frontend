@@ -152,7 +152,7 @@ export default function RetailerProfile() {
   const onSubmit = (data) => {
     console.log('retailer-form-data----', data);
     const profileData = {
-      role_id: userDetails?.id,
+      role_id: userDetails?.role?.id,
       user_id: userDetails?.id,
       company_name: data.companyName,
       company_email_address: data.contactEmail,
