@@ -25,3 +25,8 @@ export const selectUpdatingProduct = (state) => state.brandProduct.updatingProdu
 export const selectProductUpdateResult = (state) => state.brandProduct.productUpdateResult;
 
 export const selectUpdateProductSuccess = (state) => state.brandProduct.updateProductSuccess;
+
+export const selectProductSubCatOptions = (state) => state.brandProduct.productSubCatOptions;
+
+export const selectProductGroupOptions = (state) => state.brandProduct.productGroupOptions;
+

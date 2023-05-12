@@ -16,14 +16,32 @@ import info from '../images/icons/icon-info-red.svg';
 import { useForm } from 'react-hook-form';
 import dummyProductDetails from '../ProductDetails/dummy-product-details.json';
 import {useDispatch, useSelector} from 'react-redux';
-import {editProductDetailsAction} from '../../../actions/productActions';
-import {selectUpdatingProduct, selectProductUpdateResult, selectUpdateProductSuccess} from '../../../redux/Brand/Products/productSelectors';
+import {editProductDetailsAction, getProductCategoriesAction} from '../../../actions/productActions';
+import {
+    selectUpdatingProduct, 
+    selectProductUpdateResult, 
+    selectUpdateProductSuccess,
+    selectProductCategory,
+    selectProductSubCatOptions,
+    selectProductGroupOptions
+} from '../../../redux/Brand/Products/productSelectors';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const FormValidationSchema = yup.object().shape({
+    productName: yup.string().required('Product name is required.'),
+});
+
 
 export default function EditProductDetails() {
   const params = useParams();
   const dispatch = useDispatch();
   const updating = useSelector(selectUpdatingProduct);
   const updateSuccess = useSelector(selectUpdateProductSuccess);
+  const productCatOptions = useSelector(selectProductCategory);
+  const productSubCatOptions = useSelector(selectProductSubCatOptions);
+  const productGroupOptions = useSelector(selectProductGroupOptions);
+
   const product = dummyProductDetails.data;
   const navigate = useNavigate();
   const [multipleImages, setMultipleImages] = useState([]);
@@ -40,8 +58,10 @@ export default function EditProductDetails() {
     subcategory: '',
     group: '',
   });
-
   const [activeVariants, setActiveVariants] = useState([]);
+  const [selectedProductCatId, setSelectedProductCatId] = useState('');
+  const [selectedProductSubCatId, setSelectedProductSubCatId] = useState('');
+  const [selectedProductGroupId, setSelectedProductGroupId] = useState('');
 
   const variantsWSPDefaultValues = () => {
     const variantObj = {};
@@ -77,8 +97,9 @@ export default function EditProductDetails() {
     setValue,
     formState: { errors },
   } = useForm({
-    mode: 'all',
+    mode: 'onChange',
     defaultValues,
+    resolver: yupResolver(FormValidationSchema)
   });
 
   const filesFormats = ['image/jpeg', 'image/png'];
@@ -167,7 +188,7 @@ export default function EditProductDetails() {
       const value = event.target.value;
       const activeVariantsCopy = activeVariants;
       if(isChecked){
-          const variant = product.productDetails.product_variants.find(v => v.id === value);
+          const variant = product.productDetails.product_variants.find(v => v.id == value);
           activeVariantsCopy.push(variant);
           setActiveVariants(activeVariantsCopy);
       } else {
@@ -186,6 +207,7 @@ export default function EditProductDetails() {
     setTags(product.productDetails.tags);
     const containers = document.getElementById('editor') || null;
     setDescription(containers.value);
+    // setDescription(product.productDetails.body_html);
     setContainer(containers);
   }, []);
 
@@ -193,19 +215,21 @@ export default function EditProductDetails() {
     if (!container) {
       return;
     }
-    DecoupledEditor.create(container, {
+    DecoupledEditor.create(document.getElementById('editor'), {
       alignment: {
         options: ['right', 'left', 'center', 'justify'],
       },
     }).then((editor) => {
+        // document.getElementById( 'toolbar' ).appendChild( editor.ui.view.toolbar.element );
+        // window.editor = editor;
       const toolbarContainer = document.getElementById('toolbar');
       const command = editor.commands.get('alignment');
       toolbarContainer.replaceChild(
         editor.ui.view.toolbar.element,
         toolbarContainer.firstChild
       );
-      // editor.execute("bold");
-      // editor.execute("alignment:left");
+      editor.execute("bold");
+      editor.execute("alignment:left");
       setTimeout(() => {
         command.execute({ value: 'left' });
       });
@@ -216,6 +240,18 @@ export default function EditProductDetails() {
     });
   }, [container]);
 
+  useEffect(() => {
+      dispatch(getProductCategoriesAction('category', 0));
+  }, []);
+
+  useEffect(() => {
+    dispatch(getProductCategoriesAction('subcategory', selectedProductCatId));
+  }, [selectedProductCatId]);
+
+  useEffect(() => {
+    dispatch(getProductCategoriesAction('group', selectedProductSubCatId));
+  }, [selectedProductSubCatId]);
+
   const transformVariants = () => {
       return activeVariants.map(av => {
           const item = {sku: av.sku, wsp: av.wsp, msrp: av.price};
@@ -224,18 +260,17 @@ export default function EditProductDetails() {
   }
 
   const handleSave = (data) => {
-      console.log('data-data-------', data);
     const dataToUpdate = {
-        product_name: '',
+        product_name: data?.productName,
         product_description: description,
         tags: tags.join(),
-        daysToFulfill: '',
+        daysToFulfill: data?.daysToFulfill,
         product_category: {
-            select_category: selected.category,
-            select_sub_category: selected.subcategory,
-            select_group: selected.group,
+            select_category: selectedProductCatId,
+            select_sub_category: selectedProductSubCatId,
+            select_group: selectedProductGroupId,
         },
-        shopifyImageId: '',
+        shopifyImageId: product.productDetails.product_images[0].shopify_image_id,
         product_variant: transformVariants(),
     }
     dispatch(editProductDetailsAction(dataToUpdate));
@@ -274,6 +309,11 @@ export default function EditProductDetails() {
         setTags(tagsCopy);
         setInputValue('');
       }
+  }
+
+  const setProductDescription = (event) => {
+      console.log('event----', event.target.value);
+      setDescription(event.target.value);
   }
 
   return (
@@ -391,11 +431,18 @@ export default function EditProductDetails() {
                                   </label>
                                   <input
                                     type="text"
-                                    className="form-control is-invalid"
+                                    className="form-control"
                                     // id="Productname"
                                     placeholder="Summer Activities Chips for Kids"
-                                    {...register('productName')}
+                                    {...register('productName', {
+                                        required: true,
+                                      })}
                                   />
+                                  {errors?.productName && (
+                                    <span className="error-text">
+                                    {errors?.productName?.message}
+                                    </span>
+                        )}
                                 </div>
                                 <div className="form-input">
                                   <label
@@ -419,13 +466,10 @@ export default function EditProductDetails() {
                                             </div>
                                             <div
                                               className="text-editor"
+                                              value={description}
+                                              style={{width: '100%', height: '200px'}}
                                               id="editor"
-                                              onChange={(event) => {
-                                                setDescription(
-                                                  event.target.value
-                                                );
-                                                console.log(event.target.value);
-                                              }}
+                                              onChange={setProductDescription}
                                             //   {...register('description')}
                                             >
                                               <div className="centered">
@@ -506,69 +550,54 @@ export default function EditProductDetails() {
                                 </p>
                                 <div className="form-data">
                                   <select
-                                    value={selected.category}
+                                    // value={selected.category}
                                     onChange={(event) =>
-                                      handleDropdownChange(event, 'category')
+                                        setSelectedProductCatId(event.target.value)
                                     }
                                   >
                                     <option value="">Select a category</option>
-                                    {categoryDatas.map((category) => (
+                                    {productCatOptions.map((category) => (
                                       <option
                                         key={category.id}
-                                        value={category.value}
+                                        value={category.id}
                                       >
-                                        {category.value}
+                                        {category.name}
                                       </option>
                                     ))}
                                   </select>
                                   <select
-                                    disabled={!selected.category}
-                                    value={selected.subcategory}
+                                    disabled={!selectedProductCatId}
+                                    // value={selected.subcategory}
                                     onChange={(event) =>
-                                      handleDropdownChange(event, 'subcategory')
+                                        setSelectedProductSubCatId(event.target.value)
                                     }
                                   >
                                     <option value="">
                                       Select a subcategory
                                     </option>
-                                    {categoryDatas
-                                      .find(
-                                        (category) =>
-                                          category.value === selected.category
-                                      )
-                                      ?.sub_category.map((subcategory) => (
+                                    {productSubCatOptions.map((subcategory) => (
                                         <option
                                           key={subcategory.id}
-                                          value={subcategory.value}
+                                          value={subcategory.id}
                                         >
-                                          {subcategory.value}
+                                          {subcategory.name}
                                         </option>
                                       ))}
                                   </select>
                                   <select
-                                    disabled={!selected.subcategory}
-                                    value={selected.group}
+                                    disabled={!selectedProductSubCatId}
+                                    // value={selected.group}
                                     onChange={(event) =>
-                                      handleDropdownChange(event, 'group')
+                                        setSelectedProductGroupId(event.target.value)
                                     }
                                   >
                                     <option value="">Select a group</option>
-                                    {categoryDatas
-                                      .find(
-                                        (category) =>
-                                          category.value === selected.category
-                                      )
-                                      ?.sub_category.find(
-                                        (subcategory) =>
-                                          subcategory.value ===
-                                          selected.subcategory
-                                      )
-                                      ?.group.map((group) => (
+                                    {productGroupOptions.map((group) => (
                                         <option
                                           key={group.id}
-                                          value={group.value}
+                                          value={group.id}
                                         >
-                                          {group.value}
+                                          {group.name}
                                         </option>
                                       ))}
                                   </select>
@@ -597,8 +626,8 @@ export default function EditProductDetails() {
                                               <label htmlFor="time-1">
                                                 <input
                                                   type="radio"
-                                                //   id="time-1"
-                                                //   name="p-tag"
+                                                  id="time-1"
+                                                  name="p-tag"
                                                   value="3-7"
                                                   {...register('daysToFulfill')}
                                                 />
@@ -613,8 +642,8 @@ export default function EditProductDetails() {
                                               <label htmlFor="time-2">
                                                 <input
                                                   type="radio"
-                                                //   id="time-2"
-                                                //   name="p-tag"
+                                                  id="time-2"
+                                                  name="p-tag"
                                                   value="7-14"
                                                   {...register('daysToFulfill')}
                                                 />
@@ -630,8 +659,8 @@ export default function EditProductDetails() {
                                               <label htmlFor="time-3">
                                                 <input
                                                   type="radio"
-                                                //   id="time-3"
-                                                //   name="p-tag"
+                                                  id="time-3"
+                                                  name="p-tag"
                                                   value="14-21"
                                                   {...register('daysToFulfill')}
                                                 />
@@ -646,8 +675,8 @@ export default function EditProductDetails() {
                                               <label htmlFor="time-4">
                                                 <input
                                                   type="radio"
-                                                //   id="time-4"
-                                                //   name="p-tag"
+                                                  id="time-4"
+                                                  name="p-tag"
                                                   value="21"
                                                   {...register('daysToFulfill')}
                                                 />
@@ -936,7 +965,7 @@ export default function EditProductDetails() {
                                             <div className="txt">
                                               <input
                                                 type="text"
-                                                className="tabel-text is-invalid"
+                                                className="tabel-text"
                                                 {...register(
                                                   `variants.${i}.wsp`
                                                 )}
@@ -949,7 +978,7 @@ export default function EditProductDetails() {
                                             <div className="txt">
                                               <input
                                                 type="text"
-                                                className="tabel-text is-invalid"
+                                                className="tabel-text"
                                                 {...register(
                                                   `variants.${i}.msrp`
                                                 )}
