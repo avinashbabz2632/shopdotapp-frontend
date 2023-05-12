@@ -89,8 +89,7 @@ export function syncSingleProductAction(params) {
         params,
       });
       if (response && response.data && response.data.code == 200) {
-        if (response.data.data) {
-        }
+        toast.success('Product Synced Successfully');
       } else {
       }
     } catch (err) {
@@ -111,9 +110,13 @@ export function downloadProductAction(data) {
         `${API_END_POINT.DOWNLOAD_PRODUCT}`,
         data
       );
-      if (response && response.data && response.data.code == 200) {
-        if (response.data.data) {
-        }
+      if (response && response.status == 200) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'template.xlsx');
+        document.body.appendChild(link);
+        link.click();
       } else {
       }
     } catch (err) {
@@ -138,8 +141,7 @@ export function uploadProductAction(file) {
         formData
       );
       if (response && response.data && response.data.code == 200) {
-        if (response.data.data) {
-        }
+        toast.success('File uploaded successfully');
       } else {
       }
     } catch (err) {

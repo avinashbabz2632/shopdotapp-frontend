@@ -55,7 +55,9 @@ const UserInfo = lazy(() => import('./pages/Onboarding/UserInfo'));
 const BrandSettingPage = lazy(() => import('./pages/Brand/Settings'));
 const BrandOrdersPage = lazy(() => import('./pages/Brand/Orders'));
 const BrandProductsPage = lazy(() => import('./pages/Brand/Products'));
-const BrandProductDetails = lazy(() => import('./pages/Brand/ProductDetails'));
+const BrandProductDetails = lazy(() =>
+  import('./pages/Brand/ProductDetails/index')
+);
 const EditProductDetails = lazy(() =>
   import('./pages/Brand/EditProductDetails')
 );

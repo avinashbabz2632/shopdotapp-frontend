@@ -40,7 +40,7 @@ axios.interceptors.response.use(async (response) => {
     try {
       await localStorage.setItem('accessToken', token);
       await localStorage.setItem('refreshToken', refreshToken);
-    } catch (error) { }
+    } catch (error) {}
   }
   return response;
 });
@@ -111,7 +111,7 @@ axios.interceptors.response.use(undefined, async (error) => {
             requestQueue = [];
           })
           .catch((error) => {
-            responseToast(error);
+            // responseToast(error);
             setTimeout(async () => {
               await localStorage.setItem('accessToken', '');
               await localStorage.setItem('refreshToken', '');
@@ -136,7 +136,6 @@ axios.interceptors.response.use(undefined, async (error) => {
     error.response.status == 401 &&
     error.response.data.code != 904
   ) {
-
   } else {
     return Promise.reject(error);
   }
