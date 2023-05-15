@@ -185,7 +185,7 @@ export function getProductDetailsAction(productId) {
   };
 }
 
-export function editProductDetailsAction(data) {
+export function editProductDetailsAction(data, productId) {
   return async (dispatch) => {
     try {
       const response = await axios.patch(

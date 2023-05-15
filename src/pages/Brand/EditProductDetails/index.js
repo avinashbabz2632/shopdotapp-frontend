@@ -15,23 +15,26 @@ import Delete from '../images/button.svg';
 import info from '../images/icons/icon-info-red.svg';
 import { useForm } from 'react-hook-form';
 import dummyProductDetails from '../ProductDetails/dummy-product-details.json';
-import {useDispatch, useSelector} from 'react-redux';
-import {editProductDetailsAction, getProductCategoriesAction} from '../../../actions/productActions';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-    selectUpdatingProduct, 
-    selectProductUpdateResult, 
-    selectUpdateProductSuccess,
-    selectProductCategory,
-    selectProductSubCatOptions,
-    selectProductGroupOptions
+  editProductDetailsAction,
+  getProductCategoriesAction,
+} from '../../../actions/productActions';
+import {
+  selectUpdatingProduct,
+  selectProductUpdateResult,
+  selectUpdateProductSuccess,
+  selectProductCategory,
+  selectProductSubCatOptions,
+  selectProductGroupOptions,
 } from '../../../redux/Brand/Products/productSelectors';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 const FormValidationSchema = yup.object().shape({
-    productName: yup.string().required('Product name is required.'),
+  productName: yup.string().required('Product name is required.'),
 });
-
 
 export default function EditProductDetails() {
   const params = useParams();
@@ -99,7 +102,7 @@ export default function EditProductDetails() {
   } = useForm({
     mode: 'onChange',
     defaultValues,
-    resolver: yupResolver(FormValidationSchema)
+    resolver: yupResolver(FormValidationSchema),
   });
 
   const filesFormats = ['image/jpeg', 'image/png'];
@@ -184,17 +187,19 @@ export default function EditProductDetails() {
   };
 
   const handleVariantToggle = (event) => {
-      const isChecked = event.target.checked;
-      const value = event.target.value;
-      const activeVariantsCopy = activeVariants;
-      if(isChecked){
-          const variant = product.productDetails.product_variants.find(v => v.id == value);
-          activeVariantsCopy.push(variant);
-          setActiveVariants(activeVariantsCopy);
-      } else {
-          const filter = activeVariantsCopy.filter(v => v.id !== value);
-          setActiveVariants(filter);
-      }
+    const isChecked = event.target.checked;
+    const value = event.target.value;
+    const activeVariantsCopy = activeVariants;
+    if (isChecked) {
+      const variant = product.productDetails.product_variants.find(
+        (v) => v.id == value
+      );
+      activeVariantsCopy.push(variant);
+      setActiveVariants(activeVariantsCopy);
+    } else {
+      const filter = activeVariantsCopy.filter((v) => v.id !== value);
+      setActiveVariants(filter);
+    }
   };
 
   const handleDropdownChange = (event, type) => {
@@ -206,7 +211,7 @@ export default function EditProductDetails() {
     // setValue('productUrl', [Data.productUrl]);
     setTags(product.productDetails.tags);
     const containers = document.getElementById('editor') || null;
-    setDescription(containers.value);
+    // setDescription(containers.value);
     // setDescription(product.productDetails.body_html);
     setContainer(containers);
   }, []);
@@ -220,28 +225,31 @@ export default function EditProductDetails() {
         options: ['right', 'left', 'center', 'justify'],
       },
     }).then((editor) => {
-        // document.getElementById( 'toolbar' ).appendChild( editor.ui.view.toolbar.element );
-        // window.editor = editor;
+      editor.model.document.on( 'change:data', () => {
+        // console.log( 'The data has changed!',editor.getData());
+        setDescription(editor.getData());
+    } );
       const toolbarContainer = document.getElementById('toolbar');
       const command = editor.commands.get('alignment');
       toolbarContainer.replaceChild(
         editor.ui.view.toolbar.element,
         toolbarContainer.firstChild
       );
-      editor.execute("bold");
-      editor.execute("alignment:left");
-      setTimeout(() => {
-        command.execute({ value: 'left' });
-      });
+      // editor.execute("bold");
+      // editor.execute("alignment:left");
+      // setTimeout(() => {
+      //   command.execute({ value: 'left' });
+      // });
       command.on('change:value', (evt, name, value) => {
-        setText(`[demos] + ${Math.random()}`);
-        setAlign({ textAlign: value, textAlignLast: value });
+        console.log('value-----', value, name, evt);
+        // setText(`[demos] + ${Math.random()}`);
+        // setAlign({ textAlign: value, textAlignLast: value });
       });
     });
   }, [container]);
 
   useEffect(() => {
-      dispatch(getProductCategoriesAction('category', 0));
+    dispatch(getProductCategoriesAction('category', 0));
   }, []);
 
   useEffect(() => {
@@ -253,27 +261,27 @@ export default function EditProductDetails() {
   }, [selectedProductSubCatId]);
 
   const transformVariants = () => {
-      return activeVariants.map(av => {
-          const item = {sku: av.sku, wsp: av.wsp, msrp: av.price};
-          return item;
-      })
-  }
+    return activeVariants.map((av) => {
+      const item = { sku: av.sku, wsp: av.wsp, msrp: av.price };
+      return item;
+    });
+  };
 
   const handleSave = (data) => {
     const dataToUpdate = {
-        product_name: data?.productName,
-        product_description: description,
-        tags: tags.join(),
-        daysToFulfill: data?.daysToFulfill,
-        product_category: {
-            select_category: selectedProductCatId,
-            select_sub_category: selectedProductSubCatId,
-            select_group: selectedProductGroupId,
-        },
-        shopifyImageId: product.productDetails.product_images[0].shopify_image_id,
-        product_variant: transformVariants(),
-    }
-    dispatch(editProductDetailsAction(dataToUpdate));
+      product_name: data?.productName,
+      product_description: description,
+      tags: tags.join(),
+      daysToFulfill: data?.daysToFulfill,
+      product_category: {
+        select_category: selectedProductCatId,
+        select_sub_category: selectedProductSubCatId,
+        select_group: selectedProductGroupId,
+      },
+      shopifyImageId: product.productDetails.product_images[0].shopify_image_id,
+      product_variant: transformVariants(),
+    };
+    dispatch(editProductDetailsAction(dataToUpdate, 14));
     // product.tags = tags;
     // setProduct(product);
     // setValue('tags', tags);
@@ -289,7 +297,7 @@ export default function EditProductDetails() {
   };
 
   useEffect(() => {
-      //
+    //
   }, []);
 
   const removeTags = (e) => {
@@ -298,23 +306,23 @@ export default function EditProductDetails() {
   };
 
   const onChangeTagsInputValue = (e) => {
-      const value = e.target.value;
-      setInputValue(value);
-  }
+    const value = e.target.value;
+    setInputValue(value);
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-        const tagsCopy = tags;
-        tagsCopy.push(inputValue);
-        setTags(tagsCopy);
-        setInputValue('');
-      }
-  }
+      const tagsCopy = tags;
+      tagsCopy.push(inputValue);
+      setTags(tagsCopy);
+      setInputValue('');
+    }
+  };
 
   const setProductDescription = (event) => {
-      console.log('event----', event.target.value);
-      setDescription(event.target.value);
-  }
+    console.log('event----', event.target.value);
+    setDescription(event.target.value);
+  };
 
   return (
     <div className="wrapper">
@@ -351,7 +359,7 @@ export default function EditProductDetails() {
                     type="submit"
                     className="button button-dark black large"
                     onClick={() => {
-                        handleSubmit();
+                      handleSubmit();
                     }}
                   >
                     <img className="icon" src={saveIcon} />
@@ -435,14 +443,14 @@ export default function EditProductDetails() {
                                     // id="Productname"
                                     placeholder="Summer Activities Chips for Kids"
                                     {...register('productName', {
-                                        required: true,
-                                      })}
+                                      required: true,
+                                    })}
                                   />
                                   {errors?.productName && (
                                     <span className="error-text">
-                                    {errors?.productName?.message}
+                                      {errors?.productName?.message}
                                     </span>
-                        )}
+                                  )}
                                 </div>
                                 <div className="form-input">
                                   <label
@@ -469,7 +477,7 @@ export default function EditProductDetails() {
                                               value={description}
                                               style={{width: '100%', height: '200px'}}
                                               id="editor"
-                                              onChange={setProductDescription}
+                                              // onChange={setProductDescription}
                                             //   {...register('description')}
                                             >
                                               <div className="centered">
@@ -483,6 +491,34 @@ export default function EditProductDetails() {
                                               </div>
                                             </div>
                                           </div>
+                                          {/* <CKEditor
+                                            editor={DecoupledEditor}
+                                            data="<p>Hello from CKEditor 5!</p>"
+                                            config={{
+                                              toolbar: ['bold']
+                                            }}
+                                            onReady={(editor) => {
+                                              // You can store the "editor" and use when it is needed.
+                                              console.log(
+                                                'Editor is ready to use!',
+                                                editor
+                                              );
+                                            }}
+                                            onChange={(event, editor) => {
+                                              const data = editor.getData();
+                                              console.log({
+                                                event,
+                                                editor,
+                                                data,
+                                              });
+                                            }}
+                                            onBlur={(event, editor) => {
+                                              console.log('Blur.', editor);
+                                            }}
+                                            onFocus={(event, editor) => {
+                                              console.log('Focus.', editor);
+                                            }}
+                                          />  */}
                                         </main>
                                       </div>
                                     </div>
@@ -552,7 +588,9 @@ export default function EditProductDetails() {
                                   <select
                                     // value={selected.category}
                                     onChange={(event) =>
-                                        setSelectedProductCatId(event.target.value)
+                                      setSelectedProductCatId(
+                                        event.target.value
+                                      )
                                     }
                                   >
                                     <option value="">Select a category</option>
@@ -569,37 +607,38 @@ export default function EditProductDetails() {
                                     disabled={!selectedProductCatId}
                                     // value={selected.subcategory}
                                     onChange={(event) =>
-                                        setSelectedProductSubCatId(event.target.value)
+                                      setSelectedProductSubCatId(
+                                        event.target.value
+                                      )
                                     }
                                   >
                                     <option value="">
                                       Select a subcategory
                                     </option>
                                     {productSubCatOptions.map((subcategory) => (
-                                        <option
-                                          key={subcategory.id}
-                                          value={subcategory.id}
-                                        >
-                                          {subcategory.name}
-                                        </option>
-                                      ))}
+                                      <option
+                                        key={subcategory.id}
+                                        value={subcategory.id}
+                                      >
+                                        {subcategory.name}
+                                      </option>
+                                    ))}
                                   </select>
                                   <select
                                     disabled={!selectedProductSubCatId}
                                     // value={selected.group}
                                     onChange={(event) =>
-                                        setSelectedProductGroupId(event.target.value)
+                                      setSelectedProductGroupId(
+                                        event.target.value
+                                      )
                                     }
                                   >
                                     <option value="">Select a group</option>
                                     {productGroupOptions.map((group) => (
-                                        <option
-                                          key={group.id}
-                                          value={group.id}
-                                        >
-                                          {group.name}
-                                        </option>
-                                      ))}
+                                      <option key={group.id} value={group.id}>
+                                        {group.name}
+                                      </option>
+                                    ))}
                                   </select>
                                 </div>
                               </div>
@@ -713,7 +752,8 @@ export default function EditProductDetails() {
                                   onKeyDown={handleKeyDown}
                                 />
                                 <div className="tab-list">
-                                  {tags.length > 0 && tags.map((e, i) => (
+                                  {tags.length > 0 &&
+                                    tags.map((e, i) => (
                                       <div
                                         className="checkbox checkbox--no-decor m-1"
                                         key={`${i} tags`}
@@ -994,7 +1034,7 @@ export default function EditProductDetails() {
                                                   id={`checkbox${item?.id}`}
                                                   type="checkbox"
                                                   value={item.id}
-                                                //   checked={getActiveVariantID(item.id)}
+                                                  //   checked={getActiveVariantID(item.id)}
                                                   onChange={handleVariantToggle}
                                                 />
                                                 <label
