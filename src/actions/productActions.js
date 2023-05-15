@@ -185,6 +185,34 @@ export function getProductDetailsAction(productId) {
   };
 }
 
+export function updateProductStatusAction(productId, status) {
+  return async (dispatch) => {
+    const data = {
+      id: productId,
+      status: status,
+    };
+    try {
+      const response = await axios.put(
+        `${API_END_POINT.UPDATE_PRODUCT_STATUS}/${productId}`,
+        data
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+          dispatch(getProductDetailsAction(productId));
+        }
+      } else {
+      }
+      return response;
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
 export function editProductDetailsAction(data) {
   return async (dispatch) => {
     try {

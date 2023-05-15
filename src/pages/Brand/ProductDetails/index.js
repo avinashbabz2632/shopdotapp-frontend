@@ -18,11 +18,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getProductDetailsAction,
   syncSingleProductAction,
+  updateProductStatusAction,
 } from '../../../actions/productActions';
 import logoPng from '../../../assets/images/logos/logo-png.png';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 import { selectProductDetails } from '../../../redux/Brand/Products/productSelectors';
 import { ToastContainer } from 'react-toastify';
+import { map } from 'lodash';
 
 export default function ProductDetails() {
   const [image, setimage] = useState(ProductUrl);
@@ -103,6 +105,30 @@ export default function ProductDetails() {
     return company_name;
   };
 
+  const getCategory = () => {
+    let value = '';
+    const orderArray = {
+      group: productDetails?.categories?.group ?? {},
+      mainCategory: productDetails?.categories?.mainCategory ?? {},
+      subCategory: productDetails?.categories?.subCategory ?? {},
+      ...productDetails.categories,
+    };
+
+    map(orderArray, (cat, key) => {
+      value = value == '' ? `${cat?.name}` : `${value} > ${cat?.name}`;
+    });
+    return value;
+  };
+
+  const handleStatus = () => {
+    dispatch(
+      updateProductStatusAction(
+        params.id,
+        productDetails?.productDetails?.status === '1' ? 'inactive' : 'active'
+      )
+    );
+  };
+
   return (
     <div className="wrapper">
       <BrandHeader />
@@ -154,7 +180,14 @@ export default function ProductDetails() {
                                         </div> */}
                     <div className="product_status">
                       <div className="my-toggle-btn">
-                        <input type="checkbox" id="checkbox1" />
+                        <input
+                          defaultChecked={
+                            productDetails?.productDetails?.status === '1'
+                          }
+                          onChange={handleStatus}
+                          type="checkbox"
+                          id="checkbox1"
+                        />
                         <label htmlFor="checkbox1">
                           <span className="on" title="Active">
                             Active
@@ -475,16 +508,14 @@ export default function ProductDetails() {
                   <div className="product-category">
                     <div className="title category-items">
                       Category:&nbsp;
-                      <span>
-                        {product.length !== 0 && product.category.join('  >  ')}
-                      </span>
+                      <span>{getCategory()}</span>
                     </div>
                   </div>
                   <h2 className="h1">
                     {productDetails?.productDetails?.body_html}
                   </h2>
                   <p>{productDetails?.productDetails?.details}</p>
-                  <div className="for">
+                  {/* <div className="for">
                     <div className="line">
                       <strong>Activities: </strong>
                       {product.activities}
@@ -500,7 +531,7 @@ export default function ProductDetails() {
                     <div className="line">
                       <strong>Weight:</strong> {product.weight}
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="product-category">
                     <strong>Tags:</strong>
