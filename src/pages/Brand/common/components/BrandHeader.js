@@ -140,11 +140,11 @@ function BrandHeader(props) {
                           }
                         >
                           Retailers
-                          <div className="dropdown_header-chevron">
+                          {/* <div className="dropdown_header-chevron">
                             <span className="icon">
                               <img src={ArrowDown} alt="" />
                             </span>
-                          </div>
+                          </div> */}
                         </NavLink>
                       </div>
                     </div>
@@ -195,11 +195,11 @@ function BrandHeader(props) {
                           }
                         >
                           Reports
-                          <div className="dropdown_header-chevron">
+                          {/* <div className="dropdown_header-chevron">
                             <span className="icon">
                               <img src={ArrowDown} alt="" />
                             </span>
-                          </div>
+                          </div> */}
                         </NavLink>
                       </div>
                     </div>
