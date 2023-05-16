@@ -3,7 +3,6 @@ import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import '../Style/brand.style.scss';
 import '../Style/brand.media.scss';
 import '../Style/brand.dev.scss';
-import { Datas, categoryDatas } from '../Products/utils';
 import BrandHeader from '../common/components/BrandHeader';
 import LeftArrowIcon from '../../Brand/images/icons/icon-arrow--left.svg';
 import AddImageIcon from '../images/icons/add-image-icon.svg';
@@ -13,12 +12,12 @@ import saveIcon from '../images/icons/save.svg';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import Delete from '../images/button.svg';
 import info from '../images/icons/icon-info-red.svg';
-import { useForm } from 'react-hook-form';
-import dummyProductDetails from '../ProductDetails/dummy-product-details.json';
+import { useForm, useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   editProductDetailsAction,
   getProductCategoriesAction,
+  syncSingleProductAction,
 } from '../../../actions/productActions';
 import {
   selectUpdatingProduct,
@@ -27,10 +26,14 @@ import {
   selectProductCategory,
   selectProductSubCatOptions,
   selectProductGroupOptions,
+  selectProductDetails,
+  selectSyncError,
 } from '../../../redux/Brand/Products/productSelectors';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { syncProduct2, syncProductAction } from '../../../actions/brandActions';
+import { selectUserDetails } from '../../../redux/user/userSelector';
+import { ToastContainer } from 'react-toastify';
 
 const FormValidationSchema = yup.object().shape({
   productName: yup.string().required('Product name is required.'),
@@ -39,32 +42,33 @@ const FormValidationSchema = yup.object().shape({
 export default function EditProductDetails() {
   const params = useParams();
   const dispatch = useDispatch();
+  const productDetails = useSelector(selectProductDetails);
   const updating = useSelector(selectUpdatingProduct);
   const updateSuccess = useSelector(selectUpdateProductSuccess);
   const productCatOptions = useSelector(selectProductCategory);
   const productSubCatOptions = useSelector(selectProductSubCatOptions);
   const productGroupOptions = useSelector(selectProductGroupOptions);
+  const userDetails = useSelector(selectUserDetails);
+  const syncError = useSelector(selectSyncError);
 
-  const product = dummyProductDetails.data;
+  const product = productDetails;
   const navigate = useNavigate();
   const [multipleImages, setMultipleImages] = useState([]);
   const [primaryImage, setPrimaryImage] = useState(0);
 
-  const [text, setText] = useState('');
   const [container, setContainer] = useState(null);
-  const [textAlign, setAlign] = useState({ textAlign: 'center' });
   const [tags, setTags] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [description, setDescription] = useState('');
-  const [selected, setSelected] = useState({
-    category: '',
-    subcategory: '',
-    group: '',
-  });
-  const [activeVariants, setActiveVariants] = useState([]);
+  const [activeVariants] = useState(
+    product.productDetails.product_variants
+  );
   const [selectedProductCatId, setSelectedProductCatId] = useState('');
   const [selectedProductSubCatId, setSelectedProductSubCatId] = useState('');
   const [selectedProductGroupId, setSelectedProductGroupId] = useState('');
+  const [wspError, setWSPError] = useState(false);
+  const [msrpError, setMSRPError] = useState(false);
+  let updatedVariants = [];
 
   const variantsWSPDefaultValues = () => {
     const variantObj = {};
@@ -73,8 +77,29 @@ export default function EditProductDetails() {
         variantObj[`variants.${i}.wsp`] = pv.wsp;
       });
     }
+    console.log('variants-wsp----', variantObj);
     return variantObj;
   };
+
+  const getVariantWSPFieldNames = () => {
+    let variantFieldNames = [];
+      if (product.productDetails.product_variants.length > 0) {
+        variantFieldNames = product.productDetails.product_variants.map((_, i) => {
+          return `variants.${i}.wsp`;
+        });
+      }
+      return variantFieldNames;
+  }
+
+  const getVariantMSRPFieldNames = () => {
+    let variantFieldNames = [];
+      if (product.productDetails.product_variants.length > 0) {
+        variantFieldNames = product.productDetails.product_variants.map((_, i) => {
+          return `variants.${i}.msrp`;
+        });
+      }
+      return variantFieldNames;
+  }
 
   const variantsMSRPDefaultValues = () => {
     const variantObj = {};
@@ -83,12 +108,13 @@ export default function EditProductDetails() {
         variantObj[`variants.${i}.msrp`] = pv.price;
       });
     }
+    console.log('variants-msrp----', variantObj);
     return variantObj;
   };
 
   const defaultValues = {
-    productName: product.productDetails.title,
-    description: product.productDetails.body_html,
+    productName: product?.productDetails?.title,
+    description: product?.productDetails?.body_html,
     ...variantsWSPDefaultValues(),
     ...variantsMSRPDefaultValues(),
   };
@@ -96,14 +122,32 @@ export default function EditProductDetails() {
   const {
     register,
     handleSubmit,
-    getValues,
-    setValue,
+    control,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(FormValidationSchema),
   });
+
+  const watchWSPChange = useWatch({ name: getVariantWSPFieldNames(), control: control });
+  const watchMSRPChange = useWatch({ name: getVariantMSRPFieldNames(), control: control });
+
+  useEffect(() => {
+    if (watchWSPChange.some(v => v == '')) {
+      setWSPError(true);
+    } else {
+      setWSPError(false);
+    }
+  }, [watchWSPChange]);
+
+  useEffect(() => {
+    if (watchMSRPChange.some(v => v == '')) {
+      setMSRPError(true);
+    } else {
+      setMSRPError(false);
+    }
+  }, [watchMSRPChange]);
 
   const filesFormats = ['image/jpeg', 'image/png'];
   // Functions to preview multiple images
@@ -185,31 +229,31 @@ export default function EditProductDetails() {
       </>
     );
   };
-
   const handleVariantToggle = (event) => {
     const isChecked = event.target.checked;
     const value = event.target.value;
-    const activeVariantsCopy = activeVariants;
-    if (isChecked) {
-      const variant = product.productDetails.product_variants.find(
-        (v) => v.id == value
-      );
-      activeVariantsCopy.push(variant);
-      setActiveVariants(activeVariantsCopy);
-    } else {
-      const filter = activeVariantsCopy.filter((v) => v.id !== value);
-      setActiveVariants(filter);
-    }
+    const result = activeVariants.map(v => {
+      let item;
+      if(v.id == value && isChecked) {
+        item = {...v, status: '1'};
+      } else if(v.id == value && !isChecked) {
+        item = {...v, status: '0'}
+      } else {
+        item = v;
+      }
+      return item;
+    })
+    updatedVariants = result;
   };
 
-  const handleDropdownChange = (event, type) => {
-    setSelected({ ...selected, [type]: event.target.value });
-  };
+  useEffect(() => {
+    
+  }, [errors]);
 
   useEffect(() => {
     // setMultipleImages([Data.productUrl]);
     // setValue('productUrl', [Data.productUrl]);
-    setTags(product.productDetails.tags);
+    setTags(product.productDetails.product_tags?.map((t) => t.tag));
     const containers = document.getElementById('editor') || null;
     // setDescription(containers.value);
     // setDescription(product.productDetails.body_html);
@@ -225,10 +269,9 @@ export default function EditProductDetails() {
         options: ['right', 'left', 'center', 'justify'],
       },
     }).then((editor) => {
-      editor.model.document.on( 'change:data', () => {
-        // console.log( 'The data has changed!',editor.getData());
+      editor.model.document.on('change:data', () => {
         setDescription(editor.getData());
-    } );
+      });
       const toolbarContainer = document.getElementById('toolbar');
       const command = editor.commands.get('alignment');
       toolbarContainer.replaceChild(
@@ -253,25 +296,36 @@ export default function EditProductDetails() {
   }, []);
 
   useEffect(() => {
-    dispatch(getProductCategoriesAction('subcategory', selectedProductCatId));
+    if (selectedProductCatId) {
+      dispatch(getProductCategoriesAction('subcategory', selectedProductCatId));
+    }
   }, [selectedProductCatId]);
 
   useEffect(() => {
-    dispatch(getProductCategoriesAction('group', selectedProductSubCatId));
+    if (selectedProductSubCatId) {
+      dispatch(getProductCategoriesAction('group', selectedProductSubCatId));
+    }
   }, [selectedProductSubCatId]);
 
   const transformVariants = () => {
-    return activeVariants.map((av) => {
-      const item = { sku: av.sku, wsp: av.wsp, msrp: av.price };
+    return updatedVariants.map((av) => {
+      const item = {
+        sku: av.sku,
+        wsp: av.wsp,
+        msrp: av.price,
+        status: parseInt(av.status),
+      };
       return item;
     });
   };
 
   const handleSave = (data) => {
+    console.log('data-data----', data);
+    if(wspError || msrpError || !selectedProductCatId || !selectedProductSubCatId) return;
     const dataToUpdate = {
       product_name: data?.productName,
       product_description: description,
-      tags: tags.join(),
+      tags: tags,
       daysToFulfill: data?.daysToFulfill,
       product_category: {
         select_category: selectedProductCatId,
@@ -281,13 +335,7 @@ export default function EditProductDetails() {
       shopifyImageId: product.productDetails.product_images[0].shopify_image_id,
       product_variant: transformVariants(),
     };
-    dispatch(editProductDetailsAction(dataToUpdate, 14));
-    // product.tags = tags;
-    // setProduct(product);
-    // setValue('tags', tags);
-    // setValue('productUrl', multipleImages);
-    // const value = getValues();
-    // console.log('Saved Successfully', value);
+    dispatch(editProductDetailsAction(dataToUpdate, params?.id));
     // navigate({
     //     pathname:
     //         navigate(-1) === undefined ?
@@ -319,9 +367,13 @@ export default function EditProductDetails() {
     }
   };
 
-  const setProductDescription = (event) => {
-    console.log('event----', event.target.value);
-    setDescription(event.target.value);
+  const doSync = async () => {
+    dispatch(
+      syncSingleProductAction({
+        product_id: productDetails?.productDetails?.shopify_product_id,
+        user_id: userDetails.id,
+      })
+    );
   };
 
   return (
@@ -351,7 +403,10 @@ export default function EditProductDetails() {
                     <div className="title">
                       <h1>Editing: {product.productDetails.title} </h1>
                     </div>
-                    <button className="button button-sky-blue remove-all-from-my-list large">
+                    <button
+                      className="button button-sky-blue remove-all-from-my-list large"
+                      onClick={doSync}
+                    >
                       Sync Product from Shopify
                     </button>
                   </div>
@@ -371,39 +426,43 @@ export default function EditProductDetails() {
                 <div className="products_middle">
                   <div className="content_area">
                     <div className="edit-product_area">
-                      <div
-                        className="alert alert-error d-flex align-items-center"
-                        role="alert"
-                      >
-                        <img className="icon" src={info}></img>
-                        <div>
-                          Unfortunately, the syncing of the product was not
-                          successful. Please try again.
+                      {syncError && (
+                        <div
+                          className="alert alert-error d-flex align-items-center"
+                          role="alert"
+                        >
+                          <img className="icon" src={info}></img>
+                          <div>
+                            Unfortunately, the syncing of the product was not
+                            successful. Please try again.
+                          </div>
                         </div>
-                      </div>
+                      )}
 
-                      <div
+                      {(!selectedProductCatId || wspError || msrpError) && <div
                         className="alert alert-warning d-flex align-items-start"
                         role="alert"
                       >
                         <img className="icon" src={DangerIcon} />
-                        <div className="notes">
-                          <div>
-                            Please fill this required field:{' '}
-                            <a href="#">Product Category</a>
-                          </div>
-                          <div>
+                        {<div className="notes">
+                          {!selectedProductCatId && (
+                            <div>
+                              Please fill this required field:{' '}
+                              <a href="#">Product Category</a>
+                            </div>
+                          )}
+                          {/* {isAnySKUEmpty() && <div>
                             Please sync <a href="#">SKU</a> from your Shopify
                             Store
-                          </div>
-                          <div>
+                          </div>} */}
+                          {wspError && <div>
                             Please enter <a href="#">WSP</a>
-                          </div>
-                          <div>
+                          </div>}
+                          {msrpError && <div>
                             Please enter <a href="#">MSRP</a>
-                          </div>
-                        </div>
-                      </div>
+                          </div>}
+                        </div>}
+                      </div>}
 
                       <div
                         className="alert alert-warning d-flex align-items-center"
@@ -475,50 +534,28 @@ export default function EditProductDetails() {
                                             <div
                                               className="text-editor"
                                               value={description}
-                                              style={{width: '100%', height: '200px'}}
+                                              style={{
+                                                width: '100%',
+                                                height: '200px',
+                                              }}
                                               id="editor"
-                                              // onChange={setProductDescription}
-                                            //   {...register('description')}
                                             >
                                               <div className="centered">
                                                 <div className="">
                                                   <div className="editor-container">
                                                     <div className="editor">
-                                                      <p>{product.productDetails.body_html}</p>
+                                                      <p>
+                                                        {
+                                                          product.productDetails
+                                                            .body_html
+                                                        }
+                                                      </p>
                                                     </div>
                                                   </div>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
-                                          {/* <CKEditor
-                                            editor={DecoupledEditor}
-                                            data="<p>Hello from CKEditor 5!</p>"
-                                            config={{
-                                              toolbar: ['bold']
-                                            }}
-                                            onReady={(editor) => {
-                                              // You can store the "editor" and use when it is needed.
-                                              console.log(
-                                                'Editor is ready to use!',
-                                                editor
-                                              );
-                                            }}
-                                            onChange={(event, editor) => {
-                                              const data = editor.getData();
-                                              console.log({
-                                                event,
-                                                editor,
-                                                data,
-                                              });
-                                            }}
-                                            onBlur={(event, editor) => {
-                                              console.log('Blur.', editor);
-                                            }}
-                                            onFocus={(event, editor) => {
-                                              console.log('Focus.', editor);
-                                            }}
-                                          />  */}
                                         </main>
                                       </div>
                                     </div>
@@ -957,104 +994,100 @@ export default function EditProductDetails() {
                                   </tr>
                                 </thead>
                                 <tbody className="scroll-table">
-                                  {product.productDetails.product_variants
-                                    .length > 0 &&
-                                    product.productDetails.product_variants.map(
-                                      (item, i) => (
-                                        <tr
-                                          key={`${
-                                            item?.id
-                                          } product ${new Date().getTime()}`}
-                                        >
-                                          <td>
-                                            <div className="image image--cover image--1-1">
-                                              <picture>
-                                                <img
-                                                  src={item?.image}
-                                                  alt="img"
-                                                />
-                                              </picture>
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div className="txt">
-                                              {item?.material}
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div className="txt">
-                                              {item?.title}
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div className="txt vin-txt">
-                                              {item?.sku}
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div className="txt">
-                                              {item?.barcode}
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div className="txt">
-                                              {item?.inventory_quantity}
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <div className="txt">
-                                              <input
-                                                type="text"
-                                                className="tabel-text"
-                                                {...register(
-                                                  `variants.${i}.wsp`
-                                                )}
-                                                // placeholder="0.00"
+                                  {activeVariants &&
+                                    activeVariants.length > 0 &&
+                                    activeVariants.map((item, i) => (
+                                      <tr
+                                        key={`${
+                                          item?.id
+                                        } product ${new Date().getTime()}`}
+                                      >
+                                        <td>
+                                          <div className="image image--cover image--1-1">
+                                            <picture>
+                                              <img
+                                                src={item?.image}
+                                                alt="img"
                                               />
-                                            </div>
-                                          </td>
+                                            </picture>
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="txt">
+                                            {item?.material}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="txt">
+                                            {item?.title}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="txt vin-txt">
+                                            {item?.sku}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="txt">
+                                            {item?.barcode}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="txt">
+                                            {item?.inventory_quantity}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="txt">
+                                            <input
+                                              type="text"
+                                              className="tabel-text"
+                                              {...register(`variants.${i}.wsp`)}
+                                              // placeholder="0.00"
+                                            />
+                                          </div>
+                                        </td>
 
-                                          <td>
-                                            <div className="txt">
+                                        <td>
+                                          <div className="txt">
+                                            <input
+                                              type="text"
+                                              className="tabel-text"
+                                              {...register(
+                                                `variants.${i}.msrp`
+                                              )}
+                                              //placeholder="0.00"
+                                            />
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="product-activation">
+                                            <span>Allow</span>
+                                            <div className="my-toggle-btn">
                                               <input
-                                                type="text"
-                                                className="tabel-text"
-                                                {...register(
-                                                  `variants.${i}.msrp`
-                                                )}
-                                                //placeholder="0.00"
+                                                id={`checkbox${item?.id}`}
+                                                type="checkbox"
+                                                value={item.id}
+                                                // checked={getActiveVariantID(item.id)}
+                                                onChange={handleVariantToggle}
                                               />
+                                              <label
+                                                htmlFor={`checkbox${item?.id}`}
+                                              >
+                                                <span
+                                                  className="on"
+                                                  title="on"
+                                                ></span>
+                                                <span
+                                                  className="off"
+                                                  title="off"
+                                                ></span>
+                                              </label>
                                             </div>
-                                          </td>
-                                          <td>
-                                            <div className="product-activation">
-                                              <span>Allow</span>
-                                              <div className="my-toggle-btn">
-                                                <input
-                                                  id={`checkbox${item?.id}`}
-                                                  type="checkbox"
-                                                  value={item.id}
-                                                  //   checked={getActiveVariantID(item.id)}
-                                                  onChange={handleVariantToggle}
-                                                />
-                                                <label
-                                                  htmlFor={`checkbox${item?.id}`}
-                                                >
-                                                  <span
-                                                    className="on"
-                                                    title="on"
-                                                  ></span>
-                                                  <span
-                                                    className="off"
-                                                    title="off"
-                                                  ></span>
-                                                </label>
-                                              </div>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      )
-                                    )}
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    ))}
                                 </tbody>
                               </table>
                             </div>
@@ -1069,6 +1102,7 @@ export default function EditProductDetails() {
           </section>
         </form>
       </main>
+      <ToastContainer />
     </div>
   );
 }

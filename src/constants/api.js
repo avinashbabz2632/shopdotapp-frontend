@@ -48,9 +48,13 @@ export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
 export const DOWNLOAD_PRODUCT = `${BASE_URL}/brand/product/download`;
 export const UPLOAD_PRODUCT = `${BASE_URL}/brand/product/upload`;
 export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
-export const PRODUCT_CATEGORIES = (id) => `${BASE_URL}/brand/product/category/${id}`;
-export const PRODUCT_DETAILS = (product_id) => `${BASE_URL}/brand/product/${product_id}`;
-export const EDIT_PRODUCT_DETAILS = (product_id) => `${BASE_URL}/brand/product/${product_id}`;
+export const UPDATE_PRODUCT_STATUS = `${BASE_URL}/product/status`;
+export const PRODUCT_CATEGORIES = (id) =>
+  `${BASE_URL}/brand/product/category/${id}`;
+export const PRODUCT_DETAILS = (product_id) =>
+  `${BASE_URL}/brand/product/${product_id}`;
+export const EDIT_PRODUCT_DETAILS = (product_id) =>
+  `${BASE_URL}/brand/product/${product_id}`;
 
 // Common
 export const CATEGORY = `${BASE_URL}/platform/category`;

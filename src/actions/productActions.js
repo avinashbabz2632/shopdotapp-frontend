@@ -9,6 +9,7 @@ import {
   setProductDetails,
   setProductSubCatOptions,
   setProductGroupOptions,
+  setSyncError,
 } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 import download from 'js-file-download';
@@ -99,10 +100,12 @@ export function syncSingleProductAction(params) {
         params,
       });
       if (response && response.data && response.data.code == 200) {
+        // dispatch(setSyncError(response?.data?.data));
         toast.success('Product Synced Successfully');
       } else {
       }
     } catch (err) {
+      dispatch(setSyncError(err));
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
@@ -171,6 +174,35 @@ export function getProductDetailsAction(productId) {
       if (response && response.data && response.data.code == 200) {
         if (response.data.data) {
           dispatch(setProductDetails(response.data.data));
+        }
+      } else {
+      }
+      return response;
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+// export function editProductDetailsAction(data, productId) {
+export function updateProductStatusAction(productId, status) {
+  return async (dispatch) => {
+    const data = {
+      id: productId,
+      status: status,
+    };
+    try {
+      const response = await axios.put(
+        `${API_END_POINT.UPDATE_PRODUCT_STATUS}/${productId}`,
+        data
+      );
+      if (response && response.data && response.data.code == 200) {
+        if (response.data.data) {
+          dispatch(getProductDetailsAction(productId));
         }
       } else {
       }

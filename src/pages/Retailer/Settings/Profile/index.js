@@ -50,19 +50,27 @@ export default function RetailerProfile() {
   const updateResult = useSelector(selectRetailerProfileSaveResult);
   const userDetails = useSelector(selectUserDetails);
   const brandCategoryList = useSelector(selectBrandCategory);
-  const transformCategoryOptions = brandCategoryList?.map((el) => {
-    return { value: el.id, label: el.name };
-  });
+  let transformCategoryOptions = [];
+  if(brandCategoryList && brandCategoryList.length > 0) {
+    transformCategoryOptions = brandCategoryList?.map((el) => {
+      return { value: el.id, label: el.name };
+    });
+  }
   const brandValueList = useSelector(selectBrandValues);
   const countriesOption = useSelector(selectCountries);
-  const transformCountriesOption = countriesOption?.map((el) => {
-    return { value: el.id, label: el.name };
-  });
+  let transformCountriesOption = [];
+  if(countriesOption && countriesOption.length > 0) {
+    transformCountriesOption = countriesOption?.map((el) => {
+      return { value: el.id, label: el.name };
+    });
+  }
   const statesOption = useSelector(selectStates);
-  const transformStatesOption = statesOption?.map((el) => {
-    return { label: el.name, value: el.country_id };
-  });
-
+  let transformStatesOption = [];
+  if(statesOption && statesOption.length > 0) {
+    transformStatesOption = statesOption?.map((el) => {
+      return { label: el.name, value: el.country_id };
+    });
+  }
   const [image, setImage] = useState(Brandlogo);
   const [file, setFile] = useState();
   const [fileLogoError, setfileLogoError] = useState('');
@@ -546,7 +554,7 @@ export default function RetailerProfile() {
                         <label className="form-label">Retailer values</label>
                         <div className="select-checkbox third-col">
                           <div className="select-checkbox">
-                            {brandValueList && brandValueList.map((val, i) => {
+                            {brandValueList && brandValueList.length > 0 && brandValueList?.map((val, i) => {
                               return (
                                 <div className="check-item" key={i}>
                                   <label className="checkbox">

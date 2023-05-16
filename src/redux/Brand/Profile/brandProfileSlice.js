@@ -4,7 +4,7 @@ import * as types from '../../../actions/actionTypes';
 const initialState = {
   brandProfileDetails: {},
   brandCategory: {},
-  brandValues: {},
+  brandValues: [],
   profileCompleted: {
     profile: false,
     preference: false,
