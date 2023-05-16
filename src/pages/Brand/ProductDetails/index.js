@@ -39,7 +39,6 @@ export default function ProductDetails() {
 
   useEffect(() => {
     const data = Datas.find((ele) => ele.id === params.id);
-    console.log(data, 'data');
     setProduct(data);
     setimage(data.productImages[0]);
     dispatch(getProductDetailsAction(params.id));
@@ -59,13 +58,7 @@ export default function ProductDetails() {
   };
 
   const handaleChangeImage = (e) => {
-    if (e === 1) {
-      setSwipedImage(1);
-    } else if (e === 2) {
-      setSwipedImage(2);
-    } else {
-      setSwipedImage(3);
-    }
+    setSwipedImage(e);
   };
 
   const doSync = () => {
@@ -322,68 +315,29 @@ export default function ProductDetails() {
                         id="swiper-wrapper-61653a910e210be737"
                         aria-live="polite"
                       >
-                        <div
-                          className={`swiper-slide swiper-slide-visible ${
-                            swipedImage === 1 && 'swiper-slide-thumb-active'
-                          } `}
-                          onClick={() => handaleChangeImage(1)}
-                          role="group"
-                          aria-label="1 / 3"
-                        >
-                          <div className="image">
-                            <picture>
-                              <img
-                                src={
-                                  product.length !== 0 &&
-                                  product.productImages[0]
-                                }
-                                alt=""
-                              />
-                            </picture>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`swiper-slide swiper-slide-visible swiper-slide-prev ${
-                            swipedImage === 2 && 'swiper-slide-thumb-active'
-                          } `}
-                          onClick={() => handaleChangeImage(2)}
-                          role="group"
-                          aria-label="2 / 3"
-                        >
-                          <div className="image">
-                            <picture>
-                              <img
-                                src={
-                                  product.length !== 0 &&
-                                  product.productImages[1]
-                                }
-                                alt=""
-                              />
-                            </picture>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`swiper-slide swiper-slide-visible swiper-slide-active ${
-                            swipedImage === 3 && 'swiper-slide-thumb-active'
-                          } `}
-                          onClick={() => handaleChangeImage(3)}
-                          role="group"
-                          aria-label="3 / 3"
-                        >
-                          <div className="image">
-                            <picture>
-                              <img
-                                src={
-                                  product.length !== 0 &&
-                                  product.productImages[2]
-                                }
-                                alt=""
-                              />
-                            </picture>
-                          </div>
-                        </div>
+                        {map(
+                          productDetails.product_images,
+                          (productImage, key) => {
+                            const currentKey = key + 1;
+                            return (
+                              <div
+                                className={`swiper-slide swiper-slide-visible ${
+                                  swipedImage === currentKey &&
+                                  'swiper-slide-thumb-active'
+                                } `}
+                                onClick={() => handaleChangeImage(currentKey)}
+                                role="group"
+                                aria-label="1 / 3"
+                              >
+                                <div className="image">
+                                  <picture>
+                                    <img src={productImage.src} alt="" />
+                                  </picture>
+                                </div>
+                              </div>
+                            );
+                          }
+                        )}
                       </div>
                       <span
                         className="swiper-notification"
@@ -401,22 +355,29 @@ export default function ProductDetails() {
                         id="swiper-wrapper-9a3741016670105a3b"
                         aria-live="polite"
                       >
-                        <div
-                          className={`swiper-slide ${
-                            swipedImage === 1 &&
-                            'swiper-slide-visible swiper-slide-active'
-                          } ${swipedImage === 2 && 'swiper-slide-prev'}`}
-                          role="group"
-                          aria-label="1 / 3"
-                        >
-                          <div className="image">
-                            <picture>
-                              <img src={image} alt="" />
-                            </picture>
-                          </div>
-                        </div>
+                        {map(
+                          productDetails.product_images,
+                          (productImage, key) => {
+                            return (
+                              <div
+                                className={`swiper-slide ${
+                                  swipedImage === 1 &&
+                                  'swiper-slide-visible swiper-slide-active'
+                                } ${swipedImage === 2 && 'swiper-slide-prev'}`}
+                                role="group"
+                                aria-label="1 / 3"
+                              >
+                                <div className="image">
+                                  <picture>
+                                    <img src={productImage.src} alt="" />
+                                  </picture>
+                                </div>
+                              </div>
+                            );
+                          }
+                        )}
 
-                        <div
+                        {/* <div
                           className={`swiper-slide ${
                             swipedImage === 2
                               ? 'swiper-slide-visible swiper-slide-active'
@@ -457,7 +418,7 @@ export default function ProductDetails() {
                               />
                             </picture>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div
                         className={`swiper-button-prev ${
