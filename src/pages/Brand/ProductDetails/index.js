@@ -25,6 +25,17 @@ import { selectUserDetails } from '../../../redux/user/userSelector';
 import { selectProductDetails } from '../../../redux/Brand/Products/productSelectors';
 import { ToastContainer } from 'react-toastify';
 import { map } from 'lodash';
+import { selectBrandProfileDetails } from '../../../redux/Brand/Profile/brandProfileSelectors';
+import {
+  selectShippingData,
+  shippingTime,
+} from '../../../redux/Brand/Shipping/shippingPaidSelector';
+import {
+  getBrandShippingAction,
+  getBrandShippingTime,
+} from '../../../actions/brandActions';
+import { getCountriesAction } from '../../../actions/generalActions';
+import { selectStates } from '../../../redux/General/States/getStatesSelector';
 
 export default function ProductDetails() {
   const [image, setimage] = useState(ProductUrl);
@@ -35,15 +46,74 @@ export default function ProductDetails() {
   const params = useParams();
 
   const dispatch = useDispatch();
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const productDetails = useSelector(selectProductDetails);
+  const shippingDetailsRes = useSelector(selectShippingData);
+  const shippingTimes = useSelector(shippingTime);
+  const [shippingData, setShippingData] = useState({});
+  const statesOption = useSelector(selectStates);
+
+  const transformStatesOption = statesOption?.map((el) => {
+    return { label: el.name, value: el.country_id };
+  });
 
   useEffect(() => {
     const data = Datas.find((ele) => ele.id === params.id);
     setProduct(data);
-    setimage(data.productImages[0]);
+    // setimage(data.productImages[0]);
     dispatch(getProductDetailsAction(params.id));
+    dispatch(getCountriesAction());
+    dispatch(getBrandShippingTime());
+    dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const formatShippingTime = () => {
+    if (shippingTimes && shippingTimes.length > 0) {
+      return shippingTimes.map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));
+    } else {
+      return [{ value: '', label: '' }];
+    }
+  };
+
+  useEffect(() => {
+    console.log(shippingDetailsRes, 'shippingDetailsRes');
+    if (shippingDetailsRes?.shippingDetails) {
+      formatShippingDetails(
+        shippingDetailsRes?.shippingDetails?.brand_details.shipping_rate
+      );
+    }
+  }, [shippingDetailsRes]);
+
+  const formatShippingDetails = (shippingDetails) => {
+    const formateState = transformStatesOption
+      ? transformStatesOption?.find((state) => {
+          if (shippingDetails?.shipping_address?.state === state.label) {
+            return state.label;
+          }
+        })
+      : '';
+
+    const formatTime = shippingDetails?.shipping_address?.shipping_time_id
+      ? formatShippingTime()?.find(
+          (item) =>
+            item.value === shippingDetails?.shipping_address?.shipping_time_id
+        )
+      : '';
+
+    const data = {
+      shippingfee: shippingDetails?.shipping_cost,
+      incrementalfee: shippingDetails?.incremental_fee,
+      daystofulfill: formatTime?.label,
+      state: formateState?.label,
+      city: shippingDetails?.shipping_address?.city,
+    };
+    console.log(data, 'data2');
+    setShippingData(data);
+  };
 
   const handalProductZoomModal = () => {
     setZoomProduct(zoomProduct === false ? true : false);
@@ -104,7 +174,7 @@ export default function ProductDetails() {
       group: productDetails?.categories?.group ?? {},
       mainCategory: productDetails?.categories?.mainCategory ?? {},
       subCategory: productDetails?.categories?.subCategory ?? {},
-      ...productDetails.categories,
+      ...productDetails?.categories,
     };
 
     map(orderArray, (cat, key) => {
@@ -316,7 +386,7 @@ export default function ProductDetails() {
                         aria-live="polite"
                       >
                         {map(
-                          productDetails.product_images,
+                          productDetails?.productDetails?.product_images,
                           (productImage, key) => {
                             const currentKey = key + 1;
                             return (
@@ -356,7 +426,7 @@ export default function ProductDetails() {
                         aria-live="polite"
                       >
                         {map(
-                          productDetails.product_images,
+                          productDetails?.productDetails?.product_images,
                           (productImage, key) => {
                             return (
                               <div
@@ -529,15 +599,17 @@ export default function ProductDetails() {
                         <div className="product_extra-text">
                           <p>
                             Estimated days to fulfill is{' '}
-                            <strong>[Range]</strong>. Product ships from{' '}
-                            <strong>[Shipping City]</strong>,{' '}
-                            <strong>[Shipping State]</strong>.
+                            <strong>{shippingData?.daystofulfill}</strong>.
+                            Product ships from{' '}
+                            <strong>{shippingData?.city}</strong>,{' '}
+                            <strong>{shippingData?.state}</strong>.
                           </p>
                           <p>
                             Shipping costs will be a flat rate of{' '}
-                            <strong>[$Shipping Costs]</strong> for the first
-                            product and <strong>[$Incremental Fee]</strong> for
-                            each additional product within the same order.
+                            <strong>{`$${shippingData?.shippingfee}`}</strong>{' '}
+                            for the first product and{' '}
+                            <strong>{`$${shippingData?.incrementalfee}`}</strong>{' '}
+                            for each additional product within the same order.
                           </p>
                         </div>
                       </div>
@@ -549,7 +621,7 @@ export default function ProductDetails() {
             {zoomProduct && (
               <ProductZoomModal
                 handalModal={() => handalProductZoomModal()}
-                productImages={product.productImages}
+                productImages={productDetails?.productDetails?.product_images}
               />
             )}
           </div>
