@@ -3,7 +3,6 @@ import { NavLink, useParams } from 'react-router-dom';
 import '../Style/brand.style.scss';
 import '../Style/brand.media.scss';
 import '../Style/brand.dev.scss';
-import { Datas } from '../Products/utils';
 import BrandHeader from '../common/components/BrandHeader';
 import LeftArrowIcon from '../../Brand/images/icons/icon-arrow--left.svg';
 import editIcon from '../../Brand/images/icons/icon-edit.svg';
@@ -44,7 +43,6 @@ export default function ProductDetails() {
   const [swipedImage, setSwipedImage] = useState(1);
   const [product, setProduct] = useState([]);
   const params = useParams();
-
   const dispatch = useDispatch();
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const productDetails = useSelector(selectProductDetails);
@@ -58,9 +56,6 @@ export default function ProductDetails() {
   });
 
   useEffect(() => {
-    const data = Datas.find((ele) => ele.id === params.id);
-    setProduct(data);
-    // setimage(data.productImages[0]);
     dispatch(getProductDetailsAction(params.id));
     dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -276,7 +271,7 @@ export default function ProductDetails() {
                   </div>
 
                   <NavLink
-                    to={`/brand/edit-product/${product?.id}`}
+                    to={`/brand/edit-product/${params?.id}`}
                     className="button button-dark black large view-list"
                   >
                     <img className="icon" src={editIcon} />

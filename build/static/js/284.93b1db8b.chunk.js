@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkshopdot=self.webpackChunkshopdot||[]).push([[284],{8607:function(e,c,f){f(2791);c.Z=f.p+"static/media/icon-chevron--left.6fea8e5e09f9689dbde7b5e218f60f96.svg"},4418:function(e,c,f){f(2791);c.Z=f.p+"static/media/icon-chevron--right.e406c78d185eff8f03248e6dee04e8b6.svg"},6718:function(e,c,f){f(2791);c.Z=f.p+"static/media/icon-close.2d2e8119810ad95f50fb2aabc2ee7e1b.svg"},4155:function(e,c,f){f(2791);c.Z=f.p+"static/media/product-card-empty.ec1ae96f9a0b9933bfb1c13af7cfeb72.svg"}}]);
-//# sourceMappingURL=284.93b1db8b.chunk.js.map

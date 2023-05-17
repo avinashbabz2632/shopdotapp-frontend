@@ -3,6 +3,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Input from '../../../../components/common/Input/divStyled';
+import {useDispatch, useSelector} from 'react-redux';
+import { changePassword } from '../../../../actions/brandActions';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { isEmpty } from 'lodash';
 
 const validationSchema = yup
     .object()
@@ -23,6 +27,7 @@ const validationSchema = yup
     .required();
 
 export default function RetailerSecurity() {
+    const dispatch = useDispatch();
     const [passwordType, setPasswordType] = useState(true);
     const [passwordTypeNew, setPasswordTypeNew] = useState(true);
     const [passwordTypeConfirmNew, setPasswordTypeConfirmNew] = useState(true);
@@ -32,10 +37,24 @@ export default function RetailerSecurity() {
         reset,
         formState: { errors },
     } = useForm({ resolver: yupResolver(validationSchema), onChange: true });
+  const userDetails = useSelector(selectUserDetails);
+
 
     const onSubmit = (data) => {
         console.log('data', data);
-        reset();
+        if (!isEmpty(data.password)) {
+            dispatch(
+              changePassword(
+                {
+                  old_password: data.password,
+                  password: data.newpassword,
+                  confirm_password: data.confirmNewPassword,
+                },
+                userDetails.id
+              )
+            );
+            reset();
+          }
     };
 
     return (

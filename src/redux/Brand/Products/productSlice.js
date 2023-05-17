@@ -22,6 +22,7 @@ const initialState = {
   productUpdateResult: null,
   productSubCatOptions: [],
   productGroupOptions: [],
+  syncError: null,
 };
 
 const orderSlice = createSlice({
@@ -88,6 +89,9 @@ const orderSlice = createSlice({
     },
     setProductGroupOptions: (state, action) => {
       state.productGroupOptions = action.payload;
+    },
+    setSyncError: (state, action) => {
+      state.syncError = action.payload;
     }
   },
 });
@@ -113,7 +117,8 @@ export const {
   setProductStatusFilter,
   setProductDetails,
   setProductSubCatOptions,
-  setProductGroupOptions
+  setProductGroupOptions,
+  setSyncError,
 } = orderSlice.actions;
 
 /**
