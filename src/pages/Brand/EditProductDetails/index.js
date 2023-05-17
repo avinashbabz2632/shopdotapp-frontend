@@ -77,7 +77,7 @@ export default function EditProductDetails() {
         variantObj[`variants.${i}.wsp`] = pv.wsp;
       });
     }
-    console.log('variants-wsp----', variantObj);
+    // console.log('variants-wsp----', variantObj);
     return variantObj;
   };
 
@@ -108,7 +108,7 @@ export default function EditProductDetails() {
         variantObj[`variants.${i}.msrp`] = pv.price;
       });
     }
-    console.log('variants-msrp----', variantObj);
+    // console.log('variants-msrp----', variantObj);
     return variantObj;
   };
 
@@ -118,6 +118,7 @@ export default function EditProductDetails() {
     ...variantsWSPDefaultValues(),
     ...variantsMSRPDefaultValues(),
   };
+  console.log('defaultValues--defaultValues----', defaultValues);
 
   const {
     register,
@@ -247,10 +248,6 @@ export default function EditProductDetails() {
   };
 
   useEffect(() => {
-    
-  }, [errors]);
-
-  useEffect(() => {
     // setMultipleImages([Data.productUrl]);
     // setValue('productUrl', [Data.productUrl]);
     setTags(product.productDetails.product_tags?.map((t) => t.tag));
@@ -283,11 +280,11 @@ export default function EditProductDetails() {
       // setTimeout(() => {
       //   command.execute({ value: 'left' });
       // });
-      command.on('change:value', (evt, name, value) => {
-        console.log('value-----', value, name, evt);
-        // setText(`[demos] + ${Math.random()}`);
-        // setAlign({ textAlign: value, textAlignLast: value });
-      });
+      // command.on('change:value', (evt, name, value) => {
+      //   console.log('value-----', value, name, evt);
+      //   // setText(`[demos] + ${Math.random()}`);
+      //   // setAlign({ textAlign: value, textAlignLast: value });
+      // });
     });
   }, [container]);
 
@@ -308,19 +305,26 @@ export default function EditProductDetails() {
   }, [selectedProductSubCatId]);
 
   const transformVariants = () => {
-    return updatedVariants.map((av) => {
+
+    return updatedVariants.map((v) => {
       const item = {
-        sku: av.sku,
-        wsp: av.wsp,
-        msrp: av.price,
-        status: parseInt(av.status),
+        id: v.id,
+        sku: v.sku,
+        wsp: v.wsp,
+        msrp: v.price,
+        status: parseInt(v.status),
       };
       return item;
     });
   };
 
   const handleSave = (data) => {
-    console.log('data-data----', data);
+    const variantsObjArr = transformVariants();
+    const variantsWithUpdatedPrice = data.variants.map((v, i) => {
+      const item = variantsObjArr.find((e, index) => i == index);
+      const newItem = {...item, wsp: v.wsp, msrp: v.msrp};
+      return newItem;
+    })
     if(wspError || msrpError || !selectedProductCatId || !selectedProductSubCatId) return;
     const dataToUpdate = {
       product_name: data?.productName,
@@ -333,7 +337,7 @@ export default function EditProductDetails() {
         select_group: selectedProductGroupId,
       },
       shopifyImageId: product.productDetails.product_images[0].shopify_image_id,
-      product_variant: transformVariants(),
+      product_variant: variantsWithUpdatedPrice,
     };
     dispatch(editProductDetailsAction(dataToUpdate, params?.id));
     // navigate({

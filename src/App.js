@@ -95,8 +95,8 @@ function App() {
       }
     } else {
       if (pathname !== '/sign-up') {
-        history.replace('/');
-        navigate('/');
+        history.replace('/login');
+        navigate('/login');
       }
     }
   }, []);
@@ -107,7 +107,7 @@ function App() {
         <Routes>
           {/* Auth Routes:::start */}
           <Route path="/loader" element={<Loader />} />
-          <Route path="/" element={<SignIn />} />
+          <Route path="/login" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/create-password" element={<CreatePassword />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
