@@ -37,10 +37,8 @@ export function registerAction(formData) {
     try {
       const response = await axios.post(API_END_POINT.REGISTER, formData);
       if (response && response.data && response.data.code == 201) {
-
         dispatch(setUserInfo(response.data.data));
         dispatch(setRegister());
-
       } else {
         toast.error('Something went worng');
       }
@@ -81,7 +79,7 @@ export function signOutAction(payload) {
       const response = await axios.post(API_END_POINT.LOGOUT, payload.fromData);
 
       if (response && response.data && response.data.code == 200) {
-        payload.history.replace('/');
+        payload.history.replace('/logout');
         dispatch(logOut());
       } else {
         toast.error('Something went worng');

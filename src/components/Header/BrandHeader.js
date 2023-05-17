@@ -29,8 +29,8 @@ export default function BrandHeader() {
 
     if (res) {
       dispatch(logOut());
-      history.replace('/');
-      navigate('/');
+      history.replace('/logout');
+      navigate('/logout');
       return;
     }
 

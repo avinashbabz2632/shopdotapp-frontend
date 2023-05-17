@@ -57,8 +57,6 @@ export default function ProductDetails() {
 
   useEffect(() => {
     dispatch(getProductDetailsAction(params.id));
-    dispatch(getCountriesAction());
-    dispatch(getBrandShippingTime());
     dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -182,7 +180,7 @@ export default function ProductDetails() {
     dispatch(
       updateProductStatusAction(
         params.id,
-        productDetails?.productDetails?.status === '1' ? 'inactive' : 'active'
+        productDetails?.productDetails?.status == '1' ? 1 : 0
       )
     );
   };

@@ -148,7 +148,7 @@ function RetailerHeader() {
                           <Link to="/">Help Center</Link>
                         </li>
                         <li>
-                          <Link to="/">Sign out</Link>
+                          <Link to="/login">Sign out</Link>
                         </li>
                       </ul>
                     </div>

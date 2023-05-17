@@ -60,12 +60,11 @@ function BrandHeader(props) {
       dispatch(clearShippingLogout());
       dispatch(clearPreferenceLogout());
       dispatch({ type: 'LOGOUT' });
-      history.replace('/');
-      navigate('/');
-      return;
+      history.replace('/login');
+      navigate('/login');
     }
 
-    toast.error('Seomething went wrong while signing out!');
+    // toast.error('Seomething went wrong while signing out!');
   };
 
   useEffect(() => {

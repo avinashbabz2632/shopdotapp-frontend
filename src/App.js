@@ -80,9 +80,10 @@ function App() {
     ) {
       return;
     }
+    console.log(pathname, 'pathname');
 
     if (isLogged) {
-      if (pathname == '/sign-up' || (pathname == '/' && !isRoleUpdated)) {
+      if (pathname == '/signup' || (pathname == '/' && !isRoleUpdated)) {
         if (userDetails.role.name) {
           if (userDetails.role.name === 'retailer') {
             navigate('/retailer-onboarding');
@@ -94,7 +95,7 @@ function App() {
         }
       }
     } else {
-      if (pathname !== '/sign-up') {
+      if (pathname !== '/signup') {
         history.replace('/login');
         navigate('/login');
       }
@@ -108,7 +109,8 @@ function App() {
           {/* Auth Routes:::start */}
           <Route path="/loader" element={<Loader />} />
           <Route path="/login" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup/:referralcode" element={<SignUp />} />
           <Route path="/create-password" element={<CreatePassword />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
