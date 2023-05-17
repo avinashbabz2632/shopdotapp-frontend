@@ -134,7 +134,7 @@ export default function SiteMap() {
         <ul>
           <p className="site-title">Auth</p>
           <li>
-            <Link className="site-link" to="/sign-up" target="_blank">
+            <Link className="site-link" to="/signup/" target="_blank">
               Sign Up
             </Link>
           </li>

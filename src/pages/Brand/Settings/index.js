@@ -6,7 +6,10 @@ import BrandSidebar from '../common/components/Sidebar';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { selectUserDetails } from '../../../redux/user/userSelector';
-import { getBrandProfileAction } from '../../../actions/brandActions';
+import {
+  getBrandProfileAction,
+  getBrandShippingTime,
+} from '../../../actions/brandActions';
 import { selectProfileCompleted } from '../../../redux/Brand/Profile/brandProfileSelectors';
 import { AuthApiService } from '../../../services/apis/authApis';
 import { logOut } from '../../../redux/auth/authSlice';
@@ -24,6 +27,7 @@ const BrandIntegration = lazy(() => import('./Integration'));
 import '../Style/brand.style.scss';
 import '../Style/brand.media.scss';
 import '../Style/brand.dev.scss';
+import { getCountriesAction } from '../../../actions/generalActions';
 
 export default function BrandSettingPage() {
   const navigate = useNavigate();
@@ -44,8 +48,8 @@ export default function BrandSettingPage() {
 
     if (res) {
       dispatch(logOut());
-      history.replace('/');
-      navigate('/');
+      history.replace('/logout');
+      navigate('/logout');
       return;
     }
 
@@ -76,6 +80,8 @@ export default function BrandSettingPage() {
 
   useEffect(() => {
     dispatch(getBrandProfileAction(useDetails.id));
+    dispatch(getCountriesAction());
+    dispatch(getBrandShippingTime());
   }, []);
 
   useEffect(() => {

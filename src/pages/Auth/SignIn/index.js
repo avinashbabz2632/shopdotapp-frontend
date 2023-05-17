@@ -135,7 +135,7 @@ function SignIn() {
           <div className="form__field mb-0 text-center">
             <small>
               Don&apos;t have a ShopDot account? Register{' '}
-              <Link to="/sign-up">here</Link>
+              <Link to="/signup">here</Link>
             </small>
           </div>
         </form>

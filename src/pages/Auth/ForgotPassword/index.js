@@ -77,7 +77,7 @@ function ForgotPassword() {
           <div className="form__field mb-0 text-center">
             <small>
               <LinkMod to="/">Log in</LinkMod> or{' '}
-              <LinkMod to="/sign-up">Sign up</LinkMod>
+              <LinkMod to="/signup/">Sign up</LinkMod>
             </small>
           </div>
         </form>

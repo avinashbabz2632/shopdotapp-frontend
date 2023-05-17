@@ -3,7 +3,7 @@
 // Auth flow:: Signup page
 
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -51,6 +51,7 @@ function SignUp() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const success = useSelector(registerSuccess);
+  const params = useParams();
   const userDetails = useSelector(selectUserDetails);
   const {
     register,
@@ -68,7 +69,13 @@ function SignUp() {
   }, [success]);
 
   const onSubmit = (data) => {
-    dispatch(registerAction({ ...data, device_id: '1234' }));
+    dispatch(
+      registerAction({
+        ...data,
+        device_id: '1234',
+        referal_code: params?.referralcode,
+      })
+    );
     // navigate('/verify-email');
     // reset();
   };

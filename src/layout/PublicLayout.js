@@ -14,7 +14,7 @@ function PublicLayout({ children }) {
   return (
     <>
       <main>
-        <section className="section sign sign-@@cls">
+        <section className="auth_section sign sign-@@cls">
           <div className="container">
             <div className="sign__content">{children}</div>
           </div>

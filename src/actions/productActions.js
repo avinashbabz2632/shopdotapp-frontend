@@ -193,13 +193,11 @@ export function updateProductStatusAction(productId, status) {
     };
     try {
       const response = await axios.put(
-        `${API_END_POINT.UPDATE_PRODUCT_STATUS}/${productId}`,
+        `${API_END_POINT.UPDATE_PRODUCT_STATUS}`,
         data
       );
       if (response && response.data && response.data.code == 200) {
-        if (response.data.data) {
-          dispatch(getProductDetailsAction(productId));
-        }
+        dispatch(getProductDetailsAction(productId));
       } else {
       }
       return response;
