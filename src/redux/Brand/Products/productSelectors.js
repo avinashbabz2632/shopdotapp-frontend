@@ -30,3 +30,5 @@ export const selectProductSubCatOptions = (state) => state.brandProduct.productS
 
 export const selectProductGroupOptions = (state) => state.brandProduct.productGroupOptions;
 
+export const selectSyncError = (state) => state.brandProduct.syncError;
+

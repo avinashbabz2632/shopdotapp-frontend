@@ -157,6 +157,16 @@ export function syncProductAction(userId) {
     }
   };
 }
+
+export const syncProduct2 = async (userId) => {
+  try {
+    const response = await axios.get(API_END_POINT.SYNC_PRODUCT_ALL(userId));
+    console.log('response-response---', response);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
 export function syncProductProfile(userId) {
   return async () => {
     try {

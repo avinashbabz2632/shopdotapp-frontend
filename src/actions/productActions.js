@@ -9,6 +9,7 @@ import {
   setProductDetails,
   setProductSubCatOptions,
   setProductGroupOptions,
+  setSyncError,
 } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 import download from 'js-file-download';
@@ -99,10 +100,12 @@ export function syncSingleProductAction(params) {
         params,
       });
       if (response && response.data && response.data.code == 200) {
+        // dispatch(setSyncError(response?.data?.data));
         toast.success('Product Synced Successfully');
       } else {
       }
     } catch (err) {
+      dispatch(setSyncError(err));
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
@@ -185,6 +188,7 @@ export function getProductDetailsAction(productId) {
   };
 }
 
+// export function editProductDetailsAction(data, productId) {
 export function updateProductStatusAction(productId, status) {
   return async (dispatch) => {
     const data = {
@@ -211,7 +215,7 @@ export function updateProductStatusAction(productId, status) {
   };
 }
 
-export function editProductDetailsAction(data) {
+export function editProductDetailsAction(data, productId) {
   return async (dispatch) => {
     try {
       const response = await axios.patch(

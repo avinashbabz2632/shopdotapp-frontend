@@ -20,98 +20,9 @@ import {
 } from '../../../../redux/Retailer/Profile/retailerProfileSelector';
 import { selectCountries } from '../../../../redux/General/Countries/getCountriesSelector';
 import { selectStates } from '../../../../redux/General/States/getStatesSelector';
-
-const retailerCategoryList = [
-  {
-    label: 'Apparel Boutique',
-    value: 0,
-  },
-  {
-    label: 'Bakery or Coffee Shop',
-    value: 1,
-  },
-  {
-    label: 'Book Store',
-    value: 2,
-  },
-  {
-    label: 'Electronics',
-    value: 3,
-  },
-  {
-    label: 'Fitness or Yoga Studio',
-    value: 4,
-  },
-  {
-    label: 'Florist or Garden Store',
-    value: 5,
-  },
-  {
-    label: 'Gift Store',
-    value: 6,
-  },
-  {
-    label: 'Kids or Toy Store',
-    value: 7,
-  },
-  {
-    label: 'Medical Office',
-    value: 8,
-  },
-  {
-    label: 'Musical Instruments',
-    value: 9,
-  },
-  {
-    label: 'Pharmacy',
-    value: 10,
-  },
-  {
-    label: 'Pet Store',
-    value: 11,
-  },
-  {
-    label: 'Shoe Store',
-    value: 12,
-  },
-  {
-    label: 'Spa or Salon',
-    value: 13,
-  },
-  {
-    label: 'Sporting and Outdoors',
-    value: 14,
-  },
-];
-
-const brandValueList = [
-  'Not on Amazon',
-  'Made in USA',
-  'Handmade',
-  'Eco-friendly',
-  'Fair Trade',
-  'Social Good',
-  'Small Batch',
-  'Organic',
-  'BIPOC Owned',
-  'Size Inclusive',
-];
-
-const countryOptions = [
-  {
-    value: 'usa',
-    label: 'United States',
-  },
-  { value: 'canada', label: 'Canada' },
-];
-
-const stateOptions = [
-  {
-    value: 'California',
-    label: 'California',
-  },
-  { value: 'Texas', label: 'Texas' },
-];
+import { getPlatformCategoryAction, getPlatformValuesAction } from '../../../../actions/brandActions';
+import { selectBrandCategory, selectBrandValues } from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 const categoryStyle = {
   control: (styles) => {
@@ -137,15 +48,29 @@ export default function RetailerProfile() {
   const dispatch = useDispatch();
   const updatingProfile = useSelector(selectRetailerProfileSaving);
   const updateResult = useSelector(selectRetailerProfileSaveResult);
+  const userDetails = useSelector(selectUserDetails);
+  const brandCategoryList = useSelector(selectBrandCategory);
+  let transformCategoryOptions = [];
+  if(brandCategoryList && brandCategoryList.length > 0) {
+    transformCategoryOptions = brandCategoryList?.map((el) => {
+      return { value: el.id, label: el.name };
+    });
+  }
+  const brandValueList = useSelector(selectBrandValues);
   const countriesOption = useSelector(selectCountries);
-  const transformCountriesOption = countriesOption?.map((el) => {
-    return { value: el.id, label: el.name };
-  });
+  let transformCountriesOption = [];
+  if(countriesOption && countriesOption.length > 0) {
+    transformCountriesOption = countriesOption?.map((el) => {
+      return { value: el.id, label: el.name };
+    });
+  }
   const statesOption = useSelector(selectStates);
-  const transformStatesOption = statesOption?.map((el) => {
-    return { label: el.name, value: el.country_id };
-  });
-
+  let transformStatesOption = [];
+  if(statesOption && statesOption.length > 0) {
+    transformStatesOption = statesOption?.map((el) => {
+      return { label: el.name, value: el.country_id };
+    });
+  }
   const [image, setImage] = useState(Brandlogo);
   const [file, setFile] = useState();
   const [fileLogoError, setfileLogoError] = useState('');
@@ -163,6 +88,8 @@ export default function RetailerProfile() {
 
   useEffect(() => {
     dispatch(getCountriesAction());
+    dispatch(getPlatformCategoryAction());
+    dispatch(getPlatformValuesAction());
   }, []);
 
   const handleLogoChange = (event, type) => {
@@ -186,6 +113,14 @@ export default function RetailerProfile() {
     }
   };
 
+  const getDefaultValueOfCountryField = () => {
+    let option = null;
+    if(transformCountriesOption && transformCountriesOption.length > 0) {
+      option = transformCountriesOption[0];
+    }
+    return option;
+  }
+
   const {
     control,
     register,
@@ -193,7 +128,7 @@ export default function RetailerProfile() {
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: { countryAddress: countryOptions[0] },
+    defaultValues: { countryAddress: getDefaultValueOfCountryField() },
     mode: 'onChange',
     resolver: yupResolver(retailerProfileValidationSchema),
   });
@@ -206,10 +141,27 @@ export default function RetailerProfile() {
     }
   }, [watchCountry]);
 
+  const getRetailerValues = (data) => {
+    let retalierValues = [];
+    if(data.retialerValue && data.retialerValue.length > 0) {
+      retalierValues = data.retialerValue.map(rv => parseInt(rv));
+    }
+    return retalierValues;
+  }
+
+  const getRetailerCategories = (data) => {
+    let retalierCategories = [];
+    if(data.retailerCategory && data.retailerCategory.length > 0) {
+      retalierValues = data.retailerCategory.map(rc => rc.value);
+    }
+    return retalierCategories;
+  }
+
   const onSubmit = (data) => {
     console.log('retailer-form-data----', data);
     const profileData = {
-      role_id: 2,
+      role_id: userDetails?.role?.id,
+      user_id: userDetails?.id,
       company_name: data.companyName,
       company_email_address: data.contactEmail,
       company_phone_number: data.contactPhone,
@@ -218,8 +170,8 @@ export default function RetailerProfile() {
       store_website: data.retailerWebsite,
       retailer_story: data.aboutTheRetailer,
       store_photo: 'www.example.com',
-      retailer_categories: [1],
-      retailer_values: [1],
+      retailer_categories: [data.retailerCategory.value],
+      retailer_values: getRetailerValues(data),
       address1: data.addressLine1,
       address2: data.addressLine2,
       country: data.countryAddress.label,
@@ -228,7 +180,9 @@ export default function RetailerProfile() {
       zip: data.zipcode,
       store_mailing_address: 'test address',
     };
-    reset();
+    console.log('profileData----', profileData);
+    dispatch(updateRetailerProfileAction(profileData, true));
+    // reset();
   };
 
   return (
@@ -586,7 +540,7 @@ export default function RetailerProfile() {
                                   primary: '#bd6f34',
                                 },
                               })}
-                              options={retailerCategoryList}
+                              options={transformCategoryOptions}
                             />
                           )}
                         />
@@ -600,20 +554,20 @@ export default function RetailerProfile() {
                         <label className="form-label">Retailer values</label>
                         <div className="select-checkbox third-col">
                           <div className="select-checkbox">
-                            {brandValueList.map((val, i) => {
+                            {brandValueList && brandValueList.length > 0 && brandValueList?.map((val, i) => {
                               return (
                                 <div className="check-item" key={i}>
                                   <label className="checkbox">
                                     <input
                                       type="checkbox"
                                       name={'retialerValue'}
-                                      value={val}
+                                      value={val.id}
                                       {...register('retialerValue', {
                                         required: false,
                                       })}
                                     />
                                     <div className="checkbox-text">
-                                      <span>{val}</span>
+                                      <span>{val.name}</span>
                                     </div>
                                   </label>
                                 </div>
