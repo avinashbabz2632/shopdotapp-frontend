@@ -15,9 +15,9 @@ export function getRetailerProfileAction(id) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `${API_END_POINT.RETAILER_PROFILE}/${id}/`
+        `${API_END_POINT.RETAILER_PROFILE}`
       );
-      if (response && response.data && response.data.code == 200) {
+      if (response && response.data && response.data.code == 201) {
         dispatch(
           setBrandProfileDetails({
             type: types.BRAND_PROFILE,
@@ -34,18 +34,19 @@ export function updateRetailerProfileAction(formData, isCreate) {
   return async (dispatch) => {
     try {
       dispatch(setRetailerProfileSaving());
-      let response;
-      if (isCreate) {
-        response = await axios.post(API_END_POINT.RETAILER_PROFILE, formData);
-      } else {
-        response = await axios.put(API_END_POINT.RETAILER_PROFILE, formData);
-      }
+      // let response;
+      // if (isCreate) {
+      //   response = await axios.post(API_END_POINT.RETAILER_PROFILE, formData);
+      // } else {
+      //   response = await axios.put(API_END_POINT.RETAILER_PROFILE, formData);
+      // }
+      const response = await axios.post(API_END_POINT.RETAILER_PROFILE, formData);
       if (
         response &&
         response.status &&
         (response.status == 201 || response.status == 200)
       ) {
-        toast.success('Retailer Profile Details Updated');
+        toast.success(response?.data?.message);
         // dispatch(getRetailerProfileAction(formData.user_id));
         dispatch(setRetailerProfileSaveResult(response.data.data));
       } else {

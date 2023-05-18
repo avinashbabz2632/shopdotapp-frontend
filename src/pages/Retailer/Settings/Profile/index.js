@@ -8,7 +8,7 @@ import Brandlogo from '../../../Retailer/images/profile-avatar.jpg';
 import '../../Style/retail.style.scss';
 import '../../Style/retail.media.scss';
 import '../../Style/retail.dev.scss';
-import { updateRetailerProfileAction } from '../../../../actions/retailerActions';
+import { getRetailerProfileAction, updateRetailerProfileAction } from '../../../../actions/retailerActions';
 import {
   getCountriesAction,
   getStatesAction,
@@ -21,8 +21,9 @@ import {
 import { selectCountries } from '../../../../redux/General/Countries/getCountriesSelector';
 import { selectStates } from '../../../../redux/General/States/getStatesSelector';
 import { getPlatformCategoryAction, getPlatformValuesAction } from '../../../../actions/brandActions';
-import { selectBrandCategory, selectBrandValues } from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import { selectBrandCategory, selectBrandProfileDetails, selectBrandValues } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { ToastContainer } from 'react-toastify';
 
 const categoryStyle = {
   control: (styles) => {
@@ -47,9 +48,10 @@ const categoryStyle = {
 export default function RetailerProfile() {
   const dispatch = useDispatch();
   const updatingProfile = useSelector(selectRetailerProfileSaving);
-  const updateResult = useSelector(selectRetailerProfileSaveResult);
   const userDetails = useSelector(selectUserDetails);
   const brandCategoryList = useSelector(selectBrandCategory);
+  const brandProfileDetails = useSelector(selectBrandProfileDetails);
+  console.log('brandProfileDetails--', brandProfileDetails);
   let transformCategoryOptions = [];
   if(brandCategoryList && brandCategoryList.length > 0) {
     transformCategoryOptions = brandCategoryList?.map((el) => {
@@ -90,6 +92,7 @@ export default function RetailerProfile() {
     dispatch(getCountriesAction());
     dispatch(getPlatformCategoryAction());
     dispatch(getPlatformValuesAction());
+    dispatch(getRetailerProfileAction(userDetails?.id));
   }, []);
 
   const handleLogoChange = (event, type) => {
@@ -115,8 +118,43 @@ export default function RetailerProfile() {
 
   const getDefaultValueOfCountryField = () => {
     let option = null;
+    if(brandProfileDetails && brandProfileDetails?.shipping_address?.country && transformCountriesOption && transformCountriesOption.length > 0) {
+      const country = transformCountriesOption.find(c => c.label === brandProfileDetails?.shipping_address?.country);
+      if(country) {
+        option = country
+      }
+      return option;
+    }
     if(transformCountriesOption && transformCountriesOption.length > 0) {
       option = transformCountriesOption[0];
+    }
+    return option;
+  }
+
+  const getDefaultValueOfStateField = () => {
+    let option = null;
+    if(brandProfileDetails && brandProfileDetails?.shipping_address?.state && transformStatesOption && transformStatesOption.length > 0) {
+      const country = transformStatesOption.find(c => c.label === brandProfileDetails?.shipping_address?.state);
+      if(country) {
+        option = country
+      }
+      return option;
+    }
+    if(transformStatesOption && transformStatesOption.length > 0) {
+      option = transformStatesOption[0];
+    }
+    return option;
+  }
+
+  const getDefaultValueOfCategoryField = () => {
+    let option = null;
+    const {retailer_details} = brandProfileDetails || {};
+    const {retailer_categories = []} = retailer_details || {};
+    if(retailer_categories && retailer_categories.length > 0 && transformCategoryOptions && transformCategoryOptions.length > 0) {
+      const category = transformCategoryOptions.find(c => retailer_categories.some(rc => rc.category_id === c.value));
+      if(category) {
+        option = category
+      }
     }
     return option;
   }
@@ -128,7 +166,22 @@ export default function RetailerProfile() {
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: { countryAddress: getDefaultValueOfCountryField() },
+    defaultValues: {
+      companyName: brandProfileDetails?.retailer_details?.company_name,
+      contactEmail: brandProfileDetails?.retailer_details?.company_email_address,//
+      contactPhone: brandProfileDetails?.retailer_details?.company_phone_number,
+      addressLine1: brandProfileDetails?.shipping_address?.street_address_1,
+      addressLine2: brandProfileDetails?.shipping_address?.street_address_2,
+      city: brandProfileDetails?.shipping_address?.city,
+      zipcode: brandProfileDetails?.shipping_address?.zip,
+      retailerName: brandProfileDetails?.retailer_details?.company_name,
+      retailerWebsite: brandProfileDetails?.retailer_details?.company_email_address,
+      retailerCategory: getDefaultValueOfCategoryField(),
+      retialerValue: '',
+      aboutTheRetailer: brandProfileDetails?.retailer_details?.retailer_story,
+      countryAddress: getDefaultValueOfCountryField(),
+      stateAddress: getDefaultValueOfStateField(),
+     },
     mode: 'onChange',
     resolver: yupResolver(retailerProfileValidationSchema),
   });
@@ -160,6 +213,7 @@ export default function RetailerProfile() {
   const onSubmit = (data) => {
     console.log('retailer-form-data----', data);
     const profileData = {
+      id: userDetails?.id,
       role_id: userDetails?.role?.id,
       user_id: userDetails?.id,
       company_name: data.companyName,
@@ -181,11 +235,17 @@ export default function RetailerProfile() {
       store_mailing_address: 'test address',
     };
     console.log('profileData----', profileData);
-    dispatch(updateRetailerProfileAction(profileData, true));
+    if(brandProfileDetails) {
+      dispatch(updateRetailerProfileAction(profileData));
+    } else {
+      delete profileData.id;
+      dispatch(updateRetailerProfileAction(profileData));
+    }
     // reset();
   };
 
   return (
+    <>
     <div className="pc_tabs-content tabs_body">
       <div className="tab active" data-target="Account">
         <div className="products_content">
@@ -663,5 +723,7 @@ export default function RetailerProfile() {
         </div>
       </div>
     </div>
+    <ToastContainer />
+    </>
   );
 }
