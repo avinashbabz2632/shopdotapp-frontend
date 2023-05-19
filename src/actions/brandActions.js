@@ -16,6 +16,7 @@ import {
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
+import { setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
@@ -417,6 +418,23 @@ export function updatePreferences(data) {
         dispatch(getPreferencesAction(data.brand_id));
         dispatch(setProfileCompleted({ preference: true }));
         toast.success(response.data?.message);
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+export function getRetailerRequestForAccess(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(API_END_POINT.RETAILER_REQUEST_FOR_ACCESS, data);
+      if (response.status === 201) {
+        console.log("in action "+response);
+        dispatch(setRetailerRequests(response.data));
       }
     } catch (err) {
       toast.error(

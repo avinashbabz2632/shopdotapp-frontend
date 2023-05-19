@@ -17,6 +17,7 @@ import { getCountriesReducer } from './General/Countries/getCountriesSlice';
 import { getStatesReducer } from './General/States/getStatesSlice';
 import {retailerProfileReducer} from './Retailer/Profile/retailerProfileSlice';
 import {retailerSecurityReducer} from './Retailer/Security/securitySlice';
+import {retailerReducer} from './Brand/Retailer/retailerSlice'
 
 const persistConfig = {
   // configuration object for redux-persist
@@ -46,6 +47,7 @@ const combinedReducer = combineReducers({
   states: getStatesReducer,
   retailerProfile: retailerProfileReducer,
   retailerSecurity: retailerSecurityReducer,
+  brandRetailer: retailerReducer
 });
 
 const rootReducer = (state, action) => {
