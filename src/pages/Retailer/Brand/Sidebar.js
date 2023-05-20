@@ -170,12 +170,11 @@ const SideBar = forwardRef((props, ref) => {
                                             <select
                                                 name="ship-state"
                                                 id="ship-state"
-                                                onChange="loadBrandData()"
+                                                // onChange="loadBrandData()"
                                             >
                                                 <option
                                                     value=""
                                                     disabled=""
-                                                    selected=""
                                                 >
                                                     State
                                                 </option>
