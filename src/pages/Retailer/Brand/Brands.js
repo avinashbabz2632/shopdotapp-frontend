@@ -6,9 +6,10 @@ import SideBar from './Sidebar';
 import SideFilter from './SideFilter';
 import RightIcon from '../../Brand/images/icons/icon-chevron--right.svg';
 import LeftIcon from '../../Brand/images/icons/icon-chevron--left.svg';
-import useWindowSize from '../../../hooks/useWindowSize';
+// import useWindowSize from '../../../hooks/useWindowSize';
 import { connectedTableData } from './utils';
 import { Link } from 'react-router-dom';
+import useWindowSize from '../../../hooks/useWindowSize';
 function Brands() {
     const windowSize = useWindowSize();
     const [data, setData] = useState(connectedTableData);
@@ -17,26 +18,26 @@ function Brands() {
         useState(0);
     const [otherDivsHeight, setOtherDivsHeight] = useState(0);
     const [dynamicHeight, setDynamicHeight] = useState(0);
-    useEffect(() => {
-        const headerHeight = document.querySelector('.header').offsetHeight;
-        const productsHeadHeight =
-            document.querySelector('.products_head').offsetHeight;
-        const paginationHeight =
-            document.querySelector('.pagination').offsetHeight;
-        const productsBodyHeight =
-            document.querySelector('.products_body').offsetHeight;
-        setProductsActiveFilterHeight(productsActiveFilterHeight);
-        const otherDivsHeight =
-            headerHeight +
-            productsHeadHeight +
-            productsActiveFilterHeight +
-            paginationHeight +
-            (productsBodyHeight -
-                document.querySelector('.products_body').clientHeight);
-        setOtherDivsHeight(otherDivsHeight);
-        const dynamicHeight = window.innerHeight - otherDivsHeight - 100;
-        setDynamicHeight(dynamicHeight);
-    }, [windowSize]);
+    // useEffect(() => {
+    //     const headerHeight = document.querySelector('.header').offsetHeight;
+    //     const productsHeadHeight =
+    //         document.querySelector('.products_head').offsetHeight;
+    //     const paginationHeight =
+    //         document.querySelector('.pagination').offsetHeight;
+    //     const productsBodyHeight =
+    //         document.querySelector('.products_body').offsetHeight;
+    //     setProductsActiveFilterHeight(productsActiveFilterHeight);
+    //     const otherDivsHeight =
+    //         headerHeight +
+    //         productsHeadHeight +
+    //         productsActiveFilterHeight +
+    //         paginationHeight +
+    //         (productsBodyHeight -
+    //             document.querySelector('.products_body').clientHeight);
+    //     setOtherDivsHeight(otherDivsHeight);
+    //     const dynamicHeight = window.innerHeight - otherDivsHeight - 100;
+    //     setDynamicHeight(dynamicHeight);
+    // }, [windowSize]);
     const handleSearch = (e) => {
         if (e.target.value.trim()) {
             const searchValue = dataClone.filter((ele) => {
@@ -429,138 +430,6 @@ function Brands() {
                             </div>
                         </section>
                     </main>
-                    <div className="popup popup-invite">
-                        <div className="popup_wrapper">
-                            <div className="popup_content">
-                                <div className="popup-close">
-                                    <svg className="icon">
-                                        <use href="images/sprite.svg#icon-close"></use>
-                                    </svg>
-                                </div>
-                                <form
-                                    action="#"
-                                    className="primary__form form form_brands"
-                                >
-                                    <div className="form_brands-right">
-                                        <h3>
-                                            Share this referral link with your
-                                            brand suppliers.
-                                        </h3>
-                                        <div className="copyLinkArea">
-                                            <input
-                                                type="email"
-                                                name=""
-                                                id=""
-                                                placeholder="shopdotapp.com/signup/brandshopxyz"
-                                            />
-                                            <button
-                                                type="submit"
-                                                className="button"
-                                            >
-                                                Copy Link
-                                            </button>
-                                        </div>
-                                        <div className="emailTemplateArea">
-                                            <h4>Email Template</h4>
-                                            <div className="emailText">
-                                                <div className="emailTextItem">
-                                                    Hi,
-                                                    <br />
-                                                    <br />
-                                                    We have partnered with
-                                                    ShopDot, a new platform that
-                                                    enables brand suppliers to
-                                                    partner with their retailers
-                                                    in new ways. Through the
-                                                    ShopDot platform, you’re
-                                                    able to easily share product
-                                                    inventory and provide
-                                                    drop-shipping capabilities
-                                                    to your retailers. Helping
-                                                    your retailers never lose a
-                                                    sale and empowering them to
-                                                    delight customers with the
-                                                    right product at the right
-                                                    moment.
-                                                    <br />
-                                                    <br />
-                                                    ShopDot integrates with your
-                                                    Shopify store so real-time
-                                                    inventory and product
-                                                    content upload is automated.
-                                                    Plus, any orders placed on
-                                                    ShopDot go right back to
-                                                    your Shopify store to follow
-                                                    your normal fulfillment
-                                                    process.
-                                                    <br />
-                                                    <h5>Benefits for you:</h5>
-                                                    <b>
-                                                        Never lose a sale!
-                                                    </b>{' '}
-                                                    Cash and space constraints
-                                                    make it hard for retailers
-                                                    to meet the product demands
-                                                    of their customers. With
-                                                    ShopDot, retailers can tap
-                                                    into your inventory and
-                                                    leverage your drop-shipping
-                                                    capabilities to provide
-                                                    product immediacy and
-                                                    selection to their
-                                                    customers.
-                                                </div>
-                                            </div>
-                                            <div className="action">
-                                                <button
-                                                    type="submit"
-                                                    className="button"
-                                                >
-                                                    Copy Text
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="popup connect-brand-popup" id="">
-                        <div className="popup_wrapper">
-                            <div className="popup_content">
-                                <div
-                                    className="popup-close"
-                                    onClick="return $('#request_success').removeclassName('active');"
-                                >
-                                    <div className="icon">
-                                        {/* <img src={RightIcon} /> */}
-                                    </div>
-                                </div>
-                                <div className="popup_success active">
-                                    <div className="icon_wrap">
-                                        <div className="icon">
-                                            {/* <use xlink:href="{{ url('/public/front/retailer') }}/images/sprite.div#icon-checked-1"></use> */}
-                                        </div>
-                                    </div>
-                                    <h2 className="h1">
-                                        Connect Request Sent Successfully!
-                                    </h2>
-                                    <p>
-                                        Your connect request has been
-                                        successfully sent and is pending brand
-                                        approval.
-                                    </p>
-                                    <button
-                                        className="button popup-close"
-                                        onClick="return $('#request_success').removeclassName('active');"
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </>
