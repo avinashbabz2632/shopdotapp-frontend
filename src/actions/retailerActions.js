@@ -9,7 +9,10 @@ import {
   setBrandProfileDetails,
   setBrandValues,
 } from '../redux/Brand/Profile/brandProfileSlice';
-import {setRetailerProfileSaveResult, setRetailerProfileSaving} from '../redux/Retailer/Profile/retailerProfileSlice';
+import {
+  setRetailerProfileSaveResult,
+  setRetailerProfileSaving,
+} from '../redux/Retailer/Profile/retailerProfileSlice';
 
 export function getRetailerProfileAction(id) {
   return async (dispatch) => {
@@ -76,4 +79,15 @@ export function updatePreferences(data) {
       );
     }
   };
+}
+
+export async function addBillingDetailsAction(data) {
+  try {
+    const response = await axios.post(API_END_POINT.RETAILER_BILLING, data);
+    if (response.status === 201) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
 }

@@ -42,6 +42,7 @@ export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
 
 // Retailer
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
+export const RETAILER_BILLING = `${BASE_URL}/retailer/billing`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
