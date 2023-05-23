@@ -92,3 +92,20 @@ export function getRetailerBrandProductsListAction(data) {
     }
   };
 }
+
+export function updateNotificationAlertAction(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.patch(API_END_POINT.RETAILER_NOTIFICATION_ALERT, data);
+      if ((response && response.data && response.data.code == 201) || (response && response.data && response.data.code == 200)) {
+        toast.success('Notification Alert Updated');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
