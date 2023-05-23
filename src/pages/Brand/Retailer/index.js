@@ -31,7 +31,7 @@ export default function Retailer() {
     };
     const changeSubTab = useCallback(
         (key) => {
-            if (key === 'connected-reatiler') {
+            if (key === 'connected-retailer') {
                 setSubTab(1);
             } else {
                 setSubTab(2);
