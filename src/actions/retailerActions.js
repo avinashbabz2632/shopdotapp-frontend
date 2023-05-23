@@ -97,7 +97,7 @@ export function updateNotificationAlertAction(data) {
   return async (dispatch) => {
     try {
       const response = await axios.patch(API_END_POINT.RETAILER_NOTIFICATION_ALERT, data);
-      if (response.status === 201) {
+      if ((response && response.data && response.data.code == 201) || (response && response.data && response.data.code == 200)) {
         toast.success('Notification Alert Updated');
       }
     } catch (err) {

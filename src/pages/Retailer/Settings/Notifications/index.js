@@ -3,6 +3,7 @@ import Switch from 'react-switch';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateNotificationAlertAction } from '../../../../actions/retailerActions';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import { ToastContainer } from 'react-toastify';
 
 export default function RetailerNotification() {
   const [checked, setChecked] = useState(true);
@@ -26,6 +27,7 @@ export default function RetailerNotification() {
   }, [checked]);
 
   return (
+      <>
     <div className="products_content">
       <div className="products_body">
         <div className="content_area">
@@ -59,5 +61,7 @@ export default function RetailerNotification() {
         </div>
       </div>
     </div>
+    <ToastContainer />
+    </>
   );
 }
