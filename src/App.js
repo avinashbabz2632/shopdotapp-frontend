@@ -65,6 +65,7 @@ const EditProductDetails = lazy(() =>
 
 //Retailer Portal Pages
 const RetailerSettingPage = lazy(() => import('./pages/Retailer/Settings'));
+const RetailerBrandListPage = lazy(() => import('./pages/Retailer/Brand/Brands'));
 
 function App() {
   const navigate = useNavigate();
@@ -173,6 +174,7 @@ function App() {
 
           {/* Retailer Portal Routes:::start */}
           <Route path="/retailer/setting/" element={<RetailerSettingPage />} />
+          <Route path="/retailer/brands" element={<RetailerBrandListPage />}/>
           <Route
             path="/retailer/setting/:activeTab"
             element={<RetailerSettingPage />}
