@@ -31,7 +31,7 @@ export default function Retailer() {
     };
     const changeSubTab = useCallback(
         (key) => {
-            if (key === 'connect') {
+            if (key === 'connected-reatiler') {
                 setSubTab(1);
             } else {
                 setSubTab(2);
@@ -47,7 +47,7 @@ export default function Retailer() {
             } else {
                 setSubTab(1);
             }
-        }, []);
+        }, [subTab]);
 
     useLayoutEffect(() => {
         function updateHeight() {

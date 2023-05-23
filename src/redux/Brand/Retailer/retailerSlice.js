@@ -5,7 +5,7 @@ const initialState = {
     categoryFilter: [],
     stateFilter: [],
     salesFilter: {},
-    retailerRequests: [{"name":"aamir"}],
+    retailerRequests: [],
 };
 
 const retaielrSlice = createSlice({
@@ -30,8 +30,7 @@ const retaielrSlice = createSlice({
             state.salesFilter = {};
         },
         setRetailerRequests: (state, action) => {
-            // state.retailerRequests = [...action.payload]
-            state.retailerRequests = [{"name":"aamir"}]
+            state.retailerRequests = action.payload.data
         },
         resetToInitial: (state) => {
             state.statusViseFilter = [];

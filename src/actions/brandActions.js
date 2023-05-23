@@ -432,8 +432,7 @@ export function getRetailerRequestForAccess(data) {
   return async (dispatch) => {
     try {
       const response = await axios.post(API_END_POINT.RETAILER_REQUEST_FOR_ACCESS, data);
-      if (response.status === 201) {
-        console.log("in action "+response);
+      if (response.status === 200) {
         dispatch(setRetailerRequests(response.data));
       }
     } catch (err) {

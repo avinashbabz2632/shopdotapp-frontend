@@ -25,95 +25,94 @@ export default function RequestAccess(props) {
     const { height } = props;
     const dispatch = useDispatch();
     const [filterStatus, setFilterStatus] = useState('all');
-    const [limit, setLimit] = useState(2);
+    const [limit, setLimit] = useState(20);
     const [offset, setOffset] = useState(0);
-    const data1 = useSelector(selectRetailerRequestData);
-    const [data, setData] = useState([]);
-    const [dataClone, setDataClone] = useState(requestAccessData);
-    const filterdData = useSelector(selectStatusViseData);
+    const [totalPage, setTotalPage] = useState(1);
     const [searchVal, setSearchVal] = useState('');
     const [modalIsOpen, setIsOpen] = useState(false);
-
+    const newData = useSelector(selectRetailerRequestData);
+    const [sortColumn, setSortColumn] = useState("full_name");
     const changeStatusFilter = (value) => {
         setFilterStatus(value);
         dispatch(setStatusViseFilter(value));
     };
     const fetchRetailerRequests = () => {
-        const data = {
+        const query = {
           paging: {
             limit: limit,
             offset: offset,
           },
-          sort:  [
-            [
-                "full_name",
-                "DESC"
-            ],
-            [
-                "created_at",
-                "ASC"
-            ],
-            [
-                "status_updated_on",
-                "DESC"
-            ]
-        ],
-          query: {},
-          filter: [
-            {
+          sort: [
+            ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
+            ["created_at",sortColumn == "created_at" ? "ASC" : "DESC"],
+            ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
+          ],
+        searchquery: {},
+        filter: [],
+        };
+        if(searchVal){
+            query.searchquery.search = searchVal
+        }
+        if(filterStatus != "all"){
+            query.filter.push({
                 "field": "invite_status",
                 "operator": "eq",
-                "value": "pending"
-            }
-          ],
-        };
-        dispatch(getRetailerRequestForAccess(data));
+                "value": filterStatus
+            })
+        }
+        dispatch(getRetailerRequestForAccess(query));
       };
     useEffect(() => {
-        if (filterdData[0] == 'all') {
-            setData([...requestAccessData]);
-        } else if (filterdData[0] == 'conncted') {
-            const newData = requestAccessData.filter((item) => {
-                if (item.status == 'Connected') {
-                    return item;
-                }
-            });
-            setData([...newData]);
-        } else if (filterdData[0] == 'pending') {
-            const newData = requestAccessData.filter((item) => {
-                if (item.status == 'Pending') {
-                    return item;
-                }
-            });
-            setData([...newData]);
-        } else if (filterdData[0] == 'declined') {
-            const newData = requestAccessData.filter((item) => {
-                if (item.status == 'Declined') {
-                    return item;
-                }
-            });
-            setData([...newData]);
-        }
         fetchRetailerRequests();
-    }, [filterdData, data]);
+        const page = (newData.count / limit);
+        if(page % 1 === 0){
+            setTotalPage(page)
+        }else{
+            setTotalPage(Math.floor(page)+1)
+        }
+        getTotalPage()
+    }, [filterStatus, searchVal, limit, offset, sortColumn]);
 
     const handleSearch = (e) => {
         const searchInput = e.target.value.trim(); // remove extra spaces from start/end
-        const searchValue = dataClone.filter((ele) => {
-            const nameWithoutSpaces = ele.name.replace(/\s+/g, ''); // remove all spaces from name
-            const searchInputWithoutSpaces = searchInput.replace(/\s+/g, ''); // remove all spaces from searchInput
-            return nameWithoutSpaces
-                .toLowerCase()
-                .includes(searchInputWithoutSpaces.toLowerCase());
-        });
-        setData(searchValue);
-        setSearchVal(e.target.value);
+        setSearchVal(searchInput);
     };
 
     const opencloseRetailerModal = useCallback(() => {
         setIsOpen(!modalIsOpen);
     }, [modalIsOpen]);
-console.log("test+"+useSelector(selectRetailerRequestData));
+    const converDate = (d) => {
+        const date = new Date(d);
+        return date.toLocaleDateString('en-US');
+    }
+    const handleLimit = (e) => {
+        setLimit(e.target.value);
+        setOffset(0)
+    }
+    const getTotalPage = () => {
+        const options = [];
+        for(let i = 1; i <= totalPage; i++){
+            const selected = ((offset+1)) == i ? true : false;
+            options.push(<option value={i} selected={selected}>{i}</option>);
+        }
+        return options
+    }
+    const handlePageNumber = (e) => {
+        setOffset((e.target.value - 1))
+    }
+    const incrementPageNumber = () => {
+        let page = offset+1
+        if(page < totalPage){
+            setOffset((page))
+        }
+    }
+    const decrementPageNumber = () => {
+        if(offset > 0)
+            setOffset((offset-1))
+    }
+    const handleSort = (column) => {
+        setSortColumn(column)
+    }
     return (
         <>
             <InviteRetailer
@@ -137,7 +136,7 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                     <div className="products_head-content">
                         <div className="title">
                             <h1>Requests for Access</h1>
-                            <div className="number">{data?.length}</div>
+                            <div className="number">{newData?.count}</div>
                         </div>
                         <div className="products_head-search">
                             <div className="search_form">
@@ -224,7 +223,7 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                 <thead className="nodark-bg sticky-thead ">
                                     <tr>
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={() => handleSort("full_name")}>
                                                 Retailer Name
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -232,7 +231,7 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={() => handleSort("created_at")}>
                                                 Date Requested
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -240,7 +239,7 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={() => handleSort("status_updated_on")}>
                                                 Date Approved/Declined
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -250,9 +249,6 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                         <th>
                                             <div className="title">
                                                 Status
-                                                <span className="sort">
-                                                    <img src={downArrow} />
-                                                </span>
                                             </div>
                                         </th>
                                         <th>
@@ -261,8 +257,8 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.length > 0 &&
-                                        data.map((item, i) => {
+                                    {newData?.count > 0 &&
+                                        newData.rows.map((item, i) => {
                                             return (
                                                 <tr key={i}>
                                                     <td>
@@ -274,7 +270,7 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                                                 >
                                                                     <img
                                                                         src={
-                                                                            item.productUrl
+                                                                            item.user.retailer_details.store_photo
                                                                         }
                                                                         className="avtar-img"
                                                                     />
@@ -284,38 +280,38 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                                                 <NavLink
                                                                     to={`/brand/retailer-profile/${item?.id}`}
                                                                 >
-                                                                    {item.name}
+                                                                    {item.user.full_name}
                                                                 </NavLink>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div className="txt">
-                                                            {item.date}
+                                                            {converDate(item.created_at)}
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        {item.approved_date}
+                                                        {item.status_updated_on ? converDate(item.status_updated_on) : "-"}
                                                     </td>
                                                     <td>
                                                         <span
                                                             className={`status-pill ${
-                                                                item.status ==
-                                                                'Pending'
+                                                                item.invite_status ==
+                                                                'pending'
                                                                     ? 'pill_pending'
-                                                                    : item.status ==
-                                                                      'Connected'
+                                                                    : item.invite_status ==
+                                                                      'connected'
                                                                     ? 'pill_connected'
-                                                                    : item.status ==
-                                                                      'Declined'
+                                                                    : item.invite_status ==
+                                                                      'declined'
                                                                     ? 'pill_declined'
-                                                                    : item.status ==
+                                                                    : item.invite_status ==
                                                                       ''
                                                                     ? 'pill_not_connected'
                                                                     : ''
                                                             }`}
                                                         >
-                                                            {item.status}
+                                                            {item.invite_status}
                                                         </span>
                                                     </td>
                                                     <td>
@@ -352,54 +348,7 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                             );
                                         })}
 
-                                    {data.length === 0 && (
-                                        // <tr>
-                                        //     <td colSpan="5">
-                                        //         <div className="content_area">
-                                        //             <div className="card-empty">
-                                        //                 <div className="card-empty_body">
-                                        //                     <div className="image mb-5">
-                                        //                         <picture>
-                                        //                             <img
-                                        //                                 src={
-                                        //                                     ProductCartEmpty
-                                        //                                 }
-                                        //                                 alt=""
-                                        //                             />
-                                        //                         </picture>
-                                        //                     </div>
-                                        //                     <h3>
-                                        //                         You currently have
-                                        //                         no requests for
-                                        //                         access from any
-                                        //                         retailer.
-                                        //                     </h3>
-                                        //                     <p>
-                                        //                         Invite your
-                                        //                         retailers to join
-                                        //                         ShopDot so they can
-                                        //                         start selling your
-                                        //                         products on their
-                                        //                         website.
-                                        //                     </p>
-                                        //                     <div className=''>
-                                        //                         <button
-                                        //                             className="button"
-                                        //                             onClick={() =>
-                                        //                                 props.setOpenInviteretailer(
-                                        //                                     !props.openInviteRetailer
-                                        //                                 )
-                                        //                             }
-                                        //                         >
-                                        //                             Invite Retailers
-                                        //                         </button>
-                                        //                         <button className="button button-dark">View Requests for Access</button>
-                                        //                     </div>
-                                        //                 </div>
-                                        //             </div>
-                                        //         </div>
-                                        //     </td>
-                                        // </tr>
+                                    {newData?.count === 0 && (
                                         <tr>
                                             <td colSpan="7" className="p-0">
                                                 <div className="content_area">
@@ -450,11 +399,11 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                 </tbody>
                             </table>
                         </div>
-                        {data.length > 0 && (
+                        {newData?.count > 0 && (
                             <div className="pagination_wrap mt-0">
                                 <div className="pagination br-top-none">
                                     <div className="pagination_per">
-                                        <select name="per" id="per">
+                                        <select name="per" id="per" onChange={handleLimit}>
                                             <option value="20" selected="">
                                                 20
                                             </option>
@@ -469,24 +418,19 @@ console.log("test+"+useSelector(selectRetailerRequestData));
                                         <div className="pagination-title">
                                             page
                                         </div>
-                                        <select name="per" id="per">
-                                            <option value="1" selected="">
-                                                1
-                                            </option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
+                                        <select name="per" id="per" onChange={handlePageNumber}>
+                                            {getTotalPage()}
                                         </select>
                                         <div className="pagination-title">
-                                            of 2
+                                            of {totalPage}
                                         </div>
-                                        <button className="pagination-arrow pagination-arrow-prev">
+                                        <button className="pagination-arrow pagination-arrow-prev" onClick={decrementPageNumber}>
                                             <img
                                                 className="icon"
                                                 src={LeftIcon}
                                             />
                                         </button>
-                                        <button className="pagination-arrow pagination-arrow-next">
+                                        <button className="pagination-arrow pagination-arrow-next" onClick={incrementPageNumber}>
                                             <img
                                                 className="icon"
                                                 src={RightIcon}
