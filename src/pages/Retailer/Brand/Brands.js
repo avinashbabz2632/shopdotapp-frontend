@@ -10,22 +10,24 @@ import { connectedTableData } from './utils';
 import { Link } from 'react-router-dom';
 import useWindowSize from '../../../hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
-import { getRetailerBrandProductsListAction } from '../../../actions/retailerActions';
-import { selectRetailerBrandProductsList } from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
+import { getRetailerBrandProductsListAction, getRetailerBrandValuesAction } from '../../../actions/retailerActions';
+import { selectRetailerBrandProductsList, selectRetailerBrandValuesList } from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
 import mailIcon from '../../../assets/images/icons/mail-icon.svg';
+import { getStatesAction } from '../../../actions/generalActions';
 
 function Brands() {
   const windowSize = useWindowSize();
   const dispatch = useDispatch();
   const productList = useSelector(selectRetailerBrandProductsList);
+  const brandValuesList = useSelector(selectRetailerBrandValuesList);
   const [data, setData] = useState(connectedTableData);
   const [dataClone, setDataClone] = useState(connectedTableData);
-  const [productsActiveFilterHeight, setProductsActiveFilterHeight] =
-    useState(0);
+  const [productsActiveFilterHeight, setProductsActiveFilterHeight] = useState(0);
   const [otherDivsHeight, setOtherDivsHeight] = useState(0);
   const [dynamicHeight, setDynamicHeight] = useState(10);
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
+  const [inviteStatus, setInviteStatus] = useState('All');
 
   const fetchProducts = () => {
     const requestBody = {
@@ -43,6 +45,8 @@ function Brands() {
 
   useEffect(() => {
     fetchProducts();
+    dispatch(getRetailerBrandValuesAction());
+    dispatch(getStatesAction(1));
   }, []);
 
   useEffect(() => {
@@ -150,7 +154,7 @@ function Brands() {
           <RetailerHeader />
           <main className="content">
             <section className="section products">
-              <SideFilter component={<SideBar />}></SideFilter>
+              <SideFilter component={<SideBar brandValuesList={brandValuesList} />}></SideFilter>
               <div className="products_content">
                 <div className="products_head">
                   <div className="products_head-content">

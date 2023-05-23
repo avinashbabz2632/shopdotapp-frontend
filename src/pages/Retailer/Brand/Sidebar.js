@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 
 const SideBar = forwardRef((props, ref) => {
+    const { brandValuesList } = props;
     return (
         <>
             <aside className="filters">
@@ -14,7 +15,8 @@ const SideBar = forwardRef((props, ref) => {
                                     </div>
                                     <div className="filter_form-items">
                                         <div className="subfilter_body">
-                                            <div className="checkbox checkbox--no-decor">
+                                            {(brandValuesList || []).map((bv, i) => {
+                                                return <div className="checkbox checkbox--no-decor" key={`${i}`}>
                                                 <label htmlFor="bv-1">
                                                     <input
                                                         type="checkbox"
@@ -22,142 +24,11 @@ const SideBar = forwardRef((props, ref) => {
                                                         name="bv"
                                                     />
                                                     <div className="checkbox-text">
-                                                        Not on Amazon
+                                                        {bv?.name}
                                                     </div>
                                                 </label>
                                             </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-2"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Made in USA
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-3">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-3"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Made in Canada
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-4">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-4"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Handmade
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-5">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-5"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Eco-friendly
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-6">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-6"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Fair Trade
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-7">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-7"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Social Good
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-8">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-8"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Women Owned
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-9">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-9"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Small Batch
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-10">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-10"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Organic
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-11">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-11"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        BIPOC Owned
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div className="checkbox checkbox--no-decor">
-                                                <label htmlFor="bv-12">
-                                                    <input
-                                                        type="checkbox"
-                                                        id="bv-12"
-                                                        name="bv"
-                                                    />
-                                                    <div className="checkbox-text">
-                                                        Size Inclusive
-                                                    </div>
-                                                </label>
-                                            </div>
+                                            })}
                                         </div>
                                     </div>
                                 </div>
