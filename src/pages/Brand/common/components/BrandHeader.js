@@ -154,7 +154,7 @@ function BrandHeader(props) {
                             className={`sublink ${subTab == 1 ? '' : 'link'}`}
                             onClick={() => props.changeSubTab('connected-retailer')}
                           >
-                            <Link to="/brand/connected-reatiler">
+                            <Link to="/brand/connected-retailer">
                               Connected Retailers
                             </Link>
                           </li>

@@ -8,11 +8,12 @@ import closeIcon from '../../../Brand/images/icons/icon-close.svg';
 import searchIcon from '../../images/icons/icon-search.svg';
 import MoreIcon from '../../images/icons/icon-more.svg';
 import { connectedData } from '../utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     selectCategoryViseData,
     selectStateViseData,
     selectSalesViseData,
+    selectRetailerRequestData,
 } from '../../../../redux/Brand/Retailer/retailerSelector';
 import ProductCartEmpty from '../../images/product-card-empty.svg';
 
@@ -20,93 +21,62 @@ import RightIcon from '../../images/icons/icon-chevron--right.svg';
 import LeftIcon from '../../images/icons/icon-chevron--left.svg';
 import InviteRetailer from '../../common/components/InviteRetailerHeaderModal';
 import DeclineRetailerModel from '../../common/components/DeclineRetailerModel';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+import { getRetailerRequestForAccess } from '../../../../actions/brandActions';
 
 export default function Connected(props) {
+    const dispatch = useDispatch()
     const { height } = props;
-    const [data, setData] = useState(connectedData);
-    const [dataClone, setDataClone] = useState(connectedData);
-    const categoryFilterData = useSelector(selectCategoryViseData);
-    const stateFilterData = useSelector(selectStateViseData);
-    const salesFilterData = useSelector(selectSalesViseData);
+    const data = useSelector(selectRetailerRequestData);
+    const [filterStatus, setFilterStatus] = useState('connected');
+    const [limit, setLimit] = useState(20);
+    const [offset, setOffset] = useState(0);
+    const [totalPage, setTotalPage] = useState(1);
     const [searchVal, setSearchVal] = useState('');
+    const [sortColumn, setSortColumn] = useState("full_name");
     const [modalIsOpen, setIsOpen] = useState(false);
     const [isDeclineModelOpen, setIsDeclineModelOpen] = useState(false);
 
-    useEffect(() => {
-        if (
-            categoryFilterData.length > 0 &&
-            stateFilterData.length > 0 &&
-            salesFilterData?.min !== '' &&
-            salesFilterData?.max !== ''
-        ) {
-            const newArr = connectedData.filter((item) => {
-                if (categoryFilterData.includes(item.retailer_category)) {
-                    return item;
-                }
-            });
-            const newArr1 = newArr.filter((item) => {
-                if (stateFilterData.includes(item.state)) {
-                    return item;
-                }
-            });
-            const newArr2 = newArr1.filter((ele) => {
-                if (
-                    ele?.all_time_sale >= salesFilterData?.min &&
-                    ele?.all_time_sale <= salesFilterData?.max
-                ) {
-                    return ele;
-                }
-            });
-            setData([...newArr2]);
-        } else if (categoryFilterData.length > 0) {
-            const newArr = connectedData.filter((item) => {
-                if (categoryFilterData.includes(item.retailer_category)) {
-                    return item;
-                }
-            });
-            setData([...newArr]);
-        } else if (stateFilterData.length > 0) {
-            const newArr = connectedData.filter((item) => {
-                if (stateFilterData.includes(item.state)) {
-                    return item;
-                }
-            });
-            setData([...newArr]);
-        } else if (salesFilterData?.min !== '') {
-            const newArr = connectedData.filter((ele) => {
-                if (ele?.all_time_sale >= salesFilterData?.min) {
-                    return ele;
-                }
-            });
-            setData([...newArr]);
-        } else if (salesFilterData?.max !== '') {
-            const newArr = connectedData.filter((ele) => {
-                if (ele?.all_time_sale <= salesFilterData?.max) {
-                    return ele;
-                }
-            });
-            setData([...newArr]);
-        } else {
-            setData([...connectedData]);
+    const fetchRetailerRequests = () => {
+        const query = {
+          paging: {
+            limit: limit,
+            offset: offset,
+          },
+          sort: [
+            ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
+            ["created_at",sortColumn == "created_at" ? "ASC" : "DESC"],
+            ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
+          ],
+        searchquery: {},
+        filter: [],
+        };
+        if(searchVal){
+            query.searchquery.search = searchVal
         }
-    }, [categoryFilterData, stateFilterData, salesFilterData]);
+        if(filterStatus != "all"){
+            query.filter.push({
+                "field": "invite_status",
+                "operator": "eq",
+                "value": filterStatus
+            })
+        }
+        dispatch(getRetailerRequestForAccess(query));
+      };
+    useEffect(() => {
+        fetchRetailerRequests()
+        const page = (data.count / limit);
+        if(page % 1 === 0){
+            setTotalPage(page)
+        }else{
+            setTotalPage(Math.floor(page)+1)
+        }
+        getTotalPage()
+    }, [filterStatus, searchVal, limit, offset, sortColumn]);
 
     const handleSearch = (e) => {
         const searchQuery = e.target.value?.toLowerCase();
-        if (searchQuery) {
-            const searchWords = searchQuery.split(' ');
-            const searchValue = dataClone.filter((ele) => {
-                return searchWords.every((word) => {
-                    return ele?.retailer_name?.toLowerCase().includes(word);
-                });
-            });
-            setData(searchValue);
-            setSearchVal(searchQuery);
-        } else {
-            setData(dataClone);
-            setSearchVal('');
-        }
+        setSearchVal(searchQuery);
     };
 
     const opencloseRetailerModal = useCallback(() => {
@@ -116,7 +86,34 @@ export default function Connected(props) {
     const opencloseDeclineRetailerModal = useCallback(() => {
         setIsDeclineModelOpen(!isDeclineModelOpen);
     }, [isDeclineModelOpen]);
-
+    const handleLimit = (e) => {
+        setLimit(e.target.value);
+        setOffset(0)
+    }
+    const getTotalPage = () => {
+        const options = [];
+        for(let i = 1; i <= totalPage; i++){
+            const selected = ((offset+1)) == i ? true : false;
+            options.push(<option value={i} selected={selected}>{i}</option>);
+        }
+        return options
+    }
+    const handlePageNumber = (e) => {
+        setOffset((e.target.value - 1))
+    }
+    const incrementPageNumber = () => {
+        let page = offset+1
+        if(page < totalPage){
+            setOffset((page))
+        }
+    }
+    const decrementPageNumber = () => {
+        if(offset > 0)
+            setOffset((offset-1))
+    }
+    const handleSort = (column) => {
+        setSortColumn(column)
+    }
     return (
         <>
             <InviteRetailer
@@ -133,7 +130,7 @@ export default function Connected(props) {
                     <div className="products_head-content">
                         <div className="title">
                             <h1>Connected Retailers</h1>
-                            <div className="number">{data?.length}</div>
+                            <div className="number">{data.rows?.length}</div>
                         </div>
                         <div className="products_head-search">
                             <div className="search_form">
@@ -228,8 +225,8 @@ export default function Connected(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data?.length > 0 &&
-                                        data.map((item, i) => {
+                                    {data.rows?.length > 0 &&
+                                        data.rows.map((item, i) => {
                                             return (
                                                 <tr key={i}>
                                                     <td>
@@ -241,7 +238,7 @@ export default function Connected(props) {
                                                                 >
                                                                     <img
                                                                         src={
-                                                                            item.productUrl
+                                                                            item.user.retailer_details.store_photo
                                                                         }
                                                                         className="avtar-img"
                                                                     />
@@ -252,7 +249,7 @@ export default function Connected(props) {
                                                                     to={`/brand/retailer-profile/${item?.id}`}
                                                                 >
                                                                     {
-                                                                        item.retailer_name
+                                                                        item.user.full_name
                                                                     }
                                                                 </NavLink>
                                                             </div>
@@ -278,7 +275,7 @@ export default function Connected(props) {
                                                     <td>{item.state}</td>
                                                     <td>
                                                         <span className="status-pill pill_connected w-auto">
-                                                            {item.status}
+                                                            {item.invite_status}
                                                         </span>
                                                     </td>
                                                     <td>
@@ -368,7 +365,7 @@ export default function Connected(props) {
                                                 </tr>
                                             );
                                         })}
-                                    {data.length === 0 && (
+                                    {data.count === 0 && (
                                         <tr>
                                             <td colSpan="7" className="p-0">
                                                 <div className="content_area">
@@ -409,11 +406,12 @@ export default function Connected(props) {
                                                                     Invite
                                                                     Retailers
                                                                 </button>
+                                                                <Link to="/brand/request-access">
                                                                 <button
                                                                     className="button dark"
                                                                     onClick={() =>
                                                                         props.changeSubTab(
-                                                                            'request'
+                                                                            'request-access'
                                                                         )
                                                                     }
                                                                 >
@@ -421,6 +419,8 @@ export default function Connected(props) {
                                                                     Requests for
                                                                     Access
                                                                 </button>
+                                                                </Link>
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
@@ -431,11 +431,11 @@ export default function Connected(props) {
                                 </tbody>
                             </table>
                         </div>
-                        {data.length > 0 && (
+                        {data.count > 0 && (
                             <div className="pagination_wrap mt-0">
                                 <div className="pagination br-top-none">
                                     <div className="pagination_per">
-                                        <select name="per" id="per">
+                                        <select name="per" id="per" onChange={handleLimit}>
                                             <option value="20" selected="">
                                                 20
                                             </option>
@@ -450,24 +450,19 @@ export default function Connected(props) {
                                         <div className="pagination-title">
                                             page
                                         </div>
-                                        <select name="per" id="per">
-                                            <option value="1" selected="">
-                                                1
-                                            </option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
+                                        <select name="per" id="per" onChange={handlePageNumber}>
+                                            {getTotalPage()}
                                         </select>
                                         <div className="pagination-title">
-                                            of 2
+                                            of {totalPage}
                                         </div>
-                                        <button className="pagination-arrow pagination-arrow-prev">
+                                        <button className="pagination-arrow pagination-arrow-prev" onClick={decrementPageNumber}>
                                             <img
                                                 className="icon"
                                                 src={LeftIcon}
                                             />
                                         </button>
-                                        <button className="pagination-arrow pagination-arrow-next">
+                                        <button className="pagination-arrow pagination-arrow-next" onClick={incrementPageNumber}>
                                             <img
                                                 className="icon"
                                                 src={RightIcon}
