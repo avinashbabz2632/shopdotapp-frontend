@@ -10,7 +10,7 @@ import {
   setBrandValues,
 } from '../redux/Brand/Profile/brandProfileSlice';
 import {setRetailerProfileSaveResult, setRetailerProfileSaving} from '../redux/Retailer/Profile/retailerProfileSlice';
-import { setRetailerBrandProductsList } from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import { setRetailerBrandProductsList, setRetailerBrandValuesList } from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 export function getRetailerProfileAction(id) {
   return async (dispatch) => {
@@ -107,5 +107,19 @@ export function updateNotificationAlertAction(data) {
           : 'Something went worng'
       );
     }
+  };
+}
+
+export function getRetailerBrandValuesAction() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.RETAILER_BRAND_VALUES}`
+      );
+      if ((response && response.data && response.data.code == 201) || response && response.data && response.data.code == 200) {
+        dispatch(setRetailerBrandValuesList(response.data.data));
+      } else {
+      }
+    } catch (err) {}
   };
 }

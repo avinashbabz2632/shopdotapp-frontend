@@ -10,14 +10,32 @@ import { connectedTableData } from './utils';
 import { Link } from 'react-router-dom';
 import useWindowSize from '../../../hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
-import { getRetailerBrandProductsListAction } from '../../../actions/retailerActions';
-import { selectRetailerBrandProductsList } from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
+import {
+  getRetailerBrandProductsListAction,
+  getRetailerBrandValuesAction,
+} from '../../../actions/retailerActions';
+import {
+  selectRetailerBrandProductsList,
+  selectRetailerBrandValuesFilter,
+  selectRetailerBrandValuesList,
+  selectRetailerInviteStatusFilter,
+  selectRetailerPricingFilter,
+  selectRetailerStateFilter,
+} from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
 import mailIcon from '../../../assets/images/icons/mail-icon.svg';
+import {
+  getCountriesAction,
+  getStatesAction,
+} from '../../../actions/generalActions';
+import { selectCountries } from '../../../redux/General/Countries/getCountriesSelector';
+import { selectStates } from '../../../redux/General/States/getStatesSelector';
+import { clearBrandValuesFilter } from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 function Brands() {
   const windowSize = useWindowSize();
   const dispatch = useDispatch();
   const productList = useSelector(selectRetailerBrandProductsList);
+  const countriesOption = useSelector(selectCountries);
   const [data, setData] = useState(connectedTableData);
   const [dataClone, setDataClone] = useState(connectedTableData);
   const [productsActiveFilterHeight, setProductsActiveFilterHeight] =
@@ -26,6 +44,45 @@ function Brands() {
   const [dynamicHeight, setDynamicHeight] = useState(10);
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
+  const [inviteStatus, setInviteStatus] = useState('All');
+  const brandValuesFilter = useSelector(selectRetailerBrandValuesFilter);
+  const pricingFilter = useSelector(selectRetailerPricingFilter);
+  const stateFilter = useSelector(selectRetailerStateFilter);
+  const [search, setSearch] = useState('');
+
+  const prepareFilter = () => {
+    const filterArr = [];
+    if (brandValuesFilter && brandValuesFilter.length > 0) {
+      const obj = {
+        field: 'brand_value',
+        operator: 'in',
+        value: brandValuesFilter,
+      };
+      filterArr.push(obj);
+    }
+    if (pricingFilter && pricingFilter.length > 0) {
+      const obj = {
+        field: 'retailer_pricing',
+        operator: 'in',
+        value: pricingFilter,
+      };
+      filterArr.push(obj);
+    }
+    if (stateFilter) {
+      const obj = { field: 'state', operator: 'eq', value: pricingFilter };
+      filterArr.push(obj);
+    }
+    if (inviteStatus) {
+      const obj = {
+        field: 'invite_status',
+        operator: 'eq',
+        value: inviteStatus.toLowerCase(),
+      };
+      filterArr.push(obj);
+    }
+    console.log('filterArr----', filterArr);
+    return filterArr;
+  };
 
   const fetchProducts = () => {
     const requestBody = {
@@ -34,16 +91,41 @@ function Brands() {
         offset: offset,
       },
       query: {
-        search: '',
+        search: search,
       },
-      filter: [],
+      filter: prepareFilter(),
     };
+    console.log('requestBody----', requestBody);
     dispatch(getRetailerBrandProductsListAction(requestBody));
   };
 
   useEffect(() => {
     fetchProducts();
+    dispatch(getRetailerBrandValuesAction());
+    dispatch(getCountriesAction());
   }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [brandValuesFilter, pricingFilter, stateFilter, inviteStatus]);
+
+  useEffect(() => {
+    if (search && search.length >= 3) {
+      fetchProducts();
+    } else if (search.length === 0) {
+      fetchProducts();
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (countriesOption && countriesOption.length > 0) {
+      const firstCountry = countriesOption[0];
+      const country_id = firstCountry.id;
+      dispatch(getStatesAction(country_id));
+    } else {
+      dispatch(getCountriesAction());
+    }
+  }, [countriesOption]);
 
   useEffect(() => {
     const headerHeight = document.querySelector('.header')?.offsetHeight;
@@ -67,25 +149,12 @@ function Brands() {
   }, [windowSize]);
 
   const handleSearch = (e) => {
-    if (e.target.value.trim()) {
-      const searchValue = dataClone.filter((ele) => {
-        return ele.brandName
-          .toLowerCase()
-          .includes(e.target.value.toLowerCase());
-      });
-      setData(searchValue);
-    } else {
-      setData(dataClone);
-    }
-  };
-  const productStatusViseFilter = (status) => {
-    const cell =
-      status !== 'All'
-        ? connectedTableData.filter((item) => item.status === status)
-        : connectedTableData;
-    setData(cell);
+    setSearch(e.target.value.trim());
   };
 
+  const productStatusViseFilter = (status) => {
+    setInviteStatus(status);
+  };
   const getProductCategory = (product) => {
     let text = 'NA';
     if (product && product.length > 0) {
@@ -143,6 +212,10 @@ function Brands() {
     return null;
   };
 
+  const _clearBrandValuesFilter = () => {
+    dispatch(clearBrandValuesFilter());
+  };
+
   return (
     <>
       <div className="sidebar-hidden">
@@ -164,7 +237,8 @@ function Brands() {
                           <input
                             type="text"
                             placeholder="Search brands"
-                            onChange={(e) => handleSearch(e)}
+                            value={search}
+                            onChange={handleSearch}
                           />
                         </div>
                         <button type="cancel" className="search_form-button">
@@ -182,13 +256,10 @@ function Brands() {
                       <a
                         href="#"
                         data-val="4"
-                        className="brand-type statusFilter"
-                        // className={`brand-type ${
-                        //     productFilter?.status ===
-                        //     'All'
-                        //         ? 'active'
-                        //         : ''
-                        // }`}
+                        // className="brand-type statusFilter"
+                        className={`brand-type ${
+                          inviteStatus === 'All' ? 'active' : ''
+                        }`}
                         onClick={() => productStatusViseFilter('All')}
                       >
                         All
@@ -197,12 +268,9 @@ function Brands() {
                         href="#"
                         data-val="1"
                         className="brand-type statusFilter"
-                        // className={`brand-type ${
-                        //     productFilter?.status ===
-                        //     'Connected'
-                        //         ? 'active'
-                        //         : ''
-                        // }`}
+                        className={`brand-type ${
+                          inviteStatus === 'Connected' ? 'active' : ''
+                        }`}
                         onClick={() => productStatusViseFilter('Connected')}
                       >
                         Connected
@@ -211,12 +279,9 @@ function Brands() {
                         href="#"
                         data-val="3"
                         className="brand-type statusFilter"
-                        // className={`brand-type ${
-                        //     productFilter?.status ===
-                        //     'Pending'
-                        //         ? 'active'
-                        //         : ''
-                        // }`}
+                        className={`brand-type ${
+                          inviteStatus === 'Pending' ? 'active' : ''
+                        }`}
                         onClick={() => productStatusViseFilter('Pending')}
                       >
                         Pending
@@ -225,12 +290,9 @@ function Brands() {
                         href="#"
                         data-val="0"
                         className="brand-type statusFilter"
-                        // className={`brand-type ${
-                        //     productFilter?.status ===
-                        //     'Not connected'
-                        //         ? 'active'
-                        //         : ''
-                        // }`}
+                        className={`brand-type ${
+                          inviteStatus === 'Not Connected' ? 'active' : ''
+                        }`}
                         onClick={() => productStatusViseFilter('Not Connected')}
                       >
                         Not connected
@@ -239,12 +301,9 @@ function Brands() {
                         href="#"
                         data-val="2"
                         className="brand-type statusFilter"
-                        // className={`brand-type ${
-                        //     productFilter?.status ===
-                        //     'all'
-                        //         ? 'active'
-                        //         : ''
-                        // }`}
+                        className={`brand-type ${
+                          inviteStatus === 'Declined' ? 'active' : ''
+                        }`}
                         onClick={() => productStatusViseFilter('Declined')}
                       >
                         Declined
@@ -253,28 +312,33 @@ function Brands() {
                   </div>
                 </div>
                 <div className="products_body">
-                  <div className="products_active-filters">
-                    <div className="products_active-filter">
-                      <div className="txt">
-                        <b>Brand Values:</b> Not on Amazon
-                      </div>
-                      <button className="products_active-remove">
-                        <div className="icon">
-                          <img
-                            src={closeIcon}
-                            alt=""
-                            style={{
-                              marginBottom: '8px',
-                            }}
-                          />
+                  {brandValuesFilter && brandValuesFilter.length > 0 && (
+                    <div className="products_active-filters">
+                      <div className="products_active-filter">
+                        <div className="txt">
+                          <b>Brand Values:</b> {brandValuesFilter.join(',')}
                         </div>
+                        <button className="products_active-remove">
+                          <div className="icon">
+                            <img
+                              src={closeIcon}
+                              alt=""
+                              style={{
+                                marginBottom: '8px',
+                              }}
+                            />
+                          </div>
+                        </button>
+                      </div>
+
+                      <button
+                        className="products_active-remove-all"
+                        onClick={_clearBrandValuesFilter}
+                      >
+                        Clear Filters
                       </button>
                     </div>
-
-                    <button className="products_active-remove-all">
-                      Clear Filters
-                    </button>
-                  </div>
+                  )}
                   <div
                     className="brands-table_wrap dynamic_height"
                     // style={{ height: 100 }}
@@ -391,7 +455,7 @@ function Brands() {
                               <td>
                                 <div className="buttons">
                                   {showConnectButton(invite_status)}
-                                  
+
                                   <button className="button message-brand">
                                     <img src={mailIcon} />
                                   </button>
