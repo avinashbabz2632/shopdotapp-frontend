@@ -23,12 +23,13 @@ import InviteRetailer from '../../common/components/InviteRetailerHeaderModal';
 import DeclineRetailerModel from '../../common/components/DeclineRetailerModel';
 import { Link, NavLink } from 'react-router-dom';
 import { getRetailerRequestForAccess } from '../../../../actions/brandActions';
+import { getCountriesAction, getStatesAction } from '../../../../actions/generalActions';
 
 export default function Connected(props) {
     const dispatch = useDispatch()
     const { height } = props;
     const data = useSelector(selectRetailerRequestData);
-    const [filterStatus, setFilterStatus] = useState('connected');
+    const states = useSelector(selectStateViseData);
     const [limit, setLimit] = useState(20);
     const [offset, setOffset] = useState(0);
     const [totalPage, setTotalPage] = useState(1);
@@ -37,7 +38,7 @@ export default function Connected(props) {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [isDeclineModelOpen, setIsDeclineModelOpen] = useState(false);
 
-    const fetchRetailerRequests = () => {
+    const fetchRetailerRequests = (props) => {
         const query = {
           paging: {
             limit: limit,
@@ -49,17 +50,16 @@ export default function Connected(props) {
             ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
           ],
         searchquery: {},
-        filter: [],
+        filter: [
+            {
+                "field": "invite_status",
+                "operator": "eq",
+                "value": "connected"
+            }
+        ],
         };
         if(searchVal){
             query.searchquery.search = searchVal
-        }
-        if(filterStatus != "all"){
-            query.filter.push({
-                "field": "invite_status",
-                "operator": "eq",
-                "value": filterStatus
-            })
         }
         dispatch(getRetailerRequestForAccess(query));
       };
@@ -72,7 +72,8 @@ export default function Connected(props) {
             setTotalPage(Math.floor(page)+1)
         }
         getTotalPage()
-    }, [filterStatus, searchVal, limit, offset, sortColumn]);
+        // dispatch(getStatesAction(1))
+    }, [searchVal, limit, offset, sortColumn]);
 
     const handleSearch = (e) => {
         const searchQuery = e.target.value?.toLowerCase();
@@ -409,11 +410,6 @@ export default function Connected(props) {
                                                                 <Link to="/brand/request-access">
                                                                 <button
                                                                     className="button dark"
-                                                                    onClick={() =>
-                                                                        props.changeSubTab(
-                                                                            'request-access'
-                                                                        )
-                                                                    }
                                                                 >
                                                                     View
                                                                     Requests for

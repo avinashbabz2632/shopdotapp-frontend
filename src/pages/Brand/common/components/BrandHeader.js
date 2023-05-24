@@ -75,7 +75,7 @@ function BrandHeader(props) {
   const opencloseRetailerModal = useCallback(() => {
     setIsOpen(!modalIsOpen);
   }, [modalIsOpen]);
-
+console.log(props);
   return (
     <>
       <header className="header_main mp-header">
@@ -152,17 +152,15 @@ function BrandHeader(props) {
                         <ul>
                           <li
                             className={`sublink ${subTab == 1 ? '' : 'link'}`}
-                            onClick={() => props.changeSubTab('connected-retailer')}
+                            onClick={() => props.changeSubTab(1)}
                           >
                             <Link to="/brand/connected-retailer">
                               Connected Retailers
                             </Link>
                           </li>
                           <li
-                            className={`sublink ${
-                              subTab == 2 ? 'active' : 'link'
-                            }`}
-                            onClick={() => props.changeSubTab('request-access')}
+                            className={`sublink ${subTab == 2 ? 'active' : 'link'}`}
+                            onClick={() => props.changeSubTab(2)}
                           >
                             <Link to="/brand/request-access">
                               Requests for Access
