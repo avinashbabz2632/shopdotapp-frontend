@@ -168,7 +168,6 @@ export default function Shipping() {
         shippingDetailsRes?.shippingDetails?.id
       )
     );
-    reset();
   };
 
   const formatCurrency = (value) => {

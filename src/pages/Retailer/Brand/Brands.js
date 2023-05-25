@@ -29,12 +29,14 @@ import {
 } from '../../../actions/generalActions';
 import { selectCountries } from '../../../redux/General/Countries/getCountriesSelector';
 import { selectStates } from '../../../redux/General/States/getStatesSelector';
-import { clearBrandValuesFilter } from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import { clearBrandValuesFilter, clearPricingFilter, clearStateFilter } from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 function Brands() {
   const windowSize = useWindowSize();
   const dispatch = useDispatch();
-  const productList = useSelector(selectRetailerBrandProductsList);
+  const products = useSelector(selectRetailerBrandProductsList);
+  const {count, rows = []} = products || {};
+  const productList = rows;
   const countriesOption = useSelector(selectCountries);
   const [data, setData] = useState(connectedTableData);
   const [dataClone, setDataClone] = useState(connectedTableData);
@@ -56,7 +58,7 @@ function Brands() {
       const obj = {
         field: 'brand_value',
         operator: 'in',
-        value: brandValuesFilter,
+        value: brandValuesFilter.map(e => e.id.toString()),
       };
       filterArr.push(obj);
     }
@@ -69,10 +71,10 @@ function Brands() {
       filterArr.push(obj);
     }
     if (stateFilter) {
-      const obj = { field: 'state', operator: 'eq', value: pricingFilter };
+      const obj = { field: 'state', operator: 'eq', value: stateFilter };
       filterArr.push(obj);
     }
-    if (inviteStatus) {
+    if (inviteStatus !== 'All') {
       const obj = {
         field: 'invite_status',
         operator: 'eq',
@@ -80,7 +82,6 @@ function Brands() {
       };
       filterArr.push(obj);
     }
-    console.log('filterArr----', filterArr);
     return filterArr;
   };
 
@@ -90,12 +91,11 @@ function Brands() {
         limit: limit,
         offset: offset,
       },
-      query: {
-        search: search,
-      },
       filter: prepareFilter(),
     };
-    console.log('requestBody----', requestBody);
+    if(search.length > 0) {
+      requestBody.query = {search};
+    }
     dispatch(getRetailerBrandProductsListAction(requestBody));
   };
 
@@ -212,8 +212,16 @@ function Brands() {
     return null;
   };
 
-  const _clearBrandValuesFilter = () => {
-    dispatch(clearBrandValuesFilter());
+  const _clearBrandValuesFilter = (type) => {
+    if(type === 'brand_values'){
+      dispatch(clearBrandValuesFilter());
+    } else if (type === 'pricing') {
+      dispatch(clearPricingFilter());
+    } else if(type === 'state') {
+      dispatch(clearStateFilter());
+    } else if (type === 'invite_status') {
+      setInviteStatus('All');
+    }
   };
 
   return (
@@ -229,7 +237,7 @@ function Brands() {
                   <div className="products_head-content">
                     <div className="title">
                       <h1>Brands</h1>
-                      <div className="number">{productList.length}</div>
+                      <div className="number">{count}</div>
                     </div>
                     <div className="products_head-search">
                       <form className="search_form">
@@ -316,7 +324,7 @@ function Brands() {
                     <div className="products_active-filters">
                       <div className="products_active-filter">
                         <div className="txt">
-                          <b>Brand Values:</b> {brandValuesFilter.join(',')}
+                          <b>Brand Values:</b> {brandValuesFilter.map(e => e.name).join(',')}
                         </div>
                         <button className="products_active-remove">
                           <div className="icon">
@@ -333,7 +341,88 @@ function Brands() {
 
                       <button
                         className="products_active-remove-all"
-                        onClick={_clearBrandValuesFilter}
+                        onClick={() => _clearBrandValuesFilter('brand_values')}
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
+                  )}
+                  {pricingFilter && pricingFilter.length > 0 && (
+                    <div className="products_active-filters">
+                      <div className="products_active-filter">
+                        <div className="txt">
+                          <b>Pricing:</b> {pricingFilter.map(e => e).join(',')}
+                        </div>
+                        <button className="products_active-remove">
+                          <div className="icon">
+                            <img
+                              src={closeIcon}
+                              alt=""
+                              style={{
+                                marginBottom: '8px',
+                              }}
+                            />
+                          </div>
+                        </button>
+                      </div>
+
+                      <button
+                        className="products_active-remove-all"
+                        onClick={() => _clearBrandValuesFilter('pricing')}
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
+                  )}
+                  {stateFilter && (
+                    <div className="products_active-filters">
+                      <div className="products_active-filter">
+                        <div className="txt">
+                          <b>State:</b> {stateFilter}
+                        </div>
+                        <button className="products_active-remove">
+                          <div className="icon">
+                            <img
+                              src={closeIcon}
+                              alt=""
+                              style={{
+                                marginBottom: '8px',
+                              }}
+                            />
+                          </div>
+                        </button>
+                      </div>
+
+                      <button
+                        className="products_active-remove-all"
+                        onClick={() => _clearBrandValuesFilter('state')}
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
+                  )}
+                  {inviteStatus && inviteStatus !== 'All' && (
+                    <div className="products_active-filters">
+                      <div className="products_active-filter">
+                        <div className="txt">
+                          <b>Invite Status:</b> {inviteStatus}
+                        </div>
+                        <button className="products_active-remove">
+                          <div className="icon">
+                            <img
+                              src={closeIcon}
+                              alt=""
+                              style={{
+                                marginBottom: '8px',
+                              }}
+                            />
+                          </div>
+                        </button>
+                      </div>
+
+                      <button
+                        className="products_active-remove-all"
+                        onClick={() => _clearBrandValuesFilter('invite_status')}
                       >
                         Clear Filters
                       </button>
