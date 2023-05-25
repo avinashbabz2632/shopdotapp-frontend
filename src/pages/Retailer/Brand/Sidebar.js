@@ -33,13 +33,12 @@ const SideBar = forwardRef((props, ref) => {
 
   const handleBrandValuesFilter = (checked, value) => {
     const brandValuesCopy = [...brandValuesFilter];
+    const bvItem = brandValuesList.find(bv => bv.id == value);
     if (checked) {
-      brandValuesCopy.push(parseInt(value));
+      brandValuesCopy.push(bvItem);
       dispatch(setRetailerBrandValuesFilter(brandValuesCopy));
     } else {
-      const filter = brandValuesCopy.filter(
-        (catId) => catId !== parseInt(value)
-      );
+      const filter = brandValuesCopy.filter((bv) => bv.id !== parseInt(value));
       dispatch(setRetailerBrandValuesFilter(filter));
     }
   };
@@ -57,7 +56,6 @@ const SideBar = forwardRef((props, ref) => {
 
   const handleStateFilter = (e) => {
     const value = e.target.value;
-    console.log('state-value--', value);
     dispatch(setRetailerStateFilter(value));
   };
 

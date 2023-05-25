@@ -43,6 +43,9 @@ const retailerBrandProductsSlice = createSlice({
     clearPricingFilter: (state) => {
       state.retailerPricingFilter = [];
     },
+    clearStateFilter: (state) => {
+      state.retailerStateFilter = '';
+    }
   },
 });
 
@@ -58,6 +61,7 @@ export const {
   resetAllFilter,
   clearBrandValuesFilter,
   clearPricingFilter,
+  clearStateFilter,
 } = retailerBrandProductsSlice.actions;
 
 /**

@@ -77,11 +77,11 @@ export function getRetailerBrandProductsListAction(data) {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        `${API_END_POINT.RETAILER_BRANDS}`
+        `${API_END_POINT.RETAILER_BRANDS}`,data
       );
       if (response && response.data && response.data.code == 201) {
 
-        dispatch(setRetailerBrandProductsList(response?.data?.data?.rows));
+        dispatch(setRetailerBrandProductsList(response?.data?.data));
       }
     } catch (err) {
       toast.error(
