@@ -24,20 +24,19 @@ import InviteRetailer from '../../common/components/InviteRetailerHeaderModal';
 import DeclineRetailerModel from '../../common/components/DeclineRetailerModel';
 import { Link, NavLink } from 'react-router-dom';
 import { getConnectedRetailer } from '../../../../actions/brandActions';
-import { getCountriesAction, getStatesAction } from '../../../../actions/generalActions';
 
 export default function Connected(props) {
     const dispatch = useDispatch()
     const { height } = props;
     const data = useSelector(selectConnectedRetailerData);
-    const states = useSelector(selectStateViseData);
     const [limit, setLimit] = useState(20);
     const [offset, setOffset] = useState(0);
     const [totalPage, setTotalPage] = useState(1);
     const [searchVal, setSearchVal] = useState('');
     const [sortColumn, setSortColumn] = useState("full_name");
     const [modalIsOpen, setIsOpen] = useState(false);
-    const [filterCategories, setFilterCategories] = useState([]);
+    const filterCategories = useSelector(selectCategoryViseData);
+    const filterStates = useSelector(selectStateViseData);
     const [isDeclineModelOpen, setIsDeclineModelOpen] = useState(false);
 
     const fetchRetailerRequests = (props) => {
@@ -46,11 +45,6 @@ export default function Connected(props) {
             limit: limit,
             offset: offset,
           },
-          sort: [
-            ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
-            ["created_at",sortColumn == "created_at" ? "ASC" : "DESC"],
-            ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
-          ],
         query: {},
         filter: [
             {
@@ -63,6 +57,20 @@ export default function Connected(props) {
         if(searchVal){
             query.query.search = searchVal
         }
+        if(filterCategories.length > 0){
+            query.filter.push({
+                "field": "retailer_categories",
+                "operator": "in",
+                "value": filterCategories
+            })
+        }
+        if(filterStates.length > 0){
+            query.filter.push({
+                "field": "state",
+                "operator": "in",
+                "value": filterStates
+            })
+        }
         dispatch(getConnectedRetailer(query));
       };
     useEffect(() => {
@@ -74,14 +82,13 @@ export default function Connected(props) {
             setTotalPage(Math.floor(page)+1)
         }
         getTotalPage()
-        // dispatch(getStatesAction(1))
-    }, [searchVal, limit, offset, sortColumn]);
+    }, [searchVal, limit, offset, sortColumn, filterCategories, filterStates]);
 
     const handleSearch = (e) => {
         const searchQuery = e.target.value?.toLowerCase();
         setSearchVal(searchQuery);
     };
-
+console.log(filterStates);
     const opencloseRetailerModal = useCallback(() => {
         setIsOpen(!modalIsOpen);
     }, [modalIsOpen]);
