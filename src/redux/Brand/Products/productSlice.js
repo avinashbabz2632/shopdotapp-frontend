@@ -1,18 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  productFilter: {
-    productCatFilter: [],
-    productTagFilter: [],
-    stockFilter: [],
-    statusViseFilter: [],
-  },
   productCatFilter: [],
   productTagFilter: [],
   stockFilter: [],
-  productStatusFilter: [],
-  productCatOptions: ['Baby & Kids', 'Men', 'Women'],
-  productTagOptions: ['Chips', 'Summer', 'Summer Activities', 'Summer Toys'],
+  productStatusFilter: '',
+  productCatOptions: [],
+  productTagOptions: [],
   stockOptions: ['< 10 units', '11-50 units', '> 50 units'],
   brandProductList: [],
   productDetails: null,
@@ -29,9 +23,6 @@ const orderSlice = createSlice({
   name: 'orderSlice',
   initialState,
   reducers: {
-    setProductFilter: (state, action) => {
-      state.productFilter = action.payload;
-    },
     resetToInitial: (state) => {
       state.productCatFilter = [];
       state.productTagFilter = [];
@@ -100,7 +91,6 @@ const orderSlice = createSlice({
  * Actions
  */
 export const {
-  setProductFilter,
   resetToInitial,
   productTagClear,
   productCatClear,

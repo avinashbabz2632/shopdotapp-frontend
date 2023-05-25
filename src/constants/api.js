@@ -39,10 +39,13 @@ export const SYNC_SINGLE_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
+export const RETAILER_REQUEST = `${BASE_URL}/brand/retailer-requests`;
+export const UPDATE_RETAILER_REQUEST = `${BASE_URL}/retailer/request-connection/update`;
 
 // Retailer
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
 export const RETAILER_BILLING = `${BASE_URL}/retailer/billing`;
+export const RETAILER_BRANDS = `${BASE_URL}/retailer/brands`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;

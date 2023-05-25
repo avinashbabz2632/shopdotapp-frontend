@@ -61,7 +61,7 @@ export default function EditProductDetails() {
   const [inputValue, setInputValue] = useState('');
   const [description, setDescription] = useState('');
   const [activeVariants] = useState(
-    product.productDetails.product_variants
+    product?.productDetails?.product_variants
   );
   const [selectedProductCatId, setSelectedProductCatId] = useState('');
   const [selectedProductSubCatId, setSelectedProductSubCatId] = useState('');
@@ -77,7 +77,6 @@ export default function EditProductDetails() {
         variantObj[`variants.${i}.wsp`] = pv.wsp;
       });
     }
-    // console.log('variants-wsp----', variantObj);
     return variantObj;
   };
 
@@ -108,7 +107,6 @@ export default function EditProductDetails() {
         variantObj[`variants.${i}.msrp`] = pv.price;
       });
     }
-    // console.log('variants-msrp----', variantObj);
     return variantObj;
   };
 
@@ -118,7 +116,6 @@ export default function EditProductDetails() {
     ...variantsWSPDefaultValues(),
     ...variantsMSRPDefaultValues(),
   };
-  console.log('defaultValues--defaultValues----', defaultValues);
 
   const {
     register,

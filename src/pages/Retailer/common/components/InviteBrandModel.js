@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import closeBlackIcon from '../../../Brand/images/icons/close-icon.svg';
+import {useSelector} from 'react-redux';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 function InviteBrand(props) {
-    const [retailerMail, setRetailerMail] = useState('');
+    const userDetails = useSelector(selectUserDetails);
 
     const copyRetilerInfo = (copyType) => {
         if (copyType == 'email') {
-            navigator.clipboard.writeText(retailerMail);
-            setRetailerMail('');
+            navigator.clipboard.writeText(userDetails?.referal_url);
         } else {
             const text =
                 document.getElementsByClassName('emailTextItem')[0].innerText;
-
             navigator.clipboard.writeText(text);
         }
     };
@@ -42,11 +42,9 @@ function InviteBrand(props) {
                                 <div className="copyLinkArea">
                                     <input
                                         type="email"
-                                        value={retailerMail}
+                                        value={userDetails?.referal_url}
                                         placeholder="shopdotapp.com/signup/brandshopxyz"
-                                        onChange={(e) =>
-                                            setRetailerMail(e.target.value)
-                                        }
+                                        disabled
                                     />
                                     <button
                                         type="button"

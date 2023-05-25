@@ -14,7 +14,12 @@ import {
 import RemoveModel from '../../common/components/RemoveModel';
 import remove from '../../../../assets/images/icons/icon-remove.svg';
 import Add from '../../../../assets/images/icons/icon-plus.svg';
-import { addBillingDetailsAction } from '../../../../actions/retailerActions';
+import {
+  addBillingDetailsAction,
+  getBillingAction,
+} from '../../../../actions/retailerActions';
+import { ToastContainer, toast } from 'react-toastify';
+import { isEmpty } from 'lodash';
 
 export default function Billing() {
   const [addCredit, setAddCredit] = useState(false);
@@ -22,6 +27,8 @@ export default function Billing() {
   const [isConfirmModel, setIsConfirmModel] = useState(false);
   const [isRemoveModel, setIsRemoveModel] = useState(false);
   const [dataArray, setDataArray] = useState([]);
+  const [showError, setShowError] = useState('');
+  const [billList, setBillList] = useState([]);
   const {
     register,
     handleSubmit,
@@ -34,23 +41,41 @@ export default function Billing() {
     resolver: yupResolver(retailerBillingValidationSchema),
   });
 
+  useEffect(() => {
+    initialAction();
+  }, []);
+
+  const initialAction = async () => {
+    const response = await getBillingAction();
+  };
+
   const onSubmit = async (data) => {
     const newDataArray = [...dataArray, data];
     console.log(data, 'data');
     const formData = {
       legal_name: data.nameOnCard,
       cardNumber: data.cardNumber,
-      cvv: data.nameOnCard,
+      cvv: data.cvv,
       brand: 'VISA',
-      expiryMonth: data.nameOnCard,
-      expiryYear: data.nameOnCard,
-      address_line_1: data.nameOnCard,
-      city: data.nameOnCard,
-      state: data.nameOnCard,
-      zip: data.nameOnCard,
+      expiryMonth: '08',
+      expiryYear: '2023',
+      address_line_1: data.addressLine1,
+      city: data.city,
+      state: data.state.value,
+      zip: data.zip,
       billing_method: 'CARD',
     };
-    // const response = await addBillingDetailsAction();
+    const response = await addBillingDetailsAction(formData);
+    if (response.status === 200) {
+      setAddCredit(false);
+      setShowError('');
+    } else {
+      setShowError(
+        response && response.data && response.data.errors
+          ? response.data.errors
+          : 'Something went worng'
+      );
+    }
     // setDataArray(newDataArray);
     // reset();
     // setAddCredit(false);
@@ -75,13 +100,18 @@ export default function Billing() {
             <div className="billing_info">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <h2 className="heading">Add New Credit Card</h2>
-                <div className="alert alert-error sd_alert-error" role="alert">
-                  <img src={info} className="info-icon" />
-                  <div>
-                    Lorem ipsum, or lipsum as it is sometimes known, is dummy
-                    text used.
+                {!isEmpty(showError) ? (
+                  <div
+                    className="alert alert-error sd_alert-error"
+                    role="alert"
+                  >
+                    <img src={info} className="info-icon" />
+
+                    <span>{showError}</span>
                   </div>
-                </div>
+                ) : (
+                  <div />
+                )}
                 <div className="form-area">
                   <div className="form-input return_select-item">
                     <div className="radio-data-info">
@@ -274,6 +304,7 @@ export default function Billing() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   ) : (
     <>
@@ -420,6 +451,7 @@ export default function Billing() {
         modalOpen={isRemoveModel}
         closeRemoveModal={handleRemoveModelClose}
       />
+      <ToastContainer />
     </>
   );
 }

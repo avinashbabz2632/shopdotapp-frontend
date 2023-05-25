@@ -427,3 +427,28 @@ export function updatePreferences(data) {
     }
   };
 }
+
+export async function getRetailerRequestAction(data) {
+  try {
+    const response = await axios.post(API_END_POINT.RETAILER_REQUEST, data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
+
+export async function respondRetailerRequestAction(data) {
+  try {
+    const response = await axios.post(
+      API_END_POINT.UPDATE_RETAILER_REQUEST,
+      data
+    );
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
