@@ -13,7 +13,10 @@ import {
   setRetailerProfileSaveResult,
   setRetailerProfileSaving,
 } from '../redux/Retailer/Profile/retailerProfileSlice';
-import { setRetailerBrandProductsList } from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import {
+  setRetailerBrandProductsList,
+  setRetailerBrandValuesList,
+} from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 export function getRetailerProfileAction(id) {
   return async (dispatch) => {
@@ -87,6 +90,7 @@ export async function addBillingDetailsAction(data) {
     return err.response;
   }
 }
+
 export async function getBillingAction() {
   try {
     const response = await axios.get(API_END_POINT.RETAILER_BILLING);
@@ -112,5 +116,45 @@ export function getRetailerBrandProductsListAction(data) {
           : 'Something went worng'
       );
     }
+  };
+}
+
+export function updateNotificationAlertAction(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.patch(
+        API_END_POINT.RETAILER_NOTIFICATION_ALERT,
+        data
+      );
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
+        toast.success('Notification Alert Updated');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getRetailerBrandValuesAction() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.RETAILER_BRAND_VALUES}`
+      );
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
+        dispatch(setRetailerBrandValuesList(response.data.data));
+      } else {
+      }
+    } catch (err) {}
   };
 }
