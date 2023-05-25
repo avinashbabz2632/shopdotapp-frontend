@@ -47,11 +47,11 @@ export default function RequestAccess(props) {
             ["created_at",sortColumn == "created_at" ? "ASC" : "DESC"],
             ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
           ],
-        searchquery: {},
+        query: {},
         filter: [],
         };
         if(searchVal){
-            query.searchquery.search = searchVal
+            query.query.search = searchVal
         }
         if(filterStatus != "all"){
             query.filter.push({

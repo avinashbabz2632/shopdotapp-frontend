@@ -19,7 +19,6 @@ import useWindowSize from '../../../hooks/useWindowSize';
 
 export default function Retailer(props) {
     const childRef = useRef();
-    const windowSize = useWindowSize();
     const [height, setHeight] = useState(0);
     const [subTab, setSubTab] = useState(1);
     const [openSideFilter, setOpenSideFilter] = useState(true);
@@ -28,10 +27,11 @@ export default function Retailer(props) {
 
     const handleOpenCloseFilter = () => {
         setOpenCloseFilter(!openCloseFilter);
-    };  
+    };
     const changeSubTab = useCallback((s) => {
         setSubTab(s);
       }, [subTab]);
+      
     useLayoutEffect(() => {
         function updateHeight() {
             const headerHeight =
@@ -132,6 +132,7 @@ export default function Retailer(props) {
 
                                 <Connected
                                     height={height}
+                                    changeSubTab={changeSubTab}
                                 />
                             </>
                         )}

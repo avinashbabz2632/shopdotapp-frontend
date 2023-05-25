@@ -49,7 +49,7 @@ export default function Connected(props) {
             ["created_at",sortColumn == "created_at" ? "ASC" : "DESC"],
             ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
           ],
-        searchquery: {},
+        query: {},
         filter: [
             {
                 "field": "invite_status",
@@ -59,7 +59,7 @@ export default function Connected(props) {
         ],
         };
         if(searchVal){
-            query.searchquery.search = searchVal
+            query.query.search = searchVal
         }
         dispatch(getRetailerRequestForAccess(query));
       };
@@ -410,6 +410,7 @@ export default function Connected(props) {
                                                                 <Link to="/brand/request-access">
                                                                 <button
                                                                     className="button dark"
+                                                                    onClick={() => props.changeSubTab(2)}
                                                                 >
                                                                     View
                                                                     Requests for
