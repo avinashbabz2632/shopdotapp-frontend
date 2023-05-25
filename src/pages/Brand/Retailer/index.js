@@ -63,6 +63,7 @@ export default function Retailer(props) {
             <div className="wrapper">
                 <BrandHeader
                     tab={3}
+                    subTabs={subTab}
                     changeSubTab={changeSubTab}
                 />
                 <main className="content mp-content">

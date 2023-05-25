@@ -133,7 +133,7 @@ console.log(props);
                     <div className="dropdown_header">
                       <div className="dropdown_header-chevron">
                         <NavLink
-                          to="/brand/retailer"
+                          to="/brand/connected-retailer"
                           className={({ isActive }) =>
                             `${isActive ? 'active' : ''} menu_link`
                           }

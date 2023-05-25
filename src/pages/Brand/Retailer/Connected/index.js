@@ -14,6 +14,7 @@ import {
     selectStateViseData,
     selectSalesViseData,
     selectRetailerRequestData,
+    selectConnectedRetailerData,
 } from '../../../../redux/Brand/Retailer/retailerSelector';
 import ProductCartEmpty from '../../images/product-card-empty.svg';
 
@@ -22,13 +23,13 @@ import LeftIcon from '../../images/icons/icon-chevron--left.svg';
 import InviteRetailer from '../../common/components/InviteRetailerHeaderModal';
 import DeclineRetailerModel from '../../common/components/DeclineRetailerModel';
 import { Link, NavLink } from 'react-router-dom';
-import { getRetailerRequestForAccess } from '../../../../actions/brandActions';
+import { getConnectedRetailer } from '../../../../actions/brandActions';
 import { getCountriesAction, getStatesAction } from '../../../../actions/generalActions';
 
 export default function Connected(props) {
     const dispatch = useDispatch()
     const { height } = props;
-    const data = useSelector(selectRetailerRequestData);
+    const data = useSelector(selectConnectedRetailerData);
     const states = useSelector(selectStateViseData);
     const [limit, setLimit] = useState(20);
     const [offset, setOffset] = useState(0);
@@ -36,6 +37,7 @@ export default function Connected(props) {
     const [searchVal, setSearchVal] = useState('');
     const [sortColumn, setSortColumn] = useState("full_name");
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [filterCategories, setFilterCategories] = useState([]);
     const [isDeclineModelOpen, setIsDeclineModelOpen] = useState(false);
 
     const fetchRetailerRequests = (props) => {
@@ -61,11 +63,11 @@ export default function Connected(props) {
         if(searchVal){
             query.query.search = searchVal
         }
-        dispatch(getRetailerRequestForAccess(query));
+        dispatch(getConnectedRetailer(query));
       };
     useEffect(() => {
         fetchRetailerRequests()
-        const page = (data.count / limit);
+        const page = data ? (data.count / limit) : 0;
         if(page % 1 === 0){
             setTotalPage(page)
         }else{
@@ -115,6 +117,14 @@ export default function Connected(props) {
     const handleSort = (column) => {
         setSortColumn(column)
     }
+    const handleRetailerCategories = (category) => {
+        const categories = []
+        category.map((cat, i)=>{
+            categories.push(cat.store_categories.name)
+            // setFilterCategories(...filterCategories, cat.store_categories.name)
+        })
+        return categories
+    }
     return (
         <>
             <InviteRetailer
@@ -131,7 +141,7 @@ export default function Connected(props) {
                     <div className="products_head-content">
                         <div className="title">
                             <h1>Connected Retailers</h1>
-                            <div className="number">{data.rows?.length}</div>
+                            <div className="number">{data?.count}</div>
                         </div>
                         <div className="products_head-search">
                             <div className="search_form">
@@ -226,8 +236,8 @@ export default function Connected(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.rows?.length > 0 &&
-                                        data.rows.map((item, i) => {
+                                    {data?.rows?.length > 0 &&
+                                        data?.rows.map((item, i) => {
                                             return (
                                                 <tr key={i}>
                                                     <td>
@@ -259,7 +269,7 @@ export default function Connected(props) {
                                                     <td>
                                                         <div>
                                                             {
-                                                                item.assigned_product
+                                                                item.assigned_products
                                                             }
                                                         </div>
                                                     </td>
@@ -270,10 +280,12 @@ export default function Connected(props) {
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        {item.retailer_category}
+                                                        {
+                                                            handleRetailerCategories(item?.user?.retailer_details?.retailer_categories)
+                                                        }
                                                     </td>
 
-                                                    <td>{item.state}</td>
+                                                    <td>{item.user.retailer_details.store_state}</td>
                                                     <td>
                                                         <span className="status-pill pill_connected w-auto">
                                                             {item.invite_status}
@@ -366,7 +378,7 @@ export default function Connected(props) {
                                                 </tr>
                                             );
                                         })}
-                                    {data.count === 0 && (
+                                    {data?.count === 0 && (
                                         <tr>
                                             <td colSpan="7" className="p-0">
                                                 <div className="content_area">
@@ -428,7 +440,7 @@ export default function Connected(props) {
                                 </tbody>
                             </table>
                         </div>
-                        {data.count > 0 && (
+                        {data?.count > 0 && (
                             <div className="pagination_wrap mt-0">
                                 <div className="pagination br-top-none">
                                     <div className="pagination_per">
