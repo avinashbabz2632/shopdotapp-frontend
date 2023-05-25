@@ -44,6 +44,7 @@ export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
 export const RETAILER_BRANDS = `${BASE_URL}/retailer/brands`;
 export const RETAILER_NOTIFICATION_ALERT = `${BASE_URL}/retailer/alert-notification`;
+export const RETAILER_BRAND_VALUES = `${BASE_URL}/general/brand-values`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;
@@ -67,8 +68,8 @@ export const LISTORDER = `${BASE_URL}/brand/orders`;
 export const ORDERDETAILS = `${BASE_URL}/order/details`;
 
 // General
-export const COUNTRIES = `${BASE_URL}/countries`;
-export const STATES = (id) => `${BASE_URL}/countries/${id}/states`;
+export const COUNTRIES = `${BASE_URL}/general/countries`;
+export const STATES = (id) => `${BASE_URL}/general/countries/${id}/states`;
 
 //brand retailer request
 export const RETAILER_REQUEST_FOR_ACCESS = `${BASE_URL}/brand/retailer-requests`;

@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ArrowLeft from '../images/icons/icon-arrow--left.svg';
+import {useDispatch} from 'react-redux';
+import { resetAllFilter } from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 export default function SideFilter({ component }) {
     const [openCloseFilter, setOpenCloseFilter] = useState(true);
+    const dispatch = useDispatch();
 
     const handleOpenCloseFilter = () => {
         setOpenCloseFilter(!openCloseFilter);
     };
+
+    const _clearAllFilter = () => {
+        dispatch(resetAllFilter());
+    }
 
     return (
         <aside
@@ -28,7 +35,7 @@ export default function SideFilter({ component }) {
                         <a href="#" className="filters-clear">
                             Apply
                         </a>
-                        <a href="#" className="filters-clear">
+                        <a href="#" className="filters-clear" onClick={_clearAllFilter}>
                             Clear
                         </a>
                     </div>
