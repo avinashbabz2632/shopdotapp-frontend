@@ -149,7 +149,7 @@ const ConnectedFilter = forwardRef((props, ref) => {
                                 selectedState.map((state, i)=>{
                                     return (
                                         <label htmlFor={`state-${i}`} key={i}>
-                                            <input type="checkbox" id={`state-${i}`} value={state.code} onChange={handleChangeStateCheckbox}/>
+                                            <input type="checkbox" id={`state-${i}`} value={state.name} onChange={handleChangeStateCheckbox}/>
                                             {state.name}
                                             <span></span>
                                         </label>

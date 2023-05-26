@@ -45,6 +45,13 @@ export default function Connected(props) {
             limit: limit,
             offset: offset,
           },
+          sort: [
+            ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
+            ["assigned_products",sortColumn == "assigned_products" ? "ASC" : "DESC"],
+            ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
+            ["retailer_category",sortColumn == "retailer_category" ? "ASC" : "DESC"],
+            ["store_state",sortColumn == "store_state" ? "ASC" : "DESC"]
+          ],
         query: {},
         filter: [
             {
@@ -88,7 +95,6 @@ export default function Connected(props) {
         const searchQuery = e.target.value?.toLowerCase();
         setSearchVal(searchQuery);
     };
-console.log(filterStates);
     const opencloseRetailerModal = useCallback(() => {
         setIsOpen(!modalIsOpen);
     }, [modalIsOpen]);
@@ -195,7 +201,7 @@ console.log(filterStates);
                                 <thead className="nodark-bg sticky-thead">
                                     <tr>
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={()=>handleSort("full_name")}>
                                                 Retailer Name
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -203,7 +209,7 @@ console.log(filterStates);
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={()=>handleSort("assigned_products")}>
                                                 Products Assigned
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -212,7 +218,7 @@ console.log(filterStates);
                                         </th>
 
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={()=>handleSort("all_time_sale")}>
                                                 All Time Sales
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -220,7 +226,7 @@ console.log(filterStates);
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={()=>handleSort("retailer_category")}>
                                                 Retailer Category
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -229,7 +235,7 @@ console.log(filterStates);
                                         </th>
 
                                         <th>
-                                            <div className="title">
+                                            <div className="title" onClick={()=>handleSort("store_state")}>
                                                 State
                                                 <span className="sort">
                                                     <img src={downArrow} />
