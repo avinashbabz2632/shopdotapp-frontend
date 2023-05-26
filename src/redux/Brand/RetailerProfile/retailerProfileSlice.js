@@ -19,6 +19,7 @@ const initialState = {
     'Books',
     'jewelry',
   ],
+  currentRetailerProfile: {},
 };
 
 const profileSlice = createSlice({
@@ -27,6 +28,10 @@ const profileSlice = createSlice({
   reducers: {
     setProductFilter: (state, action) => {
       state.productFilter = action.payload;
+      console.log('action.payload', action.payload);
+    },
+    setCurrentRetailerProfile: (state, action) => {
+      state.currentRetailerProfile = action.payload;
       console.log('action.payload', action.payload);
     },
     resetToInitial: (state) => {
@@ -52,6 +57,7 @@ export const {
   resetToInitial,
   productTagClear,
   productCatClear,
+  setCurrentRetailerProfile,
 } = profileSlice.actions;
 
 /**

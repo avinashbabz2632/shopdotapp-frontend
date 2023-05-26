@@ -16,6 +16,7 @@ import {
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
+import { setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
@@ -441,7 +442,7 @@ export async function getRetailerRequestAction(data) {
 
 export async function respondRetailerRequestAction(data) {
   try {
-    const response = await axios.post(
+    const response = await axios.put(
       API_END_POINT.UPDATE_RETAILER_REQUEST,
       data
     );
@@ -451,4 +452,23 @@ export async function respondRetailerRequestAction(data) {
   } catch (err) {
     return err.response;
   }
+}
+export function getRetailerRequestForAccess(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        API_END_POINT.RETAILER_REQUEST_FOR_ACCESS,
+        data
+      );
+      if (response.status === 200) {
+        dispatch(setRetailerRequests(response.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
 }

@@ -12,6 +12,8 @@ import notifications from '../../../../assets/images/icons/notifications-icon.sv
 import { respondRetailerRequestAction } from '../../../../actions/brandActions';
 import { useSelector } from 'react-redux';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
+import { ToastContainer, toast } from 'react-toastify';
+import { selectCurrentRetailerProfile } from '../../../../redux/Brand/RetailerProfile/retailerProfileSelector';
 
 function RetailerProfile() {
   const [profileData, setProfileData] = useState(null);
@@ -19,6 +21,9 @@ function RetailerProfile() {
   const navigate = useNavigate();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [approvedModelOpen, setApprovedModel] = useState(false);
+  const currentProfile = useSelector(selectCurrentRetailerProfile);
+
+  console.log(currentProfile, 'currentProfile');
 
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
 
@@ -37,11 +42,14 @@ function RetailerProfile() {
       setProfileData(findData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // https://dev.backend.shopdotapp.com/api/v1/retailer/request-connection/update
+    // https://dev.backend.shopdotapp.com/api/v1/retailer/request-connection/update
   }, []);
 
   const updateRequestStatus = async (currentStatus) => {
+    console.log(brandProfileDetails, 'brandProfileDetails');
     const data = {
-      inviter_id: brandProfileDetails.id,
+      inviter_id: currentProfile?.inviter_id,
       invite_via: 'retailer_request',
       invite_status: currentStatus,
     };
@@ -49,7 +57,18 @@ function RetailerProfile() {
     if (response.status === 200) {
       if (currentStatus === 'accepted') {
         opencloseApprovedModel();
+      } else {
+        opencloseDeclineModel();
       }
+    } else {
+      if (currentStatus === 'declined') {
+        opencloseDeclineModel();
+      }
+      toast.error(
+        response && response.data && response.data.errors
+          ? response.data.errors
+          : 'Something went worng'
+      );
     }
   };
 
@@ -73,25 +92,26 @@ function RetailerProfile() {
                         </div>
                       </span>
                       <div className="title">
-                        <h1>{profileData?.retailer_name} </h1>
+                        <h1>{currentProfile?.user?.full_name} </h1>
 
                         <span
                           className={`status-pill w-auto ${
-                            profileData?.status === 'Connected' &&
+                            currentProfile?.invite_status === 'connected' &&
                             'pill_connected'
                           } ${
-                            profileData?.status === 'Pending' && 'pill_pending'
+                            currentProfile?.invite_status === 'pending' &&
+                            'pill_pending'
                           } ${
-                            profileData?.status === 'Declined' &&
+                            currentProfile?.invite_status === 'declined' &&
                             'pill_declined'
                           }`}
                         >
-                          {profileData?.status}
+                          {currentProfile?.invite_status}
                         </span>
                       </div>
                     </div>
                     <div className="buttons">
-                      {profileData?.status === 'Declined' && (
+                      {/* {profileData?.status !== 'Declined' && (
                         <button
                           className="button button-green request-approved-box"
                           //   onClick={() => opencloseApprovedModel()}
@@ -109,13 +129,15 @@ function RetailerProfile() {
                         >
                           Decline
                         </button>
-                      )}
+                      )} */}
 
-                      {profileData?.status === 'Pending' && (
+                      {currentProfile?.invite_status === 'pending' && (
                         <>
                           <button
                             className="button button-green request-approved-box"
-                            onClick={() => opencloseApprovedModel()}
+                            onClick={() => {
+                              updateRequestStatus('accepted');
+                            }}
                           >
                             Approve
                           </button>
@@ -271,17 +293,16 @@ function RetailerProfile() {
         opencloseDeclineModel={opencloseDeclineModel}
         profileData_retailer_name={profileData?.retailer_name}
         callback={() => {
-          updateRequestStatus('accepted');
+          updateRequestStatus('declined');
         }}
       />
       <ApprovedModel
         approvedModelOpen={approvedModelOpen}
         opencloseApprovedModel={opencloseApprovedModel}
         profileData_retailer_name={profileData?.retailer_name}
-        callback={() => {
-          updateRequestStatus('accepted');
-        }}
+        callback={() => {}}
       />
+      <ToastContainer />
     </>
   );
 }

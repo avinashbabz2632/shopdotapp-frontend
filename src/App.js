@@ -13,6 +13,7 @@ import {
   selectRoleUpdated,
   selectUserDetails,
 } from './redux/user/userSelector';
+import Retailer from './pages/Brand/Retailer';
 
 // Auth Pages
 const SignIn = lazy(() => import('./pages/Auth/SignIn'));
@@ -183,6 +184,10 @@ function App() {
             element={<RetailerProfile />}
           />
           {/* Brand Portal Routes::: end */}
+          {/* Brand Retailer Request::: start */}
+          <Route path="/brand/request-access" element={<Retailer />} />
+          <Route path="/brand/connected-reatiler" element={<Retailer />} />
+          {/* Brand Retailer Request::: end */}
 
           {/* Retailer Portal Routes:::start */}
           <Route path="/retailer/setting/" element={<RetailerSettingPage />} />

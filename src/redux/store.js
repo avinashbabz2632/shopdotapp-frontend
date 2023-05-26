@@ -18,7 +18,7 @@ import { getStatesReducer } from './General/States/getStatesSlice';
 import { retailerProfileReducer } from './Retailer/Profile/retailerProfileSlice';
 import { retailerSecurityReducer } from './Retailer/Security/securitySlice';
 import { retailerProductReducer } from './Retailer/Brand/Products/retailerBrandProductsSlice';
-import { retailerReducer } from './Brand/Retailers/retailerSlice';
+import { retailerReducer } from './Brand/Retailer/retailerSlice';
 import { brandRetailerProfileReducer } from './Brand/RetailerProfile/retailerProfileSlice';
 
 const persistConfig = {
@@ -50,12 +50,12 @@ const combinedReducer = combineReducers({
   retailerProfile: retailerProfileReducer,
   brandRetailerProfile: brandRetailerProfileReducer,
   retailerSecurity: retailerSecurityReducer,
+  brandRetailer: retailerReducer,
   retailerProduct: retailerProductReducer,
   brandRetailer: retailerReducer,
 });
 
 const rootReducer = (state, action) => {
-  console.log(action, 'actionaction');
   if (action.type === 'LOGOUT') {
     return combinedReducer(undefined, { type: undefined });
   } else {

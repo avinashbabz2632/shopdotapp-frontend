@@ -6,3 +6,6 @@ export const selectProfileProductCategory = (state) =>
 
 export const selectProfileProductTags = (state) =>
   state.brandRetailerProfile.productTagOptions;
+
+export const selectCurrentRetailerProfile = (state) =>
+  state.brandRetailerProfile.currentRetailerProfile;
