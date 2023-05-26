@@ -7,6 +7,7 @@
     "@ckeditor/ckeditor5-react": "6.0.0",
     "@hookform/resolvers": "^2.9.8",
     "@reduxjs/toolkit": "^1.8.5",
+    "@segment/analytics-node": "1.0.0-beta.26",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
