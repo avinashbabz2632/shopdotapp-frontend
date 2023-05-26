@@ -80,6 +80,28 @@ export function updatePreferences(data) {
   };
 }
 
+export async function addBillingDetailsAction(data) {
+  try {
+    const response = await axios.post(API_END_POINT.RETAILER_BILLING, data);
+    if (response.status === 201) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
+
+export async function getBillingAction() {
+  try {
+    const response = await axios.get(API_END_POINT.RETAILER_BILLING);
+    if (response.status === 201) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
+
 export function getRetailerBrandProductsListAction(data) {
   return async (dispatch) => {
     try {

@@ -13,6 +13,7 @@ import {
   selectRoleUpdated,
   selectUserDetails,
 } from './redux/user/userSelector';
+import Retailer from './pages/Brand/Retailer';
 
 // Auth Pages
 const SignIn = lazy(() => import('./pages/Auth/SignIn'));
@@ -61,10 +62,16 @@ const BrandProductDetails = lazy(() =>
 const EditProductDetails = lazy(() =>
   import('./pages/Brand/EditProductDetails')
 );
+const BrandRetailerPage = lazy(() => import('./pages/Brand/retailers'));
+const RetailerProfile = lazy(() =>
+  import('./pages/Brand/retailers/RetailerProfile')
+);
 
 //Retailer Portal Pages
 const RetailerSettingPage = lazy(() => import('./pages/Retailer/Settings'));
-const RetailerBrandListPage = lazy(() => import('./pages/Retailer/Brand/Brands'));
+const RetailerBrandListPage = lazy(() =>
+  import('./pages/Retailer/Brand/Brands')
+);
 
 function App() {
   const navigate = useNavigate();
@@ -81,7 +88,6 @@ function App() {
     ) {
       return;
     }
-    console.log(pathname, 'pathname');
 
     if (isLogged) {
       if (pathname == '/signup' || (pathname == '/' && !isRoleUpdated)) {
@@ -94,7 +100,13 @@ function App() {
         } else {
           navigate('/personalize');
         }
+      } else if (pathname == '/') {
+        history.replace('/login');
+        navigate('/login');
       }
+    } else if (pathname == '/') {
+      history.replace('/login');
+      navigate('/login');
     } else {
       if (pathname !== '/signup') {
         history.replace('/login');
@@ -166,11 +178,20 @@ function App() {
             path="/brand/edit-product/:id"
             element={<EditProductDetails />}
           />
+          <Route path="/brand/retailer" element={<BrandRetailerPage />} />
+          <Route
+            path="/brand/retailer-profile/:id"
+            element={<RetailerProfile />}
+          />
           {/* Brand Portal Routes::: end */}
+          {/* Brand Retailer Request::: start */}
+          <Route path="/brand/request-access" element={<Retailer />} />
+          <Route path="/brand/connected-reatiler" element={<Retailer />} />
+          {/* Brand Retailer Request::: end */}
 
           {/* Retailer Portal Routes:::start */}
           <Route path="/retailer/setting/" element={<RetailerSettingPage />} />
-          <Route path="/retailer/brands" element={<RetailerBrandListPage />}/>
+          <Route path="/retailer/brands" element={<RetailerBrandListPage />} />
           <Route
             path="/retailer/setting/:activeTab"
             element={<RetailerSettingPage />}
