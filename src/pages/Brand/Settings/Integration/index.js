@@ -186,7 +186,7 @@ export default function BrandSetting() {
                       >
                         <img src={Warning} alt="warning" />
                         <div>
-                          Your Shopify store has been disconnected with ShopDot.
+                        Your brand profile is not visible to retailers because your Shopify store is disconnected.
                         </div>
                       </div>
                       <div className="integration_shopify small">

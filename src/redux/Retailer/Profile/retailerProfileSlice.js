@@ -22,7 +22,8 @@ const retailerProfileSlice = createSlice({
 /**
  * Actions
  */
-export const { setRetailerProfileSaving, setRetailerProfileSaveResult } = retailerProfileSlice.actions;
+export const { setRetailerProfileSaving, setRetailerProfileSaveResult } =
+  retailerProfileSlice.actions;
 
 /**
  * Reducers

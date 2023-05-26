@@ -15,7 +15,6 @@ import emptyTable from '../../images/product-card-empty.svg';
 import { Datas } from '../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectProductFilter,
   selectBrandProductList,
   selectProductCatFilter,
   selectProductTagFilter,
@@ -49,14 +48,8 @@ export default function ProductTable(props) {
   const productTagsFilter = useSelector(selectProductTagFilter);
   const stockFilter = useSelector(selectStockFilter);
   const productStatusFilter = useSelector(selectProductStatusFilter);
-  //
-  const productFilter = useSelector(selectProductFilter);
   const productList = useSelector(selectBrandProductList);
   const [Data, setData] = useState(Datas);
-  const [productTagStus, setProductTagStus] = useState([]);
-  const [productCatStus, setProductCatStus] = useState([]);
-  const [productStatusViseData, setProductStatusViseData] = useState([]);
-  const [stockStus, setStockStus] = useState([]);
   const [height, setHeight] = useState(0);
   const [uploadModalShow, setUploadModalShow] = useState(false);
   const [uploadFile, setUploadFile] = useState('');
@@ -66,7 +59,6 @@ export default function ProductTable(props) {
   const [categoryTagPopup, setCategoryTagPopup] = useState(false);
   const [typeOfTag, setTypeOfTag] = useState('');
   const [retailerPopup, setRetailerPopup] = useState(false);
-  const [productFilterData, setProductFilterData] = useState([]);
   const [searchVal, setSearchVal] = useState('');
   const [categoryTagData, setCategoryTagData] = useState([]);
   const [assignedRetailer, setAssignedRetailer] = useState();
@@ -78,15 +70,8 @@ export default function ProductTable(props) {
   const [limit, setLimit] = useState(20);
   const [offset, setOffset] = useState(0);
 
-  console.log('offset-----', offset);
-
   const prepareFilter = () => {
     const filter = [];
-    // if(productCatFilter && productCatFilter.length > 0) {
-    //   const catFilter = {field: 'category', operator: 'in', value: productCatFilter};
-    //   filter.push(catFilter);
-    // }
-    console.log(productStatusFilter, 'productStatusFilter');
     if (productStatusFilter !== '' && productStatusFilter !== 'all') {
       const status = productStatusFilter === 'active' ? '1' : '0';
       const statusFilter = { field: 'status', operator: 'eq', value: status };
@@ -125,7 +110,6 @@ export default function ProductTable(props) {
           filter.push(_stockFilter);
         }
       });
-      // const _stockFilter = {field: 'inventory_quantity', operator: 'gt', value: 50};
     }
     return filter;
   };
@@ -170,120 +154,19 @@ export default function ProductTable(props) {
   }, []);
 
   useEffect(() => {
-    const newArr = Data.filter((item) => {
-      return item.checked == true;
-    });
-    const isActionShow = newArr?.length >= 2 ? newArr?.length : 0;
-    setShowAction(isActionShow);
-  }, [Data]);
-
-  // useEffect(() => {
-  //   setProductCatStus(productFilter.productCatFilter);
-  //   setProductTagStus(productFilter.productTagFilter);
-  //   setStockStus(productFilter.stockFilter);
-  //   setProductStatusViseData(productFilter.statusViseFilter);
-  //   const productArray = [
-  //     'productCatFilter',
-  //     'productTagFilter',
-  //     'stockFilter',
-  //     'statusFilter',
-  //   ];
-  //   const productCatData = [];
-  //   const productTagData = [];
-  //   const productStockData = [];
-  //   productArray.forEach((e) => {
-  //     if (e === 'productCatFilter') {
-  //       productFilter.productCatFilter?.map((ele) => {
-  //         productList?.map((e) => {
-  //           e.category === ele && productCatData.push(e);
-  //         });
-  //         setProductFilterData(productCatData);
-  //       });
-  //     }
-  //     if (e === 'productTagFilter') {
-  //       productFilter.productTagFilter?.map((ele) => {
-  //         (productCatData?.length === 0 ? Data : productCatData)?.map((e) => {
-  //           e.tags.includes(ele) && productTagData.push(e);
-  //         });
-  //         setProductFilterData(productTagData);
-  //       });
-  //     }
-  //     if (e === 'stockFilter') {
-  //       productFilter.stockFilter?.map((ele) => {
-  //         const ProductData =
-  //           productTagData.length === 0
-  //             ? productCatData.length === 0
-  //               ? ''
-  //               : productCatData
-  //             : productTagData;
-  //         (ProductData === '' ? Data : ProductData)?.map((e) => {
-  //           if (ele === '< 10 units') {
-  //             e.stock < 10 && productStockData.push(e);
-  //           }
-  //           if (ele === '11-50 units') {
-  //             11 < e.stock && e.stock < 50 && productStockData.push(e);
-  //           }
-  //           if (ele === '> 50 units') {
-  //             e.stock > 50 && productStockData.push(e);
-  //           }
-  //         });
-  //         setProductFilterData(productStockData);
-  //       });
-  //     }
-  //     if (e === 'statusFilter') {
-  //       if (productFilter?.statusViseFilter?.length > 0) {
-  //         const filterData = (
-  //           productCatData?.length > 0 ||
-  //           productTagData?.length > 0 ||
-  //           productStockData?.length > 0
-  //             ? [
-  //                 ...new Set([
-  //                   ...productCatData,
-  //                   ...productTagData,
-  //                   ...productStockData,
-  //                 ]),
-  //               ]
-  //             : Data
-  //         ).filter((ele, i, arr) => {
-  //           if (ele.status == productFilter?.statusViseFilter[0]) {
-  //             return ele;
-  //           } else if (productFilter?.statusViseFilter[0] === 'all') {
-  //             return ele;
-  //           }
-  //         });
-  //         setProductFilterData([...filterData]);
-  //       }
-  //     }
-  //   });
-  // }, [productFilter]);
-
-  useEffect(() => {
     fetchProducts();
-  }, [productStatusFilter, offset, limit]);
+  }, [productStatusFilter, offset, limit, productCatFilter, productTagsFilter, stockFilter]);
 
   const handalClearFilter = () => {
-    setProductTagStus([]);
-    setProductCatStus([]);
-    setStockStus([]);
-    setProductStatusViseData([]);
     dispatch(resetToInitial());
   };
 
-  const productStatusViseFilter = (status) => {
+  const handleStatusFilter = (status) => {
     dispatch(setProductStatusFilter(status));
   };
 
   const clearProductFilter = (e) => {
-    if (e === 'productCat') {
-      setProductCatStus([]);
-      dispatch(productCatClear());
-    } else if (e === 'productTag') {
-      setProductTagStus([]);
-      dispatch(productTagClear());
-    } else {
-      setStockStus([]);
-      dispatch(stockClear());
-    }
+   
   };
 
   const handalUploadFileModalShow = () => {
@@ -328,13 +211,7 @@ export default function ProductTable(props) {
   };
 
   const handleChangeStatus = (ele) => {
-    const neweData = Data.filter((item) => {
-      if (item.id == ele.id) {
-        item.status = item.status == 'active' ? 'inactive' : 'active';
-      }
-      return item;
-    });
-    setData(neweData);
+   //
   };
 
   const handleCheckCheckBox = (ele, isAll) => {
@@ -602,7 +479,7 @@ export default function ProductTable(props) {
                 className={`brand-type ${
                   productStatusFilter === 'all' ? 'active' : ''
                 }`}
-                onClick={() => productStatusViseFilter('all')}
+                onClick={() => handleStatusFilter('all')}
               >
                 All
               </a>
@@ -611,7 +488,7 @@ export default function ProductTable(props) {
                 className={`brand-type ${
                   productStatusFilter === 'active' ? 'active' : ''
                 }`}
-                onClick={() => productStatusViseFilter('active')}
+                onClick={() => handleStatusFilter('active')}
               >
                 Active
               </a>
@@ -620,7 +497,7 @@ export default function ProductTable(props) {
                 className={`brand-type ${
                   productStatusFilter === 'inactive' ? 'active' : ''
                 }`}
-                onClick={() => productStatusViseFilter('inactive')}
+                onClick={() => handleStatusFilter('inactive')}
               >
                 Inactive
               </a>
@@ -629,30 +506,30 @@ export default function ProductTable(props) {
         </div>
         <div className="my_list-body">
           <div className="products_active-filters">
-            {stockStus?.length !== 0 && (
+            {stockFilter?.length > 0 && (
               <div className="products_active-filter">
                 <div className="txt">
                   <b>Stock: </b>
-                  {stockStus.join(', ')}
+                  {stockFilter.join(', ')}
                 </div>
                 <button
                   className="products_active-remove"
-                  onClick={() => clearProductFilter('stock')}
+                  onClick={() => dispatch(stockClear())}
                 >
                   <img className="icon" src={closeIcon} />
                 </button>
               </div>
             )}
-            {productTagStus?.length !== 0 && (
+            {productTagsFilter?.length > 0 && (
               <>
                 <div className="products_active-filter">
                   <div className="txt">
                     <b>Product Tag: </b>
-                    {productTagStus.join(', ')}
+                    {productTagsFilter.join(', ')}
                   </div>
                   <button
                     className="products_active-remove"
-                    onClick={() => clearProductFilter('productTag')}
+                    onClick={() => dispatch(productTagClear())}
                   >
                     <img className="icon" src={closeIcon} />
                   </button>
@@ -660,25 +537,25 @@ export default function ProductTable(props) {
               </>
             )}
 
-            {productCatStus?.length !== 0 && (
+            {productCatFilter?.length > 0 && (
               <>
                 <div className="products_active-filter">
                   <div className="txt">
                     <b>Product Category: </b>
-                    {productCatStus.join(', ')}
+                    {productCatFilter.join(', ')}
                   </div>
                   <button
                     className="products_active-remove"
-                    onClick={() => clearProductFilter('productCat')}
+                    onClick={() => dispatch(productCatClear())}
                   >
                     <img className="icon" src={closeIcon} />
                   </button>
                 </div>
               </>
             )}
-            {(!isEmpty(productCatStus) ||
-              !isEmpty(productTagStus) ||
-              !isEmpty(stockStus)) && (
+            {(!isEmpty(productCatFilter) ||
+              !isEmpty(productTagsFilter) ||
+              !isEmpty(stockFilter)) && (
               <button
                 className="products_active-remove-all"
                 onClick={() => handalClearFilter()}
@@ -761,7 +638,7 @@ export default function ProductTable(props) {
                           type="checkbox"
                           name="check-all"
                           id="check-all"
-                          checked={checkAll}
+                          // checked={checkAll}
                           onClick={() => handleCheckCheckBox({}, true)}
                         />
                         <div className="checkbox-text"></div>
@@ -868,13 +745,7 @@ export default function ProductTable(props) {
                 </tr>
               </thead>
               <tbody>
-                {(productCatStus?.length !== 0 ||
-                productTagStus?.length !== 0 ||
-                stockStus?.length !== 0 ||
-                productStatusViseData?.length !== 0
-                  ? productFilterData
-                  : productList
-                )?.map((ele, i) => (
+                {productList.map((ele, i) => (
                   <tr key={i}>
                     <td>
                       <label className="checkbox">
