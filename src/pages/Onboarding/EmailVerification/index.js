@@ -9,7 +9,7 @@ import { LinkMod } from '../../../components/common/A';
 import Button from '../../../components/common/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../redux/user/userSelector';
-import { sendVerifyEmailAction } from '../../../actions/authActions';
+import { fetchUserDetailAction, sendVerifyEmailAction } from '../../../actions/authActions';
 // import '../onboarding.style.scss';
 
 function EmailVerification() {
@@ -18,6 +18,7 @@ function EmailVerification() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(sendVerifyEmailAction({ id: userDetails.id }));
+    dispatch(fetchUserDetailAction(userDetails.id))
   }, []);
 
   const handleGoPersonalize = () => {

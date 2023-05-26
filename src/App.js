@@ -90,28 +90,17 @@ function App() {
     }
 
     if (isLogged) {
-      if (pathname == '/signup' || (pathname == '/' && !isRoleUpdated)) {
-        if (userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
-            navigate('/retailer-onboarding');
-          } else {
-            navigate('/brand-onboarding');
-          }
-        } else {
-          navigate('/personalize');
-        }
-      } else if (pathname == '/') {
-        history.replace('/login');
-        navigate('/login');
+      if(!userDetails.is_email_verified){
+        navigate("verify-email")
+      }else if(!isRoleUpdated){
+        navigate('/personalize');
+      }else if(userDetails.role.name === 'retailer') {
+        navigate('/retailer-onboarding');
+      } else if(userDetails.role.name === 'brand'){
+        navigate('/brand-onboarding');
       }
-    } else if (pathname == '/') {
-      history.replace('/login');
+    }else{
       navigate('/login');
-    } else {
-      if (pathname !== '/signup') {
-        history.replace('/login');
-        navigate('/login');
-      }
     }
   }, []);
 

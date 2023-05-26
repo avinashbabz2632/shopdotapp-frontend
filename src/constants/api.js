@@ -14,6 +14,7 @@ export const RESET_PASSWORD = (id) =>
   `${BASE_URL}/auth/user/${id}/reset-password`;
 export const FORGOTEMAILVARIFICATION = `${BASE_URL}/auth/send-reset-link`;
 // User
+export const USER_DETAILS = `${BASE_URL}/user/detail`;
 export const USER_ROLE = `${BASE_URL}/user/roles`;
 export const USER_PLATFORM = `${BASE_URL}/user/platform`;
 export const SHOPIFY = `${BASE_URL}/platform/shopify-integration`;

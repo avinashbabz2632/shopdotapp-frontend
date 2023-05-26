@@ -93,3 +93,23 @@ export function signOutAction(payload) {
     }
   };
 }
+export function fetchUserDetailAction() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(`${API_END_POINT.USER_DETAILS}`);
+
+      if (response && response.data && response.data.code == 200) {
+        console.log(response.data);
+        // dispatch(setUserInfo(response.data.data));
+      } else {
+        toast.error('Something went worng');
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
