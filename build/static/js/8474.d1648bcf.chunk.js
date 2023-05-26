@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkshopdot=self.webpackChunkshopdot||[]).push([[8474],{44890:function(e,s,c){c(72791);s.Z=c.p+"static/media/logo.9e655e9b9464845cd0ae92867dfd4652.svg"},83775:function(e,s,c){c(72791);s.Z=c.p+"static/media/close-icon.322e22de85a3176e66f295d521922b01.svg"}}]);
-//# sourceMappingURL=8474.d1648bcf.chunk.js.map
