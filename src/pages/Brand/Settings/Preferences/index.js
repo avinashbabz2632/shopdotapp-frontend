@@ -82,7 +82,7 @@ export default function BrandPreference() {
       wholesalePercentage: 50,
       inventoryPercentage: 70,
       returnPricing: options[1],
-      retunRefundPolicy: 'no',
+      retunRefundPolicy: 'yes',
       connectBrand: null,
     },
   });

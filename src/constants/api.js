@@ -39,9 +39,12 @@ export const SYNC_SINGLE_PRODUCT = `${BASE_URL}/shopify/sync-product`;
 export const PREFERENCES = `${BASE_URL}/brand/setting/preferences`;
 export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
+export const RETAILER_REQUEST = `${BASE_URL}/brand/retailer-requests`;
+export const UPDATE_RETAILER_REQUEST = `${BASE_URL}/retailer/request-connection/update`;
 
 // Retailer
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
+export const RETAILER_BILLING = `${BASE_URL}/retailer/billing`;
 export const RETAILER_BRANDS = `${BASE_URL}/retailer/brands`;
 export const RETAILER_NOTIFICATION_ALERT = `${BASE_URL}/retailer/alert-notification`;
 export const RETAILER_BRAND_VALUES = `${BASE_URL}/general/brand-values`;
@@ -70,6 +73,9 @@ export const ORDERDETAILS = `${BASE_URL}/order/details`;
 // General
 export const COUNTRIES = `${BASE_URL}/general/countries`;
 export const STATES = (id) => `${BASE_URL}/general/countries/${id}/states`;
+
+//brand retailer request
+export const RETAILER_REQUEST_FOR_ACCESS = `${BASE_URL}/brand/retailer-requests`;
 
 // export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
 // export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;

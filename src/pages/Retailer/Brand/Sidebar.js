@@ -46,7 +46,7 @@ const SideBar = forwardRef((props, ref) => {
   const handlePricingFilter = (checked, value) => {
     const pricingFilterCopy = [...pricingFilter];
     if (checked) {
-        pricingFilterCopy.push(value);
+      pricingFilterCopy.push(value);
       dispatch(setRetailerPricingFilter(pricingFilterCopy));
     } else {
       const filter = pricingFilterCopy.filter((pfv) => pfv !== value);
@@ -122,7 +122,10 @@ const SideBar = forwardRef((props, ref) => {
                   <div className="subfilter_body">
                     {pricingFilterDataArr.map((pf, i) => {
                       return (
-                        <div className="checkbox checkbox--no-decor" key={`${i}`}>
+                        <div
+                          className="checkbox checkbox--no-decor"
+                          key={`${i}`}
+                        >
                           <label>
                             {/* <input type="checkbox" id="rp-1" name="rp" /> */}
                             <FilterCheckbox

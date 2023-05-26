@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../../../components/Loader';
 import BrandHeader from '../common/components/BrandHeader';
@@ -34,6 +34,7 @@ export default function BrandSettingPage() {
   const { activeTab } = useParams();
   const [tab, setTab] = useState('');
   const [completedStep, setCompletedStep] = useState([]);
+  const [subTab, setSubTab] = useState(1);
   const dispatch = useDispatch();
   const useDetails = useSelector(selectUserDetails);
   const history = createBrowserHistory();
@@ -126,6 +127,18 @@ export default function BrandSettingPage() {
     }
   };
 
+  const changeSubTab = useCallback(
+    (key) => {
+      if (key === 'connect') {
+        setSubTab(1);
+      } else {
+        setSubTab(2);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [subTab]
+  );
+
   return (
     <div className="wrapper">
       <BrandHeader
@@ -135,6 +148,8 @@ export default function BrandSettingPage() {
             handleLogOut();
           }
         }}
+        subTabs={subTab}
+        changeSubTab={changeSubTab}
       />
       <main
         className="content_main mp-content setting-section"

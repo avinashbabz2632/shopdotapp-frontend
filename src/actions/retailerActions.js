@@ -9,15 +9,19 @@ import {
   setBrandProfileDetails,
   setBrandValues,
 } from '../redux/Brand/Profile/brandProfileSlice';
-import {setRetailerProfileSaveResult, setRetailerProfileSaving} from '../redux/Retailer/Profile/retailerProfileSlice';
-import { setRetailerBrandProductsList, setRetailerBrandValuesList } from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import {
+  setRetailerProfileSaveResult,
+  setRetailerProfileSaving,
+} from '../redux/Retailer/Profile/retailerProfileSlice';
+import {
+  setRetailerBrandProductsList,
+  setRetailerBrandValuesList,
+} from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 export function getRetailerProfileAction(id) {
   return async (dispatch) => {
     try {
-      const response = await axios.get(
-        `${API_END_POINT.RETAILER_PROFILE}`
-      );
+      const response = await axios.get(`${API_END_POINT.RETAILER_PROFILE}`);
       if (response && response.data && response.data.code == 201) {
         dispatch(
           setBrandProfileDetails({
@@ -35,7 +39,10 @@ export function updateRetailerProfileAction(formData, isCreate) {
   return async (dispatch) => {
     try {
       dispatch(setRetailerProfileSaving());
-      const response = await axios.post(API_END_POINT.RETAILER_PROFILE, formData);
+      const response = await axios.post(
+        API_END_POINT.RETAILER_PROFILE,
+        formData
+      );
       if (
         response &&
         response.status &&
@@ -73,14 +80,36 @@ export function updatePreferences(data) {
   };
 }
 
+export async function addBillingDetailsAction(data) {
+  try {
+    const response = await axios.post(API_END_POINT.RETAILER_BILLING, data);
+    if (response.status === 201) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
+
+export async function getBillingAction() {
+  try {
+    const response = await axios.get(API_END_POINT.RETAILER_BILLING);
+    if (response.status === 201) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
+
 export function getRetailerBrandProductsListAction(data) {
   return async (dispatch) => {
     try {
       const response = await axios.post(
-        `${API_END_POINT.RETAILER_BRANDS}`,data
+        `${API_END_POINT.RETAILER_BRANDS}`,
+        data
       );
       if (response && response.data && response.data.code == 201) {
-
         dispatch(setRetailerBrandProductsList(response?.data?.data));
       }
     } catch (err) {
@@ -96,8 +125,14 @@ export function getRetailerBrandProductsListAction(data) {
 export function updateNotificationAlertAction(data) {
   return async (dispatch) => {
     try {
-      const response = await axios.patch(API_END_POINT.RETAILER_NOTIFICATION_ALERT, data);
-      if ((response && response.data && response.data.code == 201) || (response && response.data && response.data.code == 200)) {
+      const response = await axios.patch(
+        API_END_POINT.RETAILER_NOTIFICATION_ALERT,
+        data
+      );
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
         toast.success('Notification Alert Updated');
       }
     } catch (err) {
@@ -116,7 +151,10 @@ export function getRetailerBrandValuesAction() {
       const response = await axios.get(
         `${API_END_POINT.RETAILER_BRAND_VALUES}`
       );
-      if ((response && response.data && response.data.code == 201) || response && response.data && response.data.code == 200) {
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
         dispatch(setRetailerBrandValuesList(response.data.data));
       } else {
       }

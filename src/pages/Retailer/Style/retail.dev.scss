@@ -99,40 +99,40 @@ thead {
     font-size: 20px;
     line-height: 32px;
 }
-.button {
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 0;
-    cursor: pointer;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    background: #bd6f34;
-    padding: 0.5em 1em;
-    height: 2.5em;
-    border-radius: 0.333em;
-    border: 2px solid #bd6f34;
-    font-weight: 700;
-    font-size: 12px;
-    line-height: 16px;
-    letter-spacing: 0.05em;
-    color: #fff;
-    text-decoration: none;
-    transition: all 0.3s ease-in-out;
-    gap: 1rem;
-}
-.button:hover {
-    background: transparent;
-    border-color: #bd6f34;
-    color: #bd6f34;
-}
-.button:active {
-    background: transparent;
-    border-color: #bd6f34;
-    color: #bd6f34;
-}
+// .button {
+// -webkit-appearance: none;
+// appearance: none;
+// border-radius: 0;
+// cursor: pointer;
+// position: relative;
+// display: inline-flex;
+// align-items: center;
+// align-content: center;
+// justify-content: center;
+// background: #bd6f34;
+// padding: 0.5em 1em;
+// height: 2.5em;
+// border-radius: 0.333em;
+// border: 2px solid #bd6f34;
+// font-weight: 700;
+// font-size: 12px;
+// line-height: 16px;
+// letter-spacing: 0.05em;
+// color: #fff;
+// text-decoration: none;
+// transition: all 0.3s ease-in-out;
+// gap: 1rem;
+// }
+// .button:hover {
+// background: transparent;
+// border-color: #bd6f34;
+// color: #bd6f34;
+// }
+// .button:active {
+// background: transparent;
+// border-color: #bd6f34;
+// color: #bd6f34;
+// }
 .report-table th.text-right {
     text-align: right;
 }
@@ -160,10 +160,20 @@ thead {
     border: 0.2rem solid var(--btn-background);
     color: var(--btn-color);
 }
-.filters_block,
-.sidebar-hidden .filters_wrap .filters_block:nth-child(2) {
-    width: 225px !important;
-    padding-right: 0 !important;
+.marginBottom {
+    margin-bottom: 7px;
+}
+.products_body {
+    --pb-gap: 0rem !important;
+}
+.mp-header_block-bottom {
+    height: var(--h-mp-height-bottom) !important;
+}
+.header_container {
+    justify-content: space-between !important;
+}
+.logo {
+    max-width: 50px !important;
 }
 .marginBottom {
     margin-bottom: 7px;
@@ -180,23 +190,89 @@ thead {
 .logo {
     max-width: 50px !important;
 }
-.filters_block,
-.sidebar-hidden .filters_wrap .filters_block:nth-child(2) {
-    width: 225px !important;
-    padding-right: 0 !important;
+.close_icon_search {
+    background-color: #828282;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    height: 17px;
+    width: 17px;
 }
-.marginBottom {
-    margin-bottom: 7px;
+
+.product_clear_icon {
+    width: 9px;
+    margin: 0px 0px 1px 4px;
 }
-.products_body {
-    --pb-gap: 0rem !important;
+
+.swiper-button-prev .icon,
+.swiper-button-next .icon {
+    width: 1rem;
+    height: 1.6rem;
 }
-.mp-header_block-bottom {
-    height: var(--h-mp-height-bottom) !important;
+.icon:hover {
+    filter: brightness(0) saturate(100%) invert(23%) sepia(11%) saturate(1394%)
+        hue-rotate(174deg) brightness(91%) contrast(87%);
 }
-.header_container {
-    justify-content: space-between !important;
+// .filters_block,
+// .sidebar-hidden .filters_wrap .filters_block:nth-child(2) {
+//     width: 225px !important;
+//     padding-right: 0 !important;
+// }
+// .side_filters_block {
+//     width: 225px !important;
+//     padding-right: 0 !important;
+// }
+.navbar_subtab {
+    top: 45px !important;
 }
-.logo {
-    max-width: 50px !important;
+// .header_submenu-content
+.ReactModal__Content--after-open {
+    position: absolute !important;
+    inset: 0px !important;
+    border: 0px solid transparent !important;
+    background: transparent !important;
+    overflow: hidden !important;
+    border-radius: 0px !important;
+    outline: none !important;
+    padding: 0px !important;
+}
+.ReactModal__Overlay--after-open {
+    position: fixed !important;
+    inset: 0px !important;
+    background-color: transparent !important;
+    z-index: 100 !important;
+}
+.link_button_a {
+    background-color: initial;
+    cursor: pointer;
+    border: none;
+}
+
+.setting-popup.delete-user-modal div.popup-close {
+    width: 20px;
+    height: 20px;
+}
+.add-user:hover .plus_icon {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(2%) saturate(1216%)
+        hue-rotate(165deg) brightness(115%) contrast(100%);
+}
+.icon_position {
+    left: 145px;
+    position: absolute;
+}
+
+.connect-brand-popup .popup_success .icon_wrap {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    border: none;
+    color: transparent;
+}
+
+.connect-brand-popup .popup_success .icon {
+    width: 58px;
+    height: 58px;
 }

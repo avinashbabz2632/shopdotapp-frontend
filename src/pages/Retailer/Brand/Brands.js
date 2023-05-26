@@ -544,7 +544,6 @@ function Brands() {
                               <td>
                                 <div className="buttons">
                                   {showConnectButton(invite_status)}
-
                                   <button className="button message-brand">
                                     <img src={mailIcon} />
                                   </button>
