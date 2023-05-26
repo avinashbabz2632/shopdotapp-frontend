@@ -3,6 +3,7 @@ import * as API_END_POINT from '../constants/api';
 import { logOut, setLoggedIn, setRegister } from '../redux/auth/authSlice';
 import { setUserInfo } from '../redux/user/userSlice';
 import { toast } from 'react-toastify';
+import { identify, track } from '../services/segment';
 
 export function loginAction(formData) {
   return async (dispatch) => {
@@ -39,6 +40,9 @@ export function registerAction(formData) {
       if (response && response.data && response.data.code == 201) {
         dispatch(setUserInfo(response.data.data));
         dispatch(setRegister());
+        //pushing data to segment
+        dispatch(identify(response.data.data));
+        dispatch(track(response.data.data));
       } else {
         toast.error('Something went worng');
       }

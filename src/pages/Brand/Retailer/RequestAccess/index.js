@@ -24,6 +24,7 @@ import LeftIcon from '../../images/icons/icon-chevron--left.svg';
 import InviteRetailer from '../../common/components/InviteRetailerHeaderModal';
 import { NavLink } from 'react-router-dom';
 import { setCurrentRetailerProfile } from '../../../../redux/Brand/RetailerProfile/retailerProfileSlice';
+import { identify} from '../../../../services/segment';
 
 export default function RequestAccess(props) {
   const { height } = props;
