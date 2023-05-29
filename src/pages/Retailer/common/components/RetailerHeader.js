@@ -6,10 +6,13 @@ import InviteBrandModel from './InviteBrandModel';
 import '../../Style/retail.style.scss';
 import '../../Style/retail.media.scss';
 import '../../Style/retail.dev.scss';
+import { useSelector } from 'react-redux';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 function RetailerHeader() {
   const location = useLocation();
   const [modalIsOpen, setIsOpen] = useState(false);
+  const useDetails = useSelector(selectUserDetails);
 
   const opencloseBrandModal = useCallback(() => {
     setIsOpen(!modalIsOpen);
@@ -130,7 +133,13 @@ function RetailerHeader() {
                 <div className="dropdown">
                   <div className="dropdown_header">
                     <div className="dropdown_header-text">
-                      Hi, <span className="username">Jane</span>
+                      Hi,{' '}
+                      <span className="username">
+                        {' '}
+                        {useDetails?.first_name
+                          ? `${useDetails?.first_name}`
+                          : ''}
+                      </span>
                     </div>
                     <div className="dropdown_header-chevron">
                       <div className="icon">
