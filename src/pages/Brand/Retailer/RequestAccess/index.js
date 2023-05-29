@@ -41,23 +41,6 @@ export default function RequestAccess(props) {
     dispatch(setStatusViseFilter(value));
   };
   const fetchRetailerRequests = () => {
-    const query = {
-      paging: {
-        limit: limit,
-        offset: offset,
-      },
-      sort: [
-        ['full_name', sortColumn == 'full_name' ? 'ASC' : 'DESC'],
-        ['created_at', sortColumn == 'created_at' ? 'ASC' : 'DESC'],
-        [
-          'status_updated_on',
-          sortColumn == 'status_updated_on' ? 'ASC' : 'DESC',
-        ],
-      ],
-      searchquery: {},
-      filter: [],
-    };
-    const fetchRetailerRequests = () => {
         const query = {
           paging: {
             limit: limit,
@@ -449,4 +432,4 @@ RequestAccess.propTypes = {
   setOpenInviteretailer: PropTypes.func,
   changeSubTab: PropTypes.func,
   height: PropTypes.any,
-};
+}
