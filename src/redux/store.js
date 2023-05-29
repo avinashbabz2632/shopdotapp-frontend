@@ -20,6 +20,7 @@ import { retailerSecurityReducer } from './Retailer/Security/securitySlice';
 import { retailerProductReducer } from './Retailer/Brand/Products/retailerBrandProductsSlice';
 import { retailerReducer } from './Brand/Retailer/retailerSlice';
 import { brandRetailerProfileReducer } from './Brand/RetailerProfile/retailerProfileSlice';
+import { getCategoryReducer } from './General/Category/getCategorySlice';
 
 const persistConfig = {
   // configuration object for redux-persist
@@ -52,7 +53,7 @@ const combinedReducer = combineReducers({
   retailerSecurity: retailerSecurityReducer,
   brandRetailer: retailerReducer,
   retailerProduct: retailerProductReducer,
-  brandRetailer: retailerReducer,
+  category: getCategoryReducer,
 });
 
 const rootReducer = (state, action) => {

@@ -41,44 +41,41 @@ export default function RequestAccess(props) {
     dispatch(setStatusViseFilter(value));
   };
   const fetchRetailerRequests = () => {
-    const query = {
-      paging: {
-        limit: limit,
-        offset: offset,
-      },
-      sort: [
-        ['full_name', sortColumn == 'full_name' ? 'ASC' : 'DESC'],
-        ['created_at', sortColumn == 'created_at' ? 'ASC' : 'DESC'],
-        [
-          'status_updated_on',
-          sortColumn == 'status_updated_on' ? 'ASC' : 'DESC',
-        ],
-      ],
-      searchquery: {},
-      filter: [],
-    };
-    if (searchVal) {
-      query.searchquery.search = searchVal;
-    }
-    if (filterStatus != 'all') {
-      query.filter.push({
-        field: 'invite_status',
-        operator: 'eq',
-        value: filterStatus,
-      });
-    }
-    dispatch(getRetailerRequestForAccess(query));
-  };
-  useEffect(() => {
-    fetchRetailerRequests();
-    const page = newData?.count / limit;
-    if (page % 1 === 0) {
-      setTotalPage(page);
-    } else {
-      setTotalPage(Math.floor(page) + 1);
-    }
-    getTotalPage();
-  }, [filterStatus, searchVal, limit, offset, sortColumn]);
+        const query = {
+          paging: {
+            limit: limit,
+            offset: offset,
+          },
+          sort: [
+            ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
+            ["created_at",sortColumn == "created_at" ? "ASC" : "DESC"],
+            ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
+          ],
+        query: {},
+        filter: [],
+        };
+        if(searchVal){
+            query.query.search = searchVal
+        }
+        if(filterStatus != "all"){
+            query.filter.push({
+                "field": "invite_status",
+                "operator": "eq",
+                "value": filterStatus
+            })
+        }
+        dispatch(getRetailerRequestForAccess(query));
+      };
+    useEffect(() => {
+        fetchRetailerRequests();
+        const page = (newData.count / limit);
+        if(page % 1 === 0){
+            setTotalPage(page)
+        }else{
+            setTotalPage(Math.floor(page)+1)
+        }
+        getTotalPage()
+    }, [filterStatus, searchVal, limit, offset, sortColumn]);
 
   const handleSearch = (e) => {
     const searchInput = e.target.value.trim(); // remove extra spaces from start/end
@@ -435,4 +432,4 @@ RequestAccess.propTypes = {
   setOpenInviteretailer: PropTypes.func,
   changeSubTab: PropTypes.func,
   height: PropTypes.any,
-};
+}
