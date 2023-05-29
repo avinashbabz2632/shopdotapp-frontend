@@ -60,6 +60,16 @@ export default function BrandOnBoarding() {
   const [brandStep, setBrandStep] = useState([]);
   const [activeStep, setActiveStep] = useState(1);
   const [productId, setProductId] = useState('8019618038038');
+  const [isStepOneCompleted, setIsStepOneCompleted] = useState(false);
+  const [isStepTwoCompleted, setIsStepTwoCompleted] = useState(false);
+  const [isStepThreeCompleted, setIsStepThreeCompleted] = useState(false);
+  const [isStepFourCompleted, setIsStepFourCompleted] = useState(false);
+
+  const {integration} = profileCompleted || {};
+  const {brand_profile, brandPreference, shippingRate, shipping_charges, shop_detail, user_detail, payment_detail} = brandProfileDetails || {};
+  const {base_shipping_charge, incremental_shipping_charge} = shipping_charges || {};
+  const {incremental_fee, shipping_cost} = shippingRate || {};
+  const {is_active, shop} = shop_detail || {};
 
   useEffect(() => {
     dispatch(getBrandProfileAction(useDetails.id));
@@ -70,22 +80,28 @@ export default function BrandOnBoarding() {
   }, [profileCompleted]);
 
   const handleComplete = () => {
-    if (brandProfileDetails?.user_detail?.is_initial_sync_done) {
-      setBrandStep([1, 2, 3]);
-      setActiveStep(4);
-    } else if (profileCompleted.integration) {
-      setBrandStep([1, 2]);
-      setActiveStep(3);
-      setStoreName(brandProfileDetails?.shop_detail?.shop);
-    } else if (
-      profileCompleted.profile &&
-      profileCompleted.shipping &&
-      profileCompleted.preference &&
-      profileCompleted.paid
-    ) {
+   
+    setBrandStep([1]);
+    setActiveStep(1);
+    if(brand_profile && brandPreference && shippingRate && incremental_fee && shipping_cost && payment_detail) {
+      setIsStepOneCompleted(true);
       setBrandStep([1]);
       setActiveStep(2);
+    } 
+    if (is_active && shop) {
+      if (isStepOneCompleted) {
+        setBrandStep([1, 2]);
+      } 
+      setIsStepTwoCompleted(true);
+      setStoreName(shop);
     }
+    if (user_detail?.is_initial_sync_done) {
+      if (isStepOneCompleted && isStepTwoCompleted) {
+        setBrandStep([1, 2, 3]);
+      }
+      setIsStepThreeCompleted(true);
+      setActiveStep(4);
+    } 
   };
 
   const handleSetStoreName = (e) => {
@@ -137,7 +153,7 @@ export default function BrandOnBoarding() {
                           key={curentKey}
                           isCompleted={isCompleted}
                           isActive={curentKey == activeStep}
-                          openGuide={curentKey == 2 && activeStep == 2}
+                          openGuide={!is_active && curentKey == 2 && activeStep == 2}
                           handleStore={handleSetStoreName}
                           shopifyConnected={
                             curentKey == 2 && brandStep.includes(2)

@@ -1,0 +1,205 @@
+import productUrl from '../images/pc-slider-temp.jfif';
+export const requestAccessData = [
+    {
+        id: 1,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy1',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Pending',
+    },
+    {
+        id: 2,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy2',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Connected',
+    },
+    {
+        id: 3,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy3',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Declined',
+    },
+    {
+        id: 4,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Connected',
+    },
+    {
+        id: 5,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Declined',
+    },
+    {
+        id: 6,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Connected',
+    },
+    {
+        id: 7,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Declined',
+    },
+    {
+        id: 8,
+        // productUrl : productUrl,
+        name: 'Walker Pharmacy',
+        date: '01/02/2022',
+        approved_date: ' 02/02/2022',
+        status: 'Connected',
+    },
+];
+
+export const requestAccessDataColumn = [
+    {
+        title: 'Retailer Name',
+        key: 'retailer Name',
+        dataIndex: 'name',
+    },
+    {
+        title: 'Date Requested',
+        key: 'date Requested',
+        dataIndex: 'date',
+    },
+    {
+        title: 'Date Approved/Declined',
+        key: 'date Approved/Declined',
+        dataIndex: 'approved_date',
+    },
+    {
+        title: 'Status',
+        key: 'status',
+        dataIndex: 'status',
+    },
+];
+
+export const requestAccessDataColumnGrid = [
+    {
+        name: 'Retailer name',
+        selector: (row) => row.name,
+    },
+    {
+        name: 'Date requested',
+        selector: (row) => row.date,
+    },
+    {
+        name: 'Date Approved/Declined',
+        selector: (row) => row.approved_date,
+    },
+    {
+        name: 'Status',
+        selector: (row) => row.status,
+    },
+];
+
+export const connectedData = [
+    {
+        id: 1,
+        retailer_name: 'walker Pharmacy',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 20,
+        retailer_category: 'Gift Store',
+        state: 'California',
+        status: 'Connected',
+    },
+    {
+        id: 2,
+        retailer_name: 'walker Pharmacy2',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 50,
+        retailer_category: 'Florist or Garden Store decor',
+        state: 'oregon',
+        status: 'Pending',
+    },
+    {
+        id: 3,
+        retailer_name: 'walker Pharmacy3',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 100,
+        retailer_category: 'Gift Store',
+        state: 'California',
+        status: 'Declined',
+    },
+    {
+        id: 4,
+        retailer_name: 'walker Pharmacy4',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 200,
+        retailer_category: 'Florist or Garden Store',
+        state: 'Texas',
+        status: 'Connected',
+    },
+    {
+        id: 5,
+        retailer_name: 'walker Pharmacy5',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 300,
+        retailer_category: 'Gift Store',
+        state: 'California',
+        status: 'Connected',
+    },
+    {
+        id: 6,
+        retailer_name: 'walker Pharmacy6',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 400,
+        retailer_category: 'Stationery Store',
+        state: 'Texas',
+        status: 'Connected',
+    },
+    {
+        id: 7,
+        retailer_name: 'walker Pharmacy7',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 550,
+        retailer_category: 'Stationery Store',
+        state: 'California',
+        status: 'Connected',
+    },
+    {
+        id: 8,
+        retailer_name: 'walker Pharmacy8',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 500,
+        retailer_category: 'Stationery Store',
+        state: 'Texas',
+        status: 'Connected',
+    },
+    {
+        id: 9,
+        retailer_name: 'walker Pharmacy9',
+        productUrl: productUrl,
+        assigned_product: '50',
+        all_time_sale: 500,
+        retailer_category: 'Florist or Garden Store ',
+        state: 'California',
+        status: 'Connected',
+    },
+];
+
+// export const requestAccessData = [];
+// export const connectedData = [];

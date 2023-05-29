@@ -90,11 +90,11 @@ function RetailerHeader() {
                             className="menu_link"
                           >
                             Reports
-                            <div className="dropdown_header-chevron">
+                            {/* <div className="dropdown_header-chevron">
                               <div className="icon">
                                 <img src={ArrowDown} alt="Arrow" />
                               </div>
-                            </div>
+                            </div> */}
                           </NavLink>
                         </div>
                       </div>

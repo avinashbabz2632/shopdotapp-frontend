@@ -428,10 +428,38 @@ export function updatePreferences(data) {
     }
   };
 }
+
+export async function getRetailerRequestAction(data) {
+  try {
+    const response = await axios.post(API_END_POINT.RETAILER_REQUEST, data);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
+
+export async function respondRetailerRequestAction(data) {
+  try {
+    const response = await axios.put(
+      API_END_POINT.UPDATE_RETAILER_REQUEST,
+      data
+    );
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (err) {
+    return err.response;
+  }
+}
 export function getRetailerRequestForAccess(data) {
   return async (dispatch) => {
     try {
-      const response = await axios.post(API_END_POINT.RETAILER_REQUEST_FOR_ACCESS, data);
+      const response = await axios.post(
+        API_END_POINT.RETAILER_REQUEST_FOR_ACCESS,
+        data
+      );
       if (response.status === 200) {
         dispatch(setRetailerRequests(response.data));
       }

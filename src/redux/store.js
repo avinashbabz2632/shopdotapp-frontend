@@ -15,10 +15,11 @@ import { productReducer } from './Brand/Products/productSlice';
 import { preferenceReducer } from './Brand/Preference/preferenceSlice';
 import { getCountriesReducer } from './General/Countries/getCountriesSlice';
 import { getStatesReducer } from './General/States/getStatesSlice';
-import {retailerProfileReducer} from './Retailer/Profile/retailerProfileSlice';
-import {retailerSecurityReducer} from './Retailer/Security/securitySlice';
-import {retailerReducer} from './Brand/Retailer/retailerSlice'
-import {retailerProductReducer} from './Retailer/Brand/Products/retailerBrandProductsSlice';
+import { retailerProfileReducer } from './Retailer/Profile/retailerProfileSlice';
+import { retailerSecurityReducer } from './Retailer/Security/securitySlice';
+import { retailerProductReducer } from './Retailer/Brand/Products/retailerBrandProductsSlice';
+import { retailerReducer } from './Brand/Retailer/retailerSlice';
+import { brandRetailerProfileReducer } from './Brand/RetailerProfile/retailerProfileSlice';
 import { getCategoryReducer } from './General/Category/getCategorySlice';
 
 const persistConfig = {
@@ -48,6 +49,7 @@ const combinedReducer = combineReducers({
   countries: getCountriesReducer,
   states: getStatesReducer,
   retailerProfile: retailerProfileReducer,
+  brandRetailerProfile: brandRetailerProfileReducer,
   retailerSecurity: retailerSecurityReducer,
   brandRetailer: retailerReducer,
   retailerProduct: retailerProductReducer,
