@@ -7,7 +7,7 @@ import {
   setShippingLoading,
   setShippingTimes,
 } from '../redux/Brand/Shipping/shippingSlice';
-import { onChangePassword } from '../redux/Brand/Security/securitySlice';
+import { onChangePassword } from '../redux/Brand/security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
