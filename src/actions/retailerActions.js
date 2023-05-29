@@ -14,8 +14,11 @@ import {
   setRetailerProfileSaving,
 } from '../redux/Retailer/Profile/retailerProfileSlice';
 import {
+  sendRetaileNewConnectionRequest,
   setRetailerBrandProductsList,
   setRetailerBrandValuesList,
+  setRetailerNewConnectionRequestError,
+  setRetailerNewConnectionRequestSuccess,
 } from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 export function getRetailerProfileAction(id) {
@@ -159,5 +162,31 @@ export function getRetailerBrandValuesAction() {
       } else {
       }
     } catch (err) {}
+  };
+}
+
+export function retailerNewConnectionRequestAction(data) {
+  return async (dispatch) => {
+    try {
+      dispatch(sendRetaileNewConnectionRequest());
+      const response = await axios.post(
+        API_END_POINT.RETAILER_NEW_CONNECTION_REQUEST,
+        data
+      );
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
+        dispatch(setRetailerNewConnectionRequestSuccess());
+        // toast.success('New Connection request sent successfully');
+      }
+    } catch (err) {
+      dispatch(setRetailerNewConnectionRequestError());
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors[0].invitee_id
+          : 'Something went worng'
+      );
+    }
   };
 }

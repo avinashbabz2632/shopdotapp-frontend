@@ -6,13 +6,13 @@ import SideBar from './Sidebar';
 import SideFilter from './SideFilter';
 import RightIcon from '../../Brand/images/icons/icon-chevron--right.svg';
 import LeftIcon from '../../Brand/images/icons/icon-chevron--left.svg';
-import { connectedTableData } from './utils';
 import { Link } from 'react-router-dom';
 import useWindowSize from '../../../hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getRetailerBrandProductsListAction,
   getRetailerBrandValuesAction,
+  retailerNewConnectionRequestAction,
 } from '../../../actions/retailerActions';
 import {
   selectRetailerBrandProductsList,
@@ -21,6 +21,9 @@ import {
   selectRetailerInviteStatusFilter,
   selectRetailerPricingFilter,
   selectRetailerStateFilter,
+  selectSendRetailerNewConnectionRequest,
+  selectRetailerNewConnectionSuccess,
+  selectRetailerNewConnectionError,
 } from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
 import mailIcon from '../../../assets/images/icons/mail-icon.svg';
 import {
@@ -28,23 +31,33 @@ import {
   getStatesAction,
 } from '../../../actions/generalActions';
 import { selectCountries } from '../../../redux/General/Countries/getCountriesSelector';
-import { selectStates } from '../../../redux/General/States/getStatesSelector';
 import {
   clearBrandValuesFilter,
   clearPricingFilter,
   clearStateFilter,
+  resetNewConnectionRequestState,
 } from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 import SuccessfulModel from './SuccessfulModel';
+import { ToastContainer } from 'react-toastify';
+import { selectUserDetails } from '../../../redux/user/userSelector';
 
 function Brands() {
   const windowSize = useWindowSize();
   const dispatch = useDispatch();
   const products = useSelector(selectRetailerBrandProductsList);
+  const sendingNewConnectionRequest = useSelector(
+    selectSendRetailerNewConnectionRequest
+  );
+  const newConnectionRequestSuccess = useSelector(
+    selectRetailerNewConnectionSuccess
+  );
+  const newConnectionRequestError = useSelector(
+    selectRetailerNewConnectionError
+  );
+
   const { count, rows = [] } = products || {};
   const productList = rows;
   const countriesOption = useSelector(selectCountries);
-  const [data, setData] = useState(connectedTableData);
-  const [dataClone, setDataClone] = useState(connectedTableData);
   const [productsActiveFilterHeight, setProductsActiveFilterHeight] =
     useState(0);
   const [otherDivsHeight, setOtherDivsHeight] = useState(0);
@@ -55,6 +68,7 @@ function Brands() {
   const brandValuesFilter = useSelector(selectRetailerBrandValuesFilter);
   const pricingFilter = useSelector(selectRetailerPricingFilter);
   const stateFilter = useSelector(selectRetailerStateFilter);
+  const userDetails = useSelector(selectUserDetails);
   const [search, setSearch] = useState('');
   const [openRequestModal, setOpenRequestModal] = useState(false);
 
@@ -122,6 +136,18 @@ function Brands() {
       fetchProducts();
     }
   }, [search]);
+
+  useEffect(() => {
+    if (!sendingNewConnectionRequest && newConnectionRequestSuccess && !newConnectionRequestError) {
+      setOpenRequestModal(true);
+    } else if (!sendingNewConnectionRequest && !newConnectionRequestSuccess && newConnectionRequestError) {
+      dispatch(resetNewConnectionRequestState());
+    }
+  }, [
+    sendingNewConnectionRequest,
+    newConnectionRequestSuccess,
+    newConnectionRequestError,
+  ]);
 
   useEffect(() => {
     if (countriesOption && countriesOption.length > 0) {
@@ -209,20 +235,25 @@ function Brands() {
     return text;
   };
 
-  const _openRequestModal = () => {
-    setOpenRequestModal(true);
+  const handleSendNewConnectRequestClick = () => {
+    const data = {
+      invitee_id: userDetails?.id,
+      invite_via: 'retailer_request',
+    }
+    dispatch(retailerNewConnectionRequestAction(data));
   };
 
   const _closeRequestModal = () => {
     setOpenRequestModal(false);
+    dispatch(resetNewConnectionRequestState());
   };
 
   const showConnectButton = (status) => {
-    if (status && status.toLowerCase() === 'not connected') {
+    if (status && status.toLowerCase() === 'pending') {
       return (
         <button
           className="button button-dark connect-brand"
-          onClick={_openRequestModal}
+          onClick={handleSendNewConnectRequestClick}
         >
           Connect
         </button>
@@ -619,6 +650,7 @@ function Brands() {
         modalIsOpen={openRequestModal}
         closeSuccessfulModel={_closeRequestModal}
       />
+      <ToastContainer />
     </>
   );
 }
