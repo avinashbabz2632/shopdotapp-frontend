@@ -37,7 +37,7 @@ function AuthorizedSignerModel(props) {
                                     Please add an authorized signer as a ShopDot
                                     user to complete and sign the application.{' '}
                                     <Link
-                                        to="/brand/setting"
+                                        to="/brand/setting/users"
                                         className="link-text"
                                     >
                                         Click here

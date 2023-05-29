@@ -26,6 +26,8 @@ import {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { isEmpty, isNil } from 'lodash';
+import { selectStates } from '../../../../redux/General/States/getStatesSelector';
+import { getStatesAction } from '../../../../actions/generalActions';
 
 const defaultValues = {
     averageDeliveryTime: deliveryTimeOptions[0],
@@ -44,6 +46,7 @@ export default function BusinessDetails({
 }) {
     const businessDetails = useSelector(selectBusinessDetails);
     const gettingPaidPreferance = useSelector(selectGettingPaidPreferance);
+    const states = useSelector(selectStates)
     const bussinessCategoryOptions =
         !isEmpty(gettingPaidPreferance) &&
         !isNil(gettingPaidPreferance) &&
@@ -70,6 +73,7 @@ export default function BusinessDetails({
     });
 
     useEffect(() => {
+        dispatch(getStatesAction(1));
         const isFormValuePresent = Object.keys(businessDetails).length;
         if (isFormValuePresent !== 0) {
             const fields = [
@@ -125,7 +129,6 @@ export default function BusinessDetails({
         reset();
         handleChangeTab('2');
     };
-
     const handleEINChange = (event) => {
         const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
         if (rawValue === '') {
@@ -579,7 +582,7 @@ export default function BusinessDetails({
                                                 primary: '#bd6f34',
                                             },
                                         })}
-                                        options={stateIncorporationOptions}
+                                        options={states}
                                     />
                                 )}
                             />
