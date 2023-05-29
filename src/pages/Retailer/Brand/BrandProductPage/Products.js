@@ -18,23 +18,23 @@ import emptyTable from '../../../Brand/images/product-card-empty.svg';
 import searchIcon from '../../../Brand/images/icons/icon-search.svg';
 import closeIcon from '../../../Brand/images/icons/icon-close.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectBrandProductFilter } from '../../../../redux/Retailer/Brand/BrandProductSelector';
-import {
-    daysFullfillFiltersClear,
-    msrpFilterValuesClear,
-    retailertagsClear,
-    stockFiltersClear,
-    wspFilterValuesClear,
-} from '../../../../redux/Retailer/Brand/BrandProductsSlice';
-import { setActiveOpenValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
+// import { selectBrandProductFilter } from '../../../../redux/Retailer/Brand/BrandProductSelector';
+// import {
+//     daysFullfillFiltersClear,
+//     msrpFilterValuesClear,
+//     retailertagsClear,
+//     stockFiltersClear,
+//     wspFilterValuesClear,
+// } from '../../../../redux/Retailer/Brand/BrandProductsSlice';
+// import { setActiveOpenValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
 import BabyAndKids from '../../common/BabyAndKids';
 
 function Products() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const params = useParams();
-    const setActiveOpen = useSelector(setActiveOpenValue);
-    const ProductFilters = useSelector(selectBrandProductFilter);
+    const setActiveOpen = false//useSelector(false);
+    const ProductFilters = []; //useSelector([]);
     const [profileData, setProfileData] = useState(null);
     const [data, setData] = useState(retailerProductData);
     const [dataClone, setDataClone] = useState(retailerProductData);
@@ -163,22 +163,22 @@ function Products() {
     };
 
     const clearProductFilter = (e) => {
-        if (e === 'tagsValue') {
-            setFilterByBrand([]);
-            dispatch(retailertagsClear());
-        } else if (e === 'wspFilterValues') {
-            setWspFilter([]);
-            dispatch(wspFilterValuesClear());
-        } else if (e === 'msrpFilterValues') {
-            setMsrpFilter([]);
-            dispatch(msrpFilterValuesClear());
-        } else if (e === 'stockFilters') {
-            setStockFilter([]);
-            dispatch(stockFiltersClear());
-        } else if (e === 'daysFullfillFilters') {
-            setDaysFullfillFilter([]);
-            dispatch(daysFullfillFiltersClear());
-        }
+        // if (e === 'tagsValue') {
+        //     setFilterByBrand([]);
+        //     dispatch(retailertagsClear());
+        // } else if (e === 'wspFilterValues') {
+        //     setWspFilter([]);
+        //     dispatch(wspFilterValuesClear());
+        // } else if (e === 'msrpFilterValues') {
+        //     setMsrpFilter([]);
+        //     dispatch(msrpFilterValuesClear());
+        // } else if (e === 'stockFilters') {
+        //     setStockFilter([]);
+        //     dispatch(stockFiltersClear());
+        // } else if (e === 'daysFullfillFilters') {
+        //     setDaysFullfillFilter([]);
+        //     dispatch(daysFullfillFiltersClear());
+        // }
     };
 
     const ProductSearchBar = (e) => {
@@ -212,16 +212,16 @@ function Products() {
     };
 
     const handleClearFilter = () => {
-        setFilterByBrand([]);
-        setWspFilter([]);
-        setMsrpFilter([]);
-        setStockFilter([]);
-        setDaysFullfillFilter([]);
-        dispatch(retailertagsClear());
-        dispatch(wspFilterValuesClear());
-        dispatch(msrpFilterValuesClear());
-        dispatch(stockFiltersClear());
-        dispatch(daysFullfillFiltersClear());
+        // setFilterByBrand([]);
+        // setWspFilter([]);
+        // setMsrpFilter([]);
+        // setStockFilter([]);
+        // setDaysFullfillFilter([]);
+        // dispatch(retailertagsClear());
+        // dispatch(wspFilterValuesClear());
+        // dispatch(msrpFilterValuesClear());
+        // dispatch(stockFiltersClear());
+        // dispatch(daysFullfillFiltersClear());
     };
 
     return (
@@ -337,7 +337,7 @@ function Products() {
                                                                 } */}
                                                             </div>
                                                             <div className="brand-single_about-item-wrap">
-                                                                {profileData?.productCategoryTag.map(
+                                                                {profileData?.productCategoryTag?.map(
                                                                     (
                                                                         item,
                                                                         index
@@ -366,7 +366,7 @@ function Products() {
                                                                 } */}
                                                             </div>
                                                             <div className="brand-single_about-item-wrap">
-                                                                {profileData?.brandValues.map(
+                                                                {/* {(profileData?.brandValues || [{}, {}]).map(
                                                                     (
                                                                         item,
                                                                         index
@@ -384,7 +384,7 @@ function Products() {
                                                                             </a>
                                                                         );
                                                                     }
-                                                                )}
+                                                                )} */}
                                                                 {/* <a href="#">
                                                                     Handmade
                                                                 </a>
@@ -408,7 +408,7 @@ function Products() {
                                                                 } */}
                                                             </div>
                                                             <div className="brand-single_about-item-wrap">
-                                                                {profileData?.productCategoryTag.map(
+                                                                {profileData?.productCategoryTag?.map(
                                                                     (
                                                                         item,
                                                                         index

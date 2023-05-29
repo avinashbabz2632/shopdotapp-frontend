@@ -29,13 +29,18 @@ import {
 } from '../../../actions/generalActions';
 import { selectCountries } from '../../../redux/General/Countries/getCountriesSelector';
 import { selectStates } from '../../../redux/General/States/getStatesSelector';
-import { clearBrandValuesFilter, clearPricingFilter, clearStateFilter } from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import {
+  clearBrandValuesFilter,
+  clearPricingFilter,
+  clearStateFilter,
+} from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import SuccessfulModel from './SuccessfulModel';
 
 function Brands() {
   const windowSize = useWindowSize();
   const dispatch = useDispatch();
   const products = useSelector(selectRetailerBrandProductsList);
-  const {count, rows = []} = products || {};
+  const { count, rows = [] } = products || {};
   const productList = rows;
   const countriesOption = useSelector(selectCountries);
   const [data, setData] = useState(connectedTableData);
@@ -51,6 +56,7 @@ function Brands() {
   const pricingFilter = useSelector(selectRetailerPricingFilter);
   const stateFilter = useSelector(selectRetailerStateFilter);
   const [search, setSearch] = useState('');
+  const [openRequestModal, setOpenRequestModal] = useState(false);
 
   const prepareFilter = () => {
     const filterArr = [];
@@ -58,7 +64,7 @@ function Brands() {
       const obj = {
         field: 'brand_value',
         operator: 'in',
-        value: brandValuesFilter.map(e => e.id.toString()),
+        value: brandValuesFilter.map((e) => e.id.toString()),
       };
       filterArr.push(obj);
     }
@@ -93,8 +99,8 @@ function Brands() {
       },
       filter: prepareFilter(),
     };
-    if(search.length > 0) {
-      requestBody.query = {search};
+    if (search.length > 0) {
+      requestBody.query = { search };
     }
     dispatch(getRetailerBrandProductsListAction(requestBody));
   };
@@ -203,21 +209,34 @@ function Brands() {
     return text;
   };
 
+  const _openRequestModal = () => {
+    setOpenRequestModal(true);
+  };
+
+  const _closeRequestModal = () => {
+    setOpenRequestModal(false);
+  };
+
   const showConnectButton = (status) => {
     if (status && status.toLowerCase() === 'not connected') {
       return (
-        <button className="button button-dark connect-brand">Connect</button>
+        <button
+          className="button button-dark connect-brand"
+          onClick={_openRequestModal}
+        >
+          Connect
+        </button>
       );
     }
     return null;
   };
 
   const _clearBrandValuesFilter = (type) => {
-    if(type === 'brand_values'){
+    if (type === 'brand_values') {
       dispatch(clearBrandValuesFilter());
     } else if (type === 'pricing') {
       dispatch(clearPricingFilter());
-    } else if(type === 'state') {
+    } else if (type === 'state') {
       dispatch(clearStateFilter());
     } else if (type === 'invite_status') {
       setInviteStatus('All');
@@ -324,7 +343,8 @@ function Brands() {
                     <div className="products_active-filters">
                       <div className="products_active-filter">
                         <div className="txt">
-                          <b>Brand Values:</b> {brandValuesFilter.map(e => e.name).join(',')}
+                          <b>Brand Values:</b>{' '}
+                          {brandValuesFilter.map((e) => e.name).join(',')}
                         </div>
                         <button className="products_active-remove">
                           <div className="icon">
@@ -351,7 +371,8 @@ function Brands() {
                     <div className="products_active-filters">
                       <div className="products_active-filter">
                         <div className="txt">
-                          <b>Pricing:</b> {pricingFilter.map(e => e).join(',')}
+                          <b>Pricing:</b>{' '}
+                          {pricingFilter.map((e) => e).join(',')}
                         </div>
                         <button className="products_active-remove">
                           <div className="icon">
@@ -495,7 +516,7 @@ function Brands() {
                                       />
                                     </a>
                                   </div>
-                                  <Link to="#">
+                                  <Link to="/retailer/brand/single">
                                     {brand_details?.store_name}
                                   </Link>
                                 </div>
@@ -594,6 +615,10 @@ function Brands() {
           </main>
         </div>
       </div>
+      <SuccessfulModel
+        modalIsOpen={openRequestModal}
+        closeSuccessfulModel={_closeRequestModal}
+      />
     </>
   );
 }

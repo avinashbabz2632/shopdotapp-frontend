@@ -1,29 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
-import {
-    selectBrandProductFilter,
-    selectDaysfullfillOptions,
-    selectMsrpFilterOptions,
-    selectStockFilterOptions,
-    selectTagsOptions,
-    selectWspFilterOptions,
-} from '../../../../redux/Retailer/Brand/BrandProductSelector';
+// import {
+//     selectBrandProductFilter,
+//     selectDaysfullfillOptions,
+//     selectMsrpFilterOptions,
+//     selectStockFilterOptions,
+//     selectTagsOptions,
+//     selectWspFilterOptions,
+// } from '../../../../redux/Retailer/Brand/BrandProductSelector';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    resetToInitial,
-    setBrandProductFilter,
-    setSalesFilter,
-} from '../../../../redux/Retailer/Brand/BrandProductsSlice';
+// import {
+//     resetToInitial,
+//     setBrandProductFilter,
+//     setSalesFilter,
+// } from '../../../../redux/Retailer/Brand/BrandProductsSlice';
 
 function BrandProductsSidebar() {
     const [openCloseFilter, setOpenCloseFilter] = useState(true);
     const dispatch = useDispatch();
-    const productFilter = useSelector(selectBrandProductFilter);
-    const tagsValue = useSelector(selectTagsOptions);
-    const wspValue = useSelector(selectWspFilterOptions);
-    const msrpValue = useSelector(selectMsrpFilterOptions);
-    const stockValue = useSelector(selectStockFilterOptions);
-    const daysfullfillValue = useSelector(selectDaysfullfillOptions);
+    // const productFilter = useSelector(selectBrandProductFilter);
+    // const tagsValue = useSelector(selectTagsOptions);
+    // const wspValue = useSelector(selectWspFilterOptions);
+    // const msrpValue = useSelector(selectMsrpFilterOptions);
+    // const stockValue = useSelector(selectStockFilterOptions);
+    // const daysfullfillValue = useSelector(selectDaysfullfillOptions);
+    const productFilter = [];
+    const tagsValue = []
+    const wspValue = [];
+    const msrpValue = [];
+    const stockValue = [];
+    const daysfullfillValue = [];
     const [productFilterVal, setProductFilterVal] = useState(productFilter);
     const [tagsOption, setTagsOption] = useState([]);
     const [tagsOptionClone, setTagsOptionClone] = useState([]);
@@ -58,11 +64,11 @@ function BrandProductsSidebar() {
     }, [productFilter]);
 
     useEffect(() => {
-        dispatch(setSalesFilter(allTimeSale));
+        // dispatch(setSalesFilter(allTimeSale));
     }, [allTimeSale]);
 
     const handleClearFilter = () => {
-        dispatch(resetToInitial());
+        // dispatch(resetToInitial());
     };
 
     useEffect(() => {
@@ -85,7 +91,7 @@ function BrandProductsSidebar() {
             setProductFilterVal({ ...newData });
             setFilterTagsVal(newCategory);
         }
-        dispatch(setBrandProductFilter({ ...newData }));
+        // dispatch(setBrandProductFilter({ ...newData }));
     };
 
     const handleWSPPrice = (item) => {
@@ -104,7 +110,7 @@ function BrandProductsSidebar() {
             setProductFilterVal({ ...newData });
             setWspVal(newCategory);
         }
-        dispatch(setBrandProductFilter({ ...newData }));
+        // dispatch(setBrandProductFilter({ ...newData }));
     };
 
     const handleMSRPPrice = (item) => {
@@ -123,7 +129,7 @@ function BrandProductsSidebar() {
             setProductFilterVal({ ...newData });
             setMsrpVal(newCategory);
         }
-        dispatch(setBrandProductFilter({ ...newData }));
+        // dispatch(setBrandProductFilter({ ...newData }));
     };
 
     const handleStock = (item) => {
@@ -142,7 +148,7 @@ function BrandProductsSidebar() {
             setProductFilterVal({ ...newData });
             setStockVal(newCategory);
         }
-        dispatch(setBrandProductFilter({ ...newData }));
+        // dispatch(setBrandProductFilter({ ...newData }));
     };
 
     const handleDayFullfill = (item) => {
