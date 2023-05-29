@@ -15,3 +15,9 @@ export const selectRetailerStateFilter = (state) =>
 
 export const selectRetailerInviteStatusFilter = (state) =>
   state.retailerProduct.retailerInviteStatusFilter;
+
+export const selectSendRetailerNewConnectionRequest = (state) => state.retailerProduct.retailerNewConnectionRequesting;
+
+export const selectRetailerNewConnectionSuccess = (state) => state.retailerProduct.retailerNewConnectionRequestSuccess;
+
+export const selectRetailerNewConnectionError = (state) => state.retailerProduct.retailerNewConnectionRequestError;
