@@ -19,11 +19,13 @@ function EmailVerification() {
   useEffect(() => {
     dispatch(sendVerifyEmailAction({ id: userDetails.id }));
     dispatch(fetchUserDetailAction(userDetails.id))
+    if(userDetails.is_email_verified){
+      navigate('/personalize');
+    }
   }, []);
 
   const handleGoPersonalize = () => {
     dispatch(sendVerifyEmailAction({ id: userDetails.id }));
-    // navigate('/personalize');
   };
   return (
     <>

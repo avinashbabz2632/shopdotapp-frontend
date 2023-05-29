@@ -1,7 +1,7 @@
 import axios from '../utils/axios';
 import * as API_END_POINT from '../constants/api';
 import { logOut, setLoggedIn, setRegister } from '../redux/auth/authSlice';
-import { setUserInfo } from '../redux/user/userSlice';
+import { setRoleUpdated, setUserInfo } from '../redux/user/userSlice';
 import { toast } from 'react-toastify';
 
 export function loginAction(formData) {
@@ -11,6 +11,9 @@ export function loginAction(formData) {
       if (response && response.data && response.data.code == 200) {
         dispatch(setLoggedIn());
         dispatch(setUserInfo(response.data.data));
+        if(response.data.data.role){
+          dispatch(setRoleUpdated())
+        }
       } else {
         toast.error('Something went worng');
       }
@@ -99,8 +102,7 @@ export function fetchUserDetailAction() {
       const response = await axios.get(`${API_END_POINT.USER_DETAILS}`);
 
       if (response && response.data && response.data.code == 200) {
-        console.log(response.data);
-        // dispatch(setUserInfo(response.data.data));
+        dispatch(setUserInfo(response.data.data));
       } else {
         toast.error('Something went worng');
       }

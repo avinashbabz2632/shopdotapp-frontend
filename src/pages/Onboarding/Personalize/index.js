@@ -37,7 +37,11 @@ export default function Personalize() {
       setPlatform(1);
     }
   };
-
+  useEffect(()=>{
+    if(!userDetails.is_email_verified){
+      navigate("/verify-email");
+    }
+  })
   //Here 1 for SHOFIFY and 2 for OTHERS
   const selectPlatform = (platform) => {
     if (platform == 1) {

@@ -94,9 +94,9 @@ function App() {
         navigate("verify-email")
       }else if(!isRoleUpdated){
         navigate('/personalize');
-      }else if(userDetails.role.name === 'retailer') {
+      }else if(userDetails.role && userDetails.role.name === 'retailer') {
         navigate('/retailer-onboarding');
-      } else if(userDetails.role.name === 'brand'){
+      } else if(userDetails.role && userDetails.role.name === 'brand'){
         navigate('/brand-onboarding');
       }
     }else{
