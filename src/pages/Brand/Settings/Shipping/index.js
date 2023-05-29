@@ -132,8 +132,8 @@ export default function Shipping() {
           : '',
         city: shippingDetails?.shipping_address?.city,
         zip: shippingDetails?.shipping_address?.zip,
-        shippingfee: shippingDetails?.shipping_cost,
-        incrementalfee: shippingDetails?.incremental_fee,
+        shippingfee: formatCurrency(shippingDetails?.shipping_cost.toString()),
+        incrementalfee: formatCurrency(shippingDetails?.incremental_fee.toString()),
         daystofulfill: shippingDetails?.shipping_address?.shipping_time_id
           ? formatShippingTime()?.find(
               (item) =>
@@ -171,10 +171,12 @@ export default function Shipping() {
   };
 
   const formatCurrency = (value) => {
-    const containsDot = value.includes('.');
+    console.log('');
+    if (!value) return '0.00';
+    const containsDot = value?.includes('.');
     let result;
     if (containsDot) {
-      const splits = value.split('.');
+      const splits = value?.split('.');
       const integerValue = `${splits[0]}`;
       let decimalValue;
       if (splits[1].length >= 2) {
@@ -184,7 +186,7 @@ export default function Shipping() {
       }
       result = `${integerValue}.${decimalValue}`;
     } else {
-      const _result = value.substr(0, 2);
+      const _result = value?.substr(0, 2);
       result = `${_result}.00`;
     }
     return result;

@@ -5,28 +5,32 @@ import React, {
     useImperativeHandle,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     setCategoryFilter,
     setStateFilter,
-    setSalesFilter,
     resetConnecteRetailersFilter,
 } from '../../../../redux/Brand/Retailer/retailerSlice';
 import Info from '../../images/icons/info.svg';
+import { getRetailerCategory, getStatesAction } from '../../../../actions/generalActions';
+import { selectStates } from '../../../../redux/General/States/getStatesSelector';
+import { selectCategories } from '../../../../redux/General/Category/getCategorySelector';
 
 const ConnectedFilter = forwardRef((props, ref) => {
     const dispatch = useDispatch();
     const [openSelect, setOpenSelect] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState([]);
-    const [selectedState, setSelectedState] = useState([]);
+    const selectedState = useSelector(selectStates);
+    const [filterState, setFilterState] = useState([]);
+    const [filterCategory, setFilterCategory] = useState([]);
+    const selectedCategories = useSelector(selectCategories);
     const [allTimeSale, setAllTimeSale] = useState({ min: '', max: '' });
 
     useEffect(() => {
-        dispatch(setCategoryFilter(selectedCategory));
-        dispatch(setStateFilter(selectedState));
-        dispatch(setSalesFilter(allTimeSale));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedCategory, selectedState, allTimeSale]);
+        dispatch(getStatesAction(1));
+        dispatch(getRetailerCategory())
+        dispatch(setCategoryFilter(filterCategory));
+        dispatch(setStateFilter(filterState));
+    }, [filterCategory, filterState]);
 
     const openCloseSelect = (key) => {
         if (openSelect === key) {
@@ -39,34 +43,33 @@ const ConnectedFilter = forwardRef((props, ref) => {
     const handleChangeCheckbox = (e) => {
         const { value, checked } = e.target;
         if (checked) {
-            setSelectedCategory([...selectedCategory, value]);
+            setFilterCategory([...filterCategory, value])
         } else {
-            const newArr = selectedCategory.filter((item) => {
-                return item != value;
-            });
-            setSelectedCategory([...newArr]);
+            const tempArray = [...filterCategory]
+            const index = tempArray.indexOf(value)
+            if (index !== -1) {
+                tempArray.splice(index, 1);
+                setFilterCategory([...tempArray]);
+            }
         }
     };
     const handleChangeStateCheckbox = (e) => {
         const { value, checked } = e.target;
         if (checked) {
-            setSelectedState([...selectedState, value]);
+            setFilterState([...filterState, value])
         } else {
-            const newArr = selectedState.filter((item) => {
-                return item != value;
-            });
-            setSelectedState([...newArr]);
+            const tempArray = [...filterState]
+            const index = tempArray.indexOf(value)
+            if (index !== -1) {
+                tempArray.splice(index, 1);
+                setFilterState([...tempArray]);
+            }
         }
     };
 
-    // The component instance will be extended
-    // with whatever you return from the callback passed
-    // as the second argument
     useImperativeHandle(ref, () => ({
         handleClearFilter() {
             setAllTimeSale({ min: '', max: '' });
-            setSelectedState([]);
-            setSelectedCategory([]);
             dispatch(resetConnecteRetailersFilter());
         },
     }));
@@ -91,42 +94,27 @@ const ConnectedFilter = forwardRef((props, ref) => {
                         </div>
                         <div
                             id="relailerCategory"
-                            className={`select-list select-options ${
-                                openSelect === 'category'
+                            className={`select-list select-options ${openSelect === 'category'
                                     ? 'hide retailer-select'
                                     : ''
-                            }`}
+                                }`}
                         >
-                            <label htmlFor="pc1">
-                                <input
-                                    type="checkbox"
-                                    id="pc1"
-                                    onChange={handleChangeCheckbox}
-                                    value="Florist or Garden Store"
-                                />
-                                Florist or Garden Store
-                                <span></span>
-                            </label>
-                            <label htmlFor="pc2">
-                                <input
-                                    type="checkbox"
-                                    id="pc2"
-                                    onChange={handleChangeCheckbox}
-                                    value="Gift Store"
-                                />
-                                Gift Store
-                                <span></span>
-                            </label>
-                            <label htmlFor="pc3">
-                                <input
-                                    type="checkbox"
-                                    id="pc3"
-                                    onChange={handleChangeCheckbox}
-                                    value="Stationery Store"
-                                />
-                                Stationery Store
-                                <span></span>
-                            </label>
+                            {
+                                selectedCategories?.map((category,i)=>{
+                                    return (
+                                        <label htmlFor={`category-${i}`} key={i}>
+                                            <input
+                                                type="checkbox"
+                                                id={`category-${i}`}
+                                                onChange={handleChangeCheckbox}
+                                                value={category.id}
+                                            />
+                                            {category.name}
+                                            <span></span>
+                                        </label>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </div>
@@ -150,33 +138,23 @@ const ConnectedFilter = forwardRef((props, ref) => {
                         </div>
                         <div
                             id="states"
-                            className={`select-list select-options ${
-                                openSelect === 'state'
+                            className={`select-list select-options ${openSelect === 'state'
                                     ? 'hide retailer-select'
                                     : ''
-                            }`}
+                                }`}
                         >
-                            <label htmlFor="pc8">
-                                <input
-                                    type="checkbox"
-                                    id="pc8"
-                                    value="California"
-                                    onChange={handleChangeStateCheckbox}
-                                />
-                                California
-                                <span></span>
-                            </label>
-
-                            <label htmlFor="pc9">
-                                <input
-                                    type="checkbox"
-                                    id="pc9"
-                                    value="Texas"
-                                    onChange={handleChangeStateCheckbox}
-                                />
-                                Texas
-                                <span></span>
-                            </label>
+                            {
+                                selectedState.map((state, i)=>{
+                                    return (
+                                        <label htmlFor={`state-${i}`} key={i}>
+                                            <input type="checkbox" id={`state-${i}`} value={state.name} onChange={handleChangeStateCheckbox}/>
+                                            {state.name}
+                                            <span></span>
+                                        </label>
+                                    )
+                                })
+                            }
+                            
                         </div>
                     </div>
                 </div>
