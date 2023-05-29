@@ -17,9 +17,8 @@ import ConnectedFilter from './Connected/connectedFilter';
 import ArrowLeft from '../images/icons/icon-arrow--left.svg';
 import useWindowSize from '../../../hooks/useWindowSize';
 
-export default function Retailer() {
+export default function Retailer(props) {
     const childRef = useRef();
-    const windowSize = useWindowSize();
     const [height, setHeight] = useState(0);
     const [subTab, setSubTab] = useState(1);
     const [openSideFilter, setOpenSideFilter] = useState(true);
@@ -29,26 +28,10 @@ export default function Retailer() {
     const handleOpenCloseFilter = () => {
         setOpenCloseFilter(!openCloseFilter);
     };
-    const changeSubTab = useCallback(
-        (key) => {
-            if (key === 'connected-retailer') {
-                setSubTab(1);
-            } else {
-                setSubTab(2);
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [subTab]
-        );
-        
-        useEffect(() => {
-            if(window.location.pathname == "/brand/request-access"){
-                setSubTab(2);
-            } else {
-                setSubTab(1);
-            }
-        }, [subTab]);
-
+    const changeSubTab = useCallback((s) => {
+        setSubTab(s);
+      }, [subTab]);
+      
     useLayoutEffect(() => {
         function updateHeight() {
             const headerHeight =
@@ -140,6 +123,7 @@ export default function Retailer() {
                                                         setOpenSideFilter={
                                                             setOpenSideFilter
                                                         }
+                                                        changeSubTab={changeSubTab}
                                                     />
                                                 </div>
                                             </div>

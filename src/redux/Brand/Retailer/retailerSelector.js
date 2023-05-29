@@ -3,3 +3,4 @@ export const selectCategoryViseData = (state) => state.brandRetailer.categoryFil
 export const selectStateViseData = (state) => state.brandRetailer.stateFilter;
 export const selectSalesViseData = (state) => state.brandRetailer.salesFilter;
 export const selectRetailerRequestData = (state) => state.brandRetailer.retailerRequests;
+export const selectConnectedRetailerData = (state) => state.brandRetailer.connectedRetailers;
