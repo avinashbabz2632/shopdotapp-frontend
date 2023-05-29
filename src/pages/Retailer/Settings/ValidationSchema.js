@@ -7,9 +7,16 @@ export const retailerProfileValidationSchema = yup.object().shape({
     .email('Must be a valid email.')
     .max(255)
     .required('Contact email is required.'),
-  contactPhone: yup.string().required('Contact phone number is required.'),
+  contactPhone: yup
+    .string()
+    .nullable()
+    .required('Contact phone number is required.')
+    .min(12, 'Contact phone should be 10 digits.'),
   retailerName: yup.string().required('Retailer name is required.'),
-  retailerWebsite: yup.string().required('Retailer website is required.'),
+  retailerWebsite: yup
+    .string()
+    .url('Please enter a valid URL')
+    .required('Retailer website is required.'),
   retailerCategory: yup
     .object()
     .nullable()
