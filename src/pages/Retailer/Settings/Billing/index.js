@@ -20,6 +20,8 @@ import {
 } from '../../../../actions/retailerActions';
 import { ToastContainer, toast } from 'react-toastify';
 import { isEmpty } from 'lodash';
+import { useSelector } from 'react-redux';
+import { selectStates } from '../../../../redux/General/States/getStatesSelector';
 
 export default function Billing() {
   const [addCredit, setAddCredit] = useState(false);
@@ -29,6 +31,15 @@ export default function Billing() {
   const [dataArray, setDataArray] = useState([]);
   const [showError, setShowError] = useState('');
   const [billList, setBillList] = useState([]);
+
+  const statesOption = useSelector(selectStates);
+  let transformStatesOption = [];
+  if (statesOption && statesOption.length > 0) {
+    transformStatesOption = statesOption?.map((el) => {
+      return { label: el.name, value: el.country_id };
+    });
+  }
+
   const {
     register,
     handleSubmit,
@@ -61,7 +72,7 @@ export default function Billing() {
       expiryYear: '2023',
       address_line_1: data.addressLine1,
       city: data.city,
-      state: data.state.value,
+      state: getDefaultValueOfStateField(),
       zip: data.zip,
       billing_method: 'CARD',
     };
@@ -83,6 +94,15 @@ export default function Billing() {
     // setTimeout(() => {
     //   setIsOpen(false);
     // }, 3000);
+  };
+
+  const getDefaultValueOfStateField = () => {
+    let option = null;
+
+    if (transformStatesOption && transformStatesOption.length > 0) {
+      option = transformStatesOption[0].value;
+    }
+    return JSON.stringify(option);
   };
 
   const handleConfirmModelClose = useCallback(() => {
@@ -140,10 +160,10 @@ export default function Billing() {
                         <div className="form-input mb-4">
                           <label className="form-label">Expiry date</label>
                           <input
-                            type="number"
+                            type="text"
                             className="form-control mb-0"
                             id=""
-                            placeholder="MM / YYYY"
+                            placeholder="MM/YY"
                             name="expiryDate"
                             {...register('expiryDate', {
                               required: true,
@@ -161,6 +181,7 @@ export default function Billing() {
                             type="text"
                             className="form-control mb-0"
                             placeholder="100"
+                            maxLength={3}
                             name="cvv"
                             {...register('cvv', {
                               required: true,
@@ -249,7 +270,7 @@ export default function Billing() {
                                     primary: '#bd6f34',
                                   },
                                 })}
-                                options={stateIncorporationOptions}
+                                options={transformStatesOption}
                               />
                             )}
                           />
