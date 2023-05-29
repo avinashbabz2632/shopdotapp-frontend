@@ -36,7 +36,7 @@ export default function Billing() {
   let transformStatesOption = [];
   if (statesOption && statesOption.length > 0) {
     transformStatesOption = statesOption?.map((el) => {
-      return { label: el.name, value: el.country_id };
+      return { label: el.name, value: el.country_id, code: el.code };
     });
   }
 
@@ -100,9 +100,9 @@ export default function Billing() {
     let option = null;
 
     if (transformStatesOption && transformStatesOption.length > 0) {
-      option = transformStatesOption[0].value;
+      option = transformStatesOption[0].code;
     }
-    return JSON.stringify(option);
+    return option;
   };
 
   const handleConfirmModelClose = useCallback(() => {
