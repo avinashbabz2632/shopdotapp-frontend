@@ -66,9 +66,7 @@ const ConnectedFilter = forwardRef((props, ref) => {
             }
         }
     };
-    // The component instance will be extended
-    // with whatever you return from the callback passed
-    // as the second argument
+
     useImperativeHandle(ref, () => ({
         handleClearFilter() {
             setAllTimeSale({ min: '', max: '' });
