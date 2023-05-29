@@ -16,7 +16,7 @@ import {
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
-import { setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
+import { setConnectedRetailers, setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
@@ -462,6 +462,22 @@ export function getRetailerRequestForAccess(data) {
       );
       if (response.status === 200) {
         dispatch(setRetailerRequests(response.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+export function getConnectedRetailer(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(API_END_POINT.CONECTED_RETAILER, data);
+      if (response.status === 200) {
+        dispatch(setConnectedRetailers(response.data));
       }
     } catch (err) {
       toast.error(

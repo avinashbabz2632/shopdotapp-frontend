@@ -74,9 +74,11 @@ export const ORDERDETAILS = `${BASE_URL}/order/details`;
 // General
 export const COUNTRIES = `${BASE_URL}/general/countries`;
 export const STATES = (id) => `${BASE_URL}/general/countries/${id}/states`;
+export const RETAILER_CATEGORIES = `${BASE_URL}/general/brand-categories`;
 
 //brand retailer request
 export const RETAILER_REQUEST_FOR_ACCESS = `${BASE_URL}/brand/retailer-requests`;
+export const CONECTED_RETAILER = `${BASE_URL}/brand/connected-retailers`;
 
 // export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
 // export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;
