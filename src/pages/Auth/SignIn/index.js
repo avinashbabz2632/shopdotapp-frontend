@@ -37,6 +37,7 @@ const validationSchema = yup
 
 function SignIn() {
   const [passwordType, setPasswordType] = useState(true);
+  const [disabled, setDisabled] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const success = useSelector(loginSuccess);
@@ -46,8 +47,22 @@ function SignIn() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      for (var key in value) {
+        if (!value[key]) {
+          setDisabled(true);
+          return;
+        }
+        setDisabled(false);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   useEffect(() => {
     if (success) {
@@ -136,7 +151,7 @@ function SignIn() {
             </div>
           </div>
           <div className="form__field buttons">
-            <Button type="submit" className="button">
+            <Button disabled={disabled} type="submit" className="button">
               Sign In
             </Button>
           </div>
