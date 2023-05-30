@@ -83,7 +83,7 @@ export function updatePreferences(data) {
 export async function addBillingDetailsAction(data) {
   try {
     const response = await axios.post(API_END_POINT.RETAILER_BILLING, data);
-    if (response.status === 201) {
+    if (response.status === 200) {
       return response;
     }
   } catch (err) {
@@ -94,7 +94,7 @@ export async function addBillingDetailsAction(data) {
 export async function getBillingAction() {
   try {
     const response = await axios.get(API_END_POINT.RETAILER_BILLING);
-    if (response.status === 201) {
+    if (response.status === 200) {
       return response;
     }
   } catch (err) {
