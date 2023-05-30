@@ -52,7 +52,7 @@ function SignIn() {
   useEffect(() => {
     if (success) {
       if (userDetails.is_email_verified) {
-        if (userDetails.role.name) {
+        if (userDetails.role && userDetails.role.name) {
           if (userDetails.role.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
@@ -62,7 +62,7 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        if (userDetails.role.name) {
+        if (userDetails.role && userDetails.role.name) {
           if (userDetails.role.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
@@ -81,6 +81,13 @@ function SignIn() {
   const onSubmit = (data) => {
     dispatch(loginAction({ ...data, device_id: '123' }));
     // navigate('/verify-email');
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit(onSubmit)();
+    }
   };
 
   return (
@@ -113,6 +120,7 @@ function SignIn() {
               {...register('password', {
                 required: true,
               })}
+              onKeyPress={handleKeyPress}
             />
             <span
               className={`password-show ${passwordType ? '' : 'active'}`}
