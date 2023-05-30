@@ -235,9 +235,9 @@ function Brands() {
     return text;
   };
 
-  const handleSendNewConnectRequestClick = () => {
+  const handleSendNewConnectRequestClick = (invitee_id) => {
     const data = {
-      invitee_id: userDetails?.id,
+      invitee_id: invitee_id,
       invite_via: 'retailer_request',
     }
     dispatch(retailerNewConnectionRequestAction(data));
@@ -248,12 +248,12 @@ function Brands() {
     dispatch(resetNewConnectionRequestState());
   };
 
-  const showConnectButton = (status) => {
-    if (status && status.toLowerCase() === 'pending') {
+  const showConnectButton = (status, invitee_id) => {
+    if (status && status.toLowerCase() === 'not connected') {
       return (
         <button
           className="button button-dark connect-brand"
-          onClick={handleSendNewConnectRequestClick}
+          onClick={() => handleSendNewConnectRequestClick(invitee_id)}
         >
           Connect
         </button>
@@ -595,7 +595,7 @@ function Brands() {
                               </td>
                               <td>
                                 <div className="buttons">
-                                  {showConnectButton(invite_status)}
+                                  {showConnectButton(invite_status, invited_user?.id)}
                                   <button className="button message-brand">
                                     <img src={mailIcon} />
                                   </button>
