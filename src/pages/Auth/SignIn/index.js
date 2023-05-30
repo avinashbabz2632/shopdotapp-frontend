@@ -52,7 +52,7 @@ function SignIn() {
   useEffect(() => {
     if (success) {
       if (userDetails.is_email_verified) {
-        if (userDetails.role.name) {
+        if (userDetails.role && userDetails.role.name) {
           if (userDetails.role.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
@@ -62,7 +62,7 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        if (userDetails.role.name) {
+        if (userDetails.role && userDetails.role.name) {
           if (userDetails.role.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
