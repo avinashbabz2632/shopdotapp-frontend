@@ -24,7 +24,7 @@ function ResetPasswordSuccess() {
             <p className="fp-text">Your password is successfully changed.</p>
           </div>
           <div className="form__field buttons">
-            <Link to="/">
+            <Link to="/login">
               <Button type="submit" className="button">
                 Go to ShopDot
               </Button>
