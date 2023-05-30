@@ -6,13 +6,13 @@ import SideBar from './Sidebar';
 import SideFilter from './SideFilter';
 import RightIcon from '../../Brand/images/icons/icon-chevron--right.svg';
 import LeftIcon from '../../Brand/images/icons/icon-chevron--left.svg';
-import { connectedTableData } from './utils';
 import { Link } from 'react-router-dom';
 import useWindowSize from '../../../hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getRetailerBrandProductsListAction,
   getRetailerBrandValuesAction,
+  retailerNewConnectionRequestAction,
 } from '../../../actions/retailerActions';
 import {
   selectRetailerBrandProductsList,
@@ -21,6 +21,9 @@ import {
   selectRetailerInviteStatusFilter,
   selectRetailerPricingFilter,
   selectRetailerStateFilter,
+  selectSendRetailerNewConnectionRequest,
+  selectRetailerNewConnectionSuccess,
+  selectRetailerNewConnectionError,
 } from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
 import mailIcon from '../../../assets/images/icons/mail-icon.svg';
 import {
@@ -28,18 +31,33 @@ import {
   getStatesAction,
 } from '../../../actions/generalActions';
 import { selectCountries } from '../../../redux/General/Countries/getCountriesSelector';
-import { selectStates } from '../../../redux/General/States/getStatesSelector';
-import { clearBrandValuesFilter, clearPricingFilter, clearStateFilter } from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import {
+  clearBrandValuesFilter,
+  clearPricingFilter,
+  clearStateFilter,
+  resetNewConnectionRequestState,
+} from '../../../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import SuccessfulModel from './SuccessfulModel';
+import { ToastContainer } from 'react-toastify';
+import { selectUserDetails } from '../../../redux/user/userSelector';
 
 function Brands() {
   const windowSize = useWindowSize();
   const dispatch = useDispatch();
   const products = useSelector(selectRetailerBrandProductsList);
-  const {count, rows = []} = products || {};
+  const sendingNewConnectionRequest = useSelector(
+    selectSendRetailerNewConnectionRequest
+  );
+  const newConnectionRequestSuccess = useSelector(
+    selectRetailerNewConnectionSuccess
+  );
+  const newConnectionRequestError = useSelector(
+    selectRetailerNewConnectionError
+  );
+
+  const { count, rows = [] } = products || {};
   const productList = rows;
   const countriesOption = useSelector(selectCountries);
-  const [data, setData] = useState(connectedTableData);
-  const [dataClone, setDataClone] = useState(connectedTableData);
   const [productsActiveFilterHeight, setProductsActiveFilterHeight] =
     useState(0);
   const [otherDivsHeight, setOtherDivsHeight] = useState(0);
@@ -50,7 +68,9 @@ function Brands() {
   const brandValuesFilter = useSelector(selectRetailerBrandValuesFilter);
   const pricingFilter = useSelector(selectRetailerPricingFilter);
   const stateFilter = useSelector(selectRetailerStateFilter);
+  const userDetails = useSelector(selectUserDetails);
   const [search, setSearch] = useState('');
+  const [openRequestModal, setOpenRequestModal] = useState(false);
 
   const prepareFilter = () => {
     const filterArr = [];
@@ -58,7 +78,7 @@ function Brands() {
       const obj = {
         field: 'brand_value',
         operator: 'in',
-        value: brandValuesFilter.map(e => e.id.toString()),
+        value: brandValuesFilter.map((e) => e.id.toString()),
       };
       filterArr.push(obj);
     }
@@ -93,8 +113,8 @@ function Brands() {
       },
       filter: prepareFilter(),
     };
-    if(search.length > 0) {
-      requestBody.query = {search};
+    if (search.length > 0) {
+      requestBody.query = { search };
     }
     dispatch(getRetailerBrandProductsListAction(requestBody));
   };
@@ -116,6 +136,18 @@ function Brands() {
       fetchProducts();
     }
   }, [search]);
+
+  useEffect(() => {
+    if (!sendingNewConnectionRequest && newConnectionRequestSuccess && !newConnectionRequestError) {
+      setOpenRequestModal(true);
+    } else if (!sendingNewConnectionRequest && !newConnectionRequestSuccess && newConnectionRequestError) {
+      dispatch(resetNewConnectionRequestState());
+    }
+  }, [
+    sendingNewConnectionRequest,
+    newConnectionRequestSuccess,
+    newConnectionRequestError,
+  ]);
 
   useEffect(() => {
     if (countriesOption && countriesOption.length > 0) {
@@ -203,21 +235,39 @@ function Brands() {
     return text;
   };
 
-  const showConnectButton = (status) => {
+  const handleSendNewConnectRequestClick = (invitee_id) => {
+    const data = {
+      invitee_id: invitee_id,
+      invite_via: 'retailer_request',
+    }
+    dispatch(retailerNewConnectionRequestAction(data));
+  };
+
+  const _closeRequestModal = () => {
+    setOpenRequestModal(false);
+    dispatch(resetNewConnectionRequestState());
+  };
+
+  const showConnectButton = (status, invitee_id) => {
     if (status && status.toLowerCase() === 'not connected') {
       return (
-        <button className="button button-dark connect-brand">Connect</button>
+        <button
+          className="button button-dark connect-brand"
+          onClick={() => handleSendNewConnectRequestClick(invitee_id)}
+        >
+          Connect
+        </button>
       );
     }
     return null;
   };
 
   const _clearBrandValuesFilter = (type) => {
-    if(type === 'brand_values'){
+    if (type === 'brand_values') {
       dispatch(clearBrandValuesFilter());
     } else if (type === 'pricing') {
       dispatch(clearPricingFilter());
-    } else if(type === 'state') {
+    } else if (type === 'state') {
       dispatch(clearStateFilter());
     } else if (type === 'invite_status') {
       setInviteStatus('All');
@@ -324,7 +374,8 @@ function Brands() {
                     <div className="products_active-filters">
                       <div className="products_active-filter">
                         <div className="txt">
-                          <b>Brand Values:</b> {brandValuesFilter.map(e => e.name).join(',')}
+                          <b>Brand Values:</b>{' '}
+                          {brandValuesFilter.map((e) => e.name).join(',')}
                         </div>
                         <button className="products_active-remove">
                           <div className="icon">
@@ -351,7 +402,8 @@ function Brands() {
                     <div className="products_active-filters">
                       <div className="products_active-filter">
                         <div className="txt">
-                          <b>Pricing:</b> {pricingFilter.map(e => e).join(',')}
+                          <b>Pricing:</b>{' '}
+                          {pricingFilter.map((e) => e).join(',')}
                         </div>
                         <button className="products_active-remove">
                           <div className="icon">
@@ -495,7 +547,7 @@ function Brands() {
                                       />
                                     </a>
                                   </div>
-                                  <Link to="#">
+                                  <Link to="/retailer/brand/single">
                                     {brand_details?.store_name}
                                   </Link>
                                 </div>
@@ -543,7 +595,7 @@ function Brands() {
                               </td>
                               <td>
                                 <div className="buttons">
-                                  {showConnectButton(invite_status)}
+                                  {showConnectButton(invite_status, invited_user?.id)}
                                   <button className="button message-brand">
                                     <img src={mailIcon} />
                                   </button>
@@ -594,6 +646,11 @@ function Brands() {
           </main>
         </div>
       </div>
+      <SuccessfulModel
+        modalIsOpen={openRequestModal}
+        closeSuccessfulModel={_closeRequestModal}
+      />
+      <ToastContainer />
     </>
   );
 }

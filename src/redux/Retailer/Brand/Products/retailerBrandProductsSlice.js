@@ -7,6 +7,9 @@ const initialState = {
   retailerPricingFilter: [],
   retailerStateFilter: '',
   retailerInviteStatusFilter: '',
+  retailerNewConnectionRequesting: false,
+  retailerNewConnectionRequestSuccess: false,
+  retailerNewConnectionRequestError: false,
 };
 
 const retailerBrandProductsSlice = createSlice({
@@ -45,6 +48,24 @@ const retailerBrandProductsSlice = createSlice({
     },
     clearStateFilter: (state) => {
       state.retailerStateFilter = '';
+    },
+    sendRetaileNewConnectionRequest: (state) => {
+      state.retailerNewConnectionRequesting = true;
+    },
+    setRetailerNewConnectionRequestSuccess: (state) => {
+      state.retailerNewConnectionRequesting = false;
+      state.retailerNewConnectionRequestSuccess = true;
+      state.retailerNewConnectionRequestError = false;
+    },
+    setRetailerNewConnectionRequestError: (state) => {
+      state.retailerNewConnectionRequesting = false;
+      state.retailerNewConnectionRequestSuccess = false;
+      state.retailerNewConnectionRequestError = true;
+    },
+    resetNewConnectionRequestState: (state) => {
+      state.retailerNewConnectionRequesting = false;
+      state.retailerNewConnectionRequestSuccess = false;
+      state.retailerNewConnectionRequestError = false;
     }
   },
 });
@@ -62,6 +83,10 @@ export const {
   clearBrandValuesFilter,
   clearPricingFilter,
   clearStateFilter,
+  sendRetaileNewConnectionRequest,
+  setRetailerNewConnectionRequestSuccess,
+  setRetailerNewConnectionRequestError,
+  resetNewConnectionRequestState,
 } = retailerBrandProductsSlice.actions;
 
 /**

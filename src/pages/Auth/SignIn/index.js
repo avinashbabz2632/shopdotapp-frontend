@@ -83,6 +83,13 @@ function SignIn() {
     // navigate('/verify-email');
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
+
   return (
     <>
       <Header pageTitle="Sign In" />
@@ -113,6 +120,7 @@ function SignIn() {
               {...register('password', {
                 required: true,
               })}
+              onKeyPress={handleKeyPress}
             />
             <span
               className={`password-show ${passwordType ? '' : 'active'}`}
