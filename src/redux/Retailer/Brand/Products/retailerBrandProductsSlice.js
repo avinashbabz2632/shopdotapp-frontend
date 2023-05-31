@@ -10,6 +10,7 @@ const initialState = {
   retailerNewConnectionRequesting: false,
   retailerNewConnectionRequestSuccess: false,
   retailerNewConnectionRequestError: false,
+  retailerBrandProfile: null,
 };
 
 const retailerBrandProductsSlice = createSlice({
@@ -66,6 +67,9 @@ const retailerBrandProductsSlice = createSlice({
       state.retailerNewConnectionRequesting = false;
       state.retailerNewConnectionRequestSuccess = false;
       state.retailerNewConnectionRequestError = false;
+    },
+    setRetailerBrandProfile: (state, action) => {
+      state.retailerBrandProfile = action.payload;
     }
   },
 });
@@ -87,6 +91,7 @@ export const {
   setRetailerNewConnectionRequestSuccess,
   setRetailerNewConnectionRequestError,
   resetNewConnectionRequestState,
+  setRetailerBrandProfile,
 } = retailerBrandProductsSlice.actions;
 
 /**

@@ -73,6 +73,7 @@ const RetailerBrandListPage = lazy(() =>
   import('./pages/Retailer/Brand/Brands')
 );
 const RetailerBrandSinglePage = lazy(() => import('./pages/Retailer/Brand/BrandProductPage/Products'));
+const RetailerBrandSingleProductDetailPage = lazy(() => import('./pages/Retailer/Products/ProductDetailsPage/ProductDetails'));
 
 function App() {
   const navigate = useNavigate();
@@ -183,6 +184,7 @@ function App() {
           <Route path="/retailer/setting/" element={<RetailerSettingPage />} />
           <Route path="/retailer/brands" element={<RetailerBrandListPage />} />
           <Route path="/retailer/brand/single" element={<RetailerBrandSinglePage />} />
+          <Route path="/retailer/brand/single-product-details" element={<RetailerBrandSingleProductDetailPage />} />
           <Route
             path="/retailer/setting/:activeTab"
             element={<RetailerSettingPage />}
