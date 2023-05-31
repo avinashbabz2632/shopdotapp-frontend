@@ -26,7 +26,7 @@ import { clearPaidLogout } from '../../../../redux/Brand/GettingPaid2/gettingPai
 import { clearOrderLogout } from '../../../../redux/Brand/Orders/orderSlice';
 import { clearProductLogout } from '../../../../redux/Brand/Products/productSlice';
 import { clearProfileLogout } from '../../../../redux/Brand/Profile/brandProfileSlice';
-import { clearSecurityLogout } from '../../../../redux/Brand/security/securitySlice';
+import { clearSecurityLogout } from '../../../../redux/Brand/Security/securitySlice';
 import { clearShippingLogout } from '../../../../redux/Brand/Shipping/shippingSlice';
 import { clearPreferenceLogout } from '../../../../redux/Brand/Preference/preferenceSlice';
 
@@ -75,7 +75,7 @@ function BrandHeader(props) {
   const opencloseRetailerModal = useCallback(() => {
     setIsOpen(!modalIsOpen);
   }, [modalIsOpen]);
-console.log(props);
+  console.log(props);
   return (
     <>
       <header className="header_main mp-header">
@@ -159,7 +159,9 @@ console.log(props);
                             </Link>
                           </li>
                           <li
-                            className={`sublink ${subTab == 2 ? 'active' : 'link'}`}
+                            className={`sublink ${
+                              subTab == 2 ? 'active' : 'link'
+                            }`}
                             onClick={() => props.changeSubTab(2)}
                           >
                             <Link to="/brand/request-access">

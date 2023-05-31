@@ -7,7 +7,7 @@ import {
   setShippingLoading,
   setShippingTimes,
 } from '../redux/Brand/Shipping/shippingSlice';
-import { onChangePassword } from '../redux/Brand/security/securitySlice';
+import { onChangePassword } from '../redux/Brand/Security/securitySlice';
 import {
   setBrandCategory,
   setBrandProfileDetails,
@@ -16,7 +16,10 @@ import {
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
-import { setConnectedRetailers, setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
+import {
+  setConnectedRetailers,
+  setRetailerRequests,
+} from '../redux/Brand/Retailer/retailerSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
