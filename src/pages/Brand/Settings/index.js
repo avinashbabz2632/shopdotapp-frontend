@@ -21,7 +21,7 @@ import { logOut } from '../../../redux/auth/authSlice';
 import { toast } from 'react-toastify';
 
 const BrandShipping = lazy(() => import('./Shipping'));
-const BrandSecurity = lazy(() => import('./Security'));
+const BrandSecurity = lazy(() => import('./security'));
 const BrandProfile = lazy(() => import('./Profile'));
 const BrandPreference = lazy(() => import('./Preferences'));
 const BrandPaid = lazy(() => import('./Paid'));

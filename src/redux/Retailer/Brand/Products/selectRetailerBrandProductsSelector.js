@@ -21,3 +21,5 @@ export const selectSendRetailerNewConnectionRequest = (state) => state.retailerP
 export const selectRetailerNewConnectionSuccess = (state) => state.retailerProduct.retailerNewConnectionRequestSuccess;
 
 export const selectRetailerNewConnectionError = (state) => state.retailerProduct.retailerNewConnectionRequestError;
+
+export const selectRetailerBrandProfile = (state) => state.retailerProduct.retailerBrandProfile;

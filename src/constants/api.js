@@ -50,6 +50,7 @@ export const RETAILER_BRANDS = `${BASE_URL}/retailer/brands`;
 export const RETAILER_NOTIFICATION_ALERT = `${BASE_URL}/retailer/alert-notification`;
 export const RETAILER_BRAND_VALUES = `${BASE_URL}/general/brand-values`;
 export const RETAILER_NEW_CONNECTION_REQUEST = `${BASE_URL}/retailer/request-connection`;
+export const RETAILER_BRAND_PROFILE = (id) => `${BASE_URL}/user/brand-profile/${id}`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;

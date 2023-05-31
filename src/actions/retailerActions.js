@@ -16,6 +16,7 @@ import {
 import {
   sendRetaileNewConnectionRequest,
   setRetailerBrandProductsList,
+  setRetailerBrandProfile,
   setRetailerBrandValuesList,
   setRetailerNewConnectionRequestError,
   setRetailerNewConnectionRequestSuccess,
@@ -185,6 +186,29 @@ export function retailerNewConnectionRequestAction(data) {
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors[0].invitee_id
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getRetailerBrandProfileAction(id) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.RETAILER_BRAND_PROFILE(id)}`
+      );
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
+        dispatch(setRetailerBrandProfile(response.data.data));
+      } else {
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
           : 'Something went worng'
       );
     }

@@ -547,7 +547,7 @@ function Brands() {
                                       />
                                     </a>
                                   </div>
-                                  <Link to="/retailer/brand/single">
+                                  <Link to="/retailer/brand/single" state={{user_id: invited_user?.id}}>
                                     {brand_details?.store_name}
                                   </Link>
                                 </div>
