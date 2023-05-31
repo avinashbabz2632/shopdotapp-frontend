@@ -182,11 +182,11 @@ function SignUp() {
               />
               <small className="checkbox-text">
                 By signing up for ShopDot, you are agreeing to our&nbsp;
-                <LinkMod to={tAndCDoc} target="_blank">
+                <LinkMod to={'https://shopdotapp.com/terms-of-use/'} target="_blank">
                   Terms{' '}
                 </LinkMod>
                 &nbsp;and
-                <LinkMod to={privacyDoc} target="_blank">
+                <LinkMod to={'https://shopdotapp.com/privacy-policy/'} target="_blank">
                   &nbsp;Privacy Policy.
                 </LinkMod>
                 &nbsp;
