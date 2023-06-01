@@ -15,7 +15,10 @@ export const BusinessDetailsValidationSchema = yup.object().shape({
   //   ),
   website: yup
     .string()
-    .url('Please enter a valid URL')
+    .matches(
+        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+        'Please enter correct website url!'
+    )
     .required('Business website address is required.'),
   businessEmail: yup
     .string()
