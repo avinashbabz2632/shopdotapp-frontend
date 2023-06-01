@@ -7,6 +7,7 @@ const initialState = {
     salesFilter: {},
     retailerRequests: [],
     connectedRetailers: [],
+    retailers: null,
 };
 
 const retaielrSlice = createSlice({
@@ -39,6 +40,9 @@ const retaielrSlice = createSlice({
         resetToInitial: (state) => {
             state.statusViseFilter = [];
         },
+        setRetailers: (state, action) => {
+            state.retailers = action.payload;
+        }
     },
 });
 
@@ -51,6 +55,7 @@ export const {
     resetConnecteRetailersFilter,
     setRetailerRequests,
     setConnectedRetailers,
+    setRetailers,
 } = retaielrSlice.actions;
 
 /**
