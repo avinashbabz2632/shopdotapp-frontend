@@ -72,8 +72,12 @@ const RetailerSettingPage = lazy(() => import('./pages/Retailer/Settings'));
 const RetailerBrandListPage = lazy(() =>
   import('./pages/Retailer/Brand/Brands')
 );
-const RetailerBrandSinglePage = lazy(() => import('./pages/Retailer/Brand/BrandProductPage/Products'));
-const RetailerBrandSingleProductDetailPage = lazy(() => import('./pages/Retailer/Products/ProductDetailsPage/ProductDetails'));
+const RetailerBrandSinglePage = lazy(() =>
+  import('./pages/Retailer/Brand/BrandProductPage/Products')
+);
+const RetailerBrandSingleProductDetailPage = lazy(() =>
+  import('./pages/Retailer/Products/ProductDetailsPage/ProductDetails')
+);
 
 function App() {
   const navigate = useNavigate();
@@ -92,16 +96,16 @@ function App() {
     }
 
     if (isLogged) {
-      if(!userDetails.is_email_verified){
-        navigate("verify-email")
-      }else if(!isRoleUpdated){
+      if (!userDetails?.is_email_verified) {
+        navigate('verify-email');
+      } else if (!isRoleUpdated) {
         navigate('/personalize');
-      }else if(userDetails.role && userDetails.role.name === 'retailer') {
+      } else if (userDetails.role && userDetails.role.name === 'retailer') {
         navigate('/retailer-onboarding');
-      } else if(userDetails.role && userDetails.role.name === 'brand'){
+      } else if (userDetails.role && userDetails.role.name === 'brand') {
         navigate('/brand-onboarding');
       }
-    }else{
+    } else {
       navigate('/login');
     }
   }, []);
@@ -183,8 +187,14 @@ function App() {
           {/* Retailer Portal Routes:::start */}
           <Route path="/retailer/setting/" element={<RetailerSettingPage />} />
           <Route path="/retailer/brands" element={<RetailerBrandListPage />} />
-          <Route path="/retailer/brand/single" element={<RetailerBrandSinglePage />} />
-          <Route path="/retailer/brand/single-product-details" element={<RetailerBrandSingleProductDetailPage />} />
+          <Route
+            path="/retailer/brand/single"
+            element={<RetailerBrandSinglePage />}
+          />
+          <Route
+            path="/retailer/brand/single-product-details"
+            element={<RetailerBrandSingleProductDetailPage />}
+          />
           <Route
             path="/retailer/setting/:activeTab"
             element={<RetailerSettingPage />}

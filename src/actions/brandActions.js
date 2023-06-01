@@ -20,6 +20,7 @@ import {
   setConnectedRetailers,
   setRetailerRequests,
 } from '../redux/Brand/Retailer/retailerSlice';
+import { setStatusIndicator } from '../redux/auth/authSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
@@ -124,6 +125,14 @@ export function getBrandProfileAction(id) {
             paid: response?.data?.data?.payment_detail?.customer_id,
             shipping: response?.data?.data?.shippingRate?.id,
             integration: response?.data?.data?.shop_detail?.is_active,
+          })
+        );
+        dispatch(
+          setStatusIndicator({
+            billing: response?.data?.data?.payment_detail?.customer_id,
+            products: response?.data?.data?.user_detail?.is_initial_sync_done,
+            store: response?.data?.data?.shop_detail?.is_active,
+            onboarding: response?.data?.data?.brandPreference?.id,
           })
         );
       } else {

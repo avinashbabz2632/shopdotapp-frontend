@@ -84,7 +84,7 @@ export default function OrderTable(props) {
 
   useEffect(() => {
     const otherDivs =
-      document.querySelector('.header_main').offsetHeight +
+      document.querySelector('.header').offsetHeight +
       document.querySelector('.products_head').offsetHeight +
       document.querySelector('.products_active-filters').offsetHeight +
       document.querySelector('.pagination').offsetHeight +

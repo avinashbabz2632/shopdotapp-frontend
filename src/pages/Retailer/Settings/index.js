@@ -54,7 +54,7 @@ export default function Retailer() {
     <div className="wrapper">
       <RetailerHeader />
       <main
-        className="content_main mp-content setting-section"
+        className="content mp-content setting-section"
         style={{ background: 'white' }}
       >
         <section

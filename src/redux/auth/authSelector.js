@@ -4,3 +4,4 @@ export const isLoggedIn = (state) => state.auth.isLoggedIn;
 export const registerSuccess = (state) => state.auth.isRegisterSuccess;
 export const selectAccessToken = (state) => state.auth.access_token;
 export const selectRefreshToken = (state) => state.auth.refresh_token;
+export const selectStatusIndicator = (state) => state.auth.statusIndicator;

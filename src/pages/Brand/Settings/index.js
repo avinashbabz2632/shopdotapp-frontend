@@ -153,11 +153,11 @@ export default function BrandSettingPage() {
         changeSubTab={changeSubTab}
       />
       <main
-        className="content_main mp-content setting-section"
+        className="content mp-content setting-section"
         style={{ background: 'white' }}
       >
         <section
-          className="section_main products pc_tabs tabs"
+          className="section products pc_tabs tabs"
           style={{ background: 'white' }}
         >
           <BrandSidebar completedStep={completedStep} />
