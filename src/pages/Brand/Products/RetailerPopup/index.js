@@ -68,7 +68,7 @@ export default function RetailerPopup(props) {
 
   const removeSingleRetailer = (item, index) => {
     console.log('item----', item);
-    const index = assignedRetailers.findIndex(el => el.id == item.id);
+    // const index = assignedRetailers.findIndex(el => el.id == item.id);
     // assignedRetailer.splice(index, 1);
     // setAllRetailer([...allRetailer, item]);
     const copy = [...assignedRetailers];
