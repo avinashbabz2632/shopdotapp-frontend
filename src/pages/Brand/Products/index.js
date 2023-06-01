@@ -27,7 +27,7 @@ export default function ProductsList() {
   return (
     <div className="wrapper">
       <BrandHeader />
-      <main className="content_main mp-content">
+      <main className="content mp-content">
         <section className="section products mp-section">
           <ProductsFilters />
           <ProductTable handleAction={handleAction} />

@@ -20,7 +20,7 @@ function RetailerHeader() {
 
   return (
     <>
-      <header className="header_main mp-header">
+      <header className="header mp-header">
         <div className="header_block header_block-top mp-header_block-top">
           <div className="header_container">
             <div className="h-left">
