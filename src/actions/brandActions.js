@@ -16,7 +16,8 @@ import {
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
-import { setConnectedRetailers, setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
+import { setConnectedRetailers, setRetailers, setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
+import { setStatusIndicator } from '../redux/auth/authSlice';
 
 export function connectShopifyAction(formData) {
   return async (dispatch) => {
@@ -121,6 +122,14 @@ export function getBrandProfileAction(id) {
             paid: response?.data?.data?.payment_detail?.customer_id,
             shipping: response?.data?.data?.shippingRate?.id,
             integration: response?.data?.data?.shop_detail?.is_active,
+          })
+        );
+        dispatch(
+          setStatusIndicator({
+            billing: response?.data?.data?.payment_detail?.customer_id,
+            products: response?.data?.data?.user_detail?.is_initial_sync_done,
+            store: response?.data?.data?.shop_detail?.is_active,
+            onboarding: response?.data?.data?.brandPreference?.id,
           })
         );
       } else {
@@ -478,6 +487,23 @@ export function getConnectedRetailer(data) {
       const response = await axios.post(API_END_POINT.CONECTED_RETAILER, data);
       if (response.status === 200) {
         dispatch(setConnectedRetailers(response.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getRetailerListAction() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(API_END_POINT.RETAILER_LIST);
+      if (response.status === 200) {
+        dispatch(setRetailers(response.data?.data));
       }
     } catch (err) {
       toast.error(

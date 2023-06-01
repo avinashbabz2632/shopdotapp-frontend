@@ -8,6 +8,12 @@ const initialState = {
   user: null,
   access_token: '',
   refresh_token: '',
+  statusIndicator: {
+    billing: true,
+    products: true,
+    store: true,
+    onboarding: true,
+  },
 };
 
 const authSlice = createSlice({
@@ -42,6 +48,9 @@ const authSlice = createSlice({
     clearAuthLogout: (state) => {
       state = initialState;
     },
+    setStatusIndicator: (state, action) => {
+      state.statusIndicator = action.payload;
+    },
   },
 });
 
@@ -55,6 +64,7 @@ export const {
   clearAuthReducer,
   setToken,
   clearAuthLogout,
+  setStatusIndicator,
 } = authSlice.actions;
 
 /**

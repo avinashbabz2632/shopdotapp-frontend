@@ -14,8 +14,12 @@ import {
   setRetailerProfileSaving,
 } from '../redux/Retailer/Profile/retailerProfileSlice';
 import {
+  sendRetaileNewConnectionRequest,
   setRetailerBrandProductsList,
+  setRetailerBrandProfile,
   setRetailerBrandValuesList,
+  setRetailerNewConnectionRequestError,
+  setRetailerNewConnectionRequestSuccess,
 } from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
 
 export function getRetailerProfileAction(id) {
@@ -83,7 +87,7 @@ export function updatePreferences(data) {
 export async function addBillingDetailsAction(data) {
   try {
     const response = await axios.post(API_END_POINT.RETAILER_BILLING, data);
-    if (response.status === 201) {
+    if (response.status === 200) {
       return response;
     }
   } catch (err) {
@@ -94,7 +98,7 @@ export async function addBillingDetailsAction(data) {
 export async function getBillingAction() {
   try {
     const response = await axios.get(API_END_POINT.RETAILER_BILLING);
-    if (response.status === 201) {
+    if (response.status === 200) {
       return response;
     }
   } catch (err) {
@@ -159,5 +163,54 @@ export function getRetailerBrandValuesAction() {
       } else {
       }
     } catch (err) {}
+  };
+}
+
+export function retailerNewConnectionRequestAction(data) {
+  return async (dispatch) => {
+    try {
+      dispatch(sendRetaileNewConnectionRequest());
+      const response = await axios.post(
+        API_END_POINT.RETAILER_NEW_CONNECTION_REQUEST,
+        data
+      );
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
+        dispatch(setRetailerNewConnectionRequestSuccess());
+        // toast.success('New Connection request sent successfully');
+      }
+    } catch (err) {
+      dispatch(setRetailerNewConnectionRequestError());
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors[0].invitee_id
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getRetailerBrandProfileAction(id) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.RETAILER_BRAND_PROFILE(id)}`
+      );
+      if (
+        (response && response.data && response.data.code == 201) ||
+        (response && response.data && response.data.code == 200)
+      ) {
+        dispatch(setRetailerBrandProfile(response.data.data));
+      } else {
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
   };
 }

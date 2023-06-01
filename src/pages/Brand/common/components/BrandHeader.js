@@ -29,6 +29,7 @@ import { clearProfileLogout } from '../../../../redux/Brand/Profile/brandProfile
 import { clearSecurityLogout } from '../../../../redux/Brand/Security/securitySlice';
 import { clearShippingLogout } from '../../../../redux/Brand/Shipping/shippingSlice';
 import { clearPreferenceLogout } from '../../../../redux/Brand/Preference/preferenceSlice';
+import { selectStatusIndicator } from '../../../../redux/auth/authSelector';
 
 function BrandHeader(props) {
   const location = useLocation();
@@ -38,6 +39,7 @@ function BrandHeader(props) {
 
   const history = createBrowserHistory();
   const useDetails = useSelector(selectUserDetails);
+  const statusIndicator = useSelector(selectStatusIndicator);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -75,10 +77,21 @@ function BrandHeader(props) {
   const opencloseRetailerModal = useCallback(() => {
     setIsOpen(!modalIsOpen);
   }, [modalIsOpen]);
-console.log(props);
+
+  const getStatusIndicatorType = () => {
+    if (
+      statusIndicator?.onboarding &&
+      statusIndicator?.products &&
+      statusIndicator?.store &&
+      statusIndicator?.billing
+    ) {
+      return true;
+    }
+    return false;
+  };
   return (
     <>
-      <header className="header_main mp-header">
+      <header className="header mp-header">
         <div className="header_block header_block-top mp-header_block-top">
           <div className="header_container">
             <div className="header_logo">
@@ -159,7 +172,9 @@ console.log(props);
                             </Link>
                           </li>
                           <li
-                            className={`sublink ${subTab == 2 ? 'active' : 'link'}`}
+                            className={`sublink ${
+                              subTab == 2 ? 'active' : 'link'
+                            }`}
                             onClick={() => props.changeSubTab(2)}
                           >
                             <Link to="/brand/request-access">
@@ -244,6 +259,54 @@ console.log(props);
             </div>
 
             <div className="header_actions">
+              <div
+                className={`indicator ${
+                  getStatusIndicatorType() ? 'green' : ''
+                }`}
+              >
+                <div className="dot_indicator">
+                  <label></label>
+                </div>
+                <div
+                  className={`indicator_text ${
+                    getStatusIndicatorType() ? 'active' : ''
+                  }`}
+                >
+                  <i className="sd-popover-arrow"></i>
+                  {!statusIndicator?.onboarding && (
+                    <>
+                      You have not completed onboarding.
+                      <br />
+                    </>
+                  )}
+
+                  {!statusIndicator?.products && (
+                    <>
+                      Your brand profile is not visible to retailers because you
+                      have no active products.
+                      <br />
+                    </>
+                  )}
+
+                  {!statusIndicator?.store && (
+                    <>
+                      Your brand profile is not visible to retailers because
+                      your Shopify store is disconnected.
+                      <br />
+                    </>
+                  )}
+
+                  {!statusIndicator?.billing && (
+                    <>
+                      Your payment account is pending with Priority Holdings.
+                      <br />
+                    </>
+                  )}
+
+                  {getStatusIndicatorType() &&
+                    'Your brand profile and products are visible to retailers on ShopDot.'}
+                </div>
+              </div>
               <div className="header_usermenu">
                 <div className="dropdown">
                   <div className="dropdown_header">

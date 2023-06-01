@@ -558,3 +558,25 @@ export const categoryDatas = [
     ],
   },
 ];
+
+export const mockRetailers = {
+  assignedRetailers: [
+    {
+      id: 12593,
+      logo: 'www.examplepumalog0o.com',
+      category: 'testing',
+      productIds: [2862],
+      published_to_store_products: 0,
+      all_time_sales: 0,
+    },
+  ],
+  notAssignedRetailers: [
+    {
+      id: 12641,
+      logo: 'www.examplepumalog0o.com',
+      category: 'testing',
+      published_to_store_products: 0,
+      all_time_sales: 0,
+    },
+  ],
+};

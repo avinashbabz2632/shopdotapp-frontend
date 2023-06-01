@@ -53,7 +53,7 @@ export default function Shipping() {
   });
   const statesOption = useSelector(selectStates);
   const transformStatesOption = statesOption?.map((el) => {
-    return { label: el.name, value: el.country_id };
+    return { label: el.name, value: el.code };
   });
 
   const defaultValues = {

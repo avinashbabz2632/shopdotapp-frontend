@@ -19,7 +19,9 @@ import {
   getBillingAction,
 } from '../../../../actions/retailerActions';
 import { ToastContainer, toast } from 'react-toastify';
-import { isEmpty } from 'lodash';
+import { isEmpty, map } from 'lodash';
+import { useSelector } from 'react-redux';
+import { selectStates } from '../../../../redux/General/States/getStatesSelector';
 
 export default function Billing() {
   const [addCredit, setAddCredit] = useState(false);
@@ -29,6 +31,15 @@ export default function Billing() {
   const [dataArray, setDataArray] = useState([]);
   const [showError, setShowError] = useState('');
   const [billList, setBillList] = useState([]);
+
+  const statesOption = useSelector(selectStates);
+  let transformStatesOption = [];
+  if (statesOption && statesOption.length > 0) {
+    transformStatesOption = statesOption?.map((el) => {
+      return { label: el.name, value: el.country_id, code: el.code };
+    });
+  }
+
   const {
     register,
     handleSubmit,
@@ -47,21 +58,26 @@ export default function Billing() {
 
   const initialAction = async () => {
     const response = await getBillingAction();
+
+    if (response?.status === 200) {
+      setDataArray(response.data.data);
+    } else {
+    }
   };
 
   const onSubmit = async (data) => {
-    const newDataArray = [...dataArray, data];
-    console.log(data, 'data');
+    const splitText = data.expiryDate.split('/');
+    console.log(splitText, 'splitText');
     const formData = {
       legal_name: data.nameOnCard,
       cardNumber: data.cardNumber,
       cvv: data.cvv,
       brand: 'VISA',
-      expiryMonth: '08',
-      expiryYear: '2023',
+      expiryMonth: splitText[0],
+      expiryYear: `20${splitText[1]}`,
       address_line_1: data.addressLine1,
       city: data.city,
-      state: data.state.value,
+      state: getDefaultValueOfStateField(),
       zip: data.zip,
       billing_method: 'CARD',
     };
@@ -69,6 +85,7 @@ export default function Billing() {
     if (response.status === 200) {
       setAddCredit(false);
       setShowError('');
+      initialAction();
     } else {
       setShowError(
         response && response.data && response.data.errors
@@ -83,6 +100,15 @@ export default function Billing() {
     // setTimeout(() => {
     //   setIsOpen(false);
     // }, 3000);
+  };
+
+  const getDefaultValueOfStateField = () => {
+    let option = null;
+
+    if (transformStatesOption && transformStatesOption.length > 0) {
+      option = transformStatesOption[0].code;
+    }
+    return option;
   };
 
   const handleConfirmModelClose = useCallback(() => {
@@ -140,10 +166,10 @@ export default function Billing() {
                         <div className="form-input mb-4">
                           <label className="form-label">Expiry date</label>
                           <input
-                            type="number"
+                            type="text"
                             className="form-control mb-0"
                             id=""
-                            placeholder="MM / YYYY"
+                            placeholder="MM/YY"
                             name="expiryDate"
                             {...register('expiryDate', {
                               required: true,
@@ -161,6 +187,7 @@ export default function Billing() {
                             type="text"
                             className="form-control mb-0"
                             placeholder="100"
+                            maxLength={3}
                             name="cvv"
                             {...register('cvv', {
                               required: true,
@@ -249,7 +276,7 @@ export default function Billing() {
                                     primary: '#bd6f34',
                                   },
                                 })}
-                                options={stateIncorporationOptions}
+                                options={transformStatesOption}
                               />
                             )}
                           />
@@ -355,7 +382,37 @@ export default function Billing() {
                   <div className="content_area">
                     <div className="form-area-cstm pe-billing">
                       <div className="form-input return_select-item choose-billing-method">
-                        <div className="billing-method-item">
+                        {map(dataArray, (data, key) => {
+                          return (
+                            <div className="billing-method-item">
+                              <label className="radiobox radio-click">
+                                <input
+                                  type="radio"
+                                  name="radio-billing-method"
+                                  id="radio-billing-direct"
+                                  checked
+                                />
+                                <div className="radiobox-text">
+                                  <span>
+                                    {`${data.brand} card ending with ${data.Last4}`}
+                                    <div className="exp-date">
+                                      Exp. Date 12/25
+                                    </div>
+                                  </span>
+
+                                  {data.is_primary ? (
+                                    <span className="status-pill pill_black">
+                                      Default
+                                    </span>
+                                  ) : (
+                                    <div />
+                                  )}
+                                </div>
+                              </label>
+                            </div>
+                          );
+                        })}
+                        {/* <div className="billing-method-item">
                           <label className="radiobox radio-click">
                             <input
                               type="radio"
@@ -374,8 +431,8 @@ export default function Billing() {
                               </span>
                             </div>
                           </label>
-                        </div>
-                        <div className="billing-method-item">
+                        </div> */}
+                        {/* <div className="billing-method-item">
                           <label className="radiobox radio-click">
                             <input type="radio" name="radio-billing-method" />
                             <div className="radiobox-text">
@@ -406,7 +463,7 @@ export default function Billing() {
                               </button>
                             </div>
                           </label>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

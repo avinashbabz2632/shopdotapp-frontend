@@ -37,13 +37,16 @@ import stockYellowAlert from '../../../../assets/images/icons/yellow-warning.svg
 import {
   downloadProductAction,
   getProductListAction,
+  syncSingleProductAction,
   uploadProductAction,
 } from '../../../../actions/productActions';
 import { useNavigate } from 'react-router-dom';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
 
 export default function ProductTable(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userDetails = useSelector(selectUserDetails);
   const productCatFilter = useSelector(selectProductCatFilter);
   const productTagsFilter = useSelector(selectProductTagFilter);
   const stockFilter = useSelector(selectStockFilter);
@@ -144,7 +147,7 @@ export default function ProductTable(props) {
 
   useEffect(() => {
     const otherDivs =
-      document.querySelector('.header_main').offsetHeight +
+      document.querySelector('.header').offsetHeight +
       document.querySelector('.products_head').offsetHeight +
       document.querySelector('.products_active-filters').offsetHeight +
       document.querySelector('.pagination').offsetHeight +
@@ -155,7 +158,14 @@ export default function ProductTable(props) {
 
   useEffect(() => {
     fetchProducts();
-  }, [productStatusFilter, offset, limit, productCatFilter, productTagsFilter, stockFilter]);
+  }, [
+    productStatusFilter,
+    offset,
+    limit,
+    productCatFilter,
+    productTagsFilter,
+    stockFilter,
+  ]);
 
   const handalClearFilter = () => {
     dispatch(resetToInitial());
@@ -165,9 +175,7 @@ export default function ProductTable(props) {
     dispatch(setProductStatusFilter(status));
   };
 
-  const clearProductFilter = (e) => {
-   
-  };
+  const clearProductFilter = (e) => {};
 
   const handalUploadFileModalShow = () => {
     setUploadModalShow(uploadModalShow === true ? false : true);
@@ -211,7 +219,7 @@ export default function ProductTable(props) {
   };
 
   const handleChangeStatus = (ele) => {
-   //
+    //
   };
 
   const handleCheckCheckBox = (ele, isAll) => {
@@ -316,6 +324,15 @@ export default function ProductTable(props) {
       filter: prepareFilter(),
     };
     dispatch(downloadProductAction(data));
+  };
+
+  const doSync = async (productDetails) => {
+    dispatch(
+      syncSingleProductAction({
+        product_id: productDetails?.shopify_product_id,
+        user_id: userDetails.id,
+      })
+    );
   };
 
   return (
@@ -897,7 +914,7 @@ export default function ProductTable(props) {
                     </td>
                     <td>
                       <div className="txt">
-                        {ele.retailers === '' ? (
+                        {ele.product_retailer?.length === 0 ? (
                           <a
                             href="javascript:void(0)"
                             className="add-item-label add-retailer"
@@ -911,7 +928,7 @@ export default function ProductTable(props) {
                             className="value_added"
                             onClick={() => handalRetailerPopup('2', [])}
                           >
-                            2 assigned
+                            {ele?.product_retailer?.length} assigned
                           </a>
                         )}
                       </div>
@@ -931,7 +948,12 @@ export default function ProductTable(props) {
                                   </button>
                                 </li>
                                 <li>
-                                  <button className="sync-product">
+                                  <button
+                                    onClick={() => {
+                                      doSync(ele);
+                                    }}
+                                    className="sync-product"
+                                  >
                                     Sync Product
                                   </button>
                                 </li>

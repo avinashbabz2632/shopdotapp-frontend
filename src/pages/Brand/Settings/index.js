@@ -1,9 +1,14 @@
+import '../Style/brand.style.scss';
+import '../Style/brand.media.scss';
+import '../Style/brand.dev.scss';
+
 import React, { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../../../components/Loader';
 import BrandHeader from '../common/components/BrandHeader';
 import BrandSidebar from '../common/components/Sidebar';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { createBrowserHistory } from 'history';
 import { selectUserDetails } from '../../../redux/user/userSelector';
 import {
@@ -23,10 +28,6 @@ const BrandPaid = lazy(() => import('./Paid'));
 const BrandNotification = lazy(() => import('./Notifications'));
 const BrandUsers = lazy(() => import('./Users'));
 const BrandIntegration = lazy(() => import('./Integration'));
-
-import '../Style/brand.style.scss';
-import '../Style/brand.media.scss';
-import '../Style/brand.dev.scss';
 import { getCountriesAction } from '../../../actions/generalActions';
 
 export default function BrandSettingPage() {
@@ -152,11 +153,11 @@ export default function BrandSettingPage() {
         changeSubTab={changeSubTab}
       />
       <main
-        className="content_main mp-content setting-section"
+        className="content mp-content setting-section"
         style={{ background: 'white' }}
       >
         <section
-          className="section_main products pc_tabs tabs"
+          className="section products pc_tabs tabs"
           style={{ background: 'white' }}
         >
           <BrandSidebar completedStep={completedStep} />

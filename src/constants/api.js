@@ -14,6 +14,7 @@ export const RESET_PASSWORD = (id) =>
   `${BASE_URL}/auth/user/${id}/reset-password`;
 export const FORGOTEMAILVARIFICATION = `${BASE_URL}/auth/send-reset-link`;
 // User
+export const USER_DETAILS = `${BASE_URL}/user/detail`;
 export const USER_ROLE = `${BASE_URL}/user/roles`;
 export const USER_PLATFORM = `${BASE_URL}/user/platform`;
 export const SHOPIFY = `${BASE_URL}/platform/shopify-integration`;
@@ -41,6 +42,7 @@ export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
 export const RETAILER_REQUEST = `${BASE_URL}/brand/retailer-requests`;
 export const UPDATE_RETAILER_REQUEST = `${BASE_URL}/retailer/request-connection/update`;
+export const RETAILER_LIST = `${BASE_URL}/brand/retailers-list`;
 
 // Retailer
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
@@ -48,6 +50,8 @@ export const RETAILER_BILLING = `${BASE_URL}/retailer/billing`;
 export const RETAILER_BRANDS = `${BASE_URL}/retailer/brands`;
 export const RETAILER_NOTIFICATION_ALERT = `${BASE_URL}/retailer/alert-notification`;
 export const RETAILER_BRAND_VALUES = `${BASE_URL}/general/brand-values`;
+export const RETAILER_NEW_CONNECTION_REQUEST = `${BASE_URL}/retailer/request-connection`;
+export const RETAILER_BRAND_PROFILE = (id) => `${BASE_URL}/user/brand-profile/${id}`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;

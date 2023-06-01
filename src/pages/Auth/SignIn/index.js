@@ -37,6 +37,7 @@ const validationSchema = yup
 
 function SignIn() {
   const [passwordType, setPasswordType] = useState(true);
+  const [disabled, setDisabled] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const success = useSelector(loginSuccess);
@@ -46,13 +47,27 @@ function SignIn() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
   useEffect(() => {
+    const subscription = watch((value) => {
+      for (var key in value) {
+        if (!value[key]) {
+          setDisabled(true);
+          return;
+        }
+        setDisabled(false);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  useEffect(() => {
     if (success) {
       if (userDetails.is_email_verified) {
-        if (userDetails.role.name) {
+        if (userDetails.role && userDetails.role.name) {
           if (userDetails.role.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
@@ -62,7 +77,7 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        if (userDetails.role.name) {
+        if (userDetails.role && userDetails.role.name) {
           if (userDetails.role.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
@@ -81,6 +96,13 @@ function SignIn() {
   const onSubmit = (data) => {
     dispatch(loginAction({ ...data, device_id: '123' }));
     // navigate('/verify-email');
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit(onSubmit)();
+    }
   };
 
   return (
@@ -113,6 +135,7 @@ function SignIn() {
               {...register('password', {
                 required: true,
               })}
+              onKeyPress={handleKeyPress}
             />
             <span
               className={`password-show ${passwordType ? '' : 'active'}`}
@@ -128,7 +151,7 @@ function SignIn() {
             </div>
           </div>
           <div className="form__field buttons">
-            <Button type="submit" className="button">
+            <Button disabled={disabled} type="submit" className="button">
               Sign In
             </Button>
           </div>
