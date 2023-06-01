@@ -21,7 +21,7 @@ import { logOut } from '../../../redux/auth/authSlice';
 import { toast } from 'react-toastify';
 
 const BrandShipping = lazy(() => import('./Shipping'));
-const BrandSecurity = lazy(() => import('./security'));
+const BrandSecurity = lazy(() => import('./Security'));
 const BrandProfile = lazy(() => import('./Profile'));
 const BrandPreference = lazy(() => import('./Preferences'));
 const BrandPaid = lazy(() => import('./Paid'));
@@ -153,11 +153,11 @@ export default function BrandSettingPage() {
         changeSubTab={changeSubTab}
       />
       <main
-        className="content_main mp-content setting-section"
+        className="content mp-content setting-section"
         style={{ background: 'white' }}
       >
         <section
-          className="section_main products pc_tabs tabs"
+          className="section products pc_tabs tabs"
           style={{ background: 'white' }}
         >
           <BrandSidebar completedStep={completedStep} />
