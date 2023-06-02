@@ -1,23 +1,47 @@
 import React, { useCallback, useState } from 'react';
 import Logo from '../../../../assets/images/icons/logo.svg';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import InviteBrandModel from './InviteBrandModel';
 import '../../Style/retail.style.scss';
 import '../../Style/retail.media.scss';
 import '../../Style/retail.dev.scss';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { AuthApiService } from '../../../../services/apis/authApis';
+import { clearAuthLogout, logOut } from '../../../../redux/auth/authSlice';
+import { clearUserLogout } from '../../../../redux/user/userSlice';
+import { createBrowserHistory } from 'history';
 
 function RetailerHeader() {
   const location = useLocation();
   const [modalIsOpen, setIsOpen] = useState(false);
   const useDetails = useSelector(selectUserDetails);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const history = createBrowserHistory();
 
   const opencloseBrandModal = useCallback(() => {
     setIsOpen(!modalIsOpen);
   }, [modalIsOpen]);
+  const handleLogOut = async () => {
+    const fromData = {
+      user_id: useDetails.id,
+    };
 
+    const res = await AuthApiService.signOut({ fromData });
+
+    if (res) {
+      dispatch(logOut());
+      dispatch(clearAuthLogout());
+      dispatch(clearUserLogout());
+      dispatch({ type: 'LOGOUT' });
+      history.replace('/login');
+      navigate('/login');
+    }
+
+    // toast.error('Seomething went wrong while signing out!');
+  };
   return (
     <>
       <header className="header mp-header">
@@ -157,7 +181,9 @@ function RetailerHeader() {
                           <Link to="/">Help Center</Link>
                         </li>
                         <li>
-                          <Link to="/login">Sign out</Link>
+                          <a>
+                            <span onClick={handleLogOut}>Sign out</span>
+                          </a>
                         </li>
                       </ul>
                     </div>
