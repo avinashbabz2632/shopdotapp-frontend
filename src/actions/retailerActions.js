@@ -71,7 +71,7 @@ export function updatePreferences(data) {
   return async (dispatch) => {
     try {
       const response = await axios.post(API_END_POINT.PREFERENCES, data);
-      if (response.status === 201) {
+      if (response.status === 200) {
         toast.success('Preferences Updated');
       }
     } catch (err) {

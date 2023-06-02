@@ -70,7 +70,7 @@ function ForgotPassword() {
           </div>
 
           <div className="form__field buttons">
-            <Button type="submit" className="button">
+            <Button type="submit" className="auth_button">
               Send email
             </Button>
           </div>

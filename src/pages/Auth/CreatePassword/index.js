@@ -109,7 +109,7 @@ function CreatePassword() {
           </div>
 
           <div className="form__field buttons">
-            <Button type="submit" className="button mt-5">
+            <Button type="submit" className="auth_button mt-5">
               Create
             </Button>
           </div>

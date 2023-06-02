@@ -41,6 +41,7 @@ const categoryStyle = {
   control: (styles) => {
     return {
       ...styles,
+      marginTop: '6px',
       boxShadow: 'none',
       minHeight: '40px',
       '&:hover': {
@@ -51,7 +52,7 @@ const categoryStyle = {
   container: (style) => {
     return {
       ...style,
-      marginTop: '5px',
+      marginTop: '5xp',
       marginRight: '1px',
     };
   },
@@ -84,10 +85,11 @@ export default function RetailerProfile() {
   let transformStatesOption = [];
   if (statesOption && statesOption.length > 0) {
     transformStatesOption = statesOption?.map((el) => {
-      return { label: el.name, value: el.country_id };
+      return { value: el.code, label: el.name };
     });
   }
-  const [image, setImage] = useState(Brandlogo);
+
+  const [image, setImage] = useState('');
   const [file, setFile] = useState();
   const [fileLogoError, setfileLogoError] = useState('');
   const [storeLogoError, setStoreLogoError] = useState('');
@@ -101,8 +103,6 @@ export default function RetailerProfile() {
   //     };
   //     reader.readAsDataURL(fileData);
   // };
-
-  console.log(userDetails, 'userDetails');
 
   useEffect(() => {
     dispatch(getCountriesAction());
@@ -176,7 +176,7 @@ export default function RetailerProfile() {
     }
     console.log(valuesArray, 'valuesArrayvaluesArray');
     if (brandData?.retailer_details?.id) {
-      setImage(brandData?.retailer_details?.store_logo || Brandlogo);
+      setImage(brandData?.retailer_details?.store_logo || '');
       setFile(brandData?.retailer_details?.store_photo);
       reset({
         companyName: brandProfileDetails?.retailer_details?.company_name,
@@ -558,13 +558,15 @@ export default function RetailerProfile() {
                               control={control}
                               required
                               placeholder="Select State"
-                              render={({ field }) => (
+                              render={({ field, value }) => (
                                 <Select
                                   {...field}
+                                  checked={value}
                                   className="basic-single"
                                   classNamePrefix="select"
                                   placeholder="Select State"
                                   styles={categoryStyle}
+                                  menuPortalTarget={document.body}
                                   components={{
                                     IndicatorSeparator: () => null,
                                   }}
