@@ -5,8 +5,17 @@ import addRetaielr from '../../../../assets/images/icons/add_circle.svg';
 import remvoeRetaielr from '../../../../assets/images/icons/remove_circle.svg';
 import saveIcon from '../../../../assets/images/icons/save.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { getRetailerListAction } from '../../../../actions/brandActions';
-import { selectRetailers } from '../../../../redux/Brand/Retailer/retailerSelector';
+import {
+  getRetailerListAction,
+  updateBrandAssignedRetailers,
+} from '../../../../actions/brandActions';
+import {
+  selectBrandAssignedRetaielrError,
+  selectBrandAssignedRetaielrSuccess,
+  selectBrandAssignedRetaielrUpdating,
+  selectRetailers,
+} from '../../../../redux/Brand/Retailer/retailerSelector';
+import { resetBrandAssignedRetailerState } from '../../../../redux/Brand/Retailer/retailerSlice';
 
 export default function RetailerPopup(props) {
   const { handalPopup, assignedData } = props;
@@ -14,75 +23,68 @@ export default function RetailerPopup(props) {
   const dispatch = useDispatch();
 
   const retailers = useSelector(selectRetailers);
-  const { assignedRetailers: assignedArr, notAssignedRetailers } = retailers || {};
+  const updating = useSelector(selectBrandAssignedRetaielrUpdating);
+  const success = useSelector(selectBrandAssignedRetaielrSuccess);
+  const error = useSelector(selectBrandAssignedRetaielrError);
 
-  const [unAssignedRetailers, setUnAssignedRetailers] = useState(notAssignedRetailers);
+  const { assignedRetailers: assignedArr, notAssignedRetailers } =
+    retailers || {};
+
+  const [unAssignedRetailers, setUnAssignedRetailers] =
+    useState(notAssignedRetailers);
   const [assignedRetailers, setAssignedRetailers] = useState(assignedArr);
-  const [tempRetailersArr, setTempRetailersArr] = useState([]);
-
-  // const [searchResult, setSearchResult] = useState([...RetailerData]);
-
-  // const [searchValue, setSearchValue] = useState('')
-
-  // const handleSerchValue = (e) => {
-  //     setSearchValue(e.target.value || '')
-  // }
+  
   useEffect(() => {
-    // if (assignedData != '') {
-    //   const newArr = allRetailer.splice(0, 2);
-    //   setAssignedRetailer(newArr);
-    // }
     dispatch(getRetailerListAction());
   }, []);
-  // console.log('searchresult', searchResult);
+
+  useEffect(() => {
+    if(!updating && success && !error) {
+      dispatch(resetBrandAssignedRetailerState());
+      handalPopup();
+    } else if(!updating && !success && error) {
+      dispatch(resetBrandAssignedRetailerState());
+    }
+  }, [updating, success, error]);
+
   const handleSearchRetailer = (e) => {
-    // const searchValue = e.target.value || '';
-    // const namesToDeleteSet = new Set(assignedRetailer);
-    // const newArr = searchResult.filter((name) => {
-    //   return !namesToDeleteSet.has(name);
-    // });
-    // const sortValueBasedOnSearch = newArr.filter((item) => {
-    //   return item.name.toLowerCase().includes(searchValue.toLowerCase());
-    // });
-    // console.log('newsearch', newArr);
-    // // if(searchValue.length == 0){
-    // //     setAllRetailer(newArr)
-    // // }else{
-    // //     setAllRetailer(sortValueBasedOnSearch)
-    // // }
-    // setAllRetailer(sortValueBasedOnSearch);
-    // // setSearchResult(newArr)
+    //
   };
 
   const assignedSingleRetailer = (item, index) => {
-    // allRetailer.splice(index, 1);
-    // setAssignedRetailer([...assignedRetailer, item]);
+    const copy = [...assignedRetailers];
+    copy.push(item);
+    setAssignedRetailers(copy);
+    const copy2 = [...unAssignedRetailers];
+    const filter = copy2.filter((el) => el.id !== item.id);
+    setUnAssignedRetailers(filter);
   };
 
   const assignedAllRetailer = () => {
-    // const totalData = allRetailer.length && allRetailer.length;
-    // allRetailer.length &&
-    //   setAssignedRetailer([...assignedRetailer, ...allRetailer]);
-    // allRetailer.splice(0, totalData);
+    const copy = [...notAssignedRetailers, ...assignedArr];
+    setAssignedRetailers(copy);
+    setUnAssignedRetailers([]);
   };
 
   const removeSingleRetailer = (item, index) => {
-    console.log('item----', item);
-    // const index = assignedRetailers.findIndex(el => el.id == item.id);
-    // assignedRetailer.splice(index, 1);
-    // setAllRetailer([...allRetailer, item]);
-    const copy = [...assignedRetailers];
+    const copy = [...unAssignedRetailers];
+    copy.push(item);
+    setUnAssignedRetailers(copy);
+    const copy2 = [...assignedRetailers];
+    const filter = copy2.filter((el) => el.id !== item.id);
+    setAssignedRetailers(filter);
   };
   const removeAllRetailer = () => {
-    // const totalData = assignedRetailer.length && assignedRetailer.length;
-    // assignedRetailer.length &&
-    //   setAllRetailer([...allRetailer, ...assignedRetailer]);
-    // assignedRetailer.splice(0, totalData);
+    const copy = [...notAssignedRetailers, ...assignedArr];
+    setUnAssignedRetailers(copy);
+    setAssignedRetailers([]);
   };
 
   const handleSave = () => {
-    // console.log('Assigned Retailer -->', assignedRetailer);
-    handalPopup();
+    const retailers = assignedRetailers.map((ar) => ar.id);
+    const product_ids = assignedRetailers.map((ar) => ar.productIds).flat();
+    const data = { retailers, product_ids };
+    dispatch(updateBrandAssignedRetailers(data));
   };
 
   return (
