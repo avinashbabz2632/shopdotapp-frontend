@@ -935,7 +935,7 @@ export default function ProductTable(props) {
                     </td>
                     <td>
                       <div className="txt">
-                        {ele.retailers === '' ? (
+                        {ele.product_retailer?.length === 0 ? (
                           <a
                             href="javascript:void(0)"
                             className="add-item-label add-retailer"
@@ -949,7 +949,7 @@ export default function ProductTable(props) {
                             className="value_added"
                             onClick={() => handalRetailerPopup('2', [])}
                           >
-                            2 assigned
+                            {ele?.product_retailer?.length} assigned
                           </a>
                         )}
                       </div>

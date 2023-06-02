@@ -38,7 +38,7 @@ function BusinessOwnerModel(props) {
                                     ownership) who is authorized to complete and
                                     sign the Priority application.{' '}
                                     <Link
-                                        to="/brand/setting"
+                                        to="/brand/setting/users"
                                         className="link-text"
                                     >
                                         Click here

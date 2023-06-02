@@ -42,6 +42,8 @@ export const NOTIFICATION = `${BASE_URL}/brand/setting/notifications`;
 export const DISCONNECT_SHOPIFY = `${BASE_URL}/shopify/shopify-remove`;
 export const RETAILER_REQUEST = `${BASE_URL}/brand/retailer-requests`;
 export const UPDATE_RETAILER_REQUEST = `${BASE_URL}/retailer/request-connection/update`;
+export const RETAILER_LIST = `${BASE_URL}/brand/retailers-list`;
+export const UPDATE_BRAND_RETAILERS = `${BASE_URL}/brand/assign-product-to-retailer`;
 
 // Retailer
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;

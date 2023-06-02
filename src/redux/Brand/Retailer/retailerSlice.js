@@ -7,6 +7,10 @@ const initialState = {
     salesFilter: {},
     retailerRequests: [],
     connectedRetailers: [],
+    retailers: null,
+    brandAssignedRetailerUpdating: false,
+    brandAssignedRetailerUpdateSuccess: false,
+    brandAssignedRetailerUpdateError: false,
 };
 
 const retaielrSlice = createSlice({
@@ -39,6 +43,27 @@ const retaielrSlice = createSlice({
         resetToInitial: (state) => {
             state.statusViseFilter = [];
         },
+        setRetailers: (state, action) => {
+            state.retailers = action.payload;
+        },
+        setBrandAssignedRetailersUpdating: (state) => {
+            state.brandAssignedRetailerUpdating = true;
+        },
+        setBrandAssignedRetailerSuccess: (state) => {
+            state.brandAssignedRetailerUpdating = false;
+            state.brandAssignedRetailerUpdateSuccess = true;
+            state.brandAssignedRetailerUpdateError = false;
+        },
+        setBrandAssignedRetailerError: (state) => {
+            state.brandAssignedRetailerUpdating = false;
+            state.brandAssignedRetailerUpdateSuccess = false;
+            state.brandAssignedRetailerUpdateError = true;
+        },
+        resetBrandAssignedRetailerState: (state) => {
+            state.brandAssignedRetailerUpdating = false;
+            state.brandAssignedRetailerUpdateSuccess = false;
+            state.brandAssignedRetailerUpdateError = false;
+        }
     },
 });
 
@@ -51,6 +76,11 @@ export const {
     resetConnecteRetailersFilter,
     setRetailerRequests,
     setConnectedRetailers,
+    setRetailers,
+    setBrandAssignedRetailersUpdating,
+    setBrandAssignedRetailerSuccess,
+    setBrandAssignedRetailerError,
+    resetBrandAssignedRetailerState,
 } = retaielrSlice.actions;
 
 /**
