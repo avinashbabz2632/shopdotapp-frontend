@@ -61,11 +61,8 @@ export default function BrandPaid() {
   const authorizedSign = watch('authorizedSign');
   const businessOwner = watch('businessOwner');
   useEffect(() => {
-    if (publiclyTraded === 'yes' && authorizedSign === 'no') {
-      if (brandProfileDetails?.brand_profile?.id) {
-      } else {
-        setOpen(true);
-      }
+    if (authorizedSign === 'no') {
+      setOpen(true);
     } else if (publiclyTraded === 'no' && authorizedSign === 'no') {
       setIsOpen(true);
     } else if (
@@ -79,7 +76,6 @@ export default function BrandPaid() {
   }, [publiclyTraded, authorizedSign, businessOwner]);
 
   const onSubmit = (data) => {
-    console.log('RADIO(PAGE 1)', data);
     dispatch(setGettingPaidPreferance(data));
     setStartingTab(true);
   };

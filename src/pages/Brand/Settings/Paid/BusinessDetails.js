@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Select from 'react-select';
@@ -26,6 +26,8 @@ import {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { isEmpty, isNil } from 'lodash';
+import { selectStates } from '../../../../redux/General/States/getStatesSelector';
+import { getStatesAction } from '../../../../actions/generalActions';
 
 const defaultValues = {
     averageDeliveryTime: deliveryTimeOptions[0],
@@ -44,6 +46,8 @@ export default function BusinessDetails({
 }) {
     const businessDetails = useSelector(selectBusinessDetails);
     const gettingPaidPreferance = useSelector(selectGettingPaidPreferance);
+    const states = useSelector(selectStates)
+    const [stateList, setStateList] = useState([])
     const bussinessCategoryOptions =
         !isEmpty(gettingPaidPreferance) &&
         !isNil(gettingPaidPreferance) &&
@@ -70,6 +74,7 @@ export default function BusinessDetails({
     });
 
     useEffect(() => {
+        dispatch(getStatesAction(1));
         const isFormValuePresent = Object.keys(businessDetails).length;
         if (isFormValuePresent !== 0) {
             const fields = [
@@ -112,20 +117,24 @@ export default function BusinessDetails({
                     : ''
             );
         }
-
+        if(states.length > 0){
+            const s = []
+            states.map((v,k)=>{
+                s.push({ value: v.name, label: v.name })
+            })
+            setStateList(s)
+        }
         return () => {
             setIsEdited(false);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isEdited]);
-
     const onSubmit = (data) => {
         console.log('Business Details(page-1)', data);
         dispatch(setBusinessDetails(data));
         reset();
         handleChangeTab('2');
     };
-
     const handleEINChange = (event) => {
         const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
         if (rawValue === '') {
@@ -579,7 +588,7 @@ export default function BusinessDetails({
                                                 primary: '#bd6f34',
                                             },
                                         })}
-                                        options={stateIncorporationOptions}
+                                        options={stateList}
                                     />
                                 )}
                             />

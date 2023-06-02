@@ -3,19 +3,22 @@ import { store } from '../../../../redux/store';
 
 export const BusinessDetailsValidationSchema = yup.object().shape({
   businessName: yup.string().required('Legal business name is required.'),
-  businessAs: yup
-    .string()
-    .required('Doing business is required.')
-    .test(
-      'businessname',
-      'doing business is different than the legal name',
-      function (business) {
-        return business ? business !== this.parent.businessName : true;
-      }
-    ),
+  // businessAs: yup
+  //   .string()
+  //   .required('Doing business is required.')
+  //   .test(
+  //     'businessname',
+  //     'doing business is different than the legal name',
+  //     function (business) {
+  //       return business ? business !== this.parent.businessName : true;
+  //     }
+  //   ),
   website: yup
     .string()
-    .url('Please enter a valid URL')
+    .matches(
+        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+        'Please enter correct website url!'
+    )
     .required('Business website address is required.'),
   businessEmail: yup
     .string()
