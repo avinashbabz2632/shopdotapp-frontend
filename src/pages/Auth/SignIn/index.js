@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearAuthReducer } from '../../../redux/auth/authSlice';
 import { loginSuccess } from '../../../redux/auth/authSelector';
 import { selectUserDetails } from '../../../redux/user/userSelector';
+import { createBrowserHistory } from 'history';
 
 // Validation schema of form field
 const validationSchema = yup
@@ -42,6 +43,7 @@ function SignIn() {
   const dispatch = useDispatch();
   const success = useSelector(loginSuccess);
   const userDetails = useSelector(selectUserDetails);
+  const history = createBrowserHistory()
 
   const {
     register,

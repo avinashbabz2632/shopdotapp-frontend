@@ -28,7 +28,6 @@ function RetailerHeader() {
     const fromData = {
       user_id: useDetails.id,
     };
-
     const res = await AuthApiService.signOut({ fromData });
 
     if (res) {
