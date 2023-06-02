@@ -16,7 +16,7 @@ import {
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
-import { setConnectedRetailers, setRetailers, setRetailerRequests } from '../redux/Brand/Retailer/retailerSlice';
+import { setConnectedRetailers, setRetailers, setRetailerRequests, setBrandAssignedRetailersUpdating, setBrandAssignedRetailerSuccess, setBrandAssignedRetailerError } from '../redux/Brand/Retailer/retailerSlice';
 import { setStatusIndicator } from '../redux/auth/authSlice';
 
 export function connectShopifyAction(formData) {
@@ -506,6 +506,27 @@ export function getRetailerListAction() {
         dispatch(setRetailers(response.data?.data));
       }
     } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function updateBrandAssignedRetailers(data) {
+  return async (dispatch) => {
+    try {
+      dispatch(setBrandAssignedRetailersUpdating())
+      const response = await axios.post(API_END_POINT.UPDATE_BRAND_RETAILERS, data);
+      if (response.status === 200) {
+        // dispatch(setConnectedRetailers(response.data));
+        dispatch(setBrandAssignedRetailerSuccess());
+        toast.success(response.data?.message);
+      }
+    } catch (err) {
+      dispatch(setBrandAssignedRetailerError());
       toast.error(
         err && err.response && err.response.data && err.response.data.errors
           ? err.response.data.errors
