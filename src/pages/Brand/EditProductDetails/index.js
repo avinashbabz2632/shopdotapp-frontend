@@ -60,9 +60,7 @@ export default function EditProductDetails() {
   const [tags, setTags] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [description, setDescription] = useState('');
-  const [activeVariants] = useState(
-    product?.productDetails?.product_variants
-  );
+  const [activeVariants] = useState(product?.productDetails?.product_variants);
   const [selectedProductCatId, setSelectedProductCatId] = useState('');
   const [selectedProductSubCatId, setSelectedProductSubCatId] = useState('');
   const [selectedProductGroupId, setSelectedProductGroupId] = useState('');
@@ -72,8 +70,8 @@ export default function EditProductDetails() {
 
   const variantsWSPDefaultValues = () => {
     const variantObj = {};
-    if (product.productDetails.product_variants.length > 0) {
-      product.productDetails.product_variants.forEach((pv, i) => {
+    if (product?.productDetails.product_variants.length > 0) {
+      product?.productDetails.product_variants.forEach((pv, i) => {
         variantObj[`variants.${i}.wsp`] = pv.wsp;
       });
     }
@@ -82,23 +80,27 @@ export default function EditProductDetails() {
 
   const getVariantWSPFieldNames = () => {
     let variantFieldNames = [];
-      if (product.productDetails.product_variants.length > 0) {
-        variantFieldNames = product.productDetails.product_variants.map((_, i) => {
+    if (product.productDetails.product_variants.length > 0) {
+      variantFieldNames = product.productDetails.product_variants.map(
+        (_, i) => {
           return `variants.${i}.wsp`;
-        });
-      }
-      return variantFieldNames;
-  }
+        }
+      );
+    }
+    return variantFieldNames;
+  };
 
   const getVariantMSRPFieldNames = () => {
     let variantFieldNames = [];
-      if (product.productDetails.product_variants.length > 0) {
-        variantFieldNames = product.productDetails.product_variants.map((_, i) => {
+    if (product.productDetails.product_variants.length > 0) {
+      variantFieldNames = product.productDetails.product_variants.map(
+        (_, i) => {
           return `variants.${i}.msrp`;
-        });
-      }
-      return variantFieldNames;
-  }
+        }
+      );
+    }
+    return variantFieldNames;
+  };
 
   const variantsMSRPDefaultValues = () => {
     const variantObj = {};
@@ -128,11 +130,17 @@ export default function EditProductDetails() {
     resolver: yupResolver(FormValidationSchema),
   });
 
-  const watchWSPChange = useWatch({ name: getVariantWSPFieldNames(), control: control });
-  const watchMSRPChange = useWatch({ name: getVariantMSRPFieldNames(), control: control });
+  const watchWSPChange = useWatch({
+    name: getVariantWSPFieldNames(),
+    control: control,
+  });
+  const watchMSRPChange = useWatch({
+    name: getVariantMSRPFieldNames(),
+    control: control,
+  });
 
   useEffect(() => {
-    if (watchWSPChange.some(v => v == '')) {
+    if (watchWSPChange.some((v) => v == '')) {
       setWSPError(true);
     } else {
       setWSPError(false);
@@ -140,7 +148,7 @@ export default function EditProductDetails() {
   }, [watchWSPChange]);
 
   useEffect(() => {
-    if (watchMSRPChange.some(v => v == '')) {
+    if (watchMSRPChange.some((v) => v == '')) {
       setMSRPError(true);
     } else {
       setMSRPError(false);
@@ -230,17 +238,17 @@ export default function EditProductDetails() {
   const handleVariantToggle = (event) => {
     const isChecked = event.target.checked;
     const value = event.target.value;
-    const result = activeVariants.map(v => {
+    const result = activeVariants.map((v) => {
       let item;
-      if(v.id == value && isChecked) {
-        item = {...v, status: '1'};
-      } else if(v.id == value && !isChecked) {
-        item = {...v, status: '0'}
+      if (v.id == value && isChecked) {
+        item = { ...v, status: '1' };
+      } else if (v.id == value && !isChecked) {
+        item = { ...v, status: '0' };
       } else {
         item = v;
       }
       return item;
-    })
+    });
     updatedVariants = result;
   };
 
@@ -302,7 +310,6 @@ export default function EditProductDetails() {
   }, [selectedProductSubCatId]);
 
   const transformVariants = () => {
-
     return updatedVariants.map((v) => {
       const item = {
         id: v.id,
@@ -319,10 +326,16 @@ export default function EditProductDetails() {
     const variantsObjArr = transformVariants();
     const variantsWithUpdatedPrice = data.variants.map((v, i) => {
       const item = variantsObjArr.find((e, index) => i == index);
-      const newItem = {...item, wsp: v.wsp, msrp: v.msrp};
+      const newItem = { ...item, wsp: v.wsp, msrp: v.msrp };
       return newItem;
-    })
-    if(wspError || msrpError || !selectedProductCatId || !selectedProductSubCatId) return;
+    });
+    if (
+      wspError ||
+      msrpError ||
+      !selectedProductCatId ||
+      !selectedProductSubCatId
+    )
+      return;
     const dataToUpdate = {
       product_name: data?.productName,
       product_description: description,
@@ -440,30 +453,38 @@ export default function EditProductDetails() {
                         </div>
                       )}
 
-                      {(!selectedProductCatId || wspError || msrpError) && <div
-                        className="alert alert-warning d-flex align-items-start"
-                        role="alert"
-                      >
-                        <img className="icon" src={DangerIcon} />
-                        {<div className="notes">
-                          {!selectedProductCatId && (
-                            <div>
-                              Please fill this required field:{' '}
-                              <a href="#">Product Category</a>
-                            </div>
-                          )}
-                          {/* {isAnySKUEmpty() && <div>
+                      {(!selectedProductCatId || wspError || msrpError) && (
+                        <div
+                          className="alert alert-warning d-flex align-items-start"
+                          role="alert"
+                        >
+                          <img className="icon" src={DangerIcon} />
+                          {
+                            <div className="notes">
+                              {!selectedProductCatId && (
+                                <div>
+                                  Please fill this required field:{' '}
+                                  <a href="#">Product Category</a>
+                                </div>
+                              )}
+                              {/* {isAnySKUEmpty() && <div>
                             Please sync <a href="#">SKU</a> from your Shopify
                             Store
                           </div>} */}
-                          {wspError && <div>
-                            Please enter <a href="#">WSP</a>
-                          </div>}
-                          {msrpError && <div>
-                            Please enter <a href="#">MSRP</a>
-                          </div>}
-                        </div>}
-                      </div>}
+                              {wspError && (
+                                <div>
+                                  Please enter <a href="#">WSP</a>
+                                </div>
+                              )}
+                              {msrpError && (
+                                <div>
+                                  Please enter <a href="#">MSRP</a>
+                                </div>
+                              )}
+                            </div>
+                          }
+                        </div>
+                      )}
 
                       <div
                         className="alert alert-warning d-flex align-items-center"

@@ -99,7 +99,7 @@ function SignIn() {
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       event.preventDefault();
       handleSubmit(onSubmit)();
     }
@@ -151,7 +151,7 @@ function SignIn() {
             </div>
           </div>
           <div className="form__field buttons">
-            <Button disabled={disabled} type="submit" className="button">
+            <Button disabled={disabled} type="submit" className="auth_button">
               Sign In
             </Button>
           </div>

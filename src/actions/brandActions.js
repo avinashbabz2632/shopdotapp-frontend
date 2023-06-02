@@ -426,10 +426,10 @@ export function updatePreferences(data) {
   return async (dispatch) => {
     try {
       const response = await axios.post(API_END_POINT.PREFERENCES, data);
-      if (response.status === 201) {
+      if (response.status == 200) {
+        toast.success(response.data?.message);
         dispatch(getPreferencesAction(data.brand_id));
         dispatch(setProfileCompleted({ preference: true }));
-        toast.success(response.data?.message);
       }
     } catch (err) {
       toast.error(

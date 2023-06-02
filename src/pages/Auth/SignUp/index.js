@@ -75,7 +75,6 @@ function SignUp() {
     return () => subscription.unsubscribe();
   }, [watch]);
 
-
   useEffect(() => {
     if (success) {
       dispatch(clearAuthReducer());
@@ -187,7 +186,7 @@ function SignUp() {
             )}
           </div>
 
-          <div className="form__field checkbox">
+          <div className="form__field auth_checkbox">
             <label>
               <Input
                 type="checkbox"
@@ -198,11 +197,17 @@ function SignUp() {
               />
               <small className="checkbox-text">
                 By signing up for ShopDot, you are agreeing to our&nbsp;
-                <LinkMod to={'https://shopdotapp.com/terms-of-use/'} target="_blank">
+                <LinkMod
+                  to={'https://shopdotapp.com/terms-of-use/'}
+                  target="_blank"
+                >
                   Terms{' '}
                 </LinkMod>
                 &nbsp;and
-                <LinkMod to={'https://shopdotapp.com/privacy-policy/'} target="_blank">
+                <LinkMod
+                  to={'https://shopdotapp.com/privacy-policy/'}
+                  target="_blank"
+                >
                   &nbsp;Privacy Policy.
                 </LinkMod>
                 &nbsp;
@@ -213,13 +218,14 @@ function SignUp() {
             )}
           </div>
           <div className="form__field buttons">
-            <Button disabled={disabled} type="submit" className="button">
+            <Button disabled={disabled} type="submit" className="auth_button">
               Sign Up
             </Button>
           </div>
           <div className="form__field mb-0 text-center">
             <small>
-              Already have an account? Sign in <LinkMod to="/">here</LinkMod>
+              Already have an account? Sign in{' '}
+              <LinkMod to="/login">here</LinkMod>
             </small>
           </div>
         </form>
