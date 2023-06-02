@@ -219,7 +219,7 @@ function SignUp() {
           </div>
           <div className="form__field mb-0 text-center">
             <small>
-              Already have an account? Sign in <LinkMod to="/">here</LinkMod>
+              Already have an account? Sign in <LinkMod to="/login">here</LinkMod>
             </small>
           </div>
         </form>
