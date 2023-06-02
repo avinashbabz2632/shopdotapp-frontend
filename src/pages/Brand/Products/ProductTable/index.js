@@ -136,16 +136,15 @@ export default function ProductTable(props) {
         offset: offset,
       },
       sort: [['shopify_product_id', 'DESC']],
-      query: searchVal
-        ? {
-            category_ids: productCatFilter,
-            search: searchVal,
-          }
-        : {
-            category_ids: productCatFilter,
-          },
+      query: {},
       filter: prepareFilter(),
     };
+    if(searchVal){
+      data.query.search = searchVal
+    }
+    if(productCatFilter.length > 0){
+      data.query.category_ids = productCatFilter
+    }
     dispatch(getProductListAction(data));
   };
 
