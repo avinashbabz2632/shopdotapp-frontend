@@ -20,16 +20,16 @@ function EmailVerification() {
   const userDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchUserDetailAction(userDetails.id));
+    dispatch(fetchUserDetailAction(userDetails?.id));
     if (userDetails?.is_email_verified) {
       navigate('/personalize');
     } else {
-      dispatch(sendVerifyEmailAction({ id: userDetails.id }));
+      dispatch(sendVerifyEmailAction({ id: userDetails?.id }));
     }
   }, []);
 
   const handleGoPersonalize = () => {
-    dispatch(sendVerifyEmailAction({ id: userDetails.id }));
+    dispatch(sendVerifyEmailAction({ id: userDetails?.id }));
   };
   return (
     <>
