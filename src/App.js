@@ -113,32 +113,28 @@ function App() {
   useEffect(() => {
     const pathname = window.location.pathname;
     if (
-      pathname.includes('/reset-password/') ||
-      pathname.includes('/forgot-password-sent')
+      (pathname.includes('/reset-password/') ||
+        pathname.includes('/forgot-password-sent') ||
+        pathname.includes('/signup') ||
+        pathname.includes('/') ||
+        pathname.includes('/login')) &&
+      !isLogged
     ) {
       return;
     }
 
     if (isLogged) {
-      if (pathname == '/signup' || (pathname == '/' && !isRoleUpdated)) {
-        if (userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
-            navigate('/retailer-onboarding');
-          } else {
-            navigate('/brand-onboarding');
-          }
+      if (userDetails?.role?.name) {
+        if (userDetails?.role?.name === 'retailer') {
+          navigate('/retailer-onboarding');
         } else {
-          navigate('/personalize');
+          navigate('/brand-onboarding');
         }
-      } else if (pathname == '/') {
-        navigate('/login');
+      } else {
+        navigate('/personalize');
       }
-    } else if (pathname == '/') {
-      navigate('/login');
     } else {
-      if (pathname !== '/signup') {
-        navigate('/login');
-      }
+      navigate('/login');
     }
   }, []);
 
