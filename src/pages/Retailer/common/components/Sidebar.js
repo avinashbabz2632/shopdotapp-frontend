@@ -1,7 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { getBillingAction, getRetailerProfileAction } from '../../../../actions/retailerActions';
+import { useState } from 'react';
+import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 
 export default function RetailerSidebar() {
+  const userDetails = useSelector(selectUserDetails);
+  const profileDetails = useSelector(selectBrandProfileDetails);
+  const dispatch = useDispatch();
+  const [isCardAdded, setIsCardAdded] = useState(false);
+  const [isProfileCompleted, setIsProfileCompleted] = useState(false);
+  useEffect(()=>{
+    checkBillingAndProfile()
+  },[isCardAdded, isProfileCompleted])
+  const checkBillingAndProfile = async () => {
+    const response = await getBillingAction();
+    if (response?.status === 200) {
+      setIsCardAdded(true)
+    }
+    dispatch(getRetailerProfileAction(userDetails?.id));
+    if(profileDetails?.retailer_details){
+      setIsProfileCompleted(true);
+    }
+    
+  }
   return (
     <aside className="filters mp-filter">
       <div className="filters_wrap">
@@ -22,7 +46,7 @@ export default function RetailerSidebar() {
                     to={'/retailer/setting/'}
                     data-link="Account"
                     className={({ isActive }) =>
-                      `${isActive ? 'active' : ''} tab-links required`
+                      `${isActive ? 'active' : ''} tab-links ${isProfileCompleted ? 'checked': 'required'}`
                     }
                   >
                     Retailer Profile
@@ -37,7 +61,7 @@ export default function RetailerSidebar() {
                     to={'/retailer/setting/billing'}
                     data-link="Billing"
                     className={({ isActive }) =>
-                      `${isActive ? 'active' : ''} tab-links required`
+                      `${isActive ? 'active' : ''} tab-links ${isCardAdded ? 'checked': 'required'}`
                     }
                   >
                     Billing
@@ -47,7 +71,7 @@ export default function RetailerSidebar() {
                     to={'/retailer/setting/users'}
                     data-link="Users"
                     className={({ isActive }) =>
-                      `${isActive ? 'active' : ''} tab-links required`
+                      `${isActive ? 'active' : ''} tab-links`
                     }
                   >
                     Users
@@ -56,7 +80,7 @@ export default function RetailerSidebar() {
                     to={'/retailer/setting/security'}
                     data-link="Security"
                     className={({ isActive }) =>
-                      `${isActive ? 'active' : ''} tab-links required`
+                      `${isActive ? 'active' : ''} tab-links`
                     }
                   >
                     Security
@@ -66,7 +90,7 @@ export default function RetailerSidebar() {
                     to={'/retailer/setting/notification'}
                     data-link="AlertsNotifications"
                     className={({ isActive }) =>
-                      `${isActive ? 'active' : ''} tab-links required`
+                      `${isActive ? 'active' : ''} tab-links`
                     }
                   >
                     Notifications
