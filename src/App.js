@@ -113,32 +113,39 @@ function App() {
   useEffect(() => {
     const pathname = window.location.pathname;
     if (
-      (pathname.includes('/reset-password/') ||
-        pathname.includes('/forgot-password-sent') ||
-        pathname.includes('/signup') ||
-        pathname.includes('/') ||
-        pathname.includes('/login')) &&
-      !isLogged
+      pathname.includes('/reset-password/') ||
+      pathname.includes('/forgot-password-sent') ||
+      pathname.includes('/signup') ||
+      pathname.includes('/') ||
+      pathname.includes('/login')
     ) {
       return;
     }
 
     if (isLogged) {
-      if (userDetails?.role?.name) {
-        if (userDetails?.role?.name === 'retailer') {
-          navigate('/retailer-onboarding');
+      if (
+        pathname == '/signup' ||
+        pathname == '/' ||
+        (pathname == '/' && !isRoleUpdated)
+      ) {
+        if (userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
+            navigate('/retailer-onboarding');
+          } else {
+            navigate('/brand-onboarding');
+          }
         } else {
-          navigate('/brand-onboarding');
-        }
-      } else {
-        if (userDetails?.is_email_verified) {
           navigate('/personalize');
-        } else {
-          navigate('/login');
         }
+      } else if (pathname == '/') {
+        navigate('/login');
       }
-    } else {
+    } else if (pathname == '/') {
       navigate('/login');
+    } else {
+      if (pathname !== '/signup') {
+        navigate('/login');
+      }
     }
   }, []);
 
