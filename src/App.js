@@ -132,9 +132,9 @@ function App() {
         }
       } else {
         if (userDetails?.is_email_verified) {
-          navigate('verify-email');
-        } else {
           navigate('/personalize');
+        } else {
+          navigate('/login');
         }
       }
     } else {
