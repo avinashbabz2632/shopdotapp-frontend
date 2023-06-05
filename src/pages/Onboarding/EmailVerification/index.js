@@ -9,7 +9,10 @@ import { LinkMod } from '../../../components/common/A';
 import Button from '../../../components/common/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../redux/user/userSelector';
-import { fetchUserDetailAction, sendVerifyEmailAction } from '../../../actions/authActions';
+import {
+  fetchUserDetailAction,
+  sendVerifyEmailAction,
+} from '../../../actions/authActions';
 // import '../onboarding.style.scss';
 
 function EmailVerification() {
@@ -17,10 +20,10 @@ function EmailVerification() {
   const userDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchUserDetailAction(userDetails.id))
-    if(userDetails.is_email_verified){
+    dispatch(fetchUserDetailAction(userDetails.id));
+    if (userDetails?.is_email_verified) {
       navigate('/personalize');
-    }else{
+    } else {
       dispatch(sendVerifyEmailAction({ id: userDetails.id }));
     }
   }, []);

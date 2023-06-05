@@ -43,7 +43,7 @@ function SignIn() {
   const dispatch = useDispatch();
   const success = useSelector(loginSuccess);
   const userDetails = useSelector(selectUserDetails);
-  const history = createBrowserHistory()
+  const history = createBrowserHistory();
 
   const {
     register,
@@ -68,9 +68,9 @@ function SignIn() {
 
   useEffect(() => {
     if (success) {
-      if (userDetails.is_email_verified) {
-        if (userDetails.role && userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
+      if (userDetails?.is_email_verified) {
+        if (userDetails?.role && userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
             navigate('/brand-onboarding');
@@ -79,8 +79,8 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        if (userDetails.role && userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
+        if (userDetails?.role && userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
             navigate('/brand-onboarding');
