@@ -11,6 +11,7 @@ const initialState = {
     brandAssignedRetailerUpdating: false,
     brandAssignedRetailerUpdateSuccess: false,
     brandAssignedRetailerUpdateError: false,
+    retailerProductDetails: null,
 };
 
 const retaielrSlice = createSlice({
@@ -63,6 +64,9 @@ const retaielrSlice = createSlice({
             state.brandAssignedRetailerUpdating = false;
             state.brandAssignedRetailerUpdateSuccess = false;
             state.brandAssignedRetailerUpdateError = false;
+        },
+        setRetailerProductDetails: (state, action) => {
+            state.retailerProductDetails = action.payload;
         }
     },
 });
@@ -81,6 +85,7 @@ export const {
     setBrandAssignedRetailerSuccess,
     setBrandAssignedRetailerError,
     resetBrandAssignedRetailerState,
+    setRetailerProductDetails,
 } = retaielrSlice.actions;
 
 /**

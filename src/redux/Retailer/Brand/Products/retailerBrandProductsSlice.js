@@ -11,6 +11,7 @@ const initialState = {
   retailerNewConnectionRequestSuccess: false,
   retailerNewConnectionRequestError: false,
   retailerBrandProfile: null,
+  retailerProducts: [],
 };
 
 const retailerBrandProductsSlice = createSlice({
@@ -70,6 +71,9 @@ const retailerBrandProductsSlice = createSlice({
     },
     setRetailerBrandProfile: (state, action) => {
       state.retailerBrandProfile = action.payload;
+    },
+    setRetailerProducts: (state, action) => {
+      state.retailerProducts = action.payload;
     }
   },
 });
@@ -92,6 +96,7 @@ export const {
   setRetailerNewConnectionRequestError,
   resetNewConnectionRequestState,
   setRetailerBrandProfile,
+  setRetailerProducts
 } = retailerBrandProductsSlice.actions;
 
 /**

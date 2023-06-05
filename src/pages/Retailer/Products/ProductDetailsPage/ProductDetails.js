@@ -27,8 +27,9 @@ import LeftArrow from '../../images/icons/icon-chevron--left.svg';
 import ZoomIcon from '../../images/icons/icon-zoom.svg';
 import ProductZoomModal from './ProductZoomModel';
 import { retailerProductData } from '../../Brand/utils';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
+import { getRetailerProductDetailsAction } from '../../../../actions/retailerActions';
 // import { setProductActiveValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
 
 function ProductDetails() {
@@ -42,6 +43,7 @@ function ProductDetails() {
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setSetActiveOpenVal(setActiveOpen);
@@ -65,6 +67,10 @@ function ProductDetails() {
   const handleActiveButton = () => {
     setIsActiveButton(!isActiveButton);
   };
+
+  useEffect(() => {
+    dispatch(getRetailerProductDetailsAction(params?.id));
+  }, []);
 
   useEffect(() => {
     const findData = retailerProductData.find((ele) => {
