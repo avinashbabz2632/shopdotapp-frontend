@@ -38,7 +38,7 @@ export default function Personalize() {
     }
   };
   useEffect(() => {
-    if (!userDetails.is_email_verified) {
+    if (!userDetails?.is_email_verified) {
       navigate('/verify-email');
     }
   });
