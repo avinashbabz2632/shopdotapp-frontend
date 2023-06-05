@@ -133,7 +133,9 @@ export default function Shipping() {
         city: shippingDetails?.shipping_address?.city,
         zip: shippingDetails?.shipping_address?.zip,
         shippingfee: formatCurrency(shippingDetails?.shipping_cost.toString()),
-        incrementalfee: formatCurrency(shippingDetails?.incremental_fee.toString()),
+        incrementalfee: formatCurrency(
+          shippingDetails?.incremental_fee.toString()
+        ),
         daystofulfill: shippingDetails?.shipping_address?.shipping_time_id
           ? formatShippingTime()?.find(
               (item) =>
@@ -251,9 +253,10 @@ export default function Shipping() {
                           <Controller
                             name="country"
                             control={control}
-                            render={({ field }) => (
+                            render={({ field, value }) => (
                               <Select
                                 {...field}
+                                checked={value}
                                 className="basic-single"
                                 classNamePrefix="select"
                                 menuPortalTarget={document.body}
@@ -286,9 +289,10 @@ export default function Shipping() {
                           <Controller
                             name="state"
                             control={control}
-                            render={({ field }) => (
+                            render={({ field, value }) => (
                               <Select
                                 {...field}
+                                checked={value}
                                 className="basic-single"
                                 classNamePrefix="select"
                                 menuPortalTarget={document.body}
