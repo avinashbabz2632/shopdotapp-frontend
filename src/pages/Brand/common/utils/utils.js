@@ -454,6 +454,7 @@ export const categoryStyle = {
       ...styles,
       boxShadow: 'none',
       minHeight: '40px',
+      height: "0px",
       '&:hover': {
         boxShadow: 'none',
       },

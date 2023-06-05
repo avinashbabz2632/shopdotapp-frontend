@@ -4,7 +4,7 @@ const initialState = {
   productCatFilter: [],
   productTagFilter: [],
   stockFilter: [],
-  productStatusFilter: '',
+  productStatusFilter: 'all',
   productCatOptions: [],
   productTagOptions: [],
   stockOptions: ['< 10 units', '11-50 units', '> 50 units'],

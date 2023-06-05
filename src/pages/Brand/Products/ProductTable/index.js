@@ -140,7 +140,7 @@ export default function ProductTable(props) {
       filter: prepareFilter(),
     };
     if(searchVal){
-        query.query.search = searchVal
+      data.query.search = searchVal
     }
     if(productCatFilter.length > 0){
       data.query.category_ids = productCatFilter

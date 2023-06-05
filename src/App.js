@@ -114,15 +114,22 @@ function App() {
     const pathname = window.location.pathname;
     if (
       pathname.includes('/reset-password/') ||
-      pathname.includes('/forgot-password-sent')
+      pathname.includes('/forgot-password-sent') ||
+      pathname.includes('/signup') ||
+      pathname.includes('/') ||
+      pathname.includes('/login')
     ) {
       return;
     }
 
     if (isLogged) {
-      if (pathname == '/signup' || (pathname == '/' && !isRoleUpdated)) {
-        if (userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
+      if (
+        pathname == '/signup' ||
+        pathname == '/' ||
+        (pathname == '/' && !isRoleUpdated)
+      ) {
+        if (userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
             navigate('/brand-onboarding');
