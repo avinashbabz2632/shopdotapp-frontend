@@ -21,6 +21,9 @@ import {
   selectStockFilter,
   selectProductStatusFilter,
   selectProductCategory,
+  selectSyncInProgress,
+  selectSyncSuccess,
+  selectSyncError,
 } from '../../../../redux/Brand/Products/productSelectors';
 import {
   resetToInitial,
@@ -72,6 +75,10 @@ export default function ProductTable(props) {
   const [productId, setProductId] = useState('');
   const [categoryKeyby, setCategoryKeyby] = useState({});
   const productCategory = useSelector(selectProductCategory);
+  const syncInProgress = useSelector(selectSyncInProgress);
+  const syncSuccess = useSelector(selectSyncSuccess);
+  const syncError = useSelector(selectSyncError);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     if (productCategory?.length) {
@@ -345,6 +352,12 @@ export default function ProductTable(props) {
       })
     );
   };
+
+  useEffect(() => {
+    if(!syncInProgress && syncSuccess && !syncError) {
+      setRefresh(!refresh);
+    }
+  }, [syncInProgress, syncSuccess, syncError]);
 
   console.log(productCatFilter, 'productCatFilter');
 
