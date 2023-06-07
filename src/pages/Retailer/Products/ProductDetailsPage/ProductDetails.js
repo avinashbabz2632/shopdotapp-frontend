@@ -27,8 +27,10 @@ import LeftArrow from '../../images/icons/icon-chevron--left.svg';
 import ZoomIcon from '../../images/icons/icon-zoom.svg';
 import ProductZoomModal from './ProductZoomModel';
 import { retailerProductData } from '../../Brand/utils';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
+import { getRetailerProductDetailsAction } from '../../../../actions/retailerActions';
+import { selectRetailerProductDetails } from '../../../../redux/Brand/Retailer/retailerSelector';
 // import { setProductActiveValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
 
 function ProductDetails() {
@@ -40,8 +42,16 @@ function ProductDetails() {
   const [isOpen, setIsOpen] = useState(false);
   console.log('isOpen', isOpen);
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
+  const retailerProductsData = useSelector(selectRetailerProductDetails);
+  console.log('retailerProducts----', retailerProductsData);
+  const {productDetails, total_stock_quantity} = retailerProductsData || {};
+  const {user, product_variants, price_wps, price_msrp, body_html, product_tags, shipping_time} = productDetails || {};
+  const {brand_details, brand_categories, brand_values, brand_retailer_preference} = user || {};
+  const {shipping_rate} = brand_details || {};
+  const { shipping_address, incremental_fee, shipping_cost } = shipping_rate || {};
   const navigate = useNavigate();
   const params = useParams();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setSetActiveOpenVal(setActiveOpen);
@@ -67,14 +77,18 @@ function ProductDetails() {
   };
 
   useEffect(() => {
-    const findData = retailerProductData.find((ele) => {
-      return ele.id === Number(params?.id);
-    });
+    dispatch(getRetailerProductDetailsAction(params?.id));
+  }, []);
 
-    if (findData) {
-      setProfileData(findData);
-    }
-  }, [retailerProductData, params?.id]);
+  // useEffect(() => {
+  //   const findData = retailerProductData.find((ele) => {
+  //     return ele.id === Number(params?.id);
+  //   });
+
+  //   if (findData) {
+  //     setProfileData(findData);
+  //   }
+  // }, [retailerProductData, params?.id]);
 
   const handleConnectButton = () => {
     setIsOpen(true);
@@ -82,6 +96,25 @@ function ProductDetails() {
       setIsOpen(false);
     }, 4000);
   };
+
+  const getProductStatus = () => {
+    let statusText = '';
+    const {status} = productDetails || {};
+    switch (status) {
+      case '1':
+        statusText = 'Connected';
+        break;
+    
+      default:
+        break;
+    }
+    return statusText;
+  }
+
+  const getWSPTotal = () => {
+    let wspTotal = 0;
+    // if()
+  }
 
   return (
     <>
@@ -103,24 +136,24 @@ function ProductDetails() {
                           </div>
                         </span>
                         <div className="title">
-                          <h1>{profileData?.name}</h1>
+                          <h1>{brand_details?.store_name}</h1>
                           <div className="product_status">
                             <span
                               className={`status-pill w-auto ${
-                                profileData?.status === 'Connected' &&
+                                productDetails?.status === '1' &&
                                 'pill_connected'
                               } ${
-                                profileData?.status === 'Pending' &&
+                                productDetails?.status === '2' &&
                                 'pill_pending'
                               } ${
-                                profileData?.status === 'Declined' &&
+                                productDetails?.status === '3' &&
                                 'pill_declined'
                               } ${
-                                profileData?.status === 'Not Connected' &&
+                                productDetails?.status === '0' &&
                                 'pill_not_connected'
                               }`}
                             >
-                              {profileData?.status}
+                              {getProductStatus()}
                             </span>
                             &nbsp; &nbsp;
                           </div>
@@ -227,13 +260,13 @@ function ProductDetails() {
                             </div>
                             <div className="product-detail_info">
                               <div className="ttl">Brand</div>
-                              <p className="txt">Alpha One</p>
+                              <p className="txt">{brand_details?.store_name}</p>
                             </div>
                           </div>
                           <div className="product-detail product-detail--stock">
                             <div className="product-detail_info">
-                              <div className="ttl">9 in stock</div>
-                              <p className="txt">4 variants</p>
+                              <div className="ttl">{total_stock_quantity} in stock</div>
+                              <p className="txt">{product_variants?.length} variants</p>
                             </div>
                           </div>
                           <div className="product-detail product-detail--wsp">
@@ -254,20 +287,20 @@ function ProductDetails() {
                                   </div>
                                 </div>
                               </div>
-                              <p className="txt">$5.00-$7.50</p>
+                              <p className="txt">${price_wps}</p>
                             </div>
                           </div>
 
                           <div className="product-detail product-detail--mspr">
                             <div className="product-detail_info">
                               <div className="ttl">MSRP</div>
-                              <p className="txt">$15.00-$17.50</p>
+                              <p className="txt">${price_msrp}</p>
                             </div>
                           </div>
                           <div className="product-detail product-detail--ship-from">
                             <div className="product-detail_info">
                               <div className="ttl">Ships From</div>
-                              <p className="txt">Wilsonville, Oregon</p>
+                              <p className="txt">{shipping_address?.city}, {shipping_address?.state}</p>
                             </div>
                           </div>
                           {/* <!--Added latest detail--> */}
@@ -732,45 +765,22 @@ function ProductDetails() {
                               <span>Bab Monitors</span>
                             </div>
                           </div>
-                          <h2 className="h1">
-                            Simple summertime activities for kids. No guesswork,
-                            no planning… just a lot of living in the moment.
-                          </h2>
-                          <p>
-                            Running out of ideas to tame your little ones? Have
-                            a little box of summer activity ideas for kids.
-                            Guaranteed to keep them busy.
-                          </p>
-                          <div className="for">
-                            <div className="line">
-                              <strong>Activities:</strong> 60 ideas
-                            </div>
-                            <div className="line">
-                              <strong>Content:</strong> 30 natural, wood coins,
-                              each measuring 1 ½ inches round
-                            </div>
-                            <div className="line">
-                              <strong>Dimension:</strong> 4.8&quot; l x 2&quot;
-                              w x 1.8&quot;h
-                            </div>
-                            <div className="line">
-                              <strong>Weight:</strong> 0.32 lb
-                            </div>
-                          </div>
-
+                          <>
+                          {body_html}
+                          </>
                           <div className="product-category">
                             <strong>Tags:</strong>
                             <div className="tags">
-                              <div className="tag">Baby &amp; Kids</div>
-                              <div className="tag">toys</div>
-                              <div className="tag">games</div>
+                              {product_tags && product_tags.length > 0 && product_tags.map((item, index) => {
+                              return <div className="tag">{item?.tag}</div>
+                              })}
                             </div>
                           </div>
 
                           <div className="shipped-info">
                             <p>
-                              Product will be shipped by <span>Fusion</span>{' '}
-                              within <span>1-3 days</span>
+                              Product will be shipped by <span>{brand_details?.store_name}</span>{' '}
+                              within <span>{shipping_time} days</span>
                             </p>
                           </div>
                         </div>
@@ -834,226 +844,58 @@ function ProductDetails() {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>
-                                  <div className="image image--cover image--1-1">
-                                    <picture>
-                                      <img src={summer} alt="" />
-                                    </picture>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">Wood</div>
-                                </td>
-                                <td>
-                                  <div className="txt">Blue</div>
-                                </td>
-                                <td>
-                                  <div className="txt">V1N-071A-0122-01</div>
-                                </td>
-                                <td>
-                                  <div className="txt">813687021196</div>
-                                </td>
-                                <td>
-                                  <div className="txt">
-                                    {/* <!--Red color for icon by default, orange with className icon--orange--> */}
-                                    5
-                                    <div className="tooltip-icon-orange">
-                                      <div className="icon">
-                                        <img src={danger} />
+                              {product_variants && product_variants.length > 0 && product_variants.map((item, index) => {
+                                return (
+                                  <tr key={`${index}`}>
+                                  <td>
+                                    <div className="image image--cover image--1-1">
+                                      <picture>
+                                        <img src={summer} alt="" />
+                                      </picture>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="txt">{item?.material}</div>
+                                  </td>
+                                  <td>
+                                    <div className="txt">{item?.color}</div>
+                                  </td>
+                                  <td>
+                                    <div className="txt">{item?.sku}</div>
+                                  </td>
+                                  <td>
+                                    <div className="txt">{item?.barcode}</div>
+                                  </td>
+                                  <td>
+                                    <div className="txt">
+                                      {/* <!--Red color for icon by default, orange with className icon--orange--> */}
+                                      {item?.inventory_quantity}
+                                      <div className="tooltip-icon-orange">
+                                        <div className="icon">
+                                          <img src={danger} />
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">$5.00-$7.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">$15.00-$17.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">
-                                    <button className="pc-status-button pc-status-button--add-list">
-                                      Add to Cart
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div className="image image--cover image--1-1">
-                                    <picture>
-                                      <img src={summer} alt="" />
-                                    </picture>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">Wood</div>
-                                </td>
-                                <td>
-                                  <div className="txt">Blue</div>
-                                </td>
-                                <td>
-                                  <div className="txt">V1N-071A-0122-01</div>
-                                </td>
-                                <td>
-                                  <div className="txt">813687021196</div>
-                                </td>
-                                <td>
-                                  <div className="txt">
-                                    {/* <!--Red color for icon by default, orange with className icon--orange, add className to '.txt"'--> */}
-                                    0
-                                    <div className="tooltip-icon-danger">
-                                      <div className="icon">
-                                        <img src={redDanger} />
-                                      </div>
+                                  </td>
+                                  <td>
+                                    <div className="txt">${item?.wsp}</div>
+                                  </td>
+  
+                                  <td>
+                                    <div className="txt">${item?.price}</div>
+                                  </td>
+  
+                                  <td>
+                                    <div className="txt">
+                                      <button className="pc-status-button pc-status-button--add-list">
+                                        Add to Cart
+                                      </button>
                                     </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">$5.00-$7.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">$15.00-$17.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">
-                                    <div className="tooltip btn-tooltip">
-                                      <div className="tooltip-icon tooltip-icon-info">
-                                        <button
-                                          className="pc-status-button pc-status-button--add-list"
-                                          disabled
-                                        >
-                                          Add to Cart
-                                        </button>
-                                      </div>
-                                      <div className="tooltip_text">
-                                        <p>
-                                          You are not connected with the brand.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div className="image image--cover image--1-1">
-                                    <picture>
-                                      <img src={summer} alt="" />
-                                    </picture>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">Wood</div>
-                                </td>
-                                <td>
-                                  <div className="txt">Blue</div>
-                                </td>
-                                <td>
-                                  <div className="txt">V1N-071A-0122-01</div>
-                                </td>
-                                <td>
-                                  <div className="txt">813687021196</div>
-                                </td>
-                                <td>
-                                  <div className="txt">
-                                    {/* <!--Red color for icon by default, orange with className icon--orange, add className to '.txt"'--> */}
-                                    0
-                                    <div className="tooltip-icon-danger">
-                                      <div className="icon">
-                                        <img src={redDanger} />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">$5.00-$7.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">$15.00-$17.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">
-                                    <div className="tooltip btn-tooltip">
-                                      <div className="tooltip-icon tooltip-icon-info">
-                                        <button
-                                          className="pc-status-button pc-status-button--add-list"
-                                          disabled
-                                        >
-                                          Add to Cart
-                                        </button>
-                                      </div>
-                                      <div className="tooltip_text">
-                                        <p>No stock available.</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div className="image image--cover image--1-1">
-                                    <picture>
-                                      <img src={summer} alt="" />
-                                    </picture>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">Wood</div>
-                                </td>
-                                <td>
-                                  <div className="txt">Blue</div>
-                                </td>
-                                <td>
-                                  <div className="txt">V1N-071A-0122-01</div>
-                                </td>
-                                <td>
-                                  <div className="txt">813687021196</div>
-                                </td>
-                                <td>
-                                  <div className="txt">
-                                    {/* <!--Red color for icon by default, orange with className icon--orange, add className to '.txt"'--> */}
-                                    0
-                                    <div className="tooltip-icon-danger">
-                                      <div className="icon">
-                                        <img src={redDanger} />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="txt">$5.00-$7.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">$15.00-$17.50</div>
-                                </td>
-
-                                <td>
-                                  <div className="txt">
-                                    <div className="tooltip btn-tooltip">
-                                      <div className="tooltip-icon tooltip-icon-info">
-                                        <button
-                                          className="pc-status-button pc-status-button--add-list"
-                                          disabled
-                                        >
-                                          Add to Cart
-                                        </button>
-                                      </div>
-                                      <div className="tooltip_text">
-                                        <p>Already added to cart.</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
+                                  </td>
+                                </tr>
+                                );
+                              })}
+                             
                             </tbody>
                           </table>
                         </div>
@@ -1068,15 +910,15 @@ function ProductDetails() {
                                 <div className="product_extra-text">
                                   <p>
                                     Estimated days to fulfill is{' '}
-                                    <strong>[Range]</strong>. Product ships from{' '}
-                                    <strong>[Shipping City]</strong>,{' '}
-                                    <strong>[Shipping State]</strong>.
+                                    <strong>[{shipping_time}]</strong>. Product ships from{' '}
+                                    <strong>[{shipping_address?.city}]</strong>,{' '}
+                                    <strong>[{shipping_address?.state}]</strong>.
                                   </p>
                                   <p>
                                     Shipping costs will be a flat rate of{' '}
-                                    <strong>[$Shipping Costs]</strong> for the
+                                    <strong>[${shipping_cost}]</strong> for the
                                     first product and{' '}
-                                    <strong>[$Incremental Fee]</strong> for each
+                                    <strong>[${incremental_fee}]</strong> for each
                                     additional product within the same order.
                                   </p>
                                 </div>
@@ -1107,17 +949,17 @@ function ProductDetails() {
                                         href="brand-single.html"
                                         className="link-text"
                                       >
-                                        1Store
+                                        {brand_details?.store_name}
                                       </a>
                                     </h2>
                                     <div className="brand-single_about-item">
                                       <p>
                                         <strong>Shipping Location: </strong>
-                                        Wilsonville, Oregon
+                                        {shipping_address?.city}, {shipping_address?.state}
                                       </p>
                                       <p>
                                         <strong>Website: </strong>
-                                        <a href="#">www.2store.com</a>
+                                        <a href="#">{brand_details?.store_website}</a>
                                       </p>
                                     </div>
                                   </div>
@@ -1128,9 +970,9 @@ function ProductDetails() {
                                       Brand Categories:
                                     </div>
                                     <div className="brand-single_about-item-wrap">
-                                      <a href="#">Baby &amp; Kids</a>
-                                      <a href="#">Toys &amp; Games</a>
-                                      <a href="#">Apparel &amp; Accessories</a>
+                                    {brand_categories && brand_categories.length > 0 && brand_categories.map((item, index) => {
+                                        return <a href="#" key={`${index}`}>{item?.store_categories?.name}</a>
+                                      })}
                                     </div>
                                   </div>
                                   <div className="brand-single_about-item">
@@ -1138,10 +980,9 @@ function ProductDetails() {
                                       Brand Values:
                                     </div>
                                     <div className="brand-single_about-item-wrap">
-                                      <a href="#">Handmade</a>
-                                      <a href="#">Made in USA</a>
-                                      <a href="#">Small Batch</a>
-                                      <a href="#">Women Owned</a>
+                                      {brand_values && brand_values.length > 0 && brand_values.map((item, index) => {
+                                        return <a href="#" key={`${index}`}>{item?.store_values?.name}</a>
+                                      })}
                                     </div>
                                   </div>
                                   <div className="brand-single_about-item">
@@ -1202,29 +1043,8 @@ function ProductDetails() {
                             <div className="brand-single_info">
                               <div className="brand-single_block">
                                 <h2>About the Brand</h2>
-                                <h3>
-                                  We are a company that seeks to cure “I’m
-                                  bored” in kids by creating covertly
-                                  educational activities.
-                                </h3>
-                                <p>
-                                  Thousands of boxes of open-ended fun have been
-                                  sold worldwide. With wholesale products in
-                                  every US State, The Idea Box Kids has been
-                                  featured in Country Living, American
-                                  Farmhouse, MaryJanes Farm, and on sites like
-                                  Fodor’s Travel, The Week, Cafe Mom, Simply
-                                  Real Moms and more.
-                                </p>
-                                <p>
-                                  We have been a business owner for 23 years
-                                  with 16 of those in ecommerce. We are
-                                  passionate advocate for all things handmade
-                                  wholesale, for both the sellers that create
-                                  and the buyers that buy.
-                                </p>
+                                {brand_details?.brand_story}
                               </div>
-
                               <div className="imageArea">
                                 <img src={summer} />
                               </div>

@@ -25,6 +25,7 @@ const list = [
   {
     text1: 'Configure your mandatory',
     linkText: 'Settings',
+    isOnboarding: true,
     guideLink:
       'https://intercom.help/shopdot/en/articles/6549401-how-do-i-confirm-my-settings-and-preferences',
   },
@@ -44,6 +45,7 @@ const list = [
   {
     text1: 'Activate your ',
     linkText: 'Settings',
+    isOnboarding: false,
     guideLink:
       'https://intercom.help/shopdot/en/articles/6549404-how-do-i-activate-a-product',
   },

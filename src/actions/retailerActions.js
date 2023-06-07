@@ -20,7 +20,12 @@ import {
   setRetailerBrandValuesList,
   setRetailerNewConnectionRequestError,
   setRetailerNewConnectionRequestSuccess,
+  setRetailerProducts,
 } from '../redux/Retailer/Brand/Products/retailerBrandProductsSlice';
+import {
+  setBrandFilters,
+  setRetailerProductDetails,
+} from '../redux/Brand/Retailer/retailerSlice';
 
 export function getRetailerProfileAction(id) {
   return async (dispatch) => {
@@ -214,3 +219,79 @@ export function getRetailerBrandProfileAction(id) {
     }
   };
 }
+
+export function getRetailerProductsAction(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        `${API_END_POINT.RETAILER_PRODUCTS}`,
+        data
+      );
+      if (response && response.data && response.data.code == 200) {
+        dispatch(setRetailerProducts(response?.data?.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getRetailerProductDetailsAction(id) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.RETAILER_PRODUCT_DETAILS(id)}`
+      );
+      if (response && response.data && response.data.code == 200) {
+        dispatch(setRetailerProductDetails(response?.data?.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+export function getBrandFiltersAction(data) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(`${API_END_POINT.BRAND_FILTERS}`, data);
+      if (response && response.data && response.data.code == 200) {
+        dispatch(setBrandFilters(response?.data?.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}
+
+// export function getRetailerProductsAction(data) {
+//   return async (dispatch) => {
+//     try {
+//       const response = await axios.post(
+//         `${API_END_POINT.RETAILER_PRODUCTS}`,
+//         data
+//       );
+//       if (response && response.data && response.data.code == 200) {
+//         dispatch(setRetailerProducts(response?.data?.data));
+//       }
+//     } catch (err) {
+//       toast.error(
+//         err && err.response && err.response.data && err.response.data.errors
+//           ? err.response.data.errors
+//           : 'Something went worng'
+//       );
+//     }
+//   };
+// }

@@ -8,3 +8,5 @@ export const selectRetailers = (state) => state.brandRetailer.retailers;
 export const selectBrandAssignedRetaielrUpdating = (state) => state.brandRetailer.brandAssignedRetailerUpdating;
 export const selectBrandAssignedRetaielrSuccess = (state) => state.brandRetailer.brandAssignedRetailerUpdateSuccess;
 export const selectBrandAssignedRetaielrError = (state) => state.brandRetailer.brandAssignedRetailerUpdateError;
+export const selectRetailerProductDetails = (state) => state.brandRetailer.retailerProductDetails;
+export const selectBrandFilters = (state) => state.brandRetailer.brandFilters;

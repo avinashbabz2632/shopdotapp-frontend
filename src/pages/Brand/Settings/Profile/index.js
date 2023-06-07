@@ -132,6 +132,8 @@ export default function BrandProfile() {
 
   const onSubmit = (data) => {
     console.log('data 2', data);
+    console.log('brandProfileDetails', brandProfileDetails);
+    const isCreate = Object.keys(brandProfileDetails).length === 0;
     dispatch(
       updateBrandProfileAction(
         {
@@ -141,7 +143,7 @@ export default function BrandProfile() {
           profile_picture: image,
           ...data,
         },
-        brandProfileDetails?.id
+        isCreate
       )
     );
     // reset();
@@ -480,7 +482,7 @@ export default function BrandProfile() {
                       </div>
                       <div className="form-input mb-4">
                         <label className="form-label">
-                          Add a Youtube or Vimeo video link.
+                          Add a Youtube or Vimeo video link. <span className="asterisk-red">*</span>
                         </label>
                         <input
                           type="text"
