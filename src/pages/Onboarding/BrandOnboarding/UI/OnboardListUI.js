@@ -23,6 +23,7 @@ export default function OnboardListUI({
   shopifyConnected,
   btnCallback,
   activeStep,
+  isOnboarding,
 }) {
   return (
     <div
@@ -40,7 +41,7 @@ export default function OnboardListUI({
         )}
         <span href="" className="cs-label">
           {text1} &nbsp;
-          <LinkMod className="ob-link" to={'/brand/setting/'}>
+          <LinkMod className="ob-link" to={isOnboarding ? '/brand/setting' : '/brand/products'}>
             {linkText}
           </LinkMod>
           {text2}
@@ -48,9 +49,11 @@ export default function OnboardListUI({
         {btnText ? (
           <button
             type="button"
-            // onClick={activeStep > 3 ? null : btnCallback}
-            onClick={btnCallback}
-            className="button button-blue"
+            onClick={activeStep > 3 ? null : btnCallback}
+            // onClick={btnCallback}
+            className={`button ${
+              activeStep > 3 ? `button-grey` : `button-blue`
+            }`}
           >
             {activeStep > 3 ? 'Synced' : btnText}
           </button>

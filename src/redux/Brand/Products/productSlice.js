@@ -4,7 +4,7 @@ const initialState = {
   productCatFilter: [],
   productTagFilter: [],
   stockFilter: [],
-  productStatusFilter: '',
+  productStatusFilter: 'all',
   productCatOptions: [],
   productTagOptions: [],
   stockOptions: ['< 10 units', '11-50 units', '> 50 units'],
@@ -16,7 +16,9 @@ const initialState = {
   productUpdateResult: null,
   productSubCatOptions: [],
   productGroupOptions: [],
+  syncInProgress: false,
   syncError: null,
+  syncSuccess: false,
 };
 
 const orderSlice = createSlice({
@@ -82,7 +84,16 @@ const orderSlice = createSlice({
       state.productGroupOptions = action.payload;
     },
     setSyncError: (state, action) => {
+      state.syncInProgress = false;
       state.syncError = action.payload;
+    },
+    setSyncSuccess: (state, action) => {
+      state.syncInProgress = false;
+      state.syncSuccess = true;
+      state.syncError = null;
+    },
+    setSyncInProgress: (state, action) => {
+      state.syncInProgress = true;
     }
   },
 });
@@ -109,6 +120,8 @@ export const {
   setProductSubCatOptions,
   setProductGroupOptions,
   setSyncError,
+  setSyncSuccess,
+  setSyncInProgress,
 } = orderSlice.actions;
 
 /**

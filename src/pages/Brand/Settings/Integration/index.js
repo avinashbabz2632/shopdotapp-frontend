@@ -23,6 +23,7 @@ export default function BrandSetting() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('brandProfileDetails----', brandProfileDetails);
     if (brandProfileDetails?.shop_detail?.shop) {
       const onlyBranName = brandProfileDetails?.shop_detail?.shop.replace(
         '.myshopify.com',

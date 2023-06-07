@@ -810,25 +810,25 @@ input[type='submit'][disabled] {
     background-color: var(--orange-tint-2);
 }
 
-.checkbox {
+.auth_checkbox {
     position: relative;
     padding: 0.9rem 0 0 0;
 }
 
-.checkbox input {
+.auth_checkbox input {
     position: absolute;
     width: 0;
     height: 0;
     opacity: 0;
 }
 
-.checkbox input:checked ~ .checkbox-text:before {
+.auth_checkbox input:checked ~ .checkbox-text:before {
     background-color: var(--orange-100);
     -webkit-mask-image: url('../../assets/images/icons/checked-true.svg');
     mask-image: url('../../assets/images/icons/checked-true.svg');
 }
 
-.checkbox label {
+.auth_checkbox label {
     position: relative;
     display: flex;
     align-items: center;
@@ -837,7 +837,7 @@ input[type='submit'][disabled] {
     height: 100%;
 }
 
-.checkbox label .checkbox-text {
+.auth_checkbox label .checkbox-text {
     position: relative;
     display: flex;
     align-items: center;
@@ -847,7 +847,7 @@ input[type='submit'][disabled] {
     padding-left: 3.3rem;
 }
 
-.checkbox label .checkbox-text:before {
+.auth_checkbox label .checkbox-text:before {
     content: '';
     position: absolute;
     left: 0;
@@ -865,11 +865,11 @@ input[type='submit'][disabled] {
     mask-image: url('../../assets/images/icons/checked-false.svg');
 }
 
-.checkbox label:hover {
+.auth_checkbox label:hover {
     cursor: pointer;
 }
 
-.checkbox label:hover .radio-text:before {
+.auth_checkbox label:hover .radio-text:before {
     background-color: var(--orange-100);
 }
 
@@ -967,7 +967,7 @@ input[type='submit'][disabled] {
     background-color: var(--orange-100);
 }
 
-.button {
+.auth_button {
     position: relative;
     overflow: hidden;
     display: inline-flex;

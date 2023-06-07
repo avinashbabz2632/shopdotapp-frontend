@@ -79,6 +79,8 @@ const RetailerBrandSingleProductDetailPage = lazy(() =>
   import('./pages/Retailer/Products/ProductDetailsPage/ProductDetails')
 );
 
+const RetailerBrandProductsPage = lazy(() => import('./pages/Retailer/Products'));
+
 function App() {
   const navigate = useNavigate();
   const history = createBrowserHistory();
@@ -86,27 +88,66 @@ function App() {
   const isRoleUpdated = useSelector(selectRoleUpdated);
   const userDetails = useSelector(selectUserDetails);
 
+  // useEffect(() => {
+  //   const pathname = window.location.pathname;
+  //   if (
+  //     pathname.includes('/reset-password/') ||
+  //     pathname.includes('/forgot-password-sent')
+  //   ) {
+  //     return;
+  //   }
+
+  //   if (isLogged) {
+  //     if (!userDetails?.is_email_verified) {
+  //       navigate('verify-email');
+  //     } else if (!isRoleUpdated) {
+  //       navigate('/personalize');
+  //     } else if (userDetails.role && userDetails.role.name === 'retailer') {
+  //       navigate('/retailer-onboarding');
+  //     } else if (userDetails.role && userDetails.role.name === 'brand') {
+  //       navigate('/brand-onboarding');
+  //     }
+  //   } else {
+  //     navigate('/login');
+  //   }
+  // }, []);
+
   useEffect(() => {
     const pathname = window.location.pathname;
     if (
       pathname.includes('/reset-password/') ||
-      pathname.includes('/forgot-password-sent')
+      pathname.includes('/forgot-password-sent') ||
+      pathname.includes('/signup') ||
+      pathname.includes('/') ||
+      pathname.includes('/login')
     ) {
       return;
     }
 
     if (isLogged) {
-      if (!userDetails?.is_email_verified) {
-        navigate('verify-email');
-      } else if (!isRoleUpdated) {
-        navigate('/personalize');
-      } else if (userDetails.role && userDetails.role.name === 'retailer') {
-        navigate('/retailer-onboarding');
-      } else if (userDetails.role && userDetails.role.name === 'brand') {
-        navigate('/brand-onboarding');
+      if (
+        pathname == '/signup' ||
+        pathname == '/' ||
+        (pathname == '/' && !isRoleUpdated)
+      ) {
+        if (userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
+            navigate('/retailer-onboarding');
+          } else {
+            navigate('/brand-onboarding');
+          }
+        } else {
+          navigate('/personalize');
+        }
+      } else if (pathname == '/') {
+        navigate('/login');
       }
-    } else {
+    } else if (pathname == '/') {
       navigate('/login');
+    } else {
+      if (pathname !== '/signup') {
+        navigate('/login');
+      }
     }
   }, []);
 
@@ -192,13 +233,14 @@ function App() {
             element={<RetailerBrandSinglePage />}
           />
           <Route
-            path="/retailer/brand/single-product-details"
+            path="/retailer/brand/single-product-details/:id"
             element={<RetailerBrandSingleProductDetailPage />}
           />
           <Route
             path="/retailer/setting/:activeTab"
             element={<RetailerSettingPage />}
           />
+          <Route path="/retailer/products" element={<RetailerBrandProductsPage />} />
           {/* Retailer Portal Routes:::end */}
 
           <Route path="/sitemap" element={<SiteMap />} />

@@ -132,7 +132,7 @@ function ResetPassword() {
           </div>
 
           <div className="form__field buttons">
-            <Button type="submit" className="button">
+            <Button type="submit" className="auth_button">
               Confirm
             </Button>
           </div>

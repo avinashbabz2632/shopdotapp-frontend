@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearAuthReducer } from '../../../redux/auth/authSlice';
 import { loginSuccess } from '../../../redux/auth/authSelector';
 import { selectUserDetails } from '../../../redux/user/userSelector';
+import { createBrowserHistory } from 'history';
 
 // Validation schema of form field
 const validationSchema = yup
@@ -42,6 +43,7 @@ function SignIn() {
   const dispatch = useDispatch();
   const success = useSelector(loginSuccess);
   const userDetails = useSelector(selectUserDetails);
+  const history = createBrowserHistory();
 
   const {
     register,
@@ -66,9 +68,9 @@ function SignIn() {
 
   useEffect(() => {
     if (success) {
-      if (userDetails.is_email_verified) {
-        if (userDetails.role && userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
+      if (userDetails?.is_email_verified) {
+        if (userDetails?.role && userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
             navigate('/brand-onboarding');
@@ -77,8 +79,8 @@ function SignIn() {
           navigate('/personalize');
         }
       } else {
-        if (userDetails.role && userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
+        if (userDetails?.role && userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
             navigate('/brand-onboarding');
@@ -99,7 +101,7 @@ function SignIn() {
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       event.preventDefault();
       handleSubmit(onSubmit)();
     }
@@ -151,7 +153,7 @@ function SignIn() {
             </div>
           </div>
           <div className="form__field buttons">
-            <Button disabled={disabled} type="submit" className="button">
+            <Button disabled={disabled} type="submit" className="auth_button">
               Sign In
             </Button>
           </div>

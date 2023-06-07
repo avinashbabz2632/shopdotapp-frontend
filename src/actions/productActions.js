@@ -10,6 +10,8 @@ import {
   setProductSubCatOptions,
   setProductGroupOptions,
   setSyncError,
+  setSyncInProgress,
+  setSyncSuccess,
 } from '../redux/Brand/Products/productSlice';
 import { toast } from 'react-toastify';
 import download from 'js-file-download';
@@ -96,11 +98,13 @@ export function getProductCategoriesAction(type, id) {
 export function syncSingleProductAction(params) {
   return async (dispatch) => {
     try {
+      dispatch(setSyncInProgress());
       const response = await axios.get(`${API_END_POINT.SYNC_SINGLE_PRODUCT}`, {
         params,
       });
       if (response && response.data && response.data.code == 200) {
         // dispatch(setSyncError(response?.data?.data));
+        dispatch(setSyncSuccess());
         toast.success('Product Synced Successfully');
       } else {
       }

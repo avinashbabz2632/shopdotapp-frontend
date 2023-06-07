@@ -20,6 +20,10 @@ import {
   selectProductTagFilter,
   selectStockFilter,
   selectProductStatusFilter,
+  selectProductCategory,
+  selectSyncInProgress,
+  selectSyncSuccess,
+  selectSyncError,
 } from '../../../../redux/Brand/Products/productSelectors';
 import {
   resetToInitial,
@@ -28,7 +32,7 @@ import {
   stockClear,
   setProductStatusFilter,
 } from '../../../../redux/Brand/Products/productSlice';
-import { filter, isEmpty } from 'lodash';
+import { filter, isEmpty, keyBy, map } from 'lodash';
 import PopupModal from '../Popupmodal';
 import CategoryTagPopupModal from '../CategoryTagPopup';
 import RetailerPopup from '../RetailerPopup';
@@ -69,6 +73,21 @@ export default function ProductTable(props) {
   const [showAction, setShowAction] = useState(false);
   const [openSelect, setOpenSelect] = useState(false);
   const [productId, setProductId] = useState('');
+  const [categoryKeyby, setCategoryKeyby] = useState({});
+  const productCategory = useSelector(selectProductCategory);
+  const syncInProgress = useSelector(selectSyncInProgress);
+  const syncSuccess = useSelector(selectSyncSuccess);
+  const syncError = useSelector(selectSyncError);
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    if (productCategory?.length) {
+      const tempKey = keyBy(productCategory, 'id');
+      setCategoryKeyby(tempKey);
+    }
+  }, [productCategory]);
+
+  console.log(productCategory, 'productCategory');
 
   const [limit, setLimit] = useState(20);
   const [offset, setOffset] = useState(0);
@@ -124,16 +143,15 @@ export default function ProductTable(props) {
         offset: offset,
       },
       sort: [['shopify_product_id', 'DESC']],
-      query: searchVal
-        ? {
-            category_ids: productCatFilter,
-            search: searchVal,
-          }
-        : {
-            category_ids: productCatFilter,
-          },
+      query: {},
       filter: prepareFilter(),
     };
+    if(searchVal){
+      data.query.search = searchVal
+    }
+    if(productCatFilter.length > 0){
+      data.query.category_ids = productCatFilter
+    }
     dispatch(getProductListAction(data));
   };
 
@@ -334,6 +352,14 @@ export default function ProductTable(props) {
       })
     );
   };
+
+  useEffect(() => {
+    if(!syncInProgress && syncSuccess && !syncError) {
+      setRefresh(!refresh);
+    }
+  }, [syncInProgress, syncSuccess, syncError]);
+
+  console.log(productCatFilter, 'productCatFilter');
 
   return (
     <>
@@ -559,7 +585,14 @@ export default function ProductTable(props) {
                 <div className="products_active-filter">
                   <div className="txt">
                     <b>Product Category: </b>
-                    {productCatFilter.join(', ')}
+                    {map(productCatFilter, (prod, key) => {
+                      const stringKey =
+                        key == 0
+                          ? categoryKeyby?.[prod]?.name
+                          : `, ${categoryKeyby?.[prod]?.name}`;
+                      return stringKey;
+                    })}
+                    {/* {productCatFilter.join(', ')} */}
                   </div>
                   <button
                     className="products_active-remove"
