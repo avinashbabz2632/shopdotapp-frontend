@@ -32,3 +32,8 @@ export const selectProductGroupOptions = (state) => state.brandProduct.productGr
 
 export const selectSyncError = (state) => state.brandProduct.syncError;
 
+export const selectSyncInProgress = (state) => state.brandProduct.syncInProgress;
+
+export const selectSyncSuccess = (state) => state.brandProduct.syncSuccess;
+
+
