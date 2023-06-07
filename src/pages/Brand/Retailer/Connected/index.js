@@ -50,7 +50,7 @@ export default function Connected(props) {
             ["assigned_products",sortColumn == "assigned_products" ? "ASC" : "DESC"],
             ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
             ["retailer_category",sortColumn == "retailer_category" ? "ASC" : "DESC"],
-            ["store_state",sortColumn == "store_state" ? "ASC" : "DESC"]
+            ["invite_status",sortColumn == "invite_status" ? "ASC" : "DESC"]
           ],
         query: {},
         filter: [
@@ -235,7 +235,7 @@ export default function Connected(props) {
                                         </th>
 
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("store_state")}>
+                                            <div className="title" onClick={()=>handleSort("invite_status")}>
                                                 State
                                                 <span className="sort">
                                                     <img src={downArrow} />
