@@ -50,16 +50,11 @@ export default function ProductDetails() {
   const shippingTimes = useSelector(shippingTime);
   const [shippingData, setShippingData] = useState({});
   const statesOption = useSelector(selectStates);
+  const [productStatus, setProductStatus] = useState("0");
 
   const transformStatesOption = statesOption?.map((el) => {
     return { label: el.name, value: el.country_id };
   });
-
-  useEffect(() => {
-    dispatch(getProductDetailsAction(params.id));
-    dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const formatShippingTime = () => {
     if (shippingTimes && shippingTimes.length > 0) {
@@ -73,13 +68,17 @@ export default function ProductDetails() {
   };
 
   useEffect(() => {
-    console.log(shippingDetailsRes, 'shippingDetailsRes');
+    dispatch(getProductDetailsAction(params.id)).then((res)=>{
+      setProductStatus(res.data.data.productDetails.status == "1" ? "1" : "0");
+    });
+    console.log(productStatus);
+    dispatch(getBrandShippingAction(brandProfileDetails?.brand_profile?.id));
     if (shippingDetailsRes?.shippingDetails) {
       formatShippingDetails(
         shippingDetailsRes?.shippingDetails?.brand_details.shipping_rate
       );
     }
-  }, [shippingDetailsRes]);
+  }, [productStatus]);
 
   const formatShippingDetails = (shippingDetails) => {
     const formateState = transformStatesOption
@@ -104,7 +103,6 @@ export default function ProductDetails() {
       state: formateState?.label,
       city: shippingDetails?.shipping_address?.city,
     };
-    console.log(data, 'data2');
     setShippingData(data);
   };
 
@@ -180,7 +178,7 @@ export default function ProductDetails() {
     dispatch(
       updateProductStatusAction(
         params.id,
-        productDetails?.productDetails?.status == '1' ? 1 : 0
+        productStatus == '1' ? 1 : 0
       )
     );
   };
@@ -237,12 +235,11 @@ export default function ProductDetails() {
                     <div className="product_status">
                       <div className="my-toggle-btn">
                         <input
-                          defaultChecked={
-                            productDetails?.productDetails?.status === '1'
-                          }
+                          defaultChecked
                           onChange={handleStatus}
                           type="checkbox"
                           id="checkbox1"
+                          checked={productStatus == "1" ? "checked" : ""}
                         />
                         <label htmlFor="checkbox1">
                           <span className="on" title="Active">
@@ -384,6 +381,7 @@ export default function ProductDetails() {
                             const currentKey = key + 1;
                             return (
                               <div
+                              key={currentKey}
                                 className={`swiper-slide swiper-slide-visible ${
                                   swipedImage === currentKey &&
                                   'swiper-slide-thumb-active'
