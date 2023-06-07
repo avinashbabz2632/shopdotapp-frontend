@@ -25,6 +25,7 @@ import BabyAndKids from '../common/BabyAndKids';
 import { Link } from 'react-router-dom';
 import { getRetailerProductsAction } from '../../../actions/retailerActions';
 import { selectRetailerProducts } from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
+import { selectBrandFilters } from '../../../redux/Brand/Retailer/retailerSelector';
 
 function Products() {
   const windowSize = useWindowSize();
@@ -51,7 +52,6 @@ function Products() {
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
 
-  console.log('productData----', productData);
   const { count, rows } = productData;
 
   const fetchRetailerProducts = () => {
@@ -61,7 +61,7 @@ function Products() {
         offset: offset,
       },
       query: {
-        search: searchVal,
+        search: searchVal ? searchVal : 'full',
       },
       filter: [],
     };
@@ -292,9 +292,7 @@ function Products() {
                     <div className="title">
                       <h1>Products</h1>
                       <div className="number">
-                        {filterByBrand?.length || statusViseFilter?.length
-                          ? productfilterData?.length
-                          : data?.length}
+                        {rows?.length}
                       </div>
                     </div>
                     <div className="products_head-search">

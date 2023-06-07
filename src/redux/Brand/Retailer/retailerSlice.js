@@ -12,6 +12,7 @@ const initialState = {
     brandAssignedRetailerUpdateSuccess: false,
     brandAssignedRetailerUpdateError: false,
     retailerProductDetails: null,
+    brandFilters: [],
 };
 
 const retaielrSlice = createSlice({
@@ -67,7 +68,10 @@ const retaielrSlice = createSlice({
         },
         setRetailerProductDetails: (state, action) => {
             state.retailerProductDetails = action.payload;
-        }
+        },
+        setBrandFilters: (state, action) => {
+            state.brandFilters = action.payload;
+        },
     },
 });
 
@@ -86,6 +90,7 @@ export const {
     setBrandAssignedRetailerError,
     resetBrandAssignedRetailerState,
     setRetailerProductDetails,
+    setBrandFilters,
 } = retaielrSlice.actions;
 
 /**

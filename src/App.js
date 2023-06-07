@@ -123,8 +123,8 @@ function App() {
 
     if (isLogged) {
       if (pathname == '/signup' || (pathname == '/' && !isRoleUpdated)) {
-        if (userDetails.role.name) {
-          if (userDetails.role.name === 'retailer') {
+        if (userDetails?.role?.name) {
+          if (userDetails?.role?.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
             navigate('/brand-onboarding');

@@ -23,6 +23,7 @@ export default function OnboardListUI({
   shopifyConnected,
   btnCallback,
   activeStep,
+  isOnboarding,
 }) {
   return (
     <div
@@ -40,7 +41,7 @@ export default function OnboardListUI({
         )}
         <span href="" className="cs-label">
           {text1} &nbsp;
-          <LinkMod className="ob-link" to={'/brand/products'}>
+          <LinkMod className="ob-link" to={isOnboarding ? '/brand/setting' : '/brand/products'}>
             {linkText}
           </LinkMod>
           {text2}
