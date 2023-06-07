@@ -196,7 +196,7 @@ function SideBar() {
 
   const handleClearFilter = () => {
     setSelectedBrandFilters([]);
-    setSelectedBrandStatusFilters('');
+    setSelectedBrandStatusFilters([]);
     setSelectedDaysToFullfilFilters([]);
     setSelectedStockFilters([]);
     setSelectedWSPFilter('');
@@ -286,7 +286,7 @@ function SideBar() {
       const copy = [...selectedBrandStatusFilters];
     if (checked) {
       copy.push(value);
-      setSelectedBrandStatusFilters(value);
+      setSelectedBrandStatusFilters(copy);
     } else {
       const filter = copy.filter((el) => el !== value);
       setSelectedBrandStatusFilters(filter);
