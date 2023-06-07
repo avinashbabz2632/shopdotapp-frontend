@@ -667,7 +667,7 @@ export default function BusinessDetails({
                                             primary: '#bd6f34',
                                         },
                                     })}
-                                    options={stateIncorporationOptions}
+                                    options={stateList}
                                 />
                             )}
                         />
