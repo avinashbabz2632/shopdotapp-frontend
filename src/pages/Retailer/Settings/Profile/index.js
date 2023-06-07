@@ -66,7 +66,6 @@ export default function RetailerProfile() {
   const brandCategoryList = useSelector(selectBrandCategory);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const [profileLoading, setProfileLoading] = useState(false);
-  console.log('brandProfileDetails--', brandProfileDetails);
   let transformCategoryOptions = [];
   if (brandCategoryList && brandCategoryList.length > 0) {
     transformCategoryOptions = brandCategoryList?.map((el) => {
@@ -174,7 +173,6 @@ export default function RetailerProfile() {
         valuesArray.push(cat.value_id);
       });
     }
-    console.log(valuesArray, 'valuesArrayvaluesArray');
     if (brandData?.retailer_details?.id) {
       setImage(brandData?.retailer_details?.store_logo || '');
       setFile(brandData?.retailer_details?.store_photo);
