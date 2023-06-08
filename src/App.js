@@ -79,7 +79,9 @@ const RetailerBrandSingleProductDetailPage = lazy(() =>
   import('./pages/Retailer/Products/ProductDetailsPage/ProductDetails')
 );
 
-const RetailerBrandProductsPage = lazy(() => import('./pages/Retailer/Products'));
+const RetailerBrandProductsPage = lazy(() =>
+  import('./pages/Retailer/Products')
+);
 
 function App() {
   const navigate = useNavigate();
@@ -115,38 +117,34 @@ function App() {
   useEffect(() => {
     const pathname = window.location.pathname;
     if (
-      pathname.includes('/reset-password/') ||
-      pathname.includes('/forgot-password-sent') ||
-      pathname.includes('/signup') ||
-      pathname.includes('/') ||
-      pathname.includes('/login')
+      (pathname === '/reset-password/' ||
+        pathname === '/forgot-password-sent' ||
+        pathname === '/signup' ||
+        pathname === '/' ||
+        pathname === '/login') &&
+      !isLogged
     ) {
+      if (pathname === '/') {
+        navigate('/login');
+      }
       return;
     }
 
     if (isLogged) {
-      if (
-        pathname == '/signup' ||
-        pathname == '/' ||
-        (pathname == '/' && !isRoleUpdated)
-      ) {
-        if (userDetails?.role?.name) {
+      if (userDetails?.role?.name) {
+        if (
+          pathname === '/brand-onboarding' ||
+          pathname === '/retailer-onboarding' ||
+          pathname === '/'
+        ) {
           if (userDetails?.role?.name === 'retailer') {
             navigate('/retailer-onboarding');
           } else {
             navigate('/brand-onboarding');
           }
-        } else {
-          navigate('/personalize');
         }
-      } else if (pathname == '/') {
-        navigate('/login');
-      }
-    } else if (pathname == '/') {
-      navigate('/login');
-    } else {
-      if (pathname !== '/signup') {
-        navigate('/login');
+      } else {
+        navigate('/personalize');
       }
     }
   }, []);
@@ -240,7 +238,10 @@ function App() {
             path="/retailer/setting/:activeTab"
             element={<RetailerSettingPage />}
           />
-          <Route path="/retailer/products" element={<RetailerBrandProductsPage />} />
+          <Route
+            path="/retailer/products"
+            element={<RetailerBrandProductsPage />}
+          />
           {/* Retailer Portal Routes:::end */}
 
           <Route path="/sitemap" element={<SiteMap />} />
