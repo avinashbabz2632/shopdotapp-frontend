@@ -31,10 +31,17 @@ const gettingPaidSlice = createSlice({
     setGettingPaidPreferance: (state, action) => {
       state.gettingPaidPreferance = action.payload;
     },
+    gettingPaidResetToInitial: (state) => {
+      state.businessDetails = {};
+      state.representativeDetails = [];
+      state.bankDetails = {};
+      state.gettingPaidPreferance = {};
+    },
     resetToInitial: (state) => {
       state.businessDetails = {};
       state.representativeDetails = {};
       state.bankDetails = {};
+      state.gettingPaidPreferance = {};
     },
     clearPaidLogout: (state) => {
       state = initialState;
@@ -54,6 +61,7 @@ export const {
   setPaidDetails,
   setGettingPaidPreferance,
   clearPaidLogout,
+  gettingPaidResetToInitial,
 } = gettingPaidSlice.actions;
 
 /**
