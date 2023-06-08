@@ -247,7 +247,10 @@ export default function BusinessRepresentative({
             });
         }
     };
-
+    const subtractYears = (date, years) => {
+        date.setFullYear(date.getFullYear() - years);
+        return date;
+      }
     return (
         <form className="gp-right" onSubmit={handleSubmit(onSubmit)}>
             {fields.map((item, index) => {
@@ -430,7 +433,8 @@ export default function BusinessRepresentative({
                                         <>
                                             <DatePicker
                                                 closeOnScroll
-                                                maxDate={new Date()}
+                                                maxDate={subtractYears(new Date(), 18)}
+                                                minDate={subtractYears(new Date(), 100)}
                                                 customInput={
                                                     <ExampleCustomInput />
                                                 }
