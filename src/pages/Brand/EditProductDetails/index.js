@@ -70,8 +70,8 @@ export default function EditProductDetails() {
 
   const variantsWSPDefaultValues = () => {
     const variantObj = {};
-    if (product?.productDetails.product_variants.length > 0) {
-      product?.productDetails.product_variants.forEach((pv, i) => {
+    if (product?.productDetails?.product_variants?.length > 0) {
+      product?.productDetails?.product_variants?.forEach((pv, i) => {
         variantObj[`variants.${i}.wsp`] = pv.wsp;
       });
     }
@@ -80,8 +80,8 @@ export default function EditProductDetails() {
 
   const getVariantWSPFieldNames = () => {
     let variantFieldNames = [];
-    if (product.productDetails.product_variants.length > 0) {
-      variantFieldNames = product.productDetails.product_variants.map(
+    if (product?.productDetails?.product_variants?.length > 0) {
+      variantFieldNames = product?.productDetails?.product_variants?.map(
         (_, i) => {
           return `variants.${i}.wsp`;
         }
@@ -92,8 +92,8 @@ export default function EditProductDetails() {
 
   const getVariantMSRPFieldNames = () => {
     let variantFieldNames = [];
-    if (product.productDetails.product_variants.length > 0) {
-      variantFieldNames = product.productDetails.product_variants.map(
+    if (product?.productDetails?.product_variants?.length > 0) {
+      variantFieldNames = product?.productDetails?.product_variants?.map(
         (_, i) => {
           return `variants.${i}.msrp`;
         }
@@ -104,8 +104,8 @@ export default function EditProductDetails() {
 
   const variantsMSRPDefaultValues = () => {
     const variantObj = {};
-    if (product.productDetails.product_variants.length > 0) {
-      product.productDetails.product_variants.forEach((pv, i) => {
+    if (product?.productDetails?.product_variants.length > 0) {
+      product?.productDetails?.product_variants.forEach((pv, i) => {
         variantObj[`variants.${i}.msrp`] = pv.price;
       });
     }
