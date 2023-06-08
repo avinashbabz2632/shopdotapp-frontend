@@ -48,9 +48,10 @@ export default function Connected(props) {
           sort: [
             ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
             ["assigned_products",sortColumn == "assigned_products" ? "ASC" : "DESC"],
-            ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
+            // ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
             ["retailer_category",sortColumn == "retailer_category" ? "ASC" : "DESC"],
-            ["invite_status",sortColumn == "invite_status" ? "ASC" : "DESC"]
+            ["invite_status",sortColumn == "invite_status" ? "ASC" : "DESC"],
+            ["state",sortColumn == "state" ? "ASC" : "DESC"]
           ],
         query: {},
         filter: [
@@ -235,7 +236,7 @@ export default function Connected(props) {
                                         </th>
 
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("invite_status")}>
+                                            <div className="title" onClick={()=>handleSort("state")}>
                                                 State
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -243,7 +244,7 @@ export default function Connected(props) {
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title">Status</div>
+                                            <div className="title" onClick={()=>handleSort("invite_status")}>Status</div>
                                         </th>
                                         <th>Actions</th>
                                     </tr>
