@@ -8,8 +8,27 @@ import {
   getBrandFiltersAction,
   getRetailerProductsAction,
 } from '../../../actions/retailerActions';
-import { selectBrandFilters } from '../../../redux/Brand/Retailer/retailerSelector';
+import {
+  productSearchQuery,
+  selectBrandFilters,
+  selectLimit,
+  selectOffset,
+  selectSelectedBrandFilters,
+  selectSelectedBrandStatusFilters,
+  selectSelectedDaysToFullfillFilters,
+  selectSelectedMSRPFilters,
+  selectSelectedStockFilters,
+  selectSelectedWSPFilters,
+} from '../../../redux/Brand/Retailer/retailerSelector';
 import FilterCheckbox from '../../Brand/Products/components/FilterCheckbox';
+import {
+  setSelectedBrandFilters,
+  setSelectedBrandStatusFilters,
+  setSelectedDaysToFullfilFilters,
+  setSelectedMSRPFilter,
+  setSelectedStockFilters,
+  setSelectedWSPFilter,
+} from '../../../redux/Brand/Retailer/retailerSlice';
 
 function SideBar() {
   const dispatch = useDispatch();
@@ -22,22 +41,20 @@ function SideBar() {
   const [activeTab, setActiveTab] = useState('wsp');
   const [isClickedOne, setIsClickedOne] = useState(true);
   const [isClickedTwo, setIsClickedTwo] = useState(true);
-  const [selectedBrandFilters, setSelectedBrandFilters] = useState([]);
-  const [selectedBrandStatusFilters, setSelectedBrandStatusFilters] = useState([]);
-  const [selectedDaysToFullfilFilters, setSelectedDaysToFullfilFilters] =
-    useState([]);
-  const [selectedStockFilters, setSelectedStockFilters] = useState([]);
-  const [selectedWSPFilter, setSelectedWSPFilter] = useState('');
-  const [selectedMSRPFilter, setSelectedMSRPFilter] = useState('');
-  const [limit, setLimit] = useState(10);
-  const [offset, setOffset] = useState(0);
 
-  console.log('selectedBrandFilters----', selectedBrandFilters);
-  console.log('selectedBrandStatusFilters----', selectedBrandStatusFilters);
-  console.log('selectedDaysToFullfilFilters----', selectedDaysToFullfilFilters);
-  console.log('selectedStockFilters----', selectedStockFilters);
-  console.log('selectedWSPFilter----', selectedWSPFilter);
-  console.log('selectedMSRPFilter----', selectedMSRPFilter);
+  const selectedBrandFilters = useSelector(selectSelectedBrandFilters);
+  const selectedBrandStatusFilters = useSelector(
+    selectSelectedBrandStatusFilters
+  );
+  const selectedDaysToFullfilFilters = useSelector(
+    selectSelectedDaysToFullfillFilters
+  );
+  const selectedStockFilters = useSelector(selectSelectedStockFilters);
+  const selectedWSPFilter = useSelector(selectSelectedWSPFilters);
+  const selectedMSRPFilter = useSelector(selectSelectedMSRPFilters);
+  const limit = useSelector(selectLimit);
+  const offset = useSelector(selectOffset);
+  const productSearchValue = useSelector(productSearchQuery)
 
   const brandStatusOptions = [
     {
@@ -66,51 +83,105 @@ function SideBar() {
   ];
 
   const prepareFilter = () => {
-    const filter = [];
+    let filter = [];
     if (selectedBrandFilters && selectedBrandFilters.length > 0) {
-      const brandFilter = {field: 'brand_id', operator: 'in', value: selectedBrandFilters.map(el => parseInt(el))};
+      const brandFilter = {
+        field: 'brand_id',
+        operator: 'in',
+        value: selectedBrandFilters.map((el) => parseInt(el.brand_details.id)),
+      };
       filter.push(brandFilter);
     }
 
     if (selectedBrandStatusFilters && selectedBrandStatusFilters.length > 0) {
-        const statusFilter = { field: 'brand_status', operator: 'in', value: selectedBrandStatusFilters };
-        filter.push(statusFilter);
+      const statusFilter = {
+        field: 'brand_status',
+        operator: 'in',
+        value: selectedBrandStatusFilters.map(el => el.value),
+      };
+      filter.push(statusFilter);
     }
 
-    if (selectedWSPFilter) {
-      let wsp;
-      if (selectedWSPFilter === '$1000 or more') {
-        wsp = {
-          field: 'wsp',
-          operator: 'gte',
-          value: '1000',
-        };
-      } else {
-        wsp = {
-          field: 'wsp',
-          operator: 'between',
-          value: 'selectedWSPFilter'.replace('$', ''),
-        };
-      }
-      filter.push(wsp);
+    if (selectedWSPFilter && selectedWSPFilter.length > 0) {
+      selectedWSPFilter.forEach(el => {
+        let wsp;
+        if(el == '$1 - $99') {
+          wsp = {
+            field: 'wsp',
+            operator: 'between',
+            value: '1-99',
+          };
+          // filter.push(wsp);
+        } else if (el == '$100 - $499') {
+          wsp = {
+            field: 'wsp',
+            operator: 'between',
+            value: '100-499',
+          };
+          // filter.push(wsp);
+        }else if (el == '$500 - $999') {
+          wsp = {
+            field: 'wsp',
+            operator: 'between',
+            value: '500-999',
+          };
+          // filter.push(wsp);
+        } else if (el == '$1000 or more') {
+          const wsp = {
+            field: 'wsp',
+            operator: 'gte',
+            value: '1000',
+          };
+          // filter.push(wsp);
+        } 
+
+        if(wsp) {
+          filter.push(wsp);
+        }
+      });
+      
     }
 
-    if (selectedMSRPFilter) {
-      let msrp;
-      if (selectedMSRPFilter === '$1000 or more') {
-        msrp = {
-          field: 'price',
-          operator: 'gte',
-          value: '1000',
-        };
-      } else {
-        msrp = {
-          field: 'price',
-          operator: 'between',
-          value: 'selectedWSPFilter'.replace('$', ''),
-        };
-      }
-      filter.push(msrp);
+    if (selectedMSRPFilter && selectedMSRPFilter.length > 0) {
+      selectedMSRPFilter.forEach(el => {
+        let msrp;
+        if(el == '$1 - $99') {
+          msrp = {
+            field: 'price',
+            operator: 'between',
+            value: '1-99',
+          };
+          // filter.push(msrp);
+        } 
+        if (el == '$100 - $499') {
+          msrp = {
+            field: 'price',
+            operator: 'between',
+            value: '100-499',
+          };
+          // filter.push(msrp);
+        }
+        if (el == '$500 - $999') {
+          msrp = {
+            field: 'price',
+            operator: 'between',
+            value: '500-999',
+          };
+          // filter.push(msrp);
+        } 
+        if (el == '$1000 or more') {
+          msrp = {
+            field: 'price',
+            operator: 'gte',
+            value: '1000',
+          };
+          // filter.push(msrp);
+        } 
+
+        if(msrp) {
+          filter.push(msrp);
+        }
+      });      
     }
 
     if (selectedStockFilters && selectedStockFilters.length > 0) {
@@ -144,14 +215,35 @@ function SideBar() {
       selectedDaysToFullfilFilters &&
       selectedDaysToFullfilFilters.length > 0
     ) {
-      const daysToFullFill = {field: 'days_to_fulfill', operator: 'in', value: selectedDaysToFullfilFilters};
+      const daysToFullFill = {
+        field: 'days_to_fulfill',
+        operator: 'in',
+        value: selectedDaysToFullfilFilters,
+      };
       filter.push(daysToFullFill);
     }
 
-    if(allTimeSale.min && allTimeSale.max) {
-        const minMax = {field: '', operator: 'between', value: `${allTimeSale.min}-${allTimeSale.max}`};
-        filter.push(minMax);
+    console.log("all time sale --- ", allTimeSale)
+    if (allTimeSale.min && allTimeSale.max) {
+      const minMax = {
+        field: activeTab,
+        operator: 'between',
+        value: `${allTimeSale.min}-${allTimeSale.max}`,
+      };
+     
+      // filter = filter.filter((item) => item.field !== 'wsp' && item.field !== 'price')
+      filter.push(minMax);
+      // clearing wsp and msrp filters
+
+      // if (selectedWSPFilter.length > 0) {
+      //   dispatch(setSelectedWSPFilter([]))
+      // }
+      // if (selectedMSRPFilter.length > 0) {
+      //   dispatch(setSelectedMSRPFilter([]))
+      // }
     }
+
+    console.log("this is filter: ", filter)
 
     return filter;
   };
@@ -162,14 +254,12 @@ function SideBar() {
         limit: limit,
         offset: offset,
       },
-      query: {
-        search: searchVal ? searchVal : 'full',
-      },
+      query: {},
       filter: prepareFilter(),
     };
-    // if (searchVal == '') {
-    //   delete body.query;
-    // }
+    if (productSearchValue) {
+      body.query.search = productSearchValue;;
+    }
     dispatch(getRetailerProductsAction(body));
   };
 
@@ -195,12 +285,12 @@ function SideBar() {
   }, [openCloseFilter]);
 
   const handleClearFilter = () => {
-    setSelectedBrandFilters([]);
-    setSelectedBrandStatusFilters([]);
-    setSelectedDaysToFullfilFilters([]);
-    setSelectedStockFilters([]);
-    setSelectedWSPFilter('');
-    setSelectedMSRPFilter('');
+    dispatch(setSelectedBrandFilters([]));
+    dispatch(setSelectedBrandStatusFilters([]));
+    dispatch(setSelectedDaysToFullfilFilters([]));
+    dispatch(setSelectedStockFilters([]));
+    dispatch(setSelectedWSPFilter([]));
+    dispatch(setSelectedMSRPFilter([]));
   };
 
   useEffect(() => {
@@ -216,31 +306,36 @@ function SideBar() {
     selectedStockFilters,
     selectedWSPFilter,
     selectedMSRPFilter,
+    allTimeSale,
+    productSearchValue,
+    limit,
+    offset,
   ]);
 
   const handleSearch = (e) => {
     const searchQuery = e.target.value.toLowerCase();
-    console.log('searchQuery----', searchQuery);
     if (searchQuery) {
       const searchWords = searchQuery.split(/\s+/);
-      const data = brandFiltersClone.map((item) => {
-        return `${item?.brand_details?.company_name} ${item?.brand_details?.store_name}`;
+      const data = brandFilters.map((item) => {
+        return {
+          id: item.id,
+          name: `${item?.brand_details?.company_name} ${item?.brand_details?.store_name}`
+        };
       });
-      console.log('data------', data);
       const searchValue = data.filter((ele) => {
-        const tags = ele.toLowerCase().split(' ');
+        const tags = ele.name.toLowerCase().split(' ');
         return searchWords.every((word) =>
           tags.some((tag) => tag.includes(word))
         );
       });
       const finalData = searchValue.map((item) => {
-        return item.split('Alpha')[1];
+        return brandFilters.find(el => el.id === item.id)
       });
       setBrandFiltersClone(finalData);
       setSearchVal(searchQuery);
     } else {
-       setBrandFiltersClone(brandFilters);
-       setSearchVal('');
+      setBrandFiltersClone(brandFilters);
+      setSearchVal('');
     }
   };
 
@@ -263,11 +358,12 @@ function SideBar() {
   const handleBrandFilter = (checked, value) => {
     const copy = [...selectedBrandFilters];
     if (checked) {
-      copy.push(value);
-      setSelectedBrandFilters(copy);
+      const item = brandFilters.find(el => el.brand_details?.id == value);
+      copy.push(item);
+      dispatch(setSelectedBrandFilters(copy));
     } else {
-      const filter = copy.filter((id) => id !== value);
-      setSelectedBrandFilters(filter);
+      const filter = copy.filter((el) => el.brand_details?.id !== value);
+      dispatch(setSelectedBrandFilters(filter));
     }
   };
 
@@ -275,21 +371,22 @@ function SideBar() {
     const copy = [...selectedStockFilters];
     if (checked) {
       copy.push(value);
-      setSelectedStockFilters(copy);
+      dispatch(setSelectedStockFilters(copy));
     } else {
       const filter = copy.filter((el) => el !== value);
-      setSelectedStockFilters(filter);
+      dispatch(setSelectedStockFilters(filter));
     }
   };
 
   const handleStatusFilter = (checked, value) => {
-      const copy = [...selectedBrandStatusFilters];
+    const copy = [...selectedBrandStatusFilters];
     if (checked) {
-      copy.push(value);
-      setSelectedBrandStatusFilters(copy);
+      const item = brandStatusOptions.find(el => el.value == value);
+      copy.push(item);
+      dispatch(setSelectedBrandStatusFilters(copy));
     } else {
-      const filter = copy.filter((el) => el !== value);
-      setSelectedBrandStatusFilters(filter);
+      const filter = copy.filter((el) => el.value !== value);
+      dispatch(setSelectedBrandStatusFilters(filter));
     }
   };
 
@@ -297,26 +394,32 @@ function SideBar() {
     const copy = [...selectedDaysToFullfilFilters];
     if (checked) {
       copy.push(value);
-      setSelectedDaysToFullfilFilters(copy);
+      dispatch(setSelectedDaysToFullfilFilters(copy));
     } else {
       const filter = copy.filter((el) => el !== value);
-      setSelectedDaysToFullfilFilters(filter);
+      dispatch(setSelectedDaysToFullfilFilters(filter));
     }
   };
 
   const handleWSPFilter = (checked, value) => {
+    const copy = [...selectedWSPFilter];
     if (checked) {
-      setSelectedWSPFilter(value);
+      copy.push(value);
+      dispatch(setSelectedWSPFilter(copy));
     } else {
-      setSelectedWSPFilter('');
+      const filter = copy.filter((el) => el !== value);
+      dispatch(setSelectedWSPFilter(filter));
     }
   };
 
   const handleMSRPFilter = (checked, value) => {
+    const copy = [...selectedMSRPFilter];
     if (checked) {
-      setSelectedMSRPFilter(value);
+      copy.push(value);
+      dispatch(setSelectedMSRPFilter(copy));
     } else {
-      setSelectedMSRPFilter('');
+      const filter = copy.filter((el) => el !== value);
+      dispatch(setSelectedMSRPFilter(filter));
     }
   };
 
@@ -396,7 +499,9 @@ function SideBar() {
                               <FilterCheckbox
                                 data={item?.brand_details?.id}
                                 onChange={handleBrandFilter}
-                                initialValue={selectedBrandFilters.some(pc => pc == item?.brand_details?.id)}
+                                initialValue={selectedBrandFilters && selectedBrandFilters?.some(
+                                  (pc) => pc.brand_details.id == item?.brand_details?.id
+                                )}
                               />
                               <div className="checkbox-text">
                                 <strong>
@@ -424,7 +529,7 @@ function SideBar() {
                                 <FilterCheckbox
                                   data={item.value}
                                   onChange={handleStatusFilter}
-                                //   initialValue={selectedBrandStatusFilters?.some(pc => pc == item.value)}
+                                    initialValue={selectedBrandStatusFilters && selectedBrandStatusFilters?.some(pc => pc.value == item.value)}
                                 />
                                 <div className="checkbox-text">{item.name}</div>
                               </label>
@@ -504,7 +609,7 @@ function SideBar() {
                                             onChange={handleWSPFilter}
                                             initialValue={
                                               activeTab === 'wsp' &&
-                                              selectedWSPFilter === item
+                                              selectedWSPFilter && selectedWSPFilter.some(el => el == item)
                                             }
                                           />
                                           <div className="checkbox-text">
@@ -531,7 +636,7 @@ function SideBar() {
                                             onChange={handleMSRPFilter}
                                             initialValue={
                                               activeTab === 'msrp' &&
-                                              selectedMSRPFilter === item
+                                              selectedMSRPFilter && selectedMSRPFilter.some(el => el == item)
                                             }
                                           />
                                           <div className="checkbox-text">
@@ -588,7 +693,9 @@ function SideBar() {
                                 <FilterCheckbox
                                   data={item}
                                   onChange={handleStockFilter}
-                                  initialValue={selectedStockFilters.some(sf => sf == item)}
+                                  initialValue={selectedStockFilters && selectedStockFilters.some(
+                                    (sf) => sf == item
+                                  )}
                                 />
                                 <div className="checkbox-text">{item}</div>
                               </label>
@@ -610,7 +717,9 @@ function SideBar() {
                                 <FilterCheckbox
                                   data={item}
                                   onChange={handleDaysToFullfilFilter}
-                                  initialValue={selectedDaysToFullfilFilters.some(dtf => dtf === item)}
+                                  initialValue={selectedDaysToFullfilFilters && selectedDaysToFullfilFilters.some(
+                                    (dtf) => dtf === item
+                                  )}
                                 />
                                 <div className="checkbox-text">{item}</div>
                               </label>
