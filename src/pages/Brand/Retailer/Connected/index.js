@@ -541,60 +541,53 @@ export default function Connected(props) {
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                </td>
-            </tr>
-            );
-                    })}
-            {data?.count === 0 && (
-                <tr>
-                    <td colSpan="7" className="p-0">
-                        <div className="content_area">
-                            <div className="card-empty">
-                                <div className="card-empty_body">
-                                    <div className="image mb-5">
-                                        <picture>
-                                            <img src={ProductCartEmpty} alt="" />
-                                        </picture>
+                        )}
+                        {data?.count === 0 && (
+                            <tr>
+                                <td colSpan="7" className="p-0">
+                                    <div className="content_area">
+                                        <div className="card-empty">
+                                            <div className="card-empty_body">
+                                                <div className="image mb-5">
+                                                    <picture>
+                                                        <img src={ProductCartEmpty} alt="" />
+                                                    </picture>
+                                                </div>
+                                                <h3>
+                                                    You currently have no requests for access from
+                                                    any retailer.
+                                                </h3>
+                                                <p>
+                                                    Invite your retailers to join ShopDot so they
+                                                    can start selling your products on their
+                                                    website.
+                                                </p>
+                                                <div>
+                                                    <button
+                                                        className="button me-2"
+                                                        onClick={opencloseRetailerModal}
+                                                    >
+                                                        Invite Retailers
+                                                    </button>
+                                                    <Link to="/brand/request-access">
+                                                        <button
+                                                            className="button dark"
+                                                            onClick={() =>
+                                                                props.changeSubTab
+                                                                    ? props.changeSubTab(2)
+                                                                    : () => { }
+                                                            }
+                                                        >
+                                                            View Requests for Access
+                                                        </button>
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <h3>
-                                        You currently have no requests for access from
-                                        any retailer.
-                                    </h3>
-                                    <p>
-                                        Invite your retailers to join ShopDot so they
-                                        can start selling your products on their
-                                        website.
-                                    </p>
-                                    <div>
-                                        <button
-                                            className="button me-2"
-                                            onClick={opencloseRetailerModal}
-                                        >
-                                            Invite Retailers
-                                        </button>
-                                        <Link to="/brand/request-access">
-                                            <button
-                                                className="button dark"
-                                                onClick={() =>
-                                                    props.changeSubTab
-                                                        ? props.changeSubTab(2)
-                                                        : () => { }
-                                                }
-                                            >
-                                                View Requests for Access
-                                            </button>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            )}
-        </tbody >
-              </table >
-            </div >
+                                </td>
+                            </tr>
+                        )}
         { data?.count > 0 && (
             <div className="pagination_wrap mt-0">
                 <div className="pagination br-top-none">
