@@ -1,6 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import Logo from '../../../../assets/images/icons/logo.svg';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import InviteBrandModel from './InviteBrandModel';
 import '../../Style/retail.style.scss';
@@ -48,7 +54,7 @@ function RetailerHeader() {
           <div className="header_container">
             <div className="h-left">
               <div className="header_logo">
-                <NavLink to="/" className="logo">
+                <NavLink to="/retailer/setting/" className="logo">
                   <picture>
                     <img src={Logo} alt="logo" />
                   </picture>
@@ -68,7 +74,7 @@ function RetailerHeader() {
                       </NavLink>
                     ) : (
                       <NavLink
-                        to="/retailer/dashboard"
+                        to="/retailer/setting/"
                         className={({ isActive }) =>
                           `${isActive ? 'active' : ''} menu_link`
                         }
