@@ -133,15 +133,6 @@ export default function Connected(props) {
         if (page < totalPage) {
             setOffset(page);
         }
-        const handlePageNumber = (e) => {
-            setOffset((e.target.value - 1))
-        }
-        const incrementPageNumber = () => {
-            let page = offset + 1
-            if (page < totalPage) {
-                setOffset((page))
-            }
-        }
     };
     const decrementPageNumber = () => {
         if (offset > 0) setOffset(offset - 1);
