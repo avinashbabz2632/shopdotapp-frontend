@@ -13,6 +13,16 @@ const initialState = {
     brandAssignedRetailerUpdateError: false,
     retailerProductDetails: null,
     brandFilters: [],
+    // dynamic filter states
+    selectedBrandFilters: [],
+    selectedBrandStatusFilters: [],
+    selectedDaysToFullfilFilters: [],
+    selectedStockFilters: [],
+    selectedWSPFilter: [],
+    selectedMSRPFilter: [],
+    limit: 10,
+    offset: 0,
+    productSearchQuery: "",
 };
 
 const retaielrSlice = createSlice({
@@ -72,6 +82,33 @@ const retaielrSlice = createSlice({
         setBrandFilters: (state, action) => {
             state.brandFilters = action.payload;
         },
+        setSelectedBrandFilters: (state, action) => {
+            state.selectedBrandFilters = [...action.payload];
+        },
+        setSelectedBrandStatusFilters: (state, action) => {
+            state.selectedBrandStatusFilters = [...action.payload];
+        },
+        setSelectedDaysToFullfilFilters: (state, action) => {
+            state.selectedDaysToFullfilFilters = [...action.payload];
+        },
+        setSelectedStockFilters: (state, action) => {
+            state.selectedStockFilters = [...action.payload];
+        },
+        setSelectedWSPFilter: (state, action) => {
+            state.selectedWSPFilter = [...action.payload];
+        },
+        setSelectedMSRPFilter: (state, action) => {
+            state.selectedMSRPFilter = [...action.payload];
+        },
+        setLimit: (state, action) => {
+            state.limit = action.payload;
+        },
+        setOffset: (state, action) => {
+            state.offset = action.payload;
+        },
+        setProductSearchQuery: (state, action) => {
+            state.productSearchQuery = action.payload;
+        },
     },
 });
 
@@ -91,6 +128,16 @@ export const {
     resetBrandAssignedRetailerState,
     setRetailerProductDetails,
     setBrandFilters,
+    //Filter
+    setSelectedBrandFilters,
+    setSelectedBrandStatusFilters,
+    setSelectedDaysToFullfilFilters,
+    setSelectedStockFilters,
+    setSelectedWSPFilter,
+    setSelectedMSRPFilter,
+    setLimit,
+    setOffset,
+    setProductSearchQuery,
 } = retaielrSlice.actions;
 
 /**

@@ -10,3 +10,14 @@ export const selectBrandAssignedRetaielrSuccess = (state) => state.brandRetailer
 export const selectBrandAssignedRetaielrError = (state) => state.brandRetailer.brandAssignedRetailerUpdateError;
 export const selectRetailerProductDetails = (state) => state.brandRetailer.retailerProductDetails;
 export const selectBrandFilters = (state) => state.brandRetailer.brandFilters;
+export const selectSelectedBrandFilters = (state) => state.brandRetailer.selectedBrandFilters;
+export const selectSelectedBrandStatusFilters = (state) => state.brandRetailer.selectedBrandStatusFilters;
+export const selectSelectedDaysToFullfillFilters = (state) => state.brandRetailer.selectedDaysToFullfilFilters;
+export const selectSelectedStockFilters = (state) => state.brandRetailer.selectedStockFilters;
+export const selectSelectedWSPFilters = (state) => state.brandRetailer.selectedWSPFilter;
+export const selectSelectedMSRPFilters = (state) => state.brandRetailer.selectedMSRPFilter;
+export const selectLimit = (state) => state.brandRetailer.limit;
+export const selectOffset = (state) => state.brandRetailer.offset;
+export const productSearchQuery = (state) => state.brandRetailer.productSearchQuery;
+export const selectCurrentPage = (state) => state.brandRetailer.currentPage;
+

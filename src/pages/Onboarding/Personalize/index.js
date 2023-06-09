@@ -38,9 +38,9 @@ export default function Personalize() {
     }
   };
   useEffect(() => {
-    // if (!userDetails?.is_email_verified) {
-    //   navigate('/verify-email');
-    // }
+    if (!userDetails?.is_email_verified) {
+      navigate('/verify-email');
+    }
   });
   //Here 1 for SHOFIFY and 2 for OTHERS
   const selectPlatform = (platform) => {
