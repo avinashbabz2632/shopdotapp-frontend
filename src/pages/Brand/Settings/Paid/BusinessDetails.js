@@ -393,15 +393,15 @@ export default function BusinessDetails({
               </div>
             </>
           )}
-          {(businessCategoryWatch?.value === 'c_corp_publicly_traded' ||
-            businessCategoryWatch?.value === 'goverment_organization' ||
-            businessCategoryWatch?.value === 'non_profit' ||
-            businessCategoryWatch?.value === 'tax_exempt' ||
-            businessCategoryWatch?.value === 'llc' ||
-            businessCategoryWatch?.value === 'llp' ||
-            businessCategoryWatch?.value === 'partnership' ||
+          {(businessCategoryWatch?.value === 'C_CORP' ||
+            businessCategoryWatch?.value === 'GOVERNMENT_ORGANISATION' ||
+            businessCategoryWatch?.value === 'NON_PROFIT' ||
+            businessCategoryWatch?.value === 'TAX_EXEMPT' ||
+            businessCategoryWatch?.value === 'LLC' ||
+            businessCategoryWatch?.value === 'LLP' ||
+            businessCategoryWatch?.value === 'PARTNERSHIP' ||
             businessCategoryWatch?.value === 'c_corp_not_publicly_traded' ||
-            businessCategoryWatch?.value === 's_crop' ||
+            businessCategoryWatch?.value === 'S_CORP' ||
             textIdTypeWatch?.value === 'ein') && (
             <div className="form-input mb-4 ein">
               <label className="form-label">

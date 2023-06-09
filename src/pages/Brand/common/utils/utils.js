@@ -416,12 +416,8 @@ export const businessCategoryOptionsNew = [
   { value: 'LLC', label: 'LLC' },
   { value: 'LLP', label: 'LLP' },
   { value: 'PARTNERSHIP', label: 'Partnership' },
-  { value: 'C_CORP', label: 'C_CORP' },
   { value: 'S_CORP', label: 'S_CORP' },
-  { value: 'C_CORP', label: 'C_CORP - Publicly Traded' },
-  { value: 'GOVERNMENT_ORGANISATION', label: 'Government Organization' },
-  { value: 'NON_PROFIT', label: 'Non Profit' },
-  { value: 'TAX_EXEMPT', label: 'Tax Exempt' },
+  { value: 'C_CORP', label: 'C_CORP - Not Publicly Traded' },
 ];
 
 export const countryOptions = [
@@ -454,7 +450,7 @@ export const categoryStyle = {
       ...styles,
       boxShadow: 'none',
       minHeight: '40px',
-      height: "0px",
+      height: '0px',
       '&:hover': {
         boxShadow: 'none',
       },
