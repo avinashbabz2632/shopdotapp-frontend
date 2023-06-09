@@ -131,14 +131,6 @@ export default function Connected(props) {
     const handleSort = (column) => {
         setSortColumn(column)
     }
-    const handleRetailerCategories = (category) => {
-        const categories = []
-        category.map((cat, i)=>{
-            categories.push(cat.store_categories.name)
-            // setFilterCategories(...filterCategories, cat.store_categories.name)
-        })
-        return categories
-    }
     return (
         <>
             <InviteRetailer
@@ -252,100 +244,63 @@ export default function Connected(props) {
                                 <tbody>
                                     {data?.rows?.length > 0 &&
                                         data?.rows.map((item, i) => {
-                                            return (
-                                                <tr key={i}>
-                                                    <td>
-                                                        <div className="store">
-                                                            <div className="number_wrap">
-                                                                <a
-                                                                    href="#"
-                                                                    className="number"
-                                                                >
-                                                                    <img
-                                                                        src={
-                                                                            item.user.retailer_details.store_photo
+                                            if(item?.retailer_details){
+                                                return (
+                                                    <tr key={i}>
+                                                        <td>
+                                                            <div className="store">
+                                                                <div className="number_wrap">
+                                                                    <a
+                                                                        href="#"
+                                                                        className="number"
+                                                                    >
+                                                                        <img
+                                                                            src={
+                                                                                item.retailer_details.store_photo
+                                                                            }
+                                                                            className="avtar-img"
+                                                                        />
+                                                                    </a>
+                                                                </div>
+                                                                <div className="retailer_web_link">
+                                                                    <NavLink
+                                                                        to={`/brand/retailer-profile/${item?.id}`}
+                                                                    >
+                                                                        {
+                                                                            item.full_name
                                                                         }
-                                                                        className="avtar-img"
-                                                                    />
-                                                                </a>
-                                                            </div>
-                                                            <div className="retailer_web_link">
-                                                                <NavLink
-                                                                    to={`/brand/retailer-profile/${item?.id}`}
-                                                                >
-                                                                    {
-                                                                        item.user.full_name
-                                                                    }
-                                                                </NavLink>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div>
-                                                            {
-                                                                item.assigned_products
-                                                            }
-                                                        </div>
-                                                    </td>
-
-                                                    <td>
-                                                        <div>
-                                                            {item.all_time_sale}
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        {
-                                                            handleRetailerCategories(item?.user?.retailer_details?.retailer_categories)
-                                                        }
-                                                    </td>
-
-                                                    <td>{item.user.retailer_details.store_state}</td>
-                                                    <td>
-                                                        <span className="status-pill pill_connected w-auto">
-                                                            {item.invite_status}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        {/* <div className="actions">
-                                                        <div className="dropdown">
-                                                            <div className="dropdown_header">
-                                                                <img
-                                                                    className="icon"
-                                                                    src={
-                                                                        MoreIcon
-                                                                    }
-                                                                />
-                                                            </div>
-                                                            <div className="dropdown_body left-open">
-                                                                <div className="dropdown_inner">
-                                                                    <ul>
-                                                                        <li>
-                                                                            <a href="profile.html">
-                                                                                View/Edit
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a
-                                                                                href="#"
-                                                                                className="message-box"
-                                                                            >
-                                                                                Message
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a
-                                                                                href="#"
-                                                                                className="decline-box"
-                                                                            >
-                                                                                Decline
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
+                                                                    </NavLink>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div> */}
-                                                        <div className="actions">
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                {
+                                                                    item.assigned_products
+                                                                }
+                                                            </div>
+                                                        </td>
+    
+                                                        <td>
+                                                            <div>
+                                                                {item.all_time_sale}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                item?.retailer_details?.retailer_category.store_categories.name
+                                                            }
+                                                        </td>
+    
+                                                        <td>{item.retailer_details.store_state}</td>
+                                                        <td>
+                                                            <span className="status-pill pill_connected w-auto">
+                                                                {/* {item.invite_status} */}
+                                                                Accepted
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            {/* <div className="actions">
                                                             <div className="dropdown">
                                                                 <div className="dropdown_header">
                                                                     <img
@@ -355,8 +310,8 @@ export default function Connected(props) {
                                                                         }
                                                                     />
                                                                 </div>
-                                                                <div className="dropdown_body left-open dropd">
-                                                                    <div className="dropdown_inner dropd">
+                                                                <div className="dropdown_body left-open">
+                                                                    <div className="dropdown_inner">
                                                                         <ul>
                                                                             <li>
                                                                                 <a href="profile.html">
@@ -365,17 +320,13 @@ export default function Connected(props) {
                                                                             </li>
                                                                             <li>
                                                                                 <a
-                                                                                    href="mailto:someone@example.com"
+                                                                                    href="#"
                                                                                     className="message-box"
                                                                                 >
                                                                                     Message
                                                                                 </a>
                                                                             </li>
-                                                                            <li
-                                                                                onClick={() =>
-                                                                                    opencloseDeclineRetailerModal()
-                                                                                }
-                                                                            >
+                                                                            <li>
                                                                                 <a
                                                                                     href="#"
                                                                                     className="decline-box"
@@ -387,10 +338,54 @@ export default function Connected(props) {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
+                                                        </div> */}
+                                                            <div className="actions">
+                                                                <div className="dropdown">
+                                                                    <div className="dropdown_header">
+                                                                        <img
+                                                                            className="icon"
+                                                                            src={
+                                                                                MoreIcon
+                                                                            }
+                                                                        />
+                                                                    </div>
+                                                                    <div className="dropdown_body left-open dropd">
+                                                                        <div className="dropdown_inner dropd">
+                                                                            <ul>
+                                                                                <li>
+                                                                                    <a href="profile.html">
+                                                                                        View/Edit
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a
+                                                                                        href="mailto:someone@example.com"
+                                                                                        className="message-box"
+                                                                                    >
+                                                                                        Message
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li
+                                                                                    onClick={() =>
+                                                                                        opencloseDeclineRetailerModal()
+                                                                                    }
+                                                                                >
+                                                                                    <a
+                                                                                        href="#"
+                                                                                        className="decline-box"
+                                                                                    >
+                                                                                        Decline
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            }
                                         })}
                                     {data?.count === 0 && (
                                         <tr>
