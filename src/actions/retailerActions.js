@@ -12,6 +12,7 @@ import {
 import {
   setRetailerProfileSaveResult,
   setRetailerProfileSaving,
+  setRetilerProfileCompleted,
 } from '../redux/Retailer/Profile/retailerProfileSlice';
 import {
   sendRetaileNewConnectionRequest,
@@ -36,6 +37,11 @@ export function getRetailerProfileAction(id) {
           setBrandProfileDetails({
             type: types.BRAND_PROFILE,
             data: response.data.data,
+          })
+        );
+        dispatch(
+          setRetilerProfileCompleted({
+            profile: response?.data?.data?.retailer_details?.id,
           })
         );
       } else {

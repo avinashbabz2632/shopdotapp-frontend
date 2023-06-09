@@ -20,8 +20,9 @@ import {
 } from '../../../../actions/retailerActions';
 import { ToastContainer, toast } from 'react-toastify';
 import { isEmpty, map } from 'lodash';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectStates } from '../../../../redux/General/States/getStatesSelector';
+import { setRetilerProfileCompleted } from '../../../../redux/Retailer/Profile/retailerProfileSlice';
 
 export default function Billing() {
   const [addCredit, setAddCredit] = useState(false);
@@ -31,6 +32,7 @@ export default function Billing() {
   const [dataArray, setDataArray] = useState([]);
   const [showError, setShowError] = useState('');
   const [billList, setBillList] = useState([]);
+  const dispatch = useDispatch();
 
   const statesOption = useSelector(selectStates);
   let transformStatesOption = [];
@@ -58,7 +60,6 @@ export default function Billing() {
 
   const initialAction = async () => {
     const response = await getBillingAction();
-
     if (response?.status === 200) {
       setDataArray(response.data.data);
     } else {
@@ -67,7 +68,7 @@ export default function Billing() {
 
   const onSubmit = async (data) => {
     const splitText = data.expiryDate.split('/');
-    console.log(splitText, 'splitText');
+
     const formData = {
       legal_name: data.nameOnCard,
       cardNumber: data.cardNumber,
@@ -86,6 +87,11 @@ export default function Billing() {
       setAddCredit(false);
       setShowError('');
       initialAction();
+      dispatch(
+        setRetilerProfileCompleted({
+          paid: true,
+        })
+      );
     } else {
       setShowError(
         response && response.data && response.data.errors
