@@ -16,7 +16,14 @@ import {
 } from '../redux/Brand/Profile/brandProfileSlice';
 import { setBrandPreferenceData } from '../redux/Brand/Preference/preferenceSlice';
 import { setPaidDetails } from '../redux/Brand/GettingPaid2/gettingPaidSlice';
-import { setConnectedRetailers, setRetailers, setRetailerRequests, setBrandAssignedRetailersUpdating, setBrandAssignedRetailerSuccess, setBrandAssignedRetailerError } from '../redux/Brand/Retailer/retailerSlice';
+import {
+  setConnectedRetailers,
+  setRetailers,
+  setRetailerRequests,
+  setBrandAssignedRetailersUpdating,
+  setBrandAssignedRetailerSuccess,
+  setBrandAssignedRetailerError,
+} from '../redux/Brand/Retailer/retailerSlice';
 import { setStatusIndicator } from '../redux/auth/authSlice';
 
 export function connectShopifyAction(formData) {
@@ -262,77 +269,134 @@ export function getBrandBankDetailsAction(customerId, externalAccountId) {
     }
   };
 }
-export function brandBankDetailsAction(
+export async function brandBankDetailsAction(
   formData,
   isEdit,
   customerId,
   externalId
 ) {
-  return async (dispatch) => {
-    try {
-      let response;
-      if (isEdit) {
-        response = await axios.put(
-          `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalId}`,
-          formData
-        );
-      } else {
-        response = await axios.post(API_END_POINT.EXTERNAL_ACCOUNT, formData);
-      }
-      if (response && response.status === 201) {
-        // dispatch(setPaidCompleted(true));
-        dispatch(
-          getBrandBankDetailsAction(
-            formData.customer_id,
-            Number(response.data.data.external_account_id)
-          )
-        );
-        dispatch(setProfileCompleted({ paid: true }));
-      } else {
-        toast.error('Something went worng');
-      }
-    } catch (err) {
-      toast.error(
-        err && err.response && err.response.data && err.response.data.errors
-          ? err.response.data.errors
-          : 'Something went worng'
-      );
-    }
-  };
-}
-export function brandAsCustomerAction(formData, bankDetails) {
-  return async (dispatch) => {
-    try {
-      const response = await axios.post(
-        API_END_POINT.BRAND_AS_CUSTOMER,
+  try {
+    let response;
+    if (isEdit) {
+      response = await axios.put(
+        `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalId}`,
         formData
       );
-      if (response && response.data && response.data.code == 201) {
-        dispatch(
-          brandBankDetailsAction(
-            {
-              ...bankDetails,
-              account_type: bankDetails.account_type.value,
-              purpose: bankDetails.purpose.value,
-              customer_id: Number(response.data.data.customer_id),
-            },
-            false,
-            null,
-            formData.brand_user_id
-          )
-        );
-      } else {
-        toast.error('Something went worng');
-      }
-    } catch (err) {
-      toast.error(
-        err && err.response && err.response.data && err.response.data.errors
-          ? err.response.data.errors
-          : 'Something went worng'
-      );
+    } else {
+      response = await axios.post(API_END_POINT.EXTERNAL_ACCOUNT, formData);
     }
-  };
+    if (response && response.status === 201) {
+      // dispatch(setPaidCompleted(true));
+      return {
+        isSuccess: true,
+        data: response.data.data,
+      };
+    } else {
+      toast.error('Something went worng');
+    }
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+  }
 }
+
+// export function brandBankDetailsAction(
+//   formData,
+//   isEdit,
+//   customerId,
+//   externalId
+// ) {
+//   return async (dispatch) => {
+//     try {
+//       let response;
+//       if (isEdit) {
+//         response = await axios.put(
+//           `${API_END_POINT.PAYMENT_CUSTOMER}/${customerId}/external-account/${externalId}`,
+//           formData
+//         );
+//       } else {
+//         response = await axios.post(API_END_POINT.EXTERNAL_ACCOUNT, formData);
+//       }
+//       if (response && response.status === 201) {
+//         // dispatch(setPaidCompleted(true));
+//         dispatch(
+//           getBrandBankDetailsAction(
+//             formData.customer_id,
+//             Number(response.data.data.external_account_id)
+//           )
+//         );
+//         dispatch(setProfileCompleted({ paid: true }));
+//       } else {
+//         toast.error('Something went worng');
+//       }
+//     } catch (err) {
+//       toast.error(
+//         err && err.response && err.response.data && err.response.data.errors
+//           ? err.response.data.errors
+//           : 'Something went worng'
+//       );
+//     }
+//   };
+// }
+export async function brandAsCustomerAction(formData, bankDetails) {
+  try {
+    const response = await axios.post(
+      API_END_POINT.BRAND_AS_CUSTOMER,
+      formData
+    );
+    if (response && response.data && response.data.code == 201) {
+      return {
+        isSuccess: true,
+        data: response.data.data,
+      };
+    } else {
+      toast.error('Something went worng');
+    }
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+  }
+}
+
+// export function brandAsCustomerAction(formData, bankDetails) {
+//   return async (dispatch) => {
+//     try {
+//       const response = await axios.post(
+//         API_END_POINT.BRAND_AS_CUSTOMER,
+//         formData
+//       );
+//       if (response && response.data && response.data.code == 201) {
+//         dispatch(
+//           brandBankDetailsAction(
+//             {
+//               ...bankDetails,
+//               account_type: bankDetails.account_type,
+//               purpose: bankDetails.purpose,
+//               customer_id: Number(response.data.data.customer_id),
+//             },
+//             false,
+//             null,
+//             formData.brand_user_id
+//           )
+//         );
+//       } else {
+//         toast.error('Something went worng');
+//       }
+//     } catch (err) {
+//       toast.error(
+//         err && err.response && err.response.data && err.response.data.errors
+//           ? err.response.data.errors
+//           : 'Something went worng'
+//       );
+//     }
+//   };
+// }
 
 export function getBrandShippingAction(brandId) {
   return async (dispatch) => {
@@ -518,8 +582,11 @@ export function getRetailerListAction() {
 export function updateBrandAssignedRetailers(data) {
   return async (dispatch) => {
     try {
-      dispatch(setBrandAssignedRetailersUpdating())
-      const response = await axios.post(API_END_POINT.UPDATE_BRAND_RETAILERS, data);
+      dispatch(setBrandAssignedRetailersUpdating());
+      const response = await axios.post(
+        API_END_POINT.UPDATE_BRAND_RETAILERS,
+        data
+      );
       if (response.status === 200) {
         // dispatch(setConnectedRetailers(response.data));
         dispatch(setBrandAssignedRetailerSuccess());
