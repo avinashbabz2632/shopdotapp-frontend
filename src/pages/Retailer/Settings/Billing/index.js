@@ -77,6 +77,7 @@ export default function Billing() {
       expiryMonth: splitText[0],
       expiryYear: `20${splitText[1]}`,
       address_line_1: data.addressLine1,
+      address_line_2: null,
       city: data.city,
       state: getDefaultValueOfStateField(),
       zip: data.zip,
