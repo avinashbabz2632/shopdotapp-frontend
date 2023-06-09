@@ -562,10 +562,10 @@ export function getConnectedRetailer(data) {
   };
 }
 
-export function getRetailerListAction() {
+export function getRetailerListAction(data) {
   return async (dispatch) => {
     try {
-      const response = await axios.get(API_END_POINT.RETAILER_LIST);
+      const response = await axios.post(API_END_POINT.RETAILER_LIST, data);
       if (response.status === 200) {
         dispatch(setRetailers(response.data?.data));
       }
