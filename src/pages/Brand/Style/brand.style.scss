@@ -4437,6 +4437,8 @@ input[type='submit'] {
     --btn-background: #f2994a;
 }
 
+.preferences_info select,.shipping_info select,.default_shipping_info select,.return_info select,.my_store select,.currency-input select,.cart-information select,.account_info select,.billing_info select{position:relative;width:100%;height:4rem;padding:.2rem 1.2rem;border:.1rem solid #B3B2B5;color:var(--color-grey-3);-webkit-appearance:none;appearance:none;background:url(../images/icons/icon-polygon--down.svg),#fff;background-repeat:no-repeat;background-position:center right 1.2rem;background-size:.8rem auto;background-color:#fff;border-radius:.4rem;margin-top:.6rem}
+
 .product_details-wish .buttons .button.ignore {
     --btn-background: #354253;
 }
