@@ -23,8 +23,10 @@ import { isEmpty, map } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectStates } from '../../../../redux/General/States/getStatesSelector';
 import { setRetilerProfileCompleted } from '../../../../redux/Retailer/Profile/retailerProfileSlice';
+import { getStatesAction } from '../../../../actions/generalActions';
 
 export default function Billing() {
+  const dispatch = useDispatch();
   const [addCredit, setAddCredit] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [isConfirmModel, setIsConfirmModel] = useState(false);
@@ -32,15 +34,9 @@ export default function Billing() {
   const [dataArray, setDataArray] = useState([]);
   const [showError, setShowError] = useState('');
   const [billList, setBillList] = useState([]);
-  const dispatch = useDispatch();
+  const [transformStatesOption, setTransformStatesOption] = useState([]);
 
   const statesOption = useSelector(selectStates);
-  let transformStatesOption = [];
-  if (statesOption && statesOption.length > 0) {
-    transformStatesOption = statesOption?.map((el) => {
-      return { label: el.name, value: el.country_id, code: el.code };
-    });
-  }
 
   const {
     register,
@@ -64,14 +60,22 @@ export default function Billing() {
       setDataArray(response.data.data);
     } else {
     }
+    dispatch(getStatesAction(1)).then((stateResp) => {
+      if (stateResp?.data?.data && stateResp.data.data.length > 0) {
+        const states = [];
+        stateResp.data.data?.map((el) => {
+          states.push({ label: el.name, value: el.country_id, code: el.code });
+        });
+        setTransformStatesOption(states);
+      }
+    });
   };
 
   const onSubmit = async (data) => {
     const splitText = data.expiryDate.split('/');
-
     const formData = {
       legal_name: data.nameOnCard,
-      cardNumber: data.cardNumber,
+      cardNumber: data.cardNumber.toString(),
       cvv: data.cvv,
       brand: 'VISA',
       expiryMonth: splitText[0],

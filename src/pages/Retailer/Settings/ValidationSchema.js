@@ -31,7 +31,7 @@ export const retailerProfileValidationSchema = yup.object().shape({
 });
 export const retailerBillingValidationSchema = yup.object().shape({
   cardNumber: yup
-    .string()
+    .number()
     .test(
       'test-number',
       'Credit Card number is invalid',
