@@ -214,7 +214,7 @@ export default function BusinessRepresentative({
   const disabledSubmitButton = () => {
     const totalCent = getTotalPercentage();
     if (gettingPaidPreferance?.publiclyTraded === 'no') {
-      if (businessDetails?.businessCategory?.value === 'partnership') {
+      if (businessDetails?.businessCategory?.value === 'PARTNERSHIP') {
         if (totalCent >= 50) {
           return false;
         }
@@ -817,7 +817,7 @@ export default function BusinessRepresentative({
       })}
       <div className="form-area position-relative">
         {gettingPaidPreferance?.publiclyTraded === 'no' &&
-          (businessDetails?.businessCategory?.value === 'partnership' ? (
+          (businessDetails?.businessCategory?.value === 'PARTNERSHIP' ? (
             <p>
               <strong>
                 Complete for any individuals with 25% or more ownership. If

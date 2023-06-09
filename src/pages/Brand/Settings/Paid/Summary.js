@@ -111,7 +111,6 @@ export default function Summary({
         delete data.secondaryIdentification.countryOfIssuance;
       }
       if (data.secondaryIdentification.type === 'PASSPORT') {
-        delete data.secondaryIdentification.countryOfIssuance;
         delete data.secondaryIdentification.stateOfIssuance;
       }
 
