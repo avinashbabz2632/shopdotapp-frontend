@@ -8,7 +8,8 @@ import {
   setRepresentativeDetails,
   setBankDetails,
   setBusinessDetails,
-} from '../../../../redux/Brand/GettingPaid/gettingPaidSlice';
+  gettingPaidResetToInitial,
+} from '../../../../redux/Brand/GettingPaid2/gettingPaidSlice';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import merchantServices from '../../../../../src/assets/merchant.pdf';
@@ -37,7 +38,9 @@ export default function BrandPaid() {
   const [startingTab, setStartingTab] = useState(false);
   const [isCompleteApplication, setIsCompleteApplication] = useState(false);
   const [editBankDetails, setEditBankDetails] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
+  const [isModelOpen, setIsModelOpen] = useState(false);
   const businessDetails = useSelector(selectBusinessDetails);
   const personalDetails = useSelector(selectRepresentativeDetails);
   const bankDetails = useSelector(selectBankDetails);
@@ -56,6 +59,19 @@ export default function BrandPaid() {
     myDiv.scrollTop = 0;
     setTabCode(tabCode);
   };
+
+  useEffect(() => {
+    const paymentId = brandProfileDetails?.payment_detail?.id;
+    if (paymentId) {
+      setIsCompleteApplication(true);
+      if (
+        brandProfileDetails?.payment_detail?.external_account_status &&
+        brandProfileDetails?.payment_detail?.merchant_status
+      ) {
+        setIsActive(true);
+      }
+    }
+  }, [brandProfileDetails]);
 
   const publiclyTraded = watch('publiclyTraded');
   const authorizedSign = watch('authorizedSign');
@@ -142,7 +158,10 @@ export default function BrandPaid() {
         <Summary
           setIsEdited={setIsEdited}
           handleChangeTab={handleChangeTab}
-          setIsCompleteApplication={setIsCompleteApplication}
+          setIsCompleteApplication={() => {
+            setIsCompleteApplication(true);
+            setIsModelOpen(true);
+          }}
           handleConfirmationModelClose={handleConfirmationModelOpen}
         />
       ),
@@ -313,6 +332,10 @@ export default function BrandPaid() {
                 type="submit"
                 className="button btn-lg StartApplicationOwner"
                 style={{ display: 'inline-flex' }}
+                onClick={() => {
+                  console.log('12355');
+                  dispatch(gettingPaidResetToInitial());
+                }}
               >
                 Start Application
               </button>
@@ -324,6 +347,10 @@ export default function BrandPaid() {
                 className="button btn-lg StartApplicationOwner"
                 disabled="disabled"
                 style={{ display: 'inline-flex' }}
+                onClick={() => {
+                  console.log('123');
+                  dispatch(gettingPaidResetToInitial());
+                }}
               >
                 Start Application
               </button>
@@ -337,6 +364,7 @@ export default function BrandPaid() {
         />
         <AuthorizedSignerModel
           modalIsOpen={modalOpen}
+          type2={publiclyTraded === 'no' && authorizedSign === 'no'}
           opencloseRetailerModal={opencloseModal}
         />
       </>
@@ -410,9 +438,18 @@ export default function BrandPaid() {
                     )}
                   {isCompleteApplication && !editBankDetails && (
                     <GettingPaid
+                      isModelOpen={isModelOpen}
+                      setIsModelOpen={setIsModelOpen}
                       setEditBankDetails={setEditBankDetails}
                       handleChangeTab={handleChangeTab}
                       setIsCompleteApplication={setIsCompleteApplication}
+                      merchantStatus={
+                        brandProfileDetails?.payment_detail?.merchant_status
+                      }
+                      externalStatus={
+                        brandProfileDetails?.payment_detail
+                          ?.external_account_status
+                      }
                     />
                   )}
                   {editBankDetails && (

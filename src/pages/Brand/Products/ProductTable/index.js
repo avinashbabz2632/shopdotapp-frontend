@@ -79,6 +79,11 @@ export default function ProductTable(props) {
   const syncSuccess = useSelector(selectSyncSuccess);
   const syncError = useSelector(selectSyncError);
   const [refresh, setRefresh] = useState(false);
+  const [selectedRetailerBrand, setSelectedRetailerBrand] = useState(null);
+  const [limit, setLimit] = useState(20);
+  const [offset, setOffset] = useState(0);
+
+  const { count, records } = productList || {};
 
   useEffect(() => {
     if (productCategory?.length) {
@@ -89,8 +94,26 @@ export default function ProductTable(props) {
 
   console.log(productCategory, 'productCategory');
 
-  const [limit, setLimit] = useState(20);
-  const [offset, setOffset] = useState(0);
+ 
+
+  let pageCount = 0;
+  if (records && records.length > 0) {
+    pageCount = Math.ceil(count / limit);
+  }
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    for (let index = 1; index <= pageCount; index++) {
+      const selected = offset + 1 === index;
+      const optionItem = (
+        <option key={`${index}`} value={index} selected={selected}>
+          {index}
+        </option>
+      );
+      pageNumbers.push(optionItem);
+    }
+    return pageNumbers;
+  };
 
   const prepareFilter = () => {
     const filter = [];
@@ -146,11 +169,11 @@ export default function ProductTable(props) {
       query: {},
       filter: prepareFilter(),
     };
-    if(searchVal){
-      data.query.search = searchVal
+    if (searchVal) {
+      data.query.search = searchVal;
     }
-    if(productCatFilter.length > 0){
-      data.query.category_ids = productCatFilter
+    if (productCatFilter.length > 0) {
+      data.query.category_ids = productCatFilter;
     }
     dispatch(getProductListAction(data));
   };
@@ -183,6 +206,8 @@ export default function ProductTable(props) {
     productCatFilter,
     productTagsFilter,
     stockFilter,
+    limit,
+    offset,
   ]);
 
   const handalClearFilter = () => {
@@ -230,10 +255,15 @@ export default function ProductTable(props) {
   const handalChangeTag = (e) => {
     setTypeOfTag(e);
   };
-  const handalRetailerPopup = (eleId, assignedData) => {
+  const handalRetailerPopup = (brandObj) => {
+    setSelectedRetailerBrand(brandObj);
     setRetailerPopup(retailerPopup === false ? true : false);
-    setAssignedRetailer(eleId);
     setOpenSelect(false);
+  };
+
+  const handleOnClose = () => {
+    setRetailerPopup(false);
+    fetchProducts();
   };
 
   const handleChangeStatus = (ele) => {
@@ -305,18 +335,24 @@ export default function ProductTable(props) {
   };
 
   const onPageChange = (e) => {
-    const currentPage = e.target.value;
-    if (currentPage === 1) {
-      setOffset(0);
-    } else {
-      const newOffset = (currentPage - 1) * 20;
-      setOffset(newOffset);
+    setOffset(e.target.value - 1);
+  };
+
+  const incrementPageNumber = () => {
+    let page = offset + 1;
+    if (page < pageCount) {
+      setOffset(page);
+    }
+  };
+  const decrementPageNumber = () => {
+    if (offset > 0) {
+      setOffset(offset - 1);
     }
   };
 
   const onItemsPerPageChange = (e) => {
-    const _itemsPerPage = e.target.value;
-    setLimit(_itemsPerPage);
+    setLimit(parseInt(e.target.value));
+    setOffset(0);
   };
 
   const handleUploadProduct = async (data) => {
@@ -354,7 +390,7 @@ export default function ProductTable(props) {
   };
 
   useEffect(() => {
-    if(!syncInProgress && syncSuccess && !syncError) {
+    if (!syncInProgress && syncSuccess && !syncError) {
       setRefresh(!refresh);
     }
   }, [syncInProgress, syncSuccess, syncError]);
@@ -464,6 +500,8 @@ export default function ProductTable(props) {
         <RetailerPopup
           handalPopup={handalRetailerPopup}
           assignedData={assignedRetailer}
+          retailerBrand={selectedRetailerBrand}
+          handleOnClose={handleOnClose}
         />
       )}
 
@@ -479,7 +517,7 @@ export default function ProductTable(props) {
           <div className="products_head-content">
             <div className="title">
               <h1 className="m-0">Products</h1>
-              <div className="number">{productList?.length}</div>
+              <div className="number">{count}</div>
             </div>
             <div className="products_head-search">
               <form action="#" className="search_form">
@@ -795,222 +833,226 @@ export default function ProductTable(props) {
                 </tr>
               </thead>
               <tbody>
-                {productList.map((ele, i) => (
-                  <tr key={i}>
-                    <td>
-                      <label className="checkbox">
-                        <input
-                          type="checkbox"
-                          name="check-1"
-                          id="check-1"
-                          checked={ele?.checked}
-                          onClick={() => handleCheckCheckBox(ele)}
-                        />
-                        <div className="checkbox-text"></div>
-                      </label>
-                    </td>
-                    <td>
-                      <div className="my_list-product">
-                        <div className="my_list-product-image">
-                          <a className="number">
-                            {' '}
-                            <picture>
-                              <img src={getProductImage(ele)} alt="Image" />
-                            </picture>
-                          </a>
-                        </div>
-                        <div>
-                          <p
-                            onClick={() => {
-                              navigate(`/brand/product-details/${ele.id}`);
-                            }}
-                            className="my_list-product-title cursor-pointer"
-                          >
-                            {ele.title}
-                          </p>
-                          {ele.product_variants && (
-                            <div
-                              className="my_list-product-variants variants-modal-action cursor-pointer"
-                              onClick={() => handalVariantPopup(ele)}
+                {records &&
+                  records.map((ele, i) => (
+                    <tr key={i}>
+                      <td>
+                        <label className="checkbox">
+                          <input
+                            type="checkbox"
+                            name="check-1"
+                            id="check-1"
+                            checked={ele?.checked}
+                            onClick={() => handleCheckCheckBox(ele)}
+                          />
+                          <div className="checkbox-text"></div>
+                        </label>
+                      </td>
+                      <td>
+                        <div className="my_list-product">
+                          <div className="my_list-product-image">
+                            <a className="number">
+                              {' '}
+                              <picture>
+                                <img src={getProductImage(ele)} alt="Image" />
+                              </picture>
+                            </a>
+                          </div>
+                          <div>
+                            <p
+                              onClick={() => {
+                                navigate(`/brand/product-details/${ele.id}`);
+                              }}
+                              className="my_list-product-title cursor-pointer"
                             >
-                              {ele.product_variants &&
-                                `${ele?.product_variants.length} Variants`}
+                              {ele.title}
+                            </p>
+                            {ele.product_variants && (
+                              <div
+                                className="my_list-product-variants variants-modal-action cursor-pointer"
+                                onClick={() => handalVariantPopup(ele)}
+                              >
+                                {ele.product_variants &&
+                                  `${ele?.product_variants.length} Variants`}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="txt">
+                          <div className="my-toggle-btn-wrapper tooltip">
+                            <div className="my-toggle-btn">
+                              <input
+                                type="checkbox"
+                                id="checkbox1"
+                                checked={ele.status == '1' ? true : false}
+                              />
+                              <label>
+                                <span
+                                  className="on"
+                                  onClick={() => handleChangeStatus(ele)}
+                                >
+                                  Active
+                                </span>
+                                <span
+                                  className="off"
+                                  onClick={() => handleChangeStatus(ele)}
+                                >
+                                  Inactive
+                                </span>
+                              </label>
+                              <div className="tooltip_text">
+                                {ele.status != '1' ? (
+                                  <p>
+                                    To activate, complete the onboarding flow in
+                                    the Getting Started section and fill out
+                                    required fields by going to Edit Products
+                                    under Actions.
+                                  </p>
+                                ) : (
+                                  <p>
+                                    Deactivating the product will make the
+                                    product not discoverable or sellable on
+                                    ShopDot.
+                                  </p>
+                                )}
+                              </div>
                             </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="txt">
+                          {ele.product_categories?.length === 0 ? (
+                            <p
+                              className="add-item-label add-category cursor-pointer"
+                              onClick={() =>
+                                handalCategoryPopup([], 'category', ele.id)
+                              }
+                            >
+                              <span>+</span> Category
+                            </p>
+                          ) : (
+                            <p
+                              className="value_added cursor-pointer"
+                              onClick={() =>
+                                handalCategoryPopup([], 'category', ele.id)
+                              }
+                            >
+                              {ele.category}
+                            </p>
                           )}
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="txt">
-                        <div className="my-toggle-btn-wrapper tooltip">
-                          <div className="my-toggle-btn">
-                            <input
-                              type="checkbox"
-                              id="checkbox1"
-                              checked={ele.status == '1' ? true : false}
-                            />
-                            <label>
-                              <span
-                                className="on"
-                                onClick={() => handleChangeStatus(ele)}
-                              >
-                                Active
-                              </span>
-                              <span
-                                className="off"
-                                onClick={() => handleChangeStatus(ele)}
-                              >
-                                Inactive
-                              </span>
-                            </label>
-                            <div className="tooltip_text">
-                              {ele.status != '1' ? (
-                                <p>
-                                  To activate, complete the onboarding flow in
-                                  the Getting Started section and fill out
-                                  required fields by going to Edit Products
-                                  under Actions.
-                                </p>
-                              ) : (
-                                <p>
-                                  Deactivating the product will make the product
-                                  not discoverable or sellable on ShopDot.
-                                </p>
-                              )}
+                      </td>
+                      <td>
+                        <div className="txt">
+                          {ele?.product_tags?.length === 0 ? (
+                            <p
+                              className="add-item-label add-tags cursor-pointer"
+                              onClick={() =>
+                                handalCategoryPopup(ele?.product_tags, 'tag')
+                              }
+                            >
+                              <span>+</span> Tags
+                            </p>
+                          ) : (
+                            <p
+                              className="value_added cursor-pointer"
+                              onClick={() =>
+                                handalCategoryPopup(ele?.product_tags, 'tag')
+                              }
+                            >
+                              {showProductTags(ele)}
+                            </p>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="txt">
+                          <span id="stock">
+                            {getProductStock(ele)}
+                            {getProductStock(ele) == 0 ? (
+                              <img src={stockRedAlert} />
+                            ) : getProductStock(ele) < 10 ? (
+                              <img src={stockYellowAlert} />
+                            ) : null}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="txt">
+                          {ele.sales} <br />
+                        </div>
+                      </td>
+                      <td>
+                        <div className="txt">
+                          {ele.product_retailer?.length === 0 ? (
+                            <a
+                              href="javascript:void(0)"
+                              className="add-item-label add-retailer"
+                              onClick={() => handalRetailerPopup(ele)}
+                            >
+                              <span>+</span> Retailer
+                            </a>
+                          ) : (
+                            <a
+                              href="javascript:void(0)"
+                              className="value_added"
+                              onClick={() => handalRetailerPopup(ele)}
+                            >
+                              {ele?.product_retailer?.length} assigned
+                            </a>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="actions">
+                          <div className="dropdown">
+                            <div className="dropdown_header">
+                              <img className="icon" src={MoreIcon} />
+                            </div>
+                            <div className="dropdown_body">
+                              <div className="dropdown_inner">
+                                <ul>
+                                  <li>
+                                    <button className="edit-product">
+                                      Edit Product
+                                    </button>
+                                  </li>
+                                  <li>
+                                    <button
+                                      onClick={() => {
+                                        doSync(ele);
+                                      }}
+                                      className="sync-product"
+                                    >
+                                      Sync Product
+                                    </button>
+                                  </li>
+                                  <li>
+                                    <button
+                                      className="sync-product"
+                                      onClick={() =>
+                                        handalRetailerPopup('', [])
+                                      }
+                                    >
+                                      Assign Retailers
+                                    </button>
+                                  </li>
+                                  <li>
+                                    <button className="view-store">
+                                      View in Store
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="txt">
-                        {ele.product_categories?.length === 0 ? (
-                          <p
-                            className="add-item-label add-category cursor-pointer"
-                            onClick={() =>
-                              handalCategoryPopup([], 'category', ele.id)
-                            }
-                          >
-                            <span>+</span> Category
-                          </p>
-                        ) : (
-                          <p
-                            className="value_added cursor-pointer"
-                            onClick={() =>
-                              handalCategoryPopup([], 'category', ele.id)
-                            }
-                          >
-                            {ele.category}
-                          </p>
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="txt">
-                        {ele?.product_tags?.length === 0 ? (
-                          <p
-                            className="add-item-label add-tags cursor-pointer"
-                            onClick={() =>
-                              handalCategoryPopup(ele?.product_tags, 'tag')
-                            }
-                          >
-                            <span>+</span> Tags
-                          </p>
-                        ) : (
-                          <p
-                            className="value_added cursor-pointer"
-                            onClick={() =>
-                              handalCategoryPopup(ele?.product_tags, 'tag')
-                            }
-                          >
-                            {showProductTags(ele)}
-                          </p>
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="txt">
-                        <span id="stock">
-                          {getProductStock(ele)}
-                          {getProductStock(ele) == 0 ? (
-                            <img src={stockRedAlert} />
-                          ) : getProductStock(ele) < 10 ? (
-                            <img src={stockYellowAlert} />
-                          ) : null}
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="txt">
-                        {ele.sales} <br />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="txt">
-                        {ele.product_retailer?.length === 0 ? (
-                          <a
-                            href="javascript:void(0)"
-                            className="add-item-label add-retailer"
-                            onClick={() => handalRetailerPopup('')}
-                          >
-                            <span>+</span> Retailer
-                          </a>
-                        ) : (
-                          <a
-                            href="javascript:void(0)"
-                            className="value_added"
-                            onClick={() => handalRetailerPopup('2', [])}
-                          >
-                            {ele?.product_retailer?.length} assigned
-                          </a>
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="actions">
-                        <div className="dropdown">
-                          <div className="dropdown_header">
-                            <img className="icon" src={MoreIcon} />
-                          </div>
-                          <div className="dropdown_body">
-                            <div className="dropdown_inner">
-                              <ul>
-                                <li>
-                                  <button className="edit-product">
-                                    Edit Product
-                                  </button>
-                                </li>
-                                <li>
-                                  <button
-                                    onClick={() => {
-                                      doSync(ele);
-                                    }}
-                                    className="sync-product"
-                                  >
-                                    Sync Product
-                                  </button>
-                                </li>
-                                <li>
-                                  <button
-                                    className="sync-product"
-                                    onClick={() => handalRetailerPopup('', [])}
-                                  >
-                                    Assign Retailers
-                                  </button>
-                                </li>
-                                <li>
-                                  <button className="view-store">
-                                    View in Store
-                                  </button>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -1027,15 +1069,19 @@ export default function ProductTable(props) {
               <div className="pagination_nav">
                 <div className="pagination-title">page</div>
                 <select name="per" id="per" onChange={onPageChange}>
-                  {productList.map((_, i) => {
-                    return <option value={i + 1}>{i + 1}</option>;
-                  })}
+                  {getPageNumbers()}
                 </select>
-                <div className="pagination-title">{`of ${productList.length}`}</div>
-                <button className="pagination-arrow pagination-arrow-prev">
+                <div className="pagination-title">{`of ${pageCount}`}</div>
+                <button
+                  className="pagination-arrow pagination-arrow-prev"
+                  onClick={decrementPageNumber}
+                >
                   <img className="icon" src={LeftIcon} />
                 </button>
-                <button className="pagination-arrow pagination-arrow-next">
+                <button
+                  className="pagination-arrow pagination-arrow-next"
+                  onClick={incrementPageNumber}
+                >
                   <img className="icon" src={RightIcon} />
                 </button>
               </div>

@@ -7,13 +7,25 @@ import OnboardingLayout from '../../../layout/OnboardingLayout';
 import emailIcon from '../../../assets/images/icons/ic_email_sent.svg';
 import { LinkMod } from '../../../components/common/A';
 import Button from '../../../components/common/Button';
+import { useSelector } from 'react-redux';
+import { selectUserDetails } from '../../../redux/user/userSelector';
+import { isLoggedIn } from '../../../redux/auth/authSelector';
 
 // import '../onboarding.style.scss';
 
 function EmailVerification() {
   const navigate = useNavigate();
+  const userDetails = useSelector(selectUserDetails);
+  const loggedIn = useSelector(isLoggedIn);
 
-
+const handleNextClick = () => {
+  const {is_email_verified} = userDetails || {};
+  if(loggedIn && is_email_verified) {
+    navigate('/personalize');
+  } else {
+    navigate('/login');
+  }
+}
 
   return (
     <>
@@ -39,7 +51,7 @@ function EmailVerification() {
               <Button
                 className="button w-100"
                 type="button"
-                onClick={()=>navigate("/personalize")}
+                onClick={handleNextClick}
               >
                  Next
               </Button>

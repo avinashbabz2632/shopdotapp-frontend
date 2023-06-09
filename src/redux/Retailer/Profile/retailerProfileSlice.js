@@ -3,6 +3,10 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   retailerProfileSaving: false,
   retailerProfileSaveResult: null,
+  retailerProfileCompleted: {
+    profile: false,
+    paid: false,
+  },
 };
 
 const retailerProfileSlice = createSlice({
@@ -16,14 +20,23 @@ const retailerProfileSlice = createSlice({
       state.retailerProfileSaving = false;
       state.retailerProfileSaveResult = action.payload;
     },
+    setRetilerProfileCompleted: (state, action) => {
+      state.retailerProfileCompleted = {
+        ...state.retailerProfileCompleted,
+        ...action.payload,
+      };
+    },
   },
 });
 
 /**
  * Actions
  */
-export const { setRetailerProfileSaving, setRetailerProfileSaveResult } =
-  retailerProfileSlice.actions;
+export const {
+  setRetailerProfileSaving,
+  setRetailerProfileSaveResult,
+  setRetilerProfileCompleted,
+} = retailerProfileSlice.actions;
 
 /**
  * Reducers

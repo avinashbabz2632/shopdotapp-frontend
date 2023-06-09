@@ -66,6 +66,7 @@ export default function RetailerProfile() {
   const brandCategoryList = useSelector(selectBrandCategory);
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [selectedRetailerValues, setSelectedRetailerValues] = useState([]);
   let transformCategoryOptions = [];
   if (brandCategoryList && brandCategoryList.length > 0) {
     transformCategoryOptions = brandCategoryList?.map((el) => {
@@ -172,6 +173,7 @@ export default function RetailerProfile() {
       await map(brandData.retailer_details.retailer_values, (cat, key) => {
         valuesArray.push(cat.value_id);
       });
+      setSelectedRetailerValues(valuesArray)
     }
     if (brandData?.retailer_details?.id) {
       setImage(brandData?.retailer_details?.store_logo || '');
@@ -191,6 +193,7 @@ export default function RetailerProfile() {
         retailerCategory: getDefaultValueOfCategoryField(),
         retialerValue: valuesArray,
         aboutTheRetailer: brandProfileDetails?.retailer_details?.retailer_story,
+        link: brandProfileDetails?.retailer_details?.retailer_promo,
         countryAddress: getDefaultValueOfCountryField(),
         stateAddress: getDefaultValueOfStateField(),
       });
@@ -282,8 +285,10 @@ export default function RetailerProfile() {
       retailerCategory: getDefaultValueOfCategoryField(),
       retialerValue: '',
       aboutTheRetailer: brandProfileDetails?.retailer_details?.retailer_story,
+      link: brandProfileDetails?.retailer_details?.retailer_promo,
       countryAddress: getDefaultValueOfCountryField(),
       stateAddress: getDefaultValueOfStateField(),
+      retailer_promo: brandProfileDetails?.retailer_details?.retailer_promo,
     },
     mode: 'onChange',
     resolver: yupResolver(retailerProfileValidationSchema),
@@ -346,12 +351,14 @@ export default function RetailerProfile() {
       retailer_categories: [data.retailerCategory.value],
       retailer_values: getRetailerValues(data),
       address1: data.addressLine1,
-      address2: data.addressLine2,
+      address2: data.addressLine2 ?? null,
       country: data.countryAddress.label,
       state: data.stateAddress.label,
       city: data.city,
       zip: data.zipcode,
+      retailer_promo: data.link ?? null,
       store_mailing_address: 'test address',
+      retailer_promo: data.retailer_promo
     };
     console.log('profileData----', profileData);
     if (brandProfileDetails) {
@@ -771,6 +778,7 @@ export default function RetailerProfile() {
                                         <input
                                           type="checkbox"
                                           name={'retialerValue'}
+                                          checked={selectedRetailerValues.includes(val.id) ? "checked" : '' }
                                           value={val.id}
                                           {...register('retialerValue', {
                                             required: false,
@@ -813,14 +821,14 @@ export default function RetailerProfile() {
                           <input
                             type="text"
                             className="form-control"
-                            name="link"
-                            {...register('link', {
+                            name="retailer_promo"
+                            {...register('retailer_promo', {
                               required: false,
                             })}
                           />
-                          {errors.link && (
+                          {errors.retailer_promo && (
                             <span className="error-text">
-                              {errors.link?.message}
+                              {errors.retailer_promo?.message}
                             </span>
                           )}
                         </div>

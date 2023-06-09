@@ -24,7 +24,9 @@ const gettingPaidSlice = createSlice({
       state.businessDetails = {};
       state.representativeDetails = [];
       state.bankDetails = {};
+      state.gettingPaidPreferance = {};
     },
+
     setGettingPaidPreferance: (state, action) => {
       state.gettingPaidPreferance = action.payload;
     },

@@ -91,7 +91,10 @@ export default function BrandOnBoarding() {
   }, [profileCompleted]);
 
   const handleComplete = () => {
-    if (brandProfileDetails?.user_detail?.is_initial_sync_done) {
+    if (
+      brandProfileDetails?.user_detail?.is_initial_sync_done &&
+      profileCompleted.integration
+    ) {
       setBrandStep([1, 2, 3]);
       setActiveStep(4);
       setStoreName(brandProfileDetails?.shop_detail?.shop);

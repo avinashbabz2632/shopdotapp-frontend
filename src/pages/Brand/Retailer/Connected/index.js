@@ -26,14 +26,14 @@ import { Link, NavLink } from 'react-router-dom';
 import { getConnectedRetailer } from '../../../../actions/brandActions';
 
 export default function Connected(props) {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const { height } = props;
     const data = useSelector(selectConnectedRetailerData);
     const [limit, setLimit] = useState(20);
     const [offset, setOffset] = useState(0);
     const [totalPage, setTotalPage] = useState(1);
     const [searchVal, setSearchVal] = useState('');
-    const [sortColumn, setSortColumn] = useState("full_name");
+    const [sortColumn, setSortColumn] = useState('full_name');
     const [modalIsOpen, setIsOpen] = useState(false);
     const filterCategories = useSelector(selectCategoryViseData);
     const filterStates = useSelector(selectStateViseData);
@@ -41,55 +41,61 @@ export default function Connected(props) {
 
     const fetchRetailerRequests = (props) => {
         const query = {
-          paging: {
-            limit: limit,
-            offset: offset,
-          },
-          sort: [
-            ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
-            ["assigned_products",sortColumn == "assigned_products" ? "ASC" : "DESC"],
-            // ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
-            ["retailer_category",sortColumn == "retailer_category" ? "ASC" : "DESC"],
-            ["invite_status",sortColumn == "invite_status" ? "ASC" : "DESC"],
-            ["state",sortColumn == "state" ? "ASC" : "DESC"]
-          ],
-        query: {},
-        filter: [
-            {
-                "field": "invite_status",
-                "operator": "eq",
-                "value": "connected"
-            }
-        ],
+            paging: {
+                limit: limit,
+                offset: offset,
+            },
+            sort: [
+                ['full_name', sortColumn == 'full_name' ? 'ASC' : 'DESC'],
+                [
+                    'assigned_products',
+                    sortColumn == 'assigned_products' ? 'ASC' : 'DESC',
+                ],
+                // ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
+                [
+                    'retailer_category',
+                    sortColumn == 'retailer_category' ? 'ASC' : 'DESC',
+                ],
+                ['invite_status', sortColumn == 'invite_status' ? 'ASC' : 'DESC'],
+                ['state', sortColumn == 'state' ? 'ASC' : 'DESC'],
+            ],
+            query: {},
+            filter: [
+                {
+                    field: 'invite_status',
+                    operator: 'eq',
+                    value: 'connected',
+                },
+            ],
         };
-        if(searchVal){
-            query.query.search = searchVal
+        if (searchVal) {
+            query.query.search = searchVal;
         }
-        if(filterCategories.length > 0){
+        if (filterCategories.length > 0) {
             query.filter.push({
-                "field": "retailer_categories",
-                "operator": "in",
-                "value": filterCategories
-            })
+                field: 'retailer_categories',
+                operator: 'in',
+                value: filterCategories,
+            });
         }
-        if(filterStates.length > 0){
+        if (filterStates.length > 0) {
             query.filter.push({
-                "field": "state",
-                "operator": "in",
-                "value": filterStates
-            })
+                field: 'state',
+                operator: 'in',
+                value: filterStates,
+            });
         }
         dispatch(getConnectedRetailer(query));
-      };
+    };
     useEffect(() => {
-        fetchRetailerRequests()
-        const page = data ? (data.count / limit) : 0;
-        if(page % 1 === 0){
-            setTotalPage(page)
-        }else{
-            setTotalPage(Math.floor(page)+1)
+        fetchRetailerRequests();
+        const page = data ? data.count / limit : 0;
+        if (page % 1 === 0) {
+            setTotalPage(page);
+        } else {
+            setTotalPage(Math.floor(page) + 1);
         }
-        getTotalPage()
+        getTotalPage();
     }, [searchVal, limit, offset, sortColumn, filterCategories, filterStates]);
 
     const handleSearch = (e) => {
@@ -105,32 +111,52 @@ export default function Connected(props) {
     }, [isDeclineModelOpen]);
     const handleLimit = (e) => {
         setLimit(e.target.value);
-        setOffset(0)
-    }
+        setOffset(0);
+    };
     const getTotalPage = () => {
         const options = [];
-        for(let i = 1; i <= totalPage; i++){
-            const selected = ((offset+1)) == i ? true : false;
-            options.push(<option value={i} selected={selected}>{i}</option>);
+        for (let i = 1; i <= totalPage; i++) {
+            const selected = offset + 1 == i ? true : false;
+            options.push(
+                <option value={i} selected={selected}>
+                    {i}
+                </option>
+            );
         }
-        return options
-    }
+        return options;
+    };
     const handlePageNumber = (e) => {
-        setOffset((e.target.value - 1))
-    }
+        setOffset(e.target.value - 1);
+    };
     const incrementPageNumber = () => {
-        let page = offset+1
-        if(page < totalPage){
-            setOffset((page))
+        let page = offset + 1;
+        if (page < totalPage) {
+            setOffset(page);
         }
-    }
+        const handlePageNumber = (e) => {
+            setOffset((e.target.value - 1))
+        }
+        const incrementPageNumber = () => {
+            let page = offset + 1
+            if (page < totalPage) {
+                setOffset((page))
+            }
+        }
+    };
     const decrementPageNumber = () => {
-        if(offset > 0)
-            setOffset((offset-1))
-    }
+        if (offset > 0) setOffset(offset - 1);
+    };
     const handleSort = (column) => {
-        setSortColumn(column)
-    }
+        setSortColumn(column);
+    };
+    const handleRetailerCategories = (category) => {
+        const categories = [];
+        category.map((cat, i) => {
+            categories.push(cat.store_categories.name);
+            // setFilterCategories(...filterCategories, cat.store_categories.name)
+        });
+        return categories;
+    };
     return (
         <>
             <InviteRetailer
@@ -171,10 +197,7 @@ export default function Connected(props) {
                                                 })
                                             }
                                         >
-                                            <img
-                                                className="product_clear_icon"
-                                                src={closeIcon}
-                                            />
+                                            <img className="product_clear_icon" src={closeIcon} />
                                         </div>
                                     </>
                                 ) : (
@@ -194,7 +217,10 @@ export default function Connected(props) {
                                 <thead className="nodark-bg sticky-thead">
                                     <tr>
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("full_name")}>
+                                            <div
+                                                className="title"
+                                                onClick={() => handleSort('full_name')}
+                                            >
                                                 Retailer Name
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -202,7 +228,10 @@ export default function Connected(props) {
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("assigned_products")}>
+                                            <div
+                                                className="title"
+                                                onClick={() => handleSort('assigned_products')}
+                                            >
                                                 Products Assigned
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -211,7 +240,10 @@ export default function Connected(props) {
                                         </th>
 
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("all_time_sale")}>
+                                            <div
+                                                className="title"
+                                                onClick={() => handleSort('all_time_sale')}
+                                            >
                                                 All Time Sales
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -219,7 +251,10 @@ export default function Connected(props) {
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("retailer_category")}>
+                                            <div
+                                                className="title"
+                                                onClick={() => handleSort('retailer_category')}
+                                            >
                                                 Retailer Category
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -228,7 +263,7 @@ export default function Connected(props) {
                                         </th>
 
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("state")}>
+                                            <div className="title" onClick={() => handleSort("state")}>
                                                 State
                                                 <span className="sort">
                                                     <img src={downArrow} />
@@ -236,7 +271,7 @@ export default function Connected(props) {
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="title" onClick={()=>handleSort("invite_status")}>Status</div>
+                                            <div className="title" onClick={() => handleSort("invite_status")}>Status</div>
                                         </th>
                                         <th>Actions</th>
                                     </tr>
@@ -244,7 +279,7 @@ export default function Connected(props) {
                                 <tbody>
                                     {data?.rows?.length > 0 &&
                                         data?.rows.map((item, i) => {
-                                            if(item?.retailer_details){
+                                            if (item?.retailer_details) {
                                                 return (
                                                     <tr key={i}>
                                                         <td>
@@ -280,7 +315,7 @@ export default function Connected(props) {
                                                                 }
                                                             </div>
                                                         </td>
-    
+
                                                         <td>
                                                             <div>
                                                                 {item.all_time_sale}
@@ -291,7 +326,7 @@ export default function Connected(props) {
                                                                 item?.retailer_details?.retailer_category.store_categories.name
                                                             }
                                                         </td>
-    
+
                                                         <td>{item.retailer_details.store_state}</td>
                                                         <td>
                                                             <span className="status-pill pill_connected w-auto">
@@ -429,16 +464,16 @@ export default function Connected(props) {
                                                                     Retailers
                                                                 </button>
                                                                 <Link to="/brand/request-access">
-                                                                <button
-                                                                    className="button dark"
-                                                                    onClick={() => props.changeSubTab(2)}
-                                                                >
-                                                                    View
-                                                                    Requests for
-                                                                    Access
-                                                                </button>
+                                                                    <button
+                                                                        className="button dark"
+                                                                        onClick={() => props.changeSubTab(2)}
+                                                                    >
+                                                                        View
+                                                                        Requests for
+                                                                        Access
+                                                                    </button>
                                                                 </Link>
-                                                                
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -488,13 +523,128 @@ export default function Connected(props) {
                                         </button>
                                     </div>
                                 </div>
+                                <div className="dropdown_body left-open dropd">
+                                    <div className="dropdown_inner dropd">
+                                        <ul>
+                                            <li>
+                                                <a href="profile.html">View/Edit</a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="mailto:someone@example.com"
+                                                    className="message-box"
+                                                >
+                                                    Message
+                                                </a>
+                                            </li>
+                                            <li
+                                                onClick={() =>
+                                                    opencloseDeclineRetailerModal()
+                                                }
+                                            >
+                                                <a href="#" className="decline-box">
+                                                    Decline
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                        )}
+                            </div>
+                </td>
+            </tr>
+            );
+                    })}
+            {data?.count === 0 && (
+                <tr>
+                    <td colSpan="7" className="p-0">
+                        <div className="content_area">
+                            <div className="card-empty">
+                                <div className="card-empty_body">
+                                    <div className="image mb-5">
+                                        <picture>
+                                            <img src={ProductCartEmpty} alt="" />
+                                        </picture>
+                                    </div>
+                                    <h3>
+                                        You currently have no requests for access from
+                                        any retailer.
+                                    </h3>
+                                    <p>
+                                        Invite your retailers to join ShopDot so they
+                                        can start selling your products on their
+                                        website.
+                                    </p>
+                                    <div>
+                                        <button
+                                            className="button me-2"
+                                            onClick={opencloseRetailerModal}
+                                        >
+                                            Invite Retailers
+                                        </button>
+                                        <Link to="/brand/request-access">
+                                            <button
+                                                className="button dark"
+                                                onClick={() =>
+                                                    props.changeSubTab
+                                                        ? props.changeSubTab(2)
+                                                        : () => { }
+                                                }
+                                            >
+                                                View Requests for Access
+                                            </button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            )}
+        </tbody >
+              </table >
+            </div >
+        { data?.count > 0 && (
+            <div className="pagination_wrap mt-0">
+                <div className="pagination br-top-none">
+                    <div className="pagination_per">
+                        <select name="per" id="per" onChange={handleLimit}>
+                            <option value="20" selected="">
+                                20
+                            </option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <div className="pagination-title">items per page</div>
+                    </div>
+                    <div className="pagination_nav">
+                        <div className="pagination-title">page</div>
+                        <select name="per" id="per" onChange={handlePageNumber}>
+                            {getTotalPage()}
+                        </select>
+                        <div className="pagination-title">of {totalPage}</div>
+                        <button
+                            className="pagination-arrow pagination-arrow-prev"
+                            onClick={decrementPageNumber}
+                        >
+                            <img className="icon" src={LeftIcon} />
+                        </button>
+                        <button
+                            className="pagination-arrow pagination-arrow-next"
+                            onClick={incrementPageNumber}
+                        >
+                            <img className="icon" src={RightIcon} />
+                        </button>
                     </div>
                 </div>
             </div>
-        </>
-    );
+        )
+}
+          </div >
+        </div >
+      </div >
+    </>
+  );
 }
 
 Connected.propTypes = {
