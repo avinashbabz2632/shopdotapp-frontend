@@ -99,7 +99,6 @@ export default function ProductTable(props) {
   let pageCount = 0;
   if (records && records.length > 0) {
     pageCount = Math.ceil(count / limit);
-    console.log('pageCount----', pageCount);
   }
 
   const getPageNumbers = () => {

@@ -19,8 +19,6 @@ import { resetBrandAssignedRetailerState } from '../../../../redux/Brand/Retaile
 
 export default function RetailerPopup(props) {
   const { handalPopup, retailerBrand, handleOnClose } = props;
-  console.log('retailerBrand----', retailerBrand);
-
   const dispatch = useDispatch();
 
   const retailers = useSelector(selectRetailers);
@@ -36,7 +34,14 @@ export default function RetailerPopup(props) {
   const [assignedRetailers, setAssignedRetailers] = useState(assignedArr);
   
   useEffect(() => {
-    dispatch(getRetailerListAction());
+    const body = {
+      query: {
+        search: {
+          product_id: retailerBrand?.id
+        }
+      },
+    }
+    dispatch(getRetailerListAction(body));
   }, []);
 
   useEffect(() => {
@@ -69,7 +74,14 @@ export default function RetailerPopup(props) {
       };
       dispatch(getRetailerListAction(body));
     } else {
-      dispatch(getRetailerListAction());
+      const body = {
+        query: {
+          search: {
+            product_id: retailerBrand?.id
+          }
+        },
+      }
+      dispatch(getRetailerListAction(body));
     }
   };
 
@@ -104,8 +116,8 @@ export default function RetailerPopup(props) {
 
   const handleSave = () => {
     const retailers = assignedRetailers.map((ar) => ar.id);
-    const brand_id = retailerBrand?.id;
-    const data = { retailers, product_ids: [brand_id] };
+    const product_id = retailerBrand?.id;
+    const data = { retailers, product_ids: [product_id] };
     dispatch(updateBrandAssignedRetailers(data));
   };
 
