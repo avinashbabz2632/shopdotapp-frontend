@@ -18,7 +18,8 @@ import {
 import { resetBrandAssignedRetailerState } from '../../../../redux/Brand/Retailer/retailerSlice';
 
 export default function RetailerPopup(props) {
-  const { handalPopup, assignedData } = props;
+  const { handalPopup, retailerBrand, handleOnClose } = props;
+  console.log('retailerBrand----', retailerBrand);
 
   const dispatch = useDispatch();
 
@@ -39,16 +40,37 @@ export default function RetailerPopup(props) {
   }, []);
 
   useEffect(() => {
+    const { assignedRetailers: assignedArr, notAssignedRetailers } =
+    retailers || {};
+    setUnAssignedRetailers(notAssignedRetailers);
+    setAssignedRetailers(assignedArr);
+  }, [retailers]);
+
+  useEffect(() => {
     if(!updating && success && !error) {
       dispatch(resetBrandAssignedRetailerState());
-      handalPopup();
+      // handalPopup();
+      handleOnClose();
     } else if(!updating && !success && error) {
       dispatch(resetBrandAssignedRetailerState());
     }
   }, [updating, success, error]);
 
   const handleSearchRetailer = (e) => {
-    //
+    const searchQuery = e.target.value.toLowerCase();
+    if(searchQuery){
+      const body = {
+        query: {
+          search: {
+            store_name: searchQuery,
+            category_id: null
+          }
+        },
+      };
+      dispatch(getRetailerListAction(body));
+    } else {
+      dispatch(getRetailerListAction());
+    }
   };
 
   const assignedSingleRetailer = (item, index) => {
@@ -82,8 +104,8 @@ export default function RetailerPopup(props) {
 
   const handleSave = () => {
     const retailers = assignedRetailers.map((ar) => ar.id);
-    const product_ids = assignedRetailers.map((ar) => ar.productIds).flat();
-    const data = { retailers, product_ids };
+    const brand_id = retailerBrand?.id;
+    const data = { retailers, product_ids: [brand_id] };
     dispatch(updateBrandAssignedRetailers(data));
   };
 
@@ -120,7 +142,7 @@ export default function RetailerPopup(props) {
                   <div className="search_form-input">
                     <input
                       type="text"
-                      placeholder="Search product name or SKU"
+                      placeholder="Search Retailer"
                       onChange={handleSearchRetailer}
                     />
                   </div>
@@ -169,7 +191,7 @@ export default function RetailerPopup(props) {
                               <img src="https://placeimg.com/200/200/nature" />
                             </div>
                             <div className="ri-detail">
-                              <h3>{e.name}</h3>
+                              <h3>{e.store_name}</h3>
                               <p>
                                 Published to Store Products:{' '}
                                 <span>{e.published_to_store_products}</span>
@@ -224,7 +246,7 @@ export default function RetailerPopup(props) {
                               <img src="https://placeimg.com/200/200/nature" />
                             </div>
                             <div className="ri-detail">
-                              <h3>{e.name}</h3>
+                              <h3>{e.store_name}</h3>
                               <p>
                                 Published to Store Products:{' '}
                                 <span>{e.published_to_store_products}</span>

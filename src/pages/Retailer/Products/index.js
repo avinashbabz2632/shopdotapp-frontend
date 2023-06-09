@@ -208,10 +208,6 @@ function Products() {
     }
   };
 
-  const getTextOfBrandFilter = () => {
-
-  }
-
   return (
     <>
       <div className="wrapper">

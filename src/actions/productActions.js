@@ -21,8 +21,7 @@ export function getProductListAction(data) {
     try {
       const response = await axios.post(API_END_POINT.PRODUCT_LIST, data);
       if (response && response.data && response.data.code == 200) {
-        const data = response.data?.data;
-        dispatch(setBrandProductList(data.records));
+        dispatch(setBrandProductList(response.data?.data));
       } else {
         toast.error('Something went worng');
       }
