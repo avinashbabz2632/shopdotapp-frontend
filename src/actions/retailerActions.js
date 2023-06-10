@@ -124,7 +124,7 @@ export function getRetailerBrandProductsListAction(data) {
         `${API_END_POINT.RETAILER_BRANDS}`,
         data
       );
-      if (response && response.data && response.data.code == 201) {
+      if (response && response.data && response.data.code == 200) {
         dispatch(setRetailerBrandProductsList(response?.data?.data));
       }
     } catch (err) {

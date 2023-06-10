@@ -91,6 +91,7 @@ function Products() {
   };
 
   useEffect(() => {
+    handleClearFilter();
     dispatch(setLimit(10));
     dispatch(setOffset(0));
     fetchRetailerProducts();
@@ -128,10 +129,6 @@ function Products() {
     dispatch(setSelectedWSPFilter([]));
     dispatch(setSelectedMSRPFilter([]));
   };
-
-  useEffect(() => {
-    handleClearFilter();
-  }, []);
 
   const ProductSearchBar = (e) => {
     const searchQuery = e.target.value?.toLowerCase();

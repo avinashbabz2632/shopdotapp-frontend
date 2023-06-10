@@ -230,21 +230,8 @@ function SideBar() {
         operator: 'between',
         value: `${allTimeSale.min}-${allTimeSale.max}`,
       };
-     
-      // filter = filter.filter((item) => item.field !== 'wsp' && item.field !== 'price')
       filter.push(minMax);
-      // clearing wsp and msrp filters
-
-      // if (selectedWSPFilter.length > 0) {
-      //   dispatch(setSelectedWSPFilter([]))
-      // }
-      // if (selectedMSRPFilter.length > 0) {
-      //   dispatch(setSelectedMSRPFilter([]))
-      // }
     }
-
-    console.log("this is filter: ", filter)
-
     return filter;
   };
 
