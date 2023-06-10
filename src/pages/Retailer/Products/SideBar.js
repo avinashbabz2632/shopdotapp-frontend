@@ -300,7 +300,7 @@ function SideBar() {
   ]);
 
   const handleSearch = (e) => {
-    const searchQuery = e.target.value.toLowerCase();
+    const searchQuery = e.target.value;
     if (searchQuery) {
       const searchWords = searchQuery.split(/\s+/);
       const data = brandFilters.map((item) => {
@@ -310,7 +310,7 @@ function SideBar() {
         };
       });
       const searchValue = data.filter((ele) => {
-        const tags = ele.name.toLowerCase().split(' ');
+        const tags = ele.name.split(' ');
         return searchWords.every((word) =>
           tags.some((tag) => tag.includes(word))
         );

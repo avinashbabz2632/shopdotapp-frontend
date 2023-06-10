@@ -131,7 +131,7 @@ function Products() {
   };
 
   const ProductSearchBar = (e) => {
-    const searchQuery = e.target.value?.toLowerCase();
+    const searchQuery = e.target.value;
     dispatch(setProductSearchQuery(searchQuery));
   };
   const clearProductFilter = (e) => {
@@ -392,6 +392,7 @@ function Products() {
                       rows?.map((item, index) => {
                         return (
                           <div key={index} className="pc">
+                            <Link to={`/retailer/brand/single-product-details/${item?.id}`}>
                             <div className="pc_main">
                               <div className="pc_head">
                                 <div className="pc_head-item">
@@ -447,16 +448,12 @@ function Products() {
                                             }}
                                           >
                                             <div className="image">
-                                              <Link
-                                                to={`/retailer/brand/single-product-details/${item?.id}`}
-                                              >
                                                 <picture>
                                                   <img
                                                     src={getImage(item)}
                                                     alt=""
                                                   />
                                                 </picture>
-                                              </Link>
                                             </div>
                                           </div>
                                         )
@@ -547,14 +544,15 @@ function Products() {
                                 </div>
                                 <div className="pc_brand-item">
                                   <a href="brand-single.html">
-                                    <img src={item.icon} />
+                                    <img src={item?.user?.brand_details?.store_logo} />
                                     <span className="brand-name">
-                                      {item?.text || 'NA'}
+                                      {item?.user?.brand_details?.store_name}
                                     </span>
                                   </a>
                                 </div>
                               </div>
                             </div>
+                            </Link>
                           </div>
                         );
                       })}

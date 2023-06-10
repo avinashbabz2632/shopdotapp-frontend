@@ -24,7 +24,8 @@ import FilterCheckbox from '../../../Brand/Products/components/FilterCheckbox';
 import { getRetailerProductsAction } from '../../../../actions/retailerActions';
 
 
-function BrandProductsSidebar() {
+function BrandProductsSidebar(props) {
+  const {brandId} = props;
   const [openCloseFilter, setOpenCloseFilter] = useState(true);
   const dispatch = useDispatch();
 
@@ -61,6 +62,11 @@ function BrandProductsSidebar() {
 
   const prepareFilter = () => {
     let filter = [];
+    filter.push({
+      field: 'brand_id',
+      operator: 'in',
+      value: [brandId]
+    });
     if (selectedBrandFilters && selectedBrandFilters.length > 0) {
       const brandFilter = {
         field: 'brand_id',

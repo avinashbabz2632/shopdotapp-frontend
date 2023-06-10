@@ -4,7 +4,7 @@ import BrandProductsSidebar from './BrandProductsSidebar';
 import singleSquareImage from '../../../Brand/images/single-square.jpg';
 import summer from '../../../Brand/images/pc-slider-temp.jfif';
 import close from '../../../Brand/images/icons/icon-close.png';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
 import mailIcon from '../../../../assets/images/icons/mail-icon.svg';
 import RightIcon from '../../../Brand/images/icons/icon-chevron--right.svg';
@@ -72,7 +72,8 @@ function Products() {
     Array(retailerProductData.length).fill(0)
   );
   const { state } = useLocation();
-  const { user_id } = state || {};
+  const { user_id, brand_id } = state || {};
+  console.log('brand_id----', brand_id);
   const brandProfileData = useSelector(selectRetailerBrandProfile);
   const productData = useSelector(selectRetailerProducts);
   const pageLimit = useSelector(selectLimit);
@@ -132,6 +133,12 @@ function Products() {
     }
   };
 
+  const fixedBrandFilter = {
+    field: 'brand_id',
+    operator: 'in',
+    value: [brand_id]
+  }
+
   const fetchRetailerProducts = () => {
     const body = {
       paging: {
@@ -139,7 +146,7 @@ function Products() {
         offset: offset,
       },
       query: {},
-      filter: [],
+      filter: [fixedBrandFilter],
     };
     dispatch(getRetailerProductsAction(body));
   };
@@ -191,7 +198,7 @@ function Products() {
     connected_status,
   } = brandProfileData || {};
 
-  const { shipping_rate } = brand_profile || {};
+  const { shipping_rate, store_logo } = brand_profile || {};
   const { shipping_address } = shipping_rate || {};
 
   useEffect(() => {
@@ -335,7 +342,7 @@ function Products() {
                           <div className="brand-left-head">
                             <div className="brand-img">
                               <picture>
-                                <img src={singleSquareImage} alt="" />
+                                <img src={store_logo} alt="" />
                               </picture>
                             </div>
                             <div>
@@ -471,36 +478,14 @@ function Products() {
                       <div className="brand-single_info">
                         <div className="brand-single_block">
                           <h2>About the Brand</h2>
-                          <h3>
                             {brand_profile?.brand_story}
-                            {/* We are a company that seeks to cure “I’m bored” in
-                            kids by creating covertly educational activities. */}
-                          </h3>
-                          <p>
-                            Thousands of boxes of open-ended fun have been sold
-                            worldwide. With wholesale products in every US
-                            State, The Idea Box Kids has been featured in
-                            Country Living, American Farmhouse, MaryJanes Farm,
-                            and on sites like Fodor’s Travel, The Week, Cafe
-                            Mom, Simply Real Moms and more.
-                          </p>
-                          <p>
-                            We have been a business owner for 23 years with 16
-                            of those in ecommerce. We are passionate advocate
-                            for all things handmade wholesale, for both the
-                            sellers that create and the buyers that buy.
-                          </p>
-                        </div>
-
-                        <div className="imageArea">
-                          <img src={summer} />
                         </div>
                       </div>
                     </div>
                   </div>
                   <section className="section products products--style-1 bg-white mt-5">
                     {/* ====================sidebar================ */}
-                    <BrandProductsSidebar />
+                    <BrandProductsSidebar brandId={brand_id} />
                     <div className="products_content update_products_content">
                       <div className="products_head">
                         <div className="products_head-content">
@@ -693,6 +678,7 @@ function Products() {
                             rows?.map((item, index) => {
                               return (
                                 <div key={index} className="pc">
+                                  <Link to={`/retailer/brand/single-product-details/${item?.id}`}>
                                   <div className="pc_main">
                                     <div className="pc_head">
                                       <div className="pc_head-item">
@@ -841,14 +827,15 @@ function Products() {
                                       </div>
                                       <div className="pc_brand-item">
                                         <a href="brand-single.html">
-                                          <img src={item.icon} />
+                                          <img src={item.user?.brand_details?.store_logo} />
                                           <span className="brand-name">
-                                            {item.text}
+                                            {item.user?.brand_details?.store_name}
                                           </span>
                                         </a>
                                       </div>
                                     </div>
                                   </div>
+                                  </Link>
                                 </div>
                               );
                             })}

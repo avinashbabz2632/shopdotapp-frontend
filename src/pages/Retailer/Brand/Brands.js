@@ -556,7 +556,7 @@ function Brands() {
                                       />
                                     </a>
                                   </div>
-                                  <Link to="/retailer/brand/single" state={{user_id: item?.id}}>
+                                  <Link to="/retailer/brand/single" state={{user_id: item?.id, brand_id: item?.brand_details?.id}}>
                                     {brand_details?.store_name}
                                   </Link>
                                 </div>
