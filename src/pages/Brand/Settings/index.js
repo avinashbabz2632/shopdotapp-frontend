@@ -81,7 +81,7 @@ export default function BrandSettingPage() {
   }, [activeTab]);
 
   useEffect(() => {
-    dispatch(getBrandProfileAction(useDetails.id));
+    dispatch(getBrandProfileAction(useDetails?.id));
     dispatch(getCountriesAction());
     dispatch(getBrandShippingTime());
   }, []);

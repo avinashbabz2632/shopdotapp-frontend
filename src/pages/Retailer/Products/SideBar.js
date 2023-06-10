@@ -230,21 +230,8 @@ function SideBar() {
         operator: 'between',
         value: `${allTimeSale.min}-${allTimeSale.max}`,
       };
-     
-      // filter = filter.filter((item) => item.field !== 'wsp' && item.field !== 'price')
       filter.push(minMax);
-      // clearing wsp and msrp filters
-
-      // if (selectedWSPFilter.length > 0) {
-      //   dispatch(setSelectedWSPFilter([]))
-      // }
-      // if (selectedMSRPFilter.length > 0) {
-      //   dispatch(setSelectedMSRPFilter([]))
-      // }
     }
-
-    console.log("this is filter: ", filter)
-
     return filter;
   };
 
@@ -313,7 +300,7 @@ function SideBar() {
   ]);
 
   const handleSearch = (e) => {
-    const searchQuery = e.target.value.toLowerCase();
+    const searchQuery = e.target.value;
     if (searchQuery) {
       const searchWords = searchQuery.split(/\s+/);
       const data = brandFilters.map((item) => {
@@ -323,7 +310,7 @@ function SideBar() {
         };
       });
       const searchValue = data.filter((ele) => {
-        const tags = ele.name.toLowerCase().split(' ');
+        const tags = ele.name.split(' ');
         return searchWords.every((word) =>
           tags.some((tag) => tag.includes(word))
         );
