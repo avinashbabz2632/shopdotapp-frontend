@@ -4,7 +4,7 @@ import BrandProductsSidebar from './BrandProductsSidebar';
 import singleSquareImage from '../../../Brand/images/single-square.jpg';
 import summer from '../../../Brand/images/pc-slider-temp.jfif';
 import close from '../../../Brand/images/icons/icon-close.png';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
 import mailIcon from '../../../../assets/images/icons/mail-icon.svg';
 import RightIcon from '../../../Brand/images/icons/icon-chevron--right.svg';
@@ -18,26 +18,44 @@ import emptyTable from '../../../Brand/images/product-card-empty.svg';
 import searchIcon from '../../../Brand/images/icons/icon-search.svg';
 import closeIcon from '../../../Brand/images/icons/icon-close.svg';
 import { useDispatch, useSelector } from 'react-redux';
-// import { selectBrandProductFilter } from '../../../../redux/Retailer/Brand/BrandProductSelector';
-// import {
-//     daysFullfillFiltersClear,
-//     msrpFilterValuesClear,
-//     retailertagsClear,
-//     stockFiltersClear,
-//     wspFilterValuesClear,
-// } from '../../../../redux/Retailer/Brand/BrandProductsSlice';
-// import { setActiveOpenValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
-import { selectRetailerBrandProfile } from '../../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
+import {
+  selectRetailerBrandProfile,
+  selectRetailerProducts,
+} from '../../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
 import BabyAndKids from '../../common/BabyAndKids';
 import { useLocation } from 'react-router-dom';
-import { getRetailerBrandProfileAction } from '../../../../actions/retailerActions';
+import {
+  getRetailerBrandProfileAction,
+  getRetailerProductsAction,
+} from '../../../../actions/retailerActions';
+import {
+  productSearchQuery,
+  selectLimit,
+  selectOffset,
+  selectSelectedBrandFilters,
+  selectSelectedBrandStatusFilters,
+  selectSelectedDaysToFullfillFilters,
+  selectSelectedMSRPFilters,
+  selectSelectedStockFilters,
+  selectSelectedWSPFilters,
+} from '../../../../redux/Brand/Retailer/retailerSelector';
+import {
+  setLimit,
+  setOffset,
+  setProductSearchQuery,
+  setSelectedBrandFilters,
+  setSelectedBrandStatusFilters,
+  setSelectedDaysToFullfilFilters,
+  setSelectedMSRPFilter,
+  setSelectedStockFilters,
+  setSelectedWSPFilter,
+} from '../../../../redux/Brand/Retailer/retailerSlice';
 
 function Products() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
   const setActiveOpen = false; //useSelector(false);
-  const ProductFilters = []; //useSelector([]);
   const [profileData, setProfileData] = useState(null);
   const [data, setData] = useState(retailerProductData);
   const [dataClone, setDataClone] = useState(retailerProductData);
@@ -54,8 +72,118 @@ function Products() {
     Array(retailerProductData.length).fill(0)
   );
   const { state } = useLocation();
-  const { user_id } = state || {};
+  const { user_id, brand_id } = state || {};
+  console.log('brand_id----', brand_id);
   const brandProfileData = useSelector(selectRetailerBrandProfile);
+  const productData = useSelector(selectRetailerProducts);
+  const pageLimit = useSelector(selectLimit);
+  const offset = useSelector(selectOffset);
+  const selectedBrandFilters = useSelector(selectSelectedBrandFilters);
+  const selectedBrandStatusFilters = useSelector(
+    selectSelectedBrandStatusFilters
+  );
+  const selectedDaysToFullfilFilters = useSelector(
+    selectSelectedDaysToFullfillFilters
+  );
+  const selectedStockFilters = useSelector(selectSelectedStockFilters);
+  const selectedWSPFilter = useSelector(selectSelectedWSPFilters);
+  const selectedMSRPFilter = useSelector(selectSelectedMSRPFilters);
+  const productSearchValue = useSelector(productSearchQuery);
+
+
+  const { count, rows } = productData;
+
+  let pageCount = 0;
+  if (rows && rows.length > 0) {
+    pageCount = Math.ceil(count / pageLimit);
+  }
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    for (let index = 1; index <= pageCount; index++) {
+      const selected = offset + 1 === index;
+      const optionItem = (
+        <option key={`${index}`} value={index} selected={selected}>
+          {index}
+        </option>
+      );
+      pageNumbers.push(optionItem);
+    }
+    return pageNumbers;
+  };
+
+  const onItemPerPageChange = (e) => {
+    dispatch(setLimit(parseInt(e.target.value)));
+    dispatch(setOffset(0));
+  };
+
+  const onPageChange = (e) => {
+    dispatch(setOffset(e.target.value - 1));
+  };
+
+  const incrementPageNumber = () => {
+    let page = offset + 1;
+    if (page < pageCount) {
+      dispatch(setOffset(page));
+    }
+  };
+  const decrementPageNumber = () => {
+    if (offset > 0) {
+      dispatch(setOffset(offset - 1));
+    }
+  };
+
+  const fixedBrandFilter = {
+    field: 'brand_id',
+    operator: 'in',
+    value: [brand_id]
+  }
+
+  const fetchRetailerProducts = () => {
+    const body = {
+      paging: {
+        limit: pageLimit,
+        offset: offset,
+      },
+      query: {},
+      filter: [fixedBrandFilter],
+    };
+    dispatch(getRetailerProductsAction(body));
+  };
+
+  const getStatus = (item) => {
+    const { user } = item || {};
+    const { invitees, inviters } = user || {};
+    const isNotConnected = invitees.length === 0 && inviters.length === 0;
+    let status;
+    if (isNotConnected) {
+      status = 'Not Connected';
+    } else if (invitees.length > 0) {
+      const obj = invitees[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
+        status = 'Connected';
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
+        status = 'Pending';
+      }
+    } else if (inviters.length > 0) {
+      const obj = inviters[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
+        status = 'Connected';
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
+        status = 'Pending';
+      }
+    }
+    return status;
+  };
+
+  const getImage = (item) => {
+    let imgUrl;
+    const { product_images } = item || {};
+    if (product_images && product_images.length > 0) {
+      imgUrl = product_images[0]?.src;
+    }
+    return imgUrl;
+  };
 
   const {
     brand_profile,
@@ -70,79 +198,19 @@ function Products() {
     connected_status,
   } = brandProfileData || {};
 
-  const { shipping_rate } = brand_profile || {};
+  const { shipping_rate, store_logo } = brand_profile || {};
   const { shipping_address } = shipping_rate || {};
 
   useEffect(() => {
     dispatch(getRetailerBrandProfileAction(user_id));
+    dispatch(setLimit(10));
+    dispatch(setOffset(0));
+    fetchRetailerProducts();
   }, []);
 
   useEffect(() => {
     setSetActiveOpenVal(setActiveOpen);
   }, [setActiveOpen]);
-
-  useEffect(() => {
-    setFilterByBrand(ProductFilters?.tagsValue);
-    setWspFilter(ProductFilters?.wspFilterValues);
-    setMsrpFilter(ProductFilters?.msrpFilterValues);
-    setStockFilter(ProductFilters?.stockFilters);
-    setDaysFullfillFilter(ProductFilters?.daysFullfillFilters);
-    const productArray = [
-      'tagsValue',
-      'wspFilterValues',
-      'msrpFilterValues',
-      'stockFilters',
-      'daysFullfillFilters',
-    ];
-    const retailerProductData = [];
-    productArray.forEach((e) => {
-      if (e === 'tagsValue') {
-        ProductFilters.tagsValue?.map((ele) => {
-          data.map((e) => {
-            e.brandValues === ele && retailerProductData.push(e);
-          });
-          setProductFilterData(retailerProductData);
-          setProductFilterClone(retailerProductData);
-        });
-      }
-      if (e === 'wspFilterValues') {
-        ProductFilters.wspFilterValues?.map((ele) => {
-          data.map((e) => {
-            e.brandValues === ele && retailerProductData.push(e);
-          });
-          setProductFilterData(retailerProductData);
-          setProductFilterClone(retailerProductData);
-        });
-      }
-      if (e === 'msrpFilterValues') {
-        ProductFilters.msrpFilterValues?.map((ele) => {
-          data.map((e) => {
-            e.brandValues === ele && retailerProductData.push(e);
-          });
-          setProductFilterData(retailerProductData);
-          setProductFilterClone(retailerProductData);
-        });
-      }
-      if (e === 'stockFilters') {
-        ProductFilters.stockFilters?.map((ele) => {
-          data.map((e) => {
-            e.brandValues === ele && retailerProductData.push(e);
-          });
-          setProductFilterData(retailerProductData);
-          setProductFilterClone(retailerProductData);
-        });
-      }
-      if (e === 'daysFullfillFilters') {
-        ProductFilters.daysFullfillFilters?.map((ele) => {
-          data.map((e) => {
-            e.brandValues === ele && retailerProductData.push(e);
-          });
-          setProductFilterData(retailerProductData);
-          setProductFilterClone(retailerProductData);
-        });
-      }
-    });
-  }, [ProductFilters]);
 
   useEffect(() => {
     const findData = connectedTableData.find((ele) => {
@@ -189,65 +257,31 @@ function Products() {
   };
 
   const clearProductFilter = (e) => {
-    // if (e === 'tagsValue') {
-    //     setFilterByBrand([]);
-    //     dispatch(retailertagsClear());
-    // } else if (e === 'wspFilterValues') {
-    //     setWspFilter([]);
-    //     dispatch(wspFilterValuesClear());
-    // } else if (e === 'msrpFilterValues') {
-    //     setMsrpFilter([]);
-    //     dispatch(msrpFilterValuesClear());
-    // } else if (e === 'stockFilters') {
-    //     setStockFilter([]);
-    //     dispatch(stockFiltersClear());
-    // } else if (e === 'daysFullfillFilters') {
-    //     setDaysFullfillFilter([]);
-    //     dispatch(daysFullfillFiltersClear());
-    // }
+    if (e === 'tagsValue') {
+        // dispatch(retailertagsClear());
+    } else if (e === 'wspFilterValues') {
+      dispatch(setSelectedWSPFilter([]));
+    } else if (e === 'msrpFilterValues') {
+      dispatch(setSelectedMSRPFilter([]));
+    } else if (e === 'stockFilters') {
+      dispatch(setSelectedStockFilters([]));
+    } else if (e === 'daysFullfillFilters') {
+      dispatch(setSelectedDaysToFullfilFilters([]));
+    }
   };
 
   const ProductSearchBar = (e) => {
     const searchQuery = e.target.value?.toLowerCase();
-    if (searchQuery) {
-      const searchWords = searchQuery.split(' ');
-      const searchValue = dataClone.filter((ele) => {
-        return searchWords.every((word) => {
-          return ele?.name?.toLowerCase().includes(word);
-        });
-      });
-      setData(searchValue);
-      setSearchVal(searchQuery);
-    } else {
-      setData(dataClone);
-      setSearchVal('');
-    }
-    if (searchQuery) {
-      const searchWords = searchQuery.split(' ');
-      const searchValue = productFilterClone.filter((ele) => {
-        return searchWords.every((word) => {
-          return ele?.name?.toLowerCase().includes(word);
-        });
-      });
-      setProductFilterData(searchValue);
-      setSearchVal(searchQuery);
-    } else {
-      setProductFilterData(productFilterClone);
-      setSearchVal('');
-    }
+    dispatch(setProductSearchQuery(searchQuery));
   };
 
   const handleClearFilter = () => {
-    // setFilterByBrand([]);
-    // setWspFilter([]);
-    // setMsrpFilter([]);
-    // setStockFilter([]);
-    // setDaysFullfillFilter([]);
-    // dispatch(retailertagsClear());
-    // dispatch(wspFilterValuesClear());
-    // dispatch(msrpFilterValuesClear());
-    // dispatch(stockFiltersClear());
-    // dispatch(daysFullfillFiltersClear());
+    dispatch(setSelectedBrandFilters([]));
+    dispatch(setSelectedBrandStatusFilters([]));
+    dispatch(setSelectedDaysToFullfilFilters([]));
+    dispatch(setSelectedStockFilters([]));
+    dispatch(setSelectedWSPFilter([]));
+    dispatch(setSelectedMSRPFilter([]));
   };
 
   return (
@@ -284,8 +318,8 @@ function Products() {
                               'pill_not_connected'
                             }`}
                           >
-                            {connected_status.charAt(0).toUpperCase()}
-                            {connected_status.substring(1)}
+                            {connected_status?.charAt(0).toUpperCase()}
+                            {connected_status?.substring(1)}
                           </span>
                           &nbsp; &nbsp;
                         </div>
@@ -308,7 +342,7 @@ function Products() {
                           <div className="brand-left-head">
                             <div className="brand-img">
                               <picture>
-                                <img src={singleSquareImage} alt="" />
+                                <img src={store_logo} alt="" />
                               </picture>
                             </div>
                             <div>
@@ -444,46 +478,20 @@ function Products() {
                       <div className="brand-single_info">
                         <div className="brand-single_block">
                           <h2>About the Brand</h2>
-                          <h3>
-                              {brand_profile?.brand_story}
-                            {/* We are a company that seeks to cure “I’m bored” in
-                            kids by creating covertly educational activities. */}
-                          </h3>
-                          <p>
-                            Thousands of boxes of open-ended fun have been sold
-                            worldwide. With wholesale products in every US
-                            State, The Idea Box Kids has been featured in
-                            Country Living, American Farmhouse, MaryJanes Farm,
-                            and on sites like Fodor’s Travel, The Week, Cafe
-                            Mom, Simply Real Moms and more.
-                          </p>
-                          <p>
-                            We have been a business owner for 23 years with 16
-                            of those in ecommerce. We are passionate advocate
-                            for all things handmade wholesale, for both the
-                            sellers that create and the buyers that buy.
-                          </p>
-                        </div>
-
-                        <div className="imageArea">
-                          <img src={summer} />
+                            {brand_profile?.brand_story}
                         </div>
                       </div>
                     </div>
                   </div>
                   <section className="section products products--style-1 bg-white mt-5">
                     {/* ====================sidebar================ */}
-                    <BrandProductsSidebar />
+                    <BrandProductsSidebar brandId={brand_id} />
                     <div className="products_content update_products_content">
                       <div className="products_head">
                         <div className="products_head-content">
                           <div className="title">
                             <h1>Products</h1>
-                            <div className="number">
-                              {tagsValue?.length
-                                ? productfilterData?.length
-                                : data?.length}
-                            </div>
+                            <div className="number">{count}</div>
                           </div>
                           <div className="products_head-search">
                             <form className="search_form">
@@ -491,11 +499,11 @@ function Products() {
                                 <input
                                   type="text"
                                   placeholder="Search product"
-                                  value={searchVal}
+                                  value={productSearchValue}
                                   onChange={(e) => ProductSearchBar(e)}
                                 />
                               </div>
-                              {searchVal?.length !== 0 ? (
+                              {productSearchValue?.length !== 0 ? (
                                 <>
                                   <div
                                     className="close_icon_search"
@@ -541,7 +549,7 @@ function Products() {
                         </div>
                       </div>
                       {(!isEmpty(tagsValue) ||
-                        !isEmpty(wspFilterValues) ||
+                        !isEmpty(selectedWSPFilter) ||
                         !isEmpty(msrpFilterValues) ||
                         !isEmpty(stockFilters) ||
                         !isEmpty(daysFullfillFilters)) && (
@@ -564,7 +572,7 @@ function Products() {
                               </div>
                             )}
 
-                            {!isEmpty(wspFilterValues) && (
+                            {!isEmpty(selectedWSPFilter) && (
                               <div className="products_active-filter">
                                 <div className="txt">
                                   <b>WSP:</b> {wspFilterValues?.join(', ')}
@@ -579,10 +587,10 @@ function Products() {
                                 </button>
                               </div>
                             )}
-                            {!isEmpty(msrpFilterValues) && (
+                            {!isEmpty(selectedMSRPFilter) && (
                               <div className="products_active-filter">
                                 <div className="txt">
-                                  <b>MSRP:</b> {msrpFilterValues?.join(', ')}
+                                  <b>MSRP:</b> {selectedMSRPFilter?.join(', ')}
                                 </div>
                                 <button
                                   className="products_active-remove"
@@ -594,11 +602,11 @@ function Products() {
                                 </button>
                               </div>
                             )}
-                            {!isEmpty(stockFilters) && (
+                            {!isEmpty(selectedStockFilters) && (
                               <div className="products_active-filter">
                                 <div className="txt">
                                   <b>Stock:</b>
-                                  {stockFilters?.join(', ')}
+                                  {selectedStockFilters?.join(', ')}
                                 </div>
                                 <button
                                   className="products_active-remove"
@@ -610,11 +618,11 @@ function Products() {
                                 </button>
                               </div>
                             )}
-                            {!isEmpty(daysFullfillFilters) && (
+                            {!isEmpty(selectedDaysToFullfilFilters) && (
                               <div className="products_active-filter">
                                 <div className="txt">
                                   <b>Days to Fulfill:</b>
-                                  {daysFullfillFilters?.join(', ')}
+                                  {selectedDaysToFullfilFilters?.join(', ')}
                                 </div>
                                 <button
                                   className="products_active-remove"
@@ -627,10 +635,10 @@ function Products() {
                               </div>
                             )}
                             {(!isEmpty(tagsValue) ||
-                              !isEmpty(wspFilterValues) ||
-                              !isEmpty(msrpFilterValues) ||
-                              !isEmpty(stockFilters) ||
-                              !isEmpty(daysFullfillFilters)) && (
+                              !isEmpty(selectedWSPFilter) ||
+                              !isEmpty(selectedMSRPFilter) ||
+                              !isEmpty(selectedStockFilters) ||
+                              !isEmpty(selectedDaysToFullfilFilters)) && (
                               <button
                                 className="products_active-remove-all"
                                 onClick={() => handleClearFilter()}
@@ -650,7 +658,7 @@ function Products() {
                           }}
                         >
                           {/* <!--product card--> */}
-                          {data?.length === 0 && (
+                          {rows && rows?.length === 0 && (
                             <tr>
                               <td className="no-data-cell" colSpan="10">
                                 <div className="product-card-empty_body">
@@ -666,169 +674,181 @@ function Products() {
                               </td>
                             </tr>
                           )}
-                          {(productfilterData?.length !== 0
-                            ? productfilterData
-                            : data
-                          ).map((item, index) => {
-                            return (
-                              <div key={index} className="pc">
-                                <div className="pc_main">
-                                  <div className="pc_head">
-                                    <div className="pc_head-item">
-                                      <span
-                                        className={`status-pill ${
-                                          item?.status === 'Not Connected' &&
-                                          'pill_not_connected'
-                                        } ${
-                                          item?.status === 'Connected' &&
-                                          'pill_connected'
-                                        } ${
-                                          item?.status === 'Pending' &&
-                                          'pill_pending'
-                                        } ${
-                                          item?.status === 'Declined' &&
-                                          'pill_declined'
-                                        }`}
-                                      >
-                                        {item?.status}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="pc_body">
-                                    <div className="pc_slider">
-                                      <div
-                                        href="product-single.html"
-                                        className="swiper-container swiper-initialized swiper-horizontal swiper-pointer-events"
-                                      >
-                                        <div
-                                          className="swiper-wrapper"
-                                          id={`swiper-wrapper-${index}`}
-                                          aria-live="polite"
-                                          style={{
-                                            transform: `translate3d(-${
-                                              206 * imgStates[index]
-                                            }px, 0px, 0px)`,
-                                            transitionDuration: ' 1000ms',
-                                          }}
-                                        >
-                                          {Array(3)
-                                            .fill()
-                                            .map((_, imgIndex) => (
-                                              <div
-                                                key={imgIndex}
-                                                className={`swiper-slide ${
-                                                  imgIndex === imgStates[index]
-                                                    ? 'swiper-slide-active'
-                                                    : ''
-                                                }`}
-                                                role="group"
-                                                aria-label={`${
-                                                  imgIndex + 1
-                                                } / 3`}
-                                                style={{
-                                                  width: '206px',
-                                                }}
-                                              >
-                                                <div className="image">
-                                                  <picture>
-                                                    <img
-                                                      src={item?.retailerProUrl}
-                                                      alt=""
-                                                    />
-                                                  </picture>
-                                                </div>
-                                              </div>
-                                            ))}
-                                        </div>
-                                        <div
-                                          className={`swiper-button-prev ${
-                                            imgStates[index] === 0 &&
-                                            'swiper-button-disabled'
+                          {rows &&
+                            rows?.map((item, index) => {
+                              return (
+                                <div key={index} className="pc">
+                                  <Link to={`/retailer/brand/single-product-details/${item?.id}`}>
+                                  <div className="pc_main">
+                                    <div className="pc_head">
+                                      <div className="pc_head-item">
+                                        <span
+                                          className={`status-pill ${
+                                            getStatus(item) ===
+                                              'Not Connected' &&
+                                            'pill_not_connected'
+                                          } ${
+                                            getStatus(item) === 'Connected' &&
+                                            'pill_connected'
+                                          } ${
+                                            getStatus(item) === 'Pending' &&
+                                            'pill_pending'
+                                          } ${
+                                            getStatus(item) === 'Declined' &&
+                                            'pill_declined'
                                           }`}
-                                          aria-disabled={imgStates[index] === 0}
-                                          onClick={() =>
-                                            handalSwipeLeftImage(index)
-                                          }
                                         >
-                                          <img
-                                            className="icon"
-                                            src={LeftArrow}
-                                          />
-                                        </div>
-                                        <div
-                                          className={`swiper-button-next ${
-                                            imgStates[index] === 2 &&
-                                            'swiper-button-disabled'
-                                          }`}
-                                          aria-disabled={imgStates[index] === 2}
-                                          onClick={() =>
-                                            handalSwipeRightImage(index)
-                                          }
-                                        >
-                                          <img
-                                            className="icon"
-                                            src={RightArrow}
-                                          />
-                                        </div>
-                                        <div className="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
-                                          {Array(3)
-                                            .fill()
-                                            .map((_, bulletIndex) => (
-                                              <span
-                                                key={bulletIndex}
-                                                className={`swiper-pagination-bullet ${
-                                                  imgStates[index] ===
-                                                  bulletIndex
-                                                    ? 'swiper-pagination-bullet-active'
-                                                    : ''
-                                                }`}
-                                                onClick={() =>
-                                                  handleClickBullet(
-                                                    index,
-                                                    bulletIndex
-                                                  )
-                                                }
-                                              ></span>
-                                            ))}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="pc_footer">
-                                    <div className="pc-title">{item.name}</div>
-                                    <div className="pc_price-area">
-                                      <div className="pc_price-item">
-                                        <label>{item.wsp}</label>
-                                        <label className="red-text">
-                                          $ {item.wspPrice}
-                                        </label>
-                                      </div>
-                                      <div className="pc_price-item">
-                                        <label>{item.msrp}</label>
-                                        <label className="black-text">
-                                          $ {item.msrpPrice}
-                                        </label>
-                                      </div>
-                                    </div>
-                                    <div className="pc_brand-item">
-                                      <a href="brand-single.html">
-                                        <img src={item.icon} />
-                                        <span className="brand-name">
-                                          {item.text}
+                                          {getStatus(item)}
                                         </span>
-                                      </a>
+                                      </div>
+                                    </div>
+                                    <div className="pc_body">
+                                      <div className="pc_slider">
+                                        <div
+                                          href="product-single.html"
+                                          className="swiper-container swiper-initialized swiper-horizontal swiper-pointer-events"
+                                        >
+                                          <div
+                                            className="swiper-wrapper"
+                                            id={`swiper-wrapper-${index}`}
+                                            aria-live="polite"
+                                            style={{
+                                              transform: `translate3d(-${
+                                                206 * imgStates[index]
+                                              }px, 0px, 0px)`,
+                                              transitionDuration: ' 1000ms',
+                                            }}
+                                          >
+                                            {item?.product_images.map(
+                                              (_, imgIndex) => (
+                                                <div
+                                                  key={imgIndex}
+                                                  className={`swiper-slide ${
+                                                    imgIndex ===
+                                                    imgStates[index]
+                                                      ? 'swiper-slide-active'
+                                                      : ''
+                                                  }`}
+                                                  role="group"
+                                                  aria-label={`${
+                                                    imgIndex + 1
+                                                  } / 3`}
+                                                  style={{
+                                                    width: '206px',
+                                                  }}
+                                                >
+                                                  <div className="image">
+                                                    <picture>
+                                                      <img
+                                                        src={getImage(item)}
+                                                        alt=""
+                                                      />
+                                                    </picture>
+                                                  </div>
+                                                </div>
+                                              )
+                                            )}
+                                          </div>
+                                          <div
+                                            className={`swiper-button-prev ${
+                                              imgStates[index] === 0 &&
+                                              'swiper-button-disabled'
+                                            }`}
+                                            aria-disabled={
+                                              imgStates[index] === 0
+                                            }
+                                            onClick={() =>
+                                              handalSwipeLeftImage(index)
+                                            }
+                                          >
+                                            <img
+                                              className="icon"
+                                              src={LeftArrow}
+                                            />
+                                          </div>
+                                          <div
+                                            className={`swiper-button-next ${
+                                              imgStates[index] === 2 &&
+                                              'swiper-button-disabled'
+                                            }`}
+                                            aria-disabled={
+                                              imgStates[index] === 2
+                                            }
+                                            onClick={() =>
+                                              handalSwipeRightImage(index)
+                                            }
+                                          >
+                                            <img
+                                              className="icon"
+                                              src={RightArrow}
+                                            />
+                                          </div>
+                                          <div className="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
+                                            {item?.product_images.map(
+                                              (_, bulletIndex) => (
+                                                <span
+                                                  key={bulletIndex}
+                                                  className={`swiper-pagination-bullet ${
+                                                    imgStates[index] ===
+                                                    bulletIndex
+                                                      ? 'swiper-pagination-bullet-active'
+                                                      : ''
+                                                  }`}
+                                                  onClick={() =>
+                                                    handleClickBullet(
+                                                      index,
+                                                      bulletIndex
+                                                    )
+                                                  }
+                                                ></span>
+                                              )
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="pc_footer">
+                                      <div className="pc-title">
+                                        {item?.title}
+                                      </div>
+                                      <div className="pc_price-area">
+                                        <div className="pc_price-item">
+                                          <label>{item.wsp}</label>
+                                          <label className="red-text">
+                                            $ {item.price_wps ?? '0.00'}
+                                          </label>
+                                        </div>
+                                        <div className="pc_price-item">
+                                          <label>{item.msrp}</label>
+                                          <label className="black-text">
+                                            $ {item.price_msrp ?? '0.00'}
+                                          </label>
+                                        </div>
+                                      </div>
+                                      <div className="pc_brand-item">
+                                        <a href="brand-single.html">
+                                          <img src={item.user?.brand_details?.store_logo} />
+                                          <span className="brand-name">
+                                            {item.user?.brand_details?.store_name}
+                                          </span>
+                                        </a>
+                                      </div>
                                     </div>
                                   </div>
+                                  </Link>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
                         </div>
                         {/* <!--products pagination--> */}
                         <div className="pagination_wrap mt-0">
                           <div className="pagination">
                             <div className="pagination_per">
-                              <select name="per" id="per">
+                              <select
+                                name="per"
+                                id="per"
+                                onChange={onItemPerPageChange}
+                              >
                                 <option value="20" selected="">
                                   20
                                 </option>
@@ -841,21 +861,26 @@ function Products() {
                             </div>
                             <div className="pagination_nav">
                               <div className="pagination-title">page</div>
-                              <select name="per" id="per">
-                                <option value="1" selected="">
-                                  1
-                                </option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
+                              <select
+                                name="per"
+                                id="per"
+                                onChange={onPageChange}
+                              >
+                                {getPageNumbers()}
                               </select>
                               <div className="pagination-title">of 2</div>
-                              <button className="pagination-arrow pagination-arrow-prev">
+                              <button
+                                className="pagination-arrow pagination-arrow-prev"
+                                onClick={decrementPageNumber}
+                              >
                                 <div className="icon">
                                   <img className="icon" src={LeftIcon} />
                                 </div>
                               </button>
-                              <button className="pagination-arrow pagination-arrow-next">
+                              <button
+                                className="pagination-arrow pagination-arrow-next"
+                                onClick={incrementPageNumber}
+                              >
                                 <div className="icon">
                                   <img className="icon" src={RightIcon} />
                                 </div>
