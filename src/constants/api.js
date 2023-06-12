@@ -87,5 +87,8 @@ export const RETAILER_CATEGORIES = `${BASE_URL}/general/brand-categories`;
 export const RETAILER_REQUEST_FOR_ACCESS = `${BASE_URL}/brand/retailer-requests`;
 export const CONECTED_RETAILER = `${BASE_URL}/brand/connected-retailers`;
 
+//shopify check update
+export const SHOPIFY_CHECK_UPDATE = `${BASE_URL}/shopify/check-duplicate`;
+
 // export const PRODUCT_TAGS = `${BASE_URL}/brand/product-tags`;
 // export const PRODUCT_CATEGORIES = `${BASE_URL}/brand/product/category/0`;

@@ -10,8 +10,12 @@ import { useEffect } from 'react';
 import Avtar1 from '../../images/shopify_logo_whitebg.jpg';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import DisconnectModal from './DisconnectModal';
+import { ToastContainer } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
 
 export default function BrandSetting() {
+  const location = useLocation();
+  console.log('location----', location);
   const [storeUrl, setStoreUrl] = useState('');
   const [isValideStoreURL, setIsValidStoreUrl] = useState(false);
   const [isStoreConnected, setIsStoreConnected] = useState(false);
@@ -46,6 +50,7 @@ export default function BrandSetting() {
   // alert(storeUrl);
 
   const connectStore = () => {
+    console.log('useDetails.id--', useDetails.id);
     if (storeUrl) {
       dispatch(
         connectShopifyAction({
@@ -225,6 +230,7 @@ export default function BrandSetting() {
         onCancel={onCancelClick}
         onDisconnect={onDisconnectClick}
       />
+      <ToastContainer />
     </>
   );
 }

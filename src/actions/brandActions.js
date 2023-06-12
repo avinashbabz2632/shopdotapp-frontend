@@ -34,38 +34,30 @@ export function connectShopifyAction(formData) {
         user_id: formData.user_id,
       };
 
-      fetch(
+      const response = await axios.post(
+        `${API_END_POINT.SHOPIFY_CHECK_UPDATE}`,
+       {shop: formData.name}
+      );
+
+      if (response && response.data && (response.data.code == 201 || response.data.code == 200)) {
+              fetch(
         `${API_END_POINT.PLATFORM}/shopify-integration?shop=${formData.name}&user_id=${formData.user_id}`,
         {
           redirect: 'manual',
         }
-      )
-        .then((res) => {
+      ).then((res) => {
+        console.log('res----', res);
           if (res.type === 'opaqueredirect') {
             window.location.href = res.url;
           } else {
             return res;
           }
-        })
-        .catch(() => {});
-
-      // const response = await axios.get(
-      //   `${API_END_POINT.PLATFORM}/shopify-integration`,
-      //   {
-      //     params,
-
-      //     headers: {
-      //       'Content-type': 'text/html',
-      //       'Access-Control-Allow-Origin': true,
-      //     },
-      //   }
-      // );
-      //
-      // if (response && response.data && response.data.code == 201) {
-      // } else {
-      //
-      //   toast.error('Something went worng');
-      // }
+        }).catch(() => {});
+      } else if (response && response.code == 400) {
+        toast.error(response?.errors);
+      } else {
+        toast.error('Something went worng');
+      }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.location) {
         window.location = err.response.data.location;
