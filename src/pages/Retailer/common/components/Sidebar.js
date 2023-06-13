@@ -34,7 +34,7 @@ export default function RetailerSidebar() {
                     data-link="Account"
                     className={({ isActive }) =>
                       `${isActive ? 'active' : ''} tab-links ${
-                        profileCompleted.profile ? 'checked' : 'required'
+                        profileCompleted?.profile ? 'checked' : 'required'
                       }`
                     }
                   >
@@ -51,7 +51,7 @@ export default function RetailerSidebar() {
                     data-link="Billing"
                     className={({ isActive }) =>
                       `${isActive ? 'active' : ''} tab-links ${
-                        profileCompleted.paid ? 'checked' : 'required'
+                        profileCompleted?.paid ? 'checked' : 'required'
                       }`
                     }
                   >
