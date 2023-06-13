@@ -162,8 +162,7 @@ function BrandHeader(props) {
                   <div className="dropdown">
                     <div className="dropdown_header">
                       <div className="dropdown_header-chevron">
-                        <NavLink
-                          to="/brand/connected-retailer"
+                        <span
                           className={({ isActive }) =>
                             `${isActive ? 'active' : ''} menu_link`
                           }
@@ -174,7 +173,7 @@ function BrandHeader(props) {
                               <img src={ArrowDown} alt="" />
                             </span>
                           </div> */}
-                        </NavLink>
+                        </span>
                       </div>
                     </div>
                     <div className="dropdown_body">
