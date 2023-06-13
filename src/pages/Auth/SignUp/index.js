@@ -78,8 +78,8 @@ function SignUp() {
   useEffect(() => {
     if (success) {
       dispatch(clearAuthReducer());
+      reset();
       navigate('/verify-email');
-      // navigate('/personalize');
     }
   }, [success]);
 
@@ -91,8 +91,6 @@ function SignUp() {
         referal_code: params?.referralcode,
       })
     );
-    navigate('/verify-email');
-    reset();
   };
 
   return (
