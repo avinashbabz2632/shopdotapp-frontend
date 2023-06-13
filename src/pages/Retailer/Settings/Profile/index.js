@@ -365,15 +365,16 @@ export default function RetailerProfile() {
     // reset();
   };
   const handleChange = (retailerValueId) => {
-    console.log(selectedRetailerValues);
-    if(selectedRetailerValues.includes(retailerValueId)){
-      const index = selectedRetailerValues.indexOf(retailerValueId);
-      if (index > -1) { // only splice array when item is found
-        selectedRetailerValues.splice(index, 1); // 2nd parameter means remove one item only
-        setSelectedRetailerValues(selectedRetailerValues)
+    const newData = JSON.parse(JSON.stringify(selectedRetailerValues));
+    if (newData.includes(retailerValueId)) {
+      const index = newData.indexOf(retailerValueId);
+      if (index > -1) {
+        // only splice array when item is found
+        newData.splice(index, 1); // 2nd parameter means remove one item only
+        setSelectedRetailerValues(newData);
       }
     }else{
-      setSelectedRetailerValues([...selectedRetailerValues, retailerValueId])
+      setSelectedRetailerValues([...newData, retailerValueId]);
     }
   }
   return (
@@ -784,7 +785,7 @@ export default function RetailerProfile() {
                                         <input
                                           type="checkbox"
                                           name={'retialerValue'}
-                                          checked={selectedRetailerValues.includes(val.id) ? "checked" : null}
+                                          checked={selectedRetailerValues.includes(val.id) ? true : false}
                                           onClick={()=>handleChange(val.id)}
                                           // defaultChecked={true}
                                           value={val.id}
