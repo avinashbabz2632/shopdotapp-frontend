@@ -350,12 +350,12 @@ export default function RetailerProfile() {
       retailer_categories: [data.retailerCategory.value],
       retailer_values: getRetailerValues(data),
       address1: data.addressLine1,
-      address2: data.addressLine2 ?? null,
+      address2: data.addressLine2 ? data.addressLine2 : null,
       country: data.countryAddress.label,
       state: data.stateAddress.label,
       city: data.city,
       zip: data.zipcode,
-      retailer_promo: data.link ?? null,
+      retailer_promo: data.link ? data.link : null,
       store_mailing_address: 'test address',
       retailer_promo: data.retailer_promo ? data.retailer_promo : null
     };
@@ -368,15 +368,16 @@ export default function RetailerProfile() {
     // reset();
   };
   const handleChange = (retailerValueId) => {
-    console.log(selectedRetailerValues);
-    if(selectedRetailerValues.includes(retailerValueId)){
-      const index = selectedRetailerValues.indexOf(retailerValueId);
-      if (index > -1) { // only splice array when item is found
-        selectedRetailerValues.splice(index, 1); // 2nd parameter means remove one item only
-        setSelectedRetailerValues(selectedRetailerValues)
-      }
+    const newData = JSON.parse(JSON.stringify(selectedRetailerValues));
+      if (newData.includes(retailerValueId)) {
+      const index = newData.indexOf(retailerValueId);
+      if (index > -1) {
+        // only splice array when item is found
+        newData.splice(index, 1); // 2nd parameter means remove one item only
+        setSelectedRetailerValues(newData);
+       }
     }else{
-      setSelectedRetailerValues([...selectedRetailerValues, retailerValueId])
+      setSelectedRetailerValues([...newData, retailerValueId]);
     }
   }
   return (
@@ -787,7 +788,7 @@ export default function RetailerProfile() {
                                         <input
                                           type="checkbox"
                                           name={'retialerValue'}
-                                          checked={selectedRetailerValues.includes(val.id) ? "checked" : null}
+                                          checked={selectedRetailerValues.includes(val.id) ? true : false}
                                           onClick={()=>handleChange(val.id)}
                                           // defaultChecked={true}
                                           value={val.id}
