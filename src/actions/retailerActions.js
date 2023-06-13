@@ -65,12 +65,6 @@ export function updateRetailerProfileAction(formData, isCreate) {
       ) {
         toast.success(response?.data?.message);
         dispatch(setRetailerProfileSaveResult(response.data.data));
-        dispatch(
-          setBrandProfileDetails({
-            type: types.BRAND_PROFILE,
-            data: response.data.data,
-          })
-        );
       } else {
         toast.error('Something went worng');
       }
