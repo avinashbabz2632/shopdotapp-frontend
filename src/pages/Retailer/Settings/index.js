@@ -6,6 +6,9 @@ import '../Style/retail.dev.scss';
 import RetailerHeader from '../common/components/RetailerHeader';
 import Loader from '../../../components/Loader';
 import RetailerSidebar from '../common/components/Sidebar';
+import { getBillingAction } from '../../../actions/retailerActions';
+import { setRetilerProfileCompleted } from '../../../redux/Retailer/Profile/retailerProfileSlice';
+import { useDispatch } from 'react-redux';
 
 const RetailerProfile = lazy(() => import('./Profile'));
 const RetailerBilling = lazy(() => import('./Billing'));
@@ -16,6 +19,25 @@ const RetailerNotification = lazy(() => import('./Notifications'));
 export default function Retailer() {
   const { activeTab } = useParams();
   const [tab, setTab] = useState('');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    initalCall();
+  }, []);
+
+  const initalCall = async () => {
+    const response = await getBillingAction();
+    if (response?.status === 200) {
+      if (response?.data?.data?.length) {
+        dispatch(
+          setRetilerProfileCompleted({
+            paid: true,
+          })
+        );
+      }
+    } else {
+    }
+  };
 
   useEffect(() => {
     if (activeTab == 'profile') {

@@ -193,6 +193,7 @@ export default function RetailerProfile() {
         retailerCategory: getDefaultValueOfCategoryField(),
         retialerValue: valuesArray,
         aboutTheRetailer: brandProfileDetails?.retailer_details?.retailer_story,
+        link: brandProfileDetails?.retailer_details?.retailer_promo,
         countryAddress: getDefaultValueOfCountryField(),
         stateAddress: getDefaultValueOfStateField(),
       });
@@ -284,6 +285,7 @@ export default function RetailerProfile() {
       retailerCategory: getDefaultValueOfCategoryField(),
       retialerValue: '',
       aboutTheRetailer: brandProfileDetails?.retailer_details?.retailer_story,
+      link: brandProfileDetails?.retailer_details?.retailer_promo,
       countryAddress: getDefaultValueOfCountryField(),
       stateAddress: getDefaultValueOfStateField(),
       retailer_promo: brandProfileDetails?.retailer_details?.retailer_promo,
@@ -348,11 +350,12 @@ export default function RetailerProfile() {
       retailer_categories: [data.retailerCategory.value],
       retailer_values: getRetailerValues(data),
       address1: data.addressLine1,
-      address2: data.addressLine2 ? data.addressLine2 : null,
+      address2: data.addressLine2 ?? null,
       country: data.countryAddress.label,
       state: data.stateAddress.label,
       city: data.city,
       zip: data.zipcode,
+      retailer_promo: data.link ?? null,
       store_mailing_address: 'test address',
       retailer_promo: data.retailer_promo ? data.retailer_promo : null
     };

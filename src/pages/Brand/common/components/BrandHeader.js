@@ -20,7 +20,11 @@ import { createBrowserHistory } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { AuthApiService } from '../../../../services/apis/authApis';
-import { clearAuthLogout, logOut } from '../../../../redux/auth/authSlice';
+import {
+  clearAuthLogout,
+  logOut,
+  setStatusIndicator,
+} from '../../../../redux/auth/authSlice';
 import { clearUserLogout } from '../../../../redux/user/userSlice';
 import { clearPaidLogout } from '../../../../redux/Brand/GettingPaid2/gettingPaidSlice';
 import { clearOrderLogout } from '../../../../redux/Brand/Orders/orderSlice';
@@ -62,6 +66,14 @@ function BrandHeader(props) {
       dispatch(clearShippingLogout());
       dispatch(clearPreferenceLogout());
       dispatch({ type: 'LOGOUT' });
+      dispatch(
+        setStatusIndicator({
+          billing: false,
+          products: false,
+          store: false,
+          onboarding: false,
+        })
+      );
       history.replace('/login');
       navigate('/login');
     }
@@ -89,6 +101,11 @@ function BrandHeader(props) {
     }
     return false;
   };
+  console.log(
+    getStatusIndicatorType(),
+    'getStatusIndicatorType',
+    statusIndicator
+  );
   return (
     <>
       <header className="header mp-header">
@@ -165,7 +182,11 @@ function BrandHeader(props) {
                         <ul>
                           <li
                             className={`sublink ${subTab == 1 ? '' : 'link'}`}
-                            onClick={() => props.changeSubTab(1)}
+                            onClick={() =>
+                              props.changeSubTab
+                                ? props.changeSubTab(1)
+                                : () => {}
+                            }
                           >
                             <Link to="/brand/connected-retailer">
                               Connected Retailers
@@ -175,7 +196,11 @@ function BrandHeader(props) {
                             className={`sublink ${
                               subTab == 2 ? 'active' : 'link'
                             }`}
-                            onClick={() => props.changeSubTab(2)}
+                            onClick={() =>
+                              props.changeSubTab
+                                ? props.changeSubTab(2)
+                                : () => {}
+                            }
                           >
                             <Link to="/brand/request-access">
                               Requests for Access

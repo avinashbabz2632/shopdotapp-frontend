@@ -19,7 +19,15 @@ import '../../Style/brand.dev.scss';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
-import { brandAsCustomerAction } from '../../../../actions/brandActions';
+import {
+  brandAsCustomerAction,
+  brandBankDetailsAction,
+  getBrandBankDetailsAction,
+  getBrandProfileAction,
+} from '../../../../actions/brandActions';
+import { ToastContainer } from 'react-toastify';
+import { setProfileCompleted } from '../../../../redux/Brand/Profile/brandProfileSlice';
+import { gettingPaidResetToInitial } from '../../../../redux/Brand/GettingPaid2/gettingPaidSlice';
 
 export default function Summary({
   handleChangeTab,
@@ -50,7 +58,7 @@ export default function Summary({
     handleChangeTab(tabCode);
     setIsEdited(true);
   };
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log('representativeDetails', representativeDetails);
     let representativeArray = [];
     map(representativeDetails, (rep, key) => {
@@ -68,7 +76,8 @@ export default function Summary({
             city: rep?.city,
             state: rep?.stateAddress.value,
             zip: rep?.zipcode,
-            isPrimary: key === 0,
+            // isPrimary: key === 0,
+            isPrimary: true,
           },
         ],
         actAsAuthorizedSignatory: key === 0,
@@ -76,14 +85,35 @@ export default function Summary({
           type: rep?.secondaryIdentificationType.value,
           id: rep?.idNumber,
           stateOfIssuance: rep?.soInsurence?.value,
+          countryOfIssuance: 'US',
           //   "countryOfIssuance": "US"
         },
         isUSCitizen: rep?.UScitizen === 'yes',
         businessDetails: {
           title: 'Secretary',
-          ownershipPercentage: rep?.percentageOwnership,
+          ownershipPercentage:
+            rep?.percentageOwnership !== ''
+              ? businessDetails?.businessCategory?.value ==
+                  'SINGLE_MEMBER_LLC' ||
+                businessDetails?.businessCategory?.value == 'SOLE_PROPRIETOR'
+                ? 100
+                : paidPreferance.publiclyTraded === 'yes'
+                ? 0
+                : rep?.percentageOwnership
+              : 0,
         },
       };
+
+      if (data.secondaryIdentification.type === 'ALIEN_REGISTRATION_CARD') {
+        delete data.secondaryIdentification.stateOfIssuance;
+      }
+      if (data.secondaryIdentification.type === 'DRIVER_LICENSE') {
+        delete data.secondaryIdentification.countryOfIssuance;
+      }
+      if (data.secondaryIdentification.type === 'PASSPORT') {
+        delete data.secondaryIdentification.stateOfIssuance;
+      }
+
       representativeArray.push(data);
     });
 
@@ -99,7 +129,7 @@ export default function Summary({
       date_of_incorporation: moment(
         businessDetails?.dateOfIncorportation
       ).format('MM/DD/YYYY'),
-      taxIdType: businessDetails?.textIdType ?? 'ein',
+      taxIdType: businessDetails?.textIdType?.value ?? 'ein',
       prior_bankruptcy: businessDetails?.bankruptcy === 'true' ? true : false,
       date_of_discharge: moment(businessDetails?.dateOfDischarge).format(
         'MM/DD/YYYY'
@@ -113,12 +143,13 @@ export default function Summary({
       brand_user_id: useDetails.id,
       account_type: 'SAVINGS',
       purpose: 'CONSUMER',
-      countryOfIssuance: businessDetails?.countryAddress?.value,
+      countryOfIssuance: businessDetails?.countryAddress?.label,
       C_Corp_publicly_traded_or_non_profit:
-        paidPreferance.publiclyTraded === 'yes' ? 'YES' : 'NO',
-      business_owner: paidPreferance.authorizedSign === 'yes' ? 'YES' : 'NO',
+        paidPreferance.publiclyTraded === 'yes' ? 'Yes' : 'No',
+      business_owner: paidPreferance.authorizedSign === 'yes' ? 'Yes' : 'No',
       representatives: representativeArray,
     };
+    console.log(bankDetails, 'bankDetails');
 
     const bankFormData = {
       account_holder_name: bankDetails.accountHolderName,
@@ -141,7 +172,31 @@ export default function Summary({
       delete formData.ssn;
     }
 
-    dispatch(brandAsCustomerAction(formData, bankFormData));
+    const res = await brandAsCustomerAction(formData, bankFormData);
+    if (res.isSuccess) {
+      const res2 = await brandBankDetailsAction(
+        {
+          ...bankFormData,
+          customer_id: Number(res.data.customer_id),
+        },
+        false,
+        null,
+        formData.brand_user_id
+      );
+      if (res2.isSuccess) {
+        setIsCompleteApplication(true);
+        dispatch(
+          getBrandBankDetailsAction(
+            Number(res.data.customer_id),
+            Number(response.data.data.external_account_id)
+          )
+        );
+        dispatch(getBrandProfileAction(useDetails.id));
+        dispatch(setProfileCompleted({ paid: true }));
+        dispatch(gettingPaidResetToInitial());
+      }
+    }
+
     // reset();
     // setIsCompleteApplication(true);
   };
@@ -484,6 +539,7 @@ export default function Summary({
           </div>
         </div>
       </form>
+      <ToastContainer />
     </>
   );
 }

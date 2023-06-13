@@ -482,7 +482,8 @@ export default function BrandProfile() {
                       </div>
                       <div className="form-input mb-4">
                         <label className="form-label">
-                          Add a Youtube or Vimeo video link. <span className="asterisk-red">*</span>
+                          Add a Youtube or Vimeo video link.{' '}
+                          <span className="asterisk-red">*</span>
                         </label>
                         <input
                           type="text"

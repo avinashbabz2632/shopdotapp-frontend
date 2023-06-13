@@ -392,9 +392,9 @@ export default function Shipping() {
                             </div>
                           </label>
                           <div className="input-wrapper">
-                            <div className="prefix">$</div>
+                            {/* <div className="prefix">$</div> */}
                             <input
-                              className="currency-input mb-0"
+                              className="form-control mb-0"
                               name="shippingfee"
                               {...register('shippingfee', {
                                 required: true,
@@ -438,9 +438,9 @@ export default function Shipping() {
                             </div>
                           </label>
                           <div className="input-wrapper">
-                            <div className="prefix">$</div>
+                            {/* <div className="prefix">$</div> */}
                             <input
-                              className="currency-input mb-0"
+                              className="form-control mb-0"
                               name="incrementalfee"
                               {...register('incrementalfee', {
                                 required: true,

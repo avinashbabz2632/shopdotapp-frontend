@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import RetailerHeader from '../common/components/RetailerHeader';
 import SideBar from './SideBar';
 import close from '../.././Retailer/images/icons/icon-close.png';
@@ -10,76 +10,92 @@ import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty } from 'lodash';
 import searchIcon from '../../Brand/images/icons/icon-search.svg';
 import closeIcon from '../../Brand/images/icons/icon-close.svg';
-import useWindowSize from '../../../hooks/useWindowSize';
-// import { selectProductFilter } from '../../../redux/Retailer/Products/RetailerProductsSelector';
-// import {
-//     daysFullfillFilterClear,
-//     msrpFilterClear,
-//     retailerfilterByBrandClear,
-//     statusViseClear,
-//     stockFilterClear,
-//     wspFilterClear,
-// } from '../../../redux/Retailer/Products/RetailerProductsSlice';
-// import { setProductActiveValue } from '../../../redux/Retailer/Brand/RetailerBrandSelector';
 import BabyAndKids from '../common/BabyAndKids';
 import { Link } from 'react-router-dom';
 import { getRetailerProductsAction } from '../../../actions/retailerActions';
 import { selectRetailerProducts } from '../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
-import { selectBrandFilters } from '../../../redux/Brand/Retailer/retailerSelector';
+import {
+  productSearchQuery,
+  selectLimit,
+  selectOffset,
+  selectSelectedBrandFilters,
+  selectSelectedBrandStatusFilters,
+  selectSelectedDaysToFullfillFilters,
+  selectSelectedMSRPFilters,
+  selectSelectedStockFilters,
+  selectSelectedWSPFilters,
+} from '../../../redux/Brand/Retailer/retailerSelector';
+import {
+  setLimit,
+  setOffset,
+  setProductSearchQuery,
+  setSelectedBrandFilters,
+  setSelectedBrandStatusFilters,
+  setSelectedDaysToFullfilFilters,
+  setSelectedMSRPFilter,
+  setSelectedStockFilters,
+  setSelectedWSPFilter,
+} from '../../../redux/Brand/Retailer/retailerSlice';
 
 function Products() {
-  const windowSize = useWindowSize();
   const dispatch = useDispatch();
   const productData = useSelector(selectRetailerProducts);
-  const ProductFilters = []; //useSelector(selectProductFilter);
-  const setActiveOpen = false; //useSelector(setProductActiveValue);
-  const [data, setData] = useState(retailerProductData);
-  const [dataClone, setDataClone] = useState(retailerProductData);
-  const [searchVal, setSearchVal] = useState('');
-  // const [dynamicHeight, setDynamicHeight] = useState(0);
-  const [filterByBrand, setFilterByBrand] = useState([]);
-  const [statusViseFilter, setStatusViseFilter] = useState([]);
-  const [wspFilter, setWspFilter] = useState([]);
-  const [msrpFilter, setMsrpFilter] = useState([]);
-  const [stockFilter, setStockFilter] = useState([]);
-  const [daysFullfillFilter, setDaysFullfillFilter] = useState([]);
-  const [productfilterData, setProductFilterData] = useState([]);
-  const [productFilterClone, setProductFilterClone] = useState([]);
+  const productSearchValue = useSelector(productSearchQuery);
+
+  const selectedBrandFilters = useSelector(selectSelectedBrandFilters);
+  const selectedBrandStatusFilters = useSelector(
+    selectSelectedBrandStatusFilters
+  );
+  const selectedDaysToFullfilFilters = useSelector(
+    selectSelectedDaysToFullfillFilters
+  );
+  const selectedStockFilters = useSelector(selectSelectedStockFilters);
+  const selectedWSPFilter = useSelector(selectSelectedWSPFilters);
+  const selectedMSRPFilter = useSelector(selectSelectedMSRPFilters);
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
   const [imgStates, setImgStates] = useState(
     Array(retailerProductData.length).fill(0)
   );
-  const [limit, setLimit] = useState(10);
-  const [offset, setOffset] = useState(0);
+  const pageLimit = useSelector(selectLimit);
+  const offset = useSelector(selectOffset);
 
   const { count, rows } = productData;
+
+  let pageCount = 0;
+  if (rows && rows.length > 0) {
+    pageCount = Math.ceil(count / pageLimit);
+  }
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    for (let index = 1; index <= pageCount; index++) {
+      const selected = offset + 1 === index;
+      const optionItem = <option key={`${index}`} value={index} selected={selected}>
+        {index}
+      </option> 
+      pageNumbers.push(optionItem);
+    }
+    return pageNumbers;
+  }
 
   const fetchRetailerProducts = () => {
     const body = {
       paging: {
-        limit: limit,
+        limit: pageLimit,
         offset: offset,
       },
-      query: {
-        search: searchVal ? searchVal : 'full',
-      },
+      query: {},
       filter: [],
     };
-    // if (searchVal !== '') {
-    //   body.query = {
-    //     search: searchVal,
-    //   };
-    // }
     dispatch(getRetailerProductsAction(body));
   };
 
   useEffect(() => {
+    handleClearFilter();
+    dispatch(setLimit(10));
+    dispatch(setOffset(0));
     fetchRetailerProducts();
   }, []);
-
-  useEffect(() => {
-    // setSetActiveOpenVal(setActiveOpen);
-  }, [setActiveOpen]);
 
   const handalSwipeRightImage = (index) => {
     setImgStates((prevStates) => {
@@ -106,174 +122,87 @@ function Products() {
   };
 
   const handleClearFilter = () => {
-    // setFilterByBrand([]);
-    // setStatusViseFilter([]);
-    // setWspFilter([]);
-    // setMsrpFilter([]);
-    // setStockFilter([]);
-    // setDaysFullfillFilter([]);
-    // dispatch(retailerfilterByBrandClear());
-    // dispatch(statusViseClear());
-    // dispatch(wspFilterClear());
-    // dispatch(msrpFilterClear());
-    // dispatch(stockFilterClear());
-    // dispatch(daysFullfillFilterClear());
+    dispatch(setSelectedBrandFilters([]));
+    dispatch(setSelectedBrandStatusFilters([]));
+    dispatch(setSelectedDaysToFullfilFilters([]));
+    dispatch(setSelectedStockFilters([]));
+    dispatch(setSelectedWSPFilter([]));
+    dispatch(setSelectedMSRPFilter([]));
   };
 
-  useEffect(() => {
-    // handleClearFilter();
-  }, []);
-
-  useEffect(() => {
-    // setFilterByBrand(ProductFilters?.filterByBrand);
-    // setStatusViseFilter(ProductFilters?.statusViseFilter);
-    // setWspFilter(ProductFilters?.wspFilter);
-    // setMsrpFilter(ProductFilters?.msrpFilter);
-    // setStockFilter(ProductFilters?.stockFilter);
-    // setDaysFullfillFilter(ProductFilters?.daysFullfillFilter);
-    // const productArray = [
-    //   'filterByBrand',
-    //   'statusViseFilter',
-    //   'wspFilter',
-    //   'msrpFilter',
-    //   'stockFilter',
-    //   'daysFullfillFilter',
-    // ];
-    // const retailerProductData = [];
-    // productArray.forEach((e) => {
-    //   if (e === 'filterByBrand') {
-    //     ProductFilters.filterByBrand?.map((ele) => {
-    //       data.map((e) => {
-    //         e.brandValues === ele && retailerProductData.push(e);
-    //       });
-    //       setProductFilterData(retailerProductData);
-    //       setProductFilterClone(retailerProductData);
-    //     });
-    //   }
-    //   if (e === 'statusViseFilter') {
-    //     ProductFilters.statusViseFilter?.map((ele) => {
-    //       data.map((e) => {
-    //         e.status === ele && retailerProductData.push(e);
-    //       });
-    //       setProductFilterData(retailerProductData);
-    //       setProductFilterClone(retailerProductData);
-    //     });
-    //   }
-    //   if (e === 'wspFilter') {
-    //     ProductFilters.wspFilter?.map((ele) => {
-    //       data.map((e) => {
-    //         e.brandValues === ele && retailerProductData.push(e);
-    //       });
-    //       setProductFilterData(retailerProductData);
-    //       setProductFilterClone(retailerProductData);
-    //     });
-    //   }
-    //   if (e === 'msrpFilter') {
-    //     ProductFilters.msrpFilter?.map((ele) => {
-    //       data.map((e) => {
-    //         e.brandValues === ele && retailerProductData.push(e);
-    //       });
-    //       setProductFilterData(retailerProductData);
-    //       setProductFilterClone(retailerProductData);
-    //     });
-    //   }
-    //   if (e === 'stockFilter') {
-    //     ProductFilters.stockFilter?.map((ele) => {
-    //       data.map((e) => {
-    //         e.brandValues === ele && retailerProductData.push(e);
-    //       });
-    //       setProductFilterData(retailerProductData);
-    //       setProductFilterClone(retailerProductData);
-    //     });
-    //   }
-    //   if (e === 'daysFullfillFilter') {
-    //     ProductFilters.daysFullfillFilter?.map((ele) => {
-    //       data.map((e) => {
-    //         e.brandValues === ele && retailerProductData.push(e);
-    //       });
-    //       setProductFilterData(retailerProductData);
-    //       setProductFilterClone(retailerProductData);
-    //     });
-    //   }
-    // });
-  }, [ProductFilters]);
-
   const ProductSearchBar = (e) => {
-    const searchQuery = e.target.value?.toLowerCase();
-    if (searchQuery) {
-      const searchWords = searchQuery.split(' ');
-      const searchValue = dataClone.filter((ele) => {
-        return searchWords.every((word) => {
-          return ele?.name?.toLowerCase().includes(word);
-        });
-      });
-      setData(searchValue);
-      setSearchVal(searchQuery);
-    } else {
-      setData(dataClone);
-      setSearchVal('');
-    }
-    if (searchQuery) {
-      const searchWords = searchQuery.split(' ');
-      const searchValue = productFilterClone.filter((ele) => {
-        return searchWords.every((word) => {
-          return ele?.name?.toLowerCase().includes(word);
-        });
-      });
-      setProductFilterData(searchValue);
-      setSearchVal(searchQuery);
-    } else {
-      setProductFilterData(productFilterClone);
-      setSearchVal('');
-    }
+    const searchQuery = e.target.value;
+    dispatch(setProductSearchQuery(searchQuery));
   };
   const clearProductFilter = (e) => {
     if (e === 'filterByBrand') {
-      // setFilterByBrand([]);
-      // dispatch(retailerfilterByBrandClear());
+      dispatch(setSelectedBrandFilters([]));
     } else if (e === 'statusViseFilter') {
-      // setStatusViseFilter([]);
-      // dispatch(statusViseClear());
+      dispatch(setSelectedBrandStatusFilters([]));
     } else if (e === 'wspFilter') {
-      // setWspFilter([]);
-      // dispatch(wspFilterClear());
+      dispatch(setSelectedWSPFilter([]));
     } else if (e === 'msrpFilter') {
-      // setMsrpFilter([]);
-      // dispatch(msrpFilterClear());
+      dispatch(setSelectedMSRPFilter([]));
     } else if (e === 'stockFilter') {
-      // setStockFilter([]);
-      // dispatch(stockFilterClear());
+      dispatch(setSelectedStockFilters([]));
     } else if (e === 'daysFullfillFilter') {
-      // setDaysFullfillFilter([]);
-      // dispatch(daysFullfillFilterClear());
+      dispatch(setSelectedDaysToFullfilFilters([]));
     }
   };
 
   const getStatus = (item) => {
-    let status = 'Connected';
-    switch (item.status) {
-      case '1':
+    const { user } = item || {};
+    const { invitees, inviters } = user || {};
+    const isNotConnected = invitees.length === 0 && inviters.length === 0;
+    let status;
+    if (isNotConnected) {
+      status = 'Not Connected';
+    } else if (invitees.length > 0) {
+      const obj = invitees[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
         status = 'Connected';
-        break;
-      case '0':
-        status = 'Not Connected';
-        break;
-      case '0':
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
         status = 'Pending';
-        break;
-      default:
-        break;
+      }
+    } else if (inviters.length > 0) {
+      const obj = inviters[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
+        status = 'Connected';
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
+        status = 'Pending';
+      }
     }
     return status;
   };
 
   const getImage = (item) => {
-      let imgUrl;
-      const {product_images} = item || {};
-      if(product_images && product_images.length > 0) {
-          imgUrl = product_images[0]?.src;
-      }
-      return imgUrl;
+    let imgUrl;
+    const { product_images } = item || {};
+    if (product_images && product_images.length > 0) {
+      imgUrl = product_images[0]?.src;
+    }
+    return imgUrl;
+  };
+
+  const onItemPerPageChange = (e) => {
+    dispatch(setLimit(parseInt(e.target.value)));
+    dispatch(setOffset(0));
+  };
+
+  const onPageChange = (e) => {
+    dispatch(setOffset(e.target.value - 1));
+  };
+
+  const incrementPageNumber = () => {
+    let page = offset + 1;
+    if (page < pageCount) {
+      dispatch(setOffset(page));
+    }
+  };
+  const decrementPageNumber = () => {
+    if (offset > 0) {
+      dispatch(setOffset(offset - 1));
+    }
   };
 
   return (
@@ -291,9 +220,7 @@ function Products() {
                   <div className="products_head-content">
                     <div className="title">
                       <h1>Products</h1>
-                      <div className="number">
-                        {rows?.length}
-                      </div>
+                      <div className="number">{count}</div>
                     </div>
                     <div className="products_head-search">
                       <form action="#" className="search_form">
@@ -301,11 +228,11 @@ function Products() {
                           <input
                             type="text"
                             placeholder="Search product"
-                            value={searchVal}
+                            value={productSearchValue}
                             onChange={(e) => ProductSearchBar(e)}
                           />
                         </div>
-                        {searchVal?.length !== 0 ? (
+                        {productSearchValue?.length !== 0 ? (
                           <>
                             <div
                               className="close_icon_search"
@@ -330,18 +257,18 @@ function Products() {
                     </div>
                   </div>
                 </div>
-                {(!isEmpty(filterByBrand) ||
-                  !isEmpty(statusViseFilter) ||
-                  !isEmpty(wspFilter) ||
-                  !isEmpty(msrpFilter) ||
-                  !isEmpty(stockFilter) ||
-                  !isEmpty(daysFullfillFilter)) && (
+                {(!isEmpty(selectedBrandFilters) ||
+                  !isEmpty(selectedBrandStatusFilters) ||
+                  !isEmpty(selectedWSPFilter) ||
+                  !isEmpty(selectedMSRPFilter) ||
+                  !isEmpty(selectedStockFilters) ||
+                  !isEmpty(selectedDaysToFullfilFilters)) && (
                   <div className="products_mid">
                     <div className="products_active-filters mb-0">
-                      {!isEmpty(filterByBrand) && (
+                      {!isEmpty(selectedBrandFilters) && (
                         <div className="products_active-filter">
                           <div className="txt">
-                            <b>Brand:</b> {filterByBrand?.join(', ')}
+                            <b>Brand:</b> {selectedBrandFilters?.map(el => el.brand_details.store_name).join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -351,10 +278,10 @@ function Products() {
                           </button>
                         </div>
                       )}
-                      {!isEmpty(statusViseFilter) && (
+                      {!isEmpty(selectedBrandStatusFilters) && (
                         <div className="products_active-filter">
                           <div className="txt">
-                            <b>BrandStatus:</b> {statusViseFilter?.join(', ')}
+                            <b>BrandStatus:</b> {selectedBrandStatusFilters?.map(el => el.name).join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -366,10 +293,10 @@ function Products() {
                           </button>
                         </div>
                       )}
-                      {!isEmpty(wspFilter) && (
+                      {!isEmpty(selectedWSPFilter) && (
                         <div className="products_active-filter">
                           <div className="txt">
-                            <b>WSP:</b> {wspFilter?.join(', ')}
+                            <b>WSP:</b> {selectedWSPFilter?.join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -379,10 +306,10 @@ function Products() {
                           </button>
                         </div>
                       )}
-                      {!isEmpty(msrpFilter) && (
+                      {!isEmpty(selectedMSRPFilter) && (
                         <div className="products_active-filter">
                           <div className="txt">
-                            <b>MSRP:</b> {msrpFilter?.join(', ')}
+                            <b>MSRP:</b> {selectedMSRPFilter?.join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -392,11 +319,11 @@ function Products() {
                           </button>
                         </div>
                       )}
-                      {!isEmpty(stockFilter) && (
+                      {!isEmpty(selectedStockFilters) && (
                         <div className="products_active-filter">
                           <div className="txt">
                             <b>Stock:</b>
-                            {stockFilter?.join(', ')}
+                            {selectedStockFilters?.join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -406,11 +333,11 @@ function Products() {
                           </button>
                         </div>
                       )}
-                      {!isEmpty(daysFullfillFilter) && (
+                      {!isEmpty(selectedDaysToFullfilFilters) && (
                         <div className="products_active-filter">
                           <div className="txt">
                             <b>Days to Fulfill:</b>
-                            {daysFullfillFilter?.join(', ')}
+                            {selectedDaysToFullfilFilters?.join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -422,12 +349,12 @@ function Products() {
                           </button>
                         </div>
                       )}
-                      {(!isEmpty(filterByBrand) ||
-                        !isEmpty(statusViseFilter) ||
-                        !isEmpty(wspFilter) ||
-                        !isEmpty(msrpFilter) ||
-                        !isEmpty(stockFilter) ||
-                        !isEmpty(daysFullfillFilter)) && (
+                      {(!isEmpty(selectedBrandFilters) ||
+                        !isEmpty(selectedBrandStatusFilters) ||
+                        !isEmpty(selectedWSPFilter) ||
+                        !isEmpty(selectedMSRPFilter) ||
+                        !isEmpty(selectedStockFilters) ||
+                        !isEmpty(selectedDaysToFullfilFilters)) && (
                         <button
                           className="products_active-remove-all"
                           onClick={() => handleClearFilter()}
@@ -446,7 +373,7 @@ function Products() {
                       paddingBottom: '80px',
                     }}
                   >
-                    {data?.length === 0 && (
+                    {rows && rows?.length === 0 && (
                       <tr>
                         <td className="no-data-cell" colSpan="10">
                           <div className="product-card-empty_body">
@@ -465,20 +392,22 @@ function Products() {
                       rows?.map((item, index) => {
                         return (
                           <div key={index} className="pc">
+                            <Link to={`/retailer/brand/single-product-details/${item?.id}`}>
                             <div className="pc_main">
                               <div className="pc_head">
                                 <div className="pc_head-item">
                                   <span
                                     className={`status-pill ${
-                                      item?.status === 'Not Connected' &&
+                                      getStatus(item) === 'Not Connected' &&
                                       'pill_not_connected'
                                     } ${
-                                      item?.status === '1' && 'pill_connected'
+                                      getStatus(item) === 'Connected' &&
+                                      'pill_connected'
                                     } ${
-                                      item?.status === 'Pending' &&
+                                      getStatus(item) === 'Pending' &&
                                       'pill_pending'
                                     } ${
-                                      item?.status === 'Declined' &&
+                                      getStatus(item) === 'Declined' &&
                                       'pill_declined'
                                     }`}
                                   >
@@ -503,7 +432,8 @@ function Products() {
                                         transitionDuration: ' 1000ms',
                                       }}
                                     >
-                                      {item?.product_images.map((_, imgIndex) => (
+                                      {item?.product_images.map(
+                                        (_, imgIndex) => (
                                           <div
                                             key={imgIndex}
                                             className={`swiper-slide ${
@@ -518,19 +448,16 @@ function Products() {
                                             }}
                                           >
                                             <div className="image">
-                                              <Link
-                                                to={`/retailer/brand/single-product-details/${item?.id}`}
-                                              >
                                                 <picture>
                                                   <img
                                                     src={getImage(item)}
                                                     alt=""
                                                   />
                                                 </picture>
-                                              </Link>
                                             </div>
                                           </div>
-                                        ))}
+                                        )
+                                      )}
                                     </div>
                                     <div
                                       className={`swiper-button-prev ${
@@ -557,7 +484,8 @@ function Products() {
                                       <img className="icon" src={RightArrow} />
                                     </div>
                                     <div className="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
-                                      {item?.product_images.map((_, bulletIndex) => (
+                                      {item?.product_images.map(
+                                        (_, bulletIndex) => (
                                           <span
                                             key={bulletIndex}
                                             className={`swiper-pagination-bullet ${
@@ -572,7 +500,8 @@ function Products() {
                                               )
                                             }
                                           ></span>
-                                        ))}
+                                        )
+                                      )}
                                     </div>
                                     {/* <span className="swiper-notification"></span>
                                                                     <span className="swiper-notification"></span> */}
@@ -603,26 +532,27 @@ function Products() {
                                   <div className="pc_price-item">
                                     <label>WSP</label>
                                     <label className="red-text">
-                                      $ {item?.price_wps}
+                                      $ {item?.price_wps ?? '0.00'}
                                     </label>
                                   </div>
                                   <div className="pc_price-item">
                                     <label>MSRP</label>
                                     <label className="black-text">
-                                      $ {item?.price_msrp}
+                                      $ {item?.price_msrp ?? '0.00'}
                                     </label>
                                   </div>
                                 </div>
                                 <div className="pc_brand-item">
                                   <a href="brand-single.html">
-                                    <img src={item.icon} />
+                                    <img src={item?.user?.brand_details?.store_logo} />
                                     <span className="brand-name">
-                                      {item?.text || 'NA'}
+                                      {item?.user?.brand_details?.store_name}
                                     </span>
                                   </a>
                                 </div>
                               </div>
                             </div>
+                            </Link>
                           </div>
                         );
                       })}
@@ -630,7 +560,14 @@ function Products() {
                   <div className="pagination_wrap mt-0">
                     <div className="pagination">
                       <div className="pagination_per">
-                        <select name="per" id="per">
+                        <select
+                          name="per"
+                          id="per"
+                          onChange={onItemPerPageChange}
+                        >
+                          <option value="10" selected="">
+                            10
+                          </option>
                           <option value="20" selected="">
                             20
                           </option>
@@ -641,21 +578,22 @@ function Products() {
                       </div>
                       <div className="pagination_nav">
                         <div className="pagination-title">page</div>
-                        <select name="per" id="per">
-                          <option value="1" selected="">
-                            1
-                          </option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
+                        <select name="per" id="per" onChange={onPageChange}>
+                          {getPageNumbers()}
                         </select>
-                        <div className="pagination-title">of 2</div>
-                        <button className="pagination-arrow pagination-arrow-prev">
+                        <div className="pagination-title">of {pageCount}</div>
+                        <button
+                          className="pagination-arrow pagination-arrow-prev"
+                          onClick={decrementPageNumber}
+                        >
                           <div className="icon">
                             <img className="icon" src={LeftArrow} />
                           </div>
                         </button>
-                        <button className="pagination-arrow pagination-arrow-next">
+                        <button
+                          className="pagination-arrow pagination-arrow-next"
+                          onClick={incrementPageNumber}
+                        >
                           <div className="icon">
                             <img className="icon" src={RightArrow} />
                           </div>

@@ -9,10 +9,10 @@ const initialState = {
   access_token: '',
   refresh_token: '',
   statusIndicator: {
-    billing: true,
-    products: true,
-    store: true,
-    onboarding: true,
+    billing: false,
+    products: false,
+    store: false,
+    onboarding: false,
   },
 };
 
