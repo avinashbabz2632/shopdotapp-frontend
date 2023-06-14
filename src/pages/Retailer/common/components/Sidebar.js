@@ -17,8 +17,8 @@ export default function RetailerSidebar() {
     <aside className="filters mp-filter">
       <div className="filters_wrap">
         <div className="filters_block filters_block-body">
-          <div className="filter open filter-by-products">
-            <div className="filter_body">
+          <div className="filter-by-products">
+            <div className="link-sidebar">
               <div className="tab_wrap">
                 <div className="setting-tab-title">Settings</div>
                 <input type="checkbox" name="" id="" className="" />
