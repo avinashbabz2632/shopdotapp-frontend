@@ -29,8 +29,9 @@ import ProductZoomModal from './ProductZoomModel';
 import { retailerProductData } from '../../Brand/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
-import { getRetailerProductDetailsAction } from '../../../../actions/retailerActions';
+import { getRetailerProductDetailsAction, retailerNewConnectionRequestAction } from '../../../../actions/retailerActions';
 import { selectRetailerProductDetails } from '../../../../redux/Brand/Retailer/retailerSelector';
+import { selectLoggedInUser } from '../../../../redux/auth/authSelector';
 // import { setProductActiveValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
 
 function ProductDetails() {
@@ -39,8 +40,8 @@ function ProductDetails() {
   const [isActiveButton, setIsActiveButton] = useState(false);
   const [zoomProduct, setZoomProduct] = useState(false);
   const [profileData, setProfileData] = useState(null);
+  const [connectStatus, setConnectStatus] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  console.log('isOpen', isOpen);
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
   const retailerProductsData = useSelector(selectRetailerProductDetails);
   console.log('retailerProducts----', retailerProductsData);
@@ -70,6 +71,11 @@ function ProductDetails() {
 
   useEffect(() => {
     setSetActiveOpenVal(setActiveOpen);
+    if(retailerProductsData?.productDetails?.user?.invitees?.length > 0){
+      setConnectStatus(retailerProductsData.productDetails.user.invitees[0].invite_status)
+    }else if(retailerProductsData?.productDetails?.user?.inviters?.length > 0){
+      setConnectStatus(retailerProductsData.productDetails.user.inviters[0].invite_status)
+    }
   }, [setActiveOpen]);
 
   const handalSwipeRightImage = () => {
@@ -91,8 +97,11 @@ function ProductDetails() {
     setIsActiveButton(!isActiveButton);
   };
 
-  useEffect(() => {
+  const getProductDetails = () => {
     dispatch(getRetailerProductDetailsAction(params?.id));
+  }
+  useEffect(() => {
+    getProductDetails();
   }, []);
 
   const getStatus = () => {
@@ -120,6 +129,10 @@ function ProductDetails() {
   };
 
   const handleConnectButton = () => {
+    dispatch(retailerNewConnectionRequestAction({
+      "invitee_id": retailerProductsData?.productDetails?.user.id,
+      "invite_via": "retailer_request"
+    }))
     setIsOpen(true);
     setTimeout(() => {
       setIsOpen(false);
@@ -230,6 +243,7 @@ function ProductDetails() {
                               Connect
                             </button>
                           )}
+                          {/* <a href="#" class="button button-green request-approved-box">Approve</a> */}
                           <button className="button message-brand">
                             <div className="icon">
                               <img src={mailIcon} />
@@ -787,7 +801,7 @@ function ProductDetails() {
               <div className="bottom-notify active">
                 <div className="container">
                   <div className="bottom-notify_text">
-                    <p>Request to connect sent to DeniumWear</p>
+                    <p>Request to connect sent to {retailerProductsData?.productDetails?.user?.brand_details?.store_name}</p>
                   </div>
                 </div>
                 <div className="bottom-notify-close">
