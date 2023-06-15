@@ -19,12 +19,11 @@ export default function BrandSetting() {
   const [storeUrlError, setStoreUrlError] = useState(false);
   const [isStoreConnected, setIsStoreConnected] = useState(false);
   const [storeStatus, setStoreStatus] = useState('');
-  //temporary for seeing a disconnect ui
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const useDetails = useSelector(selectUserDetails);
   const [openDisconnectModal, setOpenDisconnectModal] = useState(false);
   const dispatch = useDispatch();
-  const shopNameRegex = /[0-9a-zA-Z\-]/;
+  const shopNameRegex = /^[^.!@#$%^&*]+$/;
 
   useEffect(() => {
     if (brandProfileDetails?.shop_detail?.shop) {
