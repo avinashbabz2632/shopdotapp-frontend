@@ -65,6 +65,7 @@ export function updateRetailerProfileAction(formData, isCreate) {
       ) {
         toast.success(response?.data?.message);
         dispatch(setRetailerProfileSaveResult(response.data.data));
+        dispatch(getRetailerProfileAction(formData.user_id))
       } else {
         toast.error('Something went worng');
       }
