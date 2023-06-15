@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import info1 from '../../images/icons/icon-info-red.svg';
 import down from '../../images/icons/icon-chevron--up.svg';
+import logoPng from '../../../../assets/images/logos/logo-png.png';
 
 export default function ProductVariantTable(props) {
   const { productVariant } = props;
@@ -130,7 +131,7 @@ export default function ProductVariantTable(props) {
               <td>
                 <div className="image image--cover image--1-1">
                   <picture>
-                    <img src={ele?.image} alt="" />
+                    <img src={ele?.image ?? logoPng} alt="" />
                   </picture>
                 </div>
               </td>

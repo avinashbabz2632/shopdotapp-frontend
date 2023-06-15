@@ -163,26 +163,28 @@ export default function ProductDetails() {
 
   const getCategory = () => {
     let value = '';
-    const orderArray = {
-      group: productDetails?.categories?.group ?? {},
-      mainCategory: productDetails?.categories?.mainCategory ?? {},
-      subCategory: productDetails?.categories?.subCategory ?? {},
-      ...productDetails?.categories,
-    };
-
-    map(orderArray, (cat, key) => {
-      value = value == '' ? `${cat?.name}` : `${value} > ${cat?.name}`;
-    });
+    if (productDetails?.categories?.mainCategory) {
+      const orderArray = {
+        mainCategory: productDetails?.categories?.mainCategory ?? {},
+        subCategory: productDetails?.categories?.subCategory ?? {},
+        group: productDetails?.categories?.group ?? {},
+        ...productDetails?.categories,
+      };
+      map(orderArray, (cat, key) => {
+        value = value == '' ? `${cat?.name}` : `${value} > ${cat?.name}`;
+      });
+    }
     return value;
   };
 
-  const handleStatus = () => {
-    dispatch(
-      updateProductStatusAction(
-        params.id,
-        productDetails?.productDetails?.status == '1' ? 1 : 0
-      )
+  const handleStatus = async () => {
+    const response = await updateProductStatusAction(
+      params.id,
+      productDetails?.productDetails?.status == '1' ? 0 : 1
     );
+    if (response.isSuccess) {
+      dispatch(getProductDetailsAction(params.id));
+    }
   };
 
   return (

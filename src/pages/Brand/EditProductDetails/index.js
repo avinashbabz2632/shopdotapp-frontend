@@ -17,8 +17,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   editProductDetailsAction,
   getProductCategoriesAction,
+  getSingleProductDetailsAction,
   syncSingleProductAction,
 } from '../../../actions/productActions';
+import logoPng from '../../../assets/images/logos/logo-png.png';
 import {
   selectUpdatingProduct,
   selectProductUpdateResult,
@@ -33,7 +35,11 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { syncProduct2, syncProductAction } from '../../../actions/brandActions';
 import { selectUserDetails } from '../../../redux/user/userSelector';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import { selectProfileCompleted } from '../../../redux/Brand/Profile/brandProfileSelectors';
+import { uploadImageAction } from '../../../actions/userActions';
+import { cloneDeep, map } from 'lodash';
+import { setProductDetails } from '../../../redux/Brand/Products/productSlice';
 
 const FormValidationSchema = yup.object().shape({
   productName: yup.string().required('Product name is required.'),
@@ -58,14 +64,21 @@ export default function EditProductDetails() {
 
   const [container, setContainer] = useState(null);
   const [tags, setTags] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [description, setDescription] = useState('');
-  const [activeVariants] = useState(product?.productDetails?.product_variants);
+  const [activeVariants, setActiveVarient] = useState(
+    product?.productDetails?.product_variants
+  );
   const [selectedProductCatId, setSelectedProductCatId] = useState('');
   const [selectedProductSubCatId, setSelectedProductSubCatId] = useState('');
   const [selectedProductGroupId, setSelectedProductGroupId] = useState('');
   const [wspError, setWSPError] = useState(false);
   const [msrpError, setMSRPError] = useState(false);
+  const [mainImage, setMainImage] = useState(null);
+
+  const profileCompleted = useSelector(selectProfileCompleted);
+
   let updatedVariants = [];
 
   const variantsWSPDefaultValues = () => {
@@ -104,7 +117,7 @@ export default function EditProductDetails() {
 
   const variantsMSRPDefaultValues = () => {
     const variantObj = {};
-    if (product?.productDetails?.product_variants.length > 0) {
+    if (product?.productDetails?.product_variants?.length > 0) {
       product?.productDetails?.product_variants.forEach((pv, i) => {
         variantObj[`variants.${i}.msrp`] = pv.price;
       });
@@ -115,6 +128,7 @@ export default function EditProductDetails() {
   const defaultValues = {
     productName: product?.productDetails?.title,
     description: product?.productDetails?.body_html,
+    daysToFulfill: product?.productDetails?.shipping_time,
     ...variantsWSPDefaultValues(),
     ...variantsMSRPDefaultValues(),
   };
@@ -124,11 +138,25 @@ export default function EditProductDetails() {
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(FormValidationSchema),
   });
+
+  const initalSet = () => {
+    reset({});
+  };
+
+  const handleVarientChange = (e, key, typeKey) => {
+    const isChecked = typeKey === 'status' ? e.target.checked : e.target.value;
+    let updateArray = cloneDeep(activeVariants);
+    updateArray[key][typeKey] =
+      typeKey === 'status' ? (isChecked ? '1' : '0') : e.target.value;
+    console.log(updateArray, 'updateArray');
+    setActiveVarient(updateArray);
+  };
 
   const watchWSPChange = useWatch({
     name: getVariantWSPFieldNames(),
@@ -157,7 +185,8 @@ export default function EditProductDetails() {
 
   const filesFormats = ['image/jpeg', 'image/png'];
   // Functions to preview multiple images
-  const changeMultipleFiles = (e) => {
+  const changeMultipleFiles = async (e) => {
+    console.log(e, 'e');
     if (e.target.files) {
       const imageArray = Array.from(e.target.files).map((file) => {
         const isRightFormat = filesFormats.includes(file.type);
@@ -165,7 +194,16 @@ export default function EditProductDetails() {
           return URL.createObjectURL(file);
         }
       });
-      setMultipleImages((prevImages) => prevImages.concat(imageArray));
+
+      const data = new FormData();
+      data.append('file', e.target.files[0]);
+
+      const response = await uploadImageAction(data);
+
+      setMultipleImages((prevImages) =>
+        prevImages.concat([{ src: response.url }])
+      );
+      e.target.value = '';
     }
   };
 
@@ -175,6 +213,7 @@ export default function EditProductDetails() {
   };
 
   const renderProductImages = (data) => {
+    console.log(data, 'data');
     return (
       <>
         {data.length > 0 &&
@@ -189,7 +228,7 @@ export default function EditProductDetails() {
                     <div className="pe_body">
                       <div className="image">
                         <picture>
-                          <img src={imageUrl} alt="" />
+                          <img src={imageUrl?.src ?? imageUrl} alt="" />
                         </picture>
                       </div>
                     </div>
@@ -255,10 +294,22 @@ export default function EditProductDetails() {
   useEffect(() => {
     // setMultipleImages([Data.productUrl]);
     // setValue('productUrl', [Data.productUrl]);
-    setTags(product.productDetails.product_tags?.map((t) => t.tag));
+    setTags(product?.productDetails?.product_tags?.map((t) => t.tag));
     const containers = document.getElementById('editor') || null;
+    if (product?.productDetails?.product_images?.length) {
+      setMultipleImages(product?.productDetails?.product_images);
+    }
+    if (product?.categories) {
+      setSelectedProductCatId(product?.categories?.mainCategory?.id);
+      setTimeout(() => {
+        setSelectedProductSubCatId(product?.categories?.subCategory?.id);
+      }, 350);
+      setTimeout(() => {
+        setSelectedProductGroupId(product?.categories?.group?.id);
+      }, 700);
+    }
     // setDescription(containers.value);
-    // setDescription(product.productDetails.body_html);
+    setDescription(product.productDetails.body_html);
     setContainer(containers);
   }, []);
 
@@ -310,7 +361,7 @@ export default function EditProductDetails() {
   }, [selectedProductSubCatId]);
 
   const transformVariants = () => {
-    return updatedVariants.map((v) => {
+    return activeVariants.map((v) => {
       const item = {
         id: v.id,
         sku: v.sku,
@@ -322,13 +373,10 @@ export default function EditProductDetails() {
     });
   };
 
-  const handleSave = (data) => {
+  const handleSave = async (data) => {
     const variantsObjArr = transformVariants();
-    const variantsWithUpdatedPrice = data.variants.map((v, i) => {
-      const item = variantsObjArr.find((e, index) => i == index);
-      const newItem = { ...item, wsp: v.wsp, msrp: v.msrp };
-      return newItem;
-    });
+    console.log(activeVariants, 'act');
+
     if (
       wspError ||
       msrpError ||
@@ -336,20 +384,38 @@ export default function EditProductDetails() {
       !selectedProductSubCatId
     )
       return;
+    const updateImage = [];
+    map(multipleImages, (img, i) => {
+      let data = {
+        image: img.src,
+        isMain: primaryImage == i ? '1' : '0',
+      };
+      updateImage.push(data);
+    });
     const dataToUpdate = {
+      id: product?.productDetails?.id,
       product_name: data?.productName,
       product_description: description,
       tags: tags,
-      daysToFulfill: data?.daysToFulfill,
+      shipping_time: data?.daysToFulfill,
       product_category: {
         select_category: selectedProductCatId,
         select_sub_category: selectedProductSubCatId,
         select_group: selectedProductGroupId,
       },
-      shopifyImageId: product.productDetails.product_images[0].shopify_image_id,
-      product_variant: variantsWithUpdatedPrice,
+      product_images: updateImage,
+      shopifyImageId:
+        product?.productDetails?.product_images?.[0]?.shopify_image_id,
+      product_variant: variantsObjArr,
     };
-    dispatch(editProductDetailsAction(dataToUpdate, params?.id));
+    const response = await editProductDetailsAction(dataToUpdate, params?.id);
+    if (response.isSuccess) {
+      toast.success('Product updated successfully');
+      const response2 = await getSingleProductDetailsAction(params?.id);
+      if (response2.isSuccess) {
+        dispatch(setProductDetails(response2.data));
+      }
+    }
     // navigate({
     //     pathname:
     //         navigate(-1) === undefined ?
@@ -390,6 +456,15 @@ export default function EditProductDetails() {
     );
   };
 
+  const handleVarientStaus = (e) => {
+    let udapteData = cloneDeep(activeVariants);
+
+    map(udapteData, (d, key) => {
+      udapteData[key].status = e.target.checked ? '1' : '0';
+    });
+    setActiveVarient(udapteData);
+  };
+
   return (
     <div className="wrapper">
       <BrandHeader />
@@ -415,7 +490,7 @@ export default function EditProductDetails() {
                       </NavLink>
                     </div>
                     <div className="title">
-                      <h1>Editing: {product.productDetails.title} </h1>
+                      <h1>Editing: {product?.productDetails?.title} </h1>
                     </div>
                     <button
                       className="button button-sky-blue remove-all-from-my-list large"
@@ -427,9 +502,6 @@ export default function EditProductDetails() {
                   <button
                     type="submit"
                     className="button button-dark black large"
-                    onClick={() => {
-                      handleSubmit();
-                    }}
                   >
                     <img className="icon" src={saveIcon} />
                     Save Changes
@@ -486,22 +558,39 @@ export default function EditProductDetails() {
                         </div>
                       )}
 
-                      <div
-                        className="alert alert-warning d-flex align-items-center"
-                        role="alert"
-                      >
-                        <div className="alert-warning-title">
-                          You must complete the following configurations before
-                          updating the details of a product
-                          <ul>
-                            <li>Brand Profile</li>
-                            <li>Getting Paid</li>
-                          </ul>
-                          <button className="button button-white close">
-                            Go to Settings
-                          </button>
+                      {!profileCompleted.profile || !profileCompleted.paid ? (
+                        <div
+                          className="alert alert-warning d-flex align-items-center"
+                          role="alert"
+                        >
+                          <div className="alert-warning-title">
+                            You must complete the following configurations
+                            before updating the details of a product
+                            <ul>
+                              {profileCompleted.profile ? (
+                                <></>
+                              ) : (
+                                <li>Brand Profile</li>
+                              )}
+                              {profileCompleted.paid ? (
+                                <></>
+                              ) : (
+                                <li>Getting Paid</li>
+                              )}
+                            </ul>
+                            <button
+                              onClick={() => {
+                                navigate('/brand/setting/');
+                              }}
+                              className="button button-white close"
+                            >
+                              Go to Settings
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <></>
+                      )}
                       <div className="edit-product_tabs">
                         <div id="product-info">
                           <div className="pi-area">
@@ -568,8 +657,9 @@ export default function EditProductDetails() {
                                                     <div className="editor">
                                                       <p>
                                                         {
-                                                          product.productDetails
-                                                            .body_html
+                                                          product
+                                                            ?.productDetails
+                                                            ?.body_html
                                                         }
                                                       </p>
                                                     </div>
@@ -588,7 +678,10 @@ export default function EditProductDetails() {
                                 <div id="product-images">
                                   <div className="pm-area">
                                     <div className="bd-callout mt-0">
-                                      Product Images <span>(12)</span>
+                                      Product Images{' '}
+                                      <span>
+                                        {`(${product?.productDetails?.product_images?.length})`}
+                                      </span>
                                       <span className="asterisk-red">*</span>
                                     </div>
                                     <div className="product-images product-images pi-radio">
@@ -645,16 +738,18 @@ export default function EditProductDetails() {
                                 </p>
                                 <div className="form-data">
                                   <select
-                                    // value={selected.category}
-                                    onChange={(event) =>
-                                      setSelectedProductCatId(
-                                        event.target.value
-                                      )
-                                    }
+                                    // value={selectedProductCatId}
+                                    // value={selectedProductCatId}
+                                    onChange={(e) => {
+                                      setSelectedProductCatId(e.target.value);
+                                    }}
                                   >
                                     <option value="">Select a category</option>
                                     {productCatOptions.map((category) => (
                                       <option
+                                        selected={
+                                          selectedProductCatId == category.id
+                                        }
                                         key={category.id}
                                         value={category.id}
                                       >
@@ -663,8 +758,11 @@ export default function EditProductDetails() {
                                     ))}
                                   </select>
                                   <select
-                                    disabled={!selectedProductCatId}
-                                    // value={selected.subcategory}
+                                    disabled={
+                                      selectedProductCatId < 0 ||
+                                      selectedProductCatId == null ||
+                                      selectedProductCatId == undefined
+                                    }
                                     onChange={(event) =>
                                       setSelectedProductSubCatId(
                                         event.target.value
@@ -676,6 +774,10 @@ export default function EditProductDetails() {
                                     </option>
                                     {productSubCatOptions.map((subcategory) => (
                                       <option
+                                        selected={
+                                          selectedProductSubCatId ==
+                                          subcategory.id
+                                        }
                                         key={subcategory.id}
                                         value={subcategory.id}
                                       >
@@ -685,7 +787,6 @@ export default function EditProductDetails() {
                                   </select>
                                   <select
                                     disabled={!selectedProductSubCatId}
-                                    // value={selected.group}
                                     onChange={(event) =>
                                       setSelectedProductGroupId(
                                         event.target.value
@@ -694,7 +795,13 @@ export default function EditProductDetails() {
                                   >
                                     <option value="">Select a group</option>
                                     {productGroupOptions.map((group) => (
-                                      <option key={group.id} value={group.id}>
+                                      <option
+                                        selected={
+                                          selectedProductGroupId == group.id
+                                        }
+                                        key={group.id}
+                                        value={group.id}
+                                      >
                                         {group.name}
                                       </option>
                                     ))}
@@ -811,7 +918,7 @@ export default function EditProductDetails() {
                                   onKeyDown={handleKeyDown}
                                 />
                                 <div className="tab-list">
-                                  {tags.length > 0 &&
+                                  {tags?.length > 0 &&
                                     tags.map((e, i) => (
                                       <div
                                         className="checkbox checkbox--no-decor m-1"
@@ -845,8 +952,11 @@ export default function EditProductDetails() {
                           <div className="pv-area">
                             <div className="bd-callout mt-0 mb-4">
                               Product Variants (
-                              {product.productDetails.product_variants.length}){' '}
-                              <span className="asterisk-red">*</span>
+                              {
+                                product?.productDetails?.product_variants
+                                  ?.length
+                              }
+                              ) <span className="asterisk-red">*</span>
                             </div>
                             <div
                               className="alert alert-primary d-flex align-items-center"
@@ -985,6 +1095,9 @@ export default function EditProductDetails() {
                                           <input
                                             type="checkbox"
                                             id="checkbox11"
+                                            onChange={(event) => {
+                                              handleVarientStaus(event);
+                                            }}
                                           />
                                           <label htmlFor="checkbox11">
                                             <span
@@ -1028,7 +1141,7 @@ export default function EditProductDetails() {
                                           <div className="image image--cover image--1-1">
                                             <picture>
                                               <img
-                                                src={item?.image}
+                                                src={item?.image ?? logoPng}
                                                 alt="img"
                                               />
                                             </picture>
@@ -1064,7 +1177,15 @@ export default function EditProductDetails() {
                                             <input
                                               type="text"
                                               className="tabel-text"
-                                              {...register(`variants.${i}.wsp`)}
+                                              value={item.wsp}
+                                              onChange={(event) => {
+                                                handleVarientChange(
+                                                  event,
+                                                  i,
+                                                  'wsp'
+                                                );
+                                              }}
+
                                               // placeholder="0.00"
                                             />
                                           </div>
@@ -1075,9 +1196,17 @@ export default function EditProductDetails() {
                                             <input
                                               type="text"
                                               className="tabel-text"
-                                              {...register(
-                                                `variants.${i}.msrp`
-                                              )}
+                                              value={item.price}
+                                              onChange={(event) => {
+                                                handleVarientChange(
+                                                  event,
+                                                  i,
+                                                  'price'
+                                                );
+                                              }}
+                                              // {...register(
+                                              //   `variants.${i}.msrp`
+                                              // )}
                                               //placeholder="0.00"
                                             />
                                           </div>
@@ -1089,9 +1218,16 @@ export default function EditProductDetails() {
                                               <input
                                                 id={`checkbox${item?.id}`}
                                                 type="checkbox"
-                                                value={item.id}
+                                                checked={item.status === '1'}
                                                 // checked={getActiveVariantID(item.id)}
-                                                onChange={handleVariantToggle}
+                                                onChange={(e) => {
+                                                  console.log(e, 'asdsa asd');
+                                                  handleVarientChange(
+                                                    e,
+                                                    i,
+                                                    'status'
+                                                  );
+                                                }}
                                               />
                                               <label
                                                 htmlFor={`checkbox${item?.id}`}
