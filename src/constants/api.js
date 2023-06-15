@@ -44,6 +44,9 @@ export const RETAILER_REQUEST = `${BASE_URL}/brand/retailer-requests`;
 export const UPDATE_RETAILER_REQUEST = `${BASE_URL}/retailer/request-connection/update`;
 export const RETAILER_LIST = `${BASE_URL}/brand/retailers-list`;
 export const UPDATE_BRAND_RETAILERS = `${BASE_URL}/brand/assign-product-to-retailer`;
+export const UPDATE_BRAND_TAGS = `${BASE_URL}/brand/product/tags`;
+export const UPDATE_BRAND_CATEGORIES = `${BASE_URL}/brand/product/categories`;
+export const UPDATE_BRAND_VARIENT = `${BASE_URL}/brand/product/variants`;
 
 // Retailer
 export const RETAILER_PROFILE = `${BASE_URL}/user/retailer-profile`;
@@ -52,9 +55,11 @@ export const RETAILER_BRANDS = `${BASE_URL}/retailer/brands`;
 export const RETAILER_NOTIFICATION_ALERT = `${BASE_URL}/retailer/alert-notification`;
 export const RETAILER_BRAND_VALUES = `${BASE_URL}/general/brand-values`;
 export const RETAILER_NEW_CONNECTION_REQUEST = `${BASE_URL}/retailer/request-connection`;
-export const RETAILER_BRAND_PROFILE = (id) => `${BASE_URL}/user/brand-profile/${id}`;
+export const RETAILER_BRAND_PROFILE = (id) =>
+  `${BASE_URL}/user/brand-profile/${id}`;
 export const RETAILER_PRODUCTS = `${BASE_URL}/retailer/brand/product/list`;
-export const RETAILER_PRODUCT_DETAILS = (ID) => `${BASE_URL}/retailer/product/${ID}`;
+export const RETAILER_PRODUCT_DETAILS = (ID) =>
+  `${BASE_URL}/retailer/product/${ID}`;
 export const BRAND_FILTERS = `${BASE_URL}/retailer/brand/dropdown`;
 
 // Product

@@ -191,54 +191,142 @@ export function getProductDetailsAction(productId) {
   };
 }
 
-// export function editProductDetailsAction(data, productId) {
-export function updateProductStatusAction(productId, status) {
-  return async (dispatch) => {
-    const data = {
-      id: productId,
-      status: status,
-    };
-    try {
-      const response = await axios.put(
-        `${API_END_POINT.UPDATE_PRODUCT_STATUS}`,
-        data
-      );
-      if (response && response.data && response.data.code == 200) {
-        dispatch(getProductDetailsAction(productId));
-      } else {
-      }
-      return response;
-    } catch (err) {
-      toast.error(
-        err && err.response && err.response.data && err.response.data.errors
-          ? err.response.data.errors
-          : 'Something went worng'
-      );
+export async function getSingleProductDetailsAction(productId) {
+  try {
+    const response = await axios.get(
+      `${API_END_POINT.PRODUCT_DETAILS(productId)}`
+    );
+    if (response && response.data && response.data.code == 200) {
+      return {
+        isSuccess: true,
+        data: response.data.data,
+      };
+    } else {
     }
-  };
+    return response;
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+  }
 }
 
-export function editProductDetailsAction(data, productId) {
-  return async (dispatch) => {
-    try {
-      const response = await axios.patch(
-        `${API_END_POINT.EDIT_PRODUCT_DETAILS(productId)}`,
-        data
-      );
-      if (response && response.data && response.data.code == 200) {
-        if (response.data.data) {
-          dispatch(setProductDetails(response.data.data));
-        }
-      } else {
-      }
-      return response;
-    } catch (err) {
-      toast.error(
-        err && err.response && err.response.data && err.response.data.errors
-          ? err.response.data.errors
-          : 'Something went worng'
-      );
-      throw err;
-    }
+// export function editProductDetailsAction(data, productId) {
+export async function updateProductStatusAction(productId, status) {
+  const data = {
+    id: productId,
+    status: status,
   };
+  try {
+    const response = await axios.put(
+      `${API_END_POINT.UPDATE_PRODUCT_STATUS}`,
+      data
+    );
+    if (response && response.data && response.data.code == 200) {
+      return {
+        isSuccess: true,
+        response: response.data,
+      };
+    } else {
+    }
+    return response;
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+  }
+}
+
+export async function updateProductTagAction(formData) {
+  try {
+    const response = await axios.put(
+      `${API_END_POINT.UPDATE_BRAND_TAGS}`,
+      formData
+    );
+    if (response && response.data && response.data.code == 200) {
+      return {
+        isSuccess: true,
+        response: response.data,
+      };
+    } else {
+    }
+    return response;
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+  }
+}
+export async function updateProductCategoryAction(formData) {
+  try {
+    const response = await axios.put(
+      `${API_END_POINT.UPDATE_BRAND_CATEGORIES}`,
+      formData
+    );
+    if (response && response.data && response.data.code == 200) {
+      return {
+        isSuccess: true,
+        response: response.data,
+      };
+    } else {
+    }
+    return response;
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+  }
+}
+export async function updateProductVarientAction(formData) {
+  try {
+    const response = await axios.put(
+      `${API_END_POINT.UPDATE_BRAND_VARIENT}`,
+      formData
+    );
+    if (response && response.data && response.data.code == 200) {
+      return {
+        isSuccess: true,
+        response: response.data,
+      };
+    } else {
+    }
+    return response;
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+  }
+}
+
+export async function editProductDetailsAction(data, productId) {
+  try {
+    const response = await axios.patch(
+      `${API_END_POINT.EDIT_PRODUCT_DETAILS(productId)}`,
+      data
+    );
+    if (response && response.data && response.data.code == 200) {
+      return {
+        isSuccess: true,
+      };
+    } else {
+    }
+    return response;
+  } catch (err) {
+    toast.error(
+      err && err.response && err.response.data && err.response.data.errors
+        ? err.response.data.errors
+        : 'Something went worng'
+    );
+    throw err;
+  }
 }
