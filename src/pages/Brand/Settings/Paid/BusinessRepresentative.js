@@ -686,7 +686,7 @@ export default function BusinessRepresentative({
                 )}
 
                 <input
-                  type="text"
+                  type="number"
                   className="form-control mb-2"
                   placeholder="ID Number"
                   name={`representativeDetails.${index}.idNumber`}
