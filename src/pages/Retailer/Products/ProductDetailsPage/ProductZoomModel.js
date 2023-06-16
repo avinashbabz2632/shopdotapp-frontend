@@ -17,210 +17,89 @@ import LeftArrow from '../../../Brand/images/icons/icon-arrow-black.svg';
 import RightArrow from '../../../Brand/images/icons/icon-arrow-right-black.svg';
 
 export default function ProductZoomModal(props) {
-    const { handalModal } = props;
-    const [slideIndex, setSlideIndex] = useState(0);
+  const { handalModal, productImages } = props;
+  const [slideIndex, setSlideIndex] = useState(0);
 
-    const handalSwipeRightImage = () => {
-        setSlideIndex((prev) => (prev + 1) % 11);
-    };
-    const handalSwipeLeftImage = () => {
-        setSlideIndex((prev) => (prev - 1) % 11);
-    };
-    return (
-        <div className="products_popups">
-            <div className="popup popup-product-gallery active" id="pg1">
-                <div className="popup_wrapper">
-                    <div className="popup_content">
-                        <div
-                            className="popup-close"
-                            onClick={() => handalModal()}
-                        >
-                            <img className="icon" src={closeIcon} />
-                        </div>
-
-                        <div className="swiper-container gallery-main swiper-initialized swiper-horizontal swiper-pointer-events">
-                            <div
-                                className="swiper-wrapper"
-                                id="swiper-wrapper-b10be92488cd746ab"
-                                aria-live="polite"
-                                style={{
-                                    transform: `translate3d(-${
-                                        100 * slideIndex
-                                    }%, 0px, 0px)`,
-                                    transitionDuration: '1000ms',
-                                }}
-                            >
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="1 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={FirstImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="2 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={SecondImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="3 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={ThirdImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="4 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={FourImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="5 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={FiveImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="6 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={SixImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="7 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={SevenImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="8 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={EightImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="9 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={NineImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="10 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={TenImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                                <div
-                                    className="swiper-slide"
-                                    role="group"
-                                    aria-label="11 / 11"
-                                >
-                                    <div className="image">
-                                        <picture>
-                                            <img src={ElevenImg} alt="" />
-                                        </picture>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div
-                                className={`swiper-button-prev ${
-                                    slideIndex === 0 && 'swiper-button-disabled'
-                                }`}
-                                role="button"
-                                aria-label="Previous slide"
-                                aria-controls="swiper-wrapper-9a3741016670105a3b"
-                                aria-disabled={slideIndex === 0}
-                                onClick={() => handalSwipeLeftImage()}
-                            >
-                                <img
-                                    className="icon-left-right"
-                                    src={LeftArrow}
-                                />
-                            </div>
-                            <div
-                                className={`swiper-button-next ${
-                                    slideIndex === 10 &&
-                                    'swiper-button-disabled'
-                                }`}
-                                role="button"
-                                aria-label="Next slide"
-                                aria-controls="swiper-wrapper-9a3741016670105a3b"
-                                aria-disabled={slideIndex === 10}
-                                onClick={() => handalSwipeRightImage()}
-                            >
-                                <img
-                                    className="icon-left-right"
-                                    src={RightArrow}
-                                />
-                            </div>
-
-                            <span
-                                className="swiper-notification"
-                                aria-live="assertive"
-                                aria-atomic="true"
-                            ></span>
-                        </div>
-                    </div>
-                </div>
+  const handalSwipeRightImage = () => {
+    setSlideIndex((prev) => (prev + 1) % 11);
+  };
+  const handalSwipeLeftImage = () => {
+    setSlideIndex((prev) => (prev - 1) % 11);
+  };
+  return (
+    <div className="products_popups">
+      <div className="popup popup-product-gallery active" id="pg1">
+        <div className="popup_wrapper">
+          <div className="popup_content">
+            <div className="popup-close" onClick={() => handalModal()}>
+              <img className="icon" src={closeIcon} />
             </div>
+
+            <div className="swiper-container gallery-main swiper-initialized swiper-horizontal swiper-pointer-events">
+              <div
+                className="swiper-wrapper"
+                id="swiper-wrapper-b10be92488cd746ab"
+                aria-live="polite"
+                style={{
+                  transform: `translate3d(-${100 * slideIndex}%, 0px, 0px)`,
+                  transitionDuration: '1000ms',
+                }}
+              >
+                {productImages &&
+                  productImages.map((image, index) => {
+                    return (
+                      <div
+                        className="swiper-slide"
+                        role="group"
+                        aria-label="1 / 11"
+                      >
+                        <div className="image">
+                          <picture>
+                            <img src={image.src} alt="" />
+                          </picture>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+              <div
+                className={`swiper-button-prev ${
+                  slideIndex === 0 && 'swiper-button-disabled'
+                }`}
+                role="button"
+                aria-label="Previous slide"
+                aria-controls="swiper-wrapper-9a3741016670105a3b"
+                aria-disabled={slideIndex === 0}
+                onClick={() => handalSwipeLeftImage()}
+              >
+                <img className="icon-left-right" src={LeftArrow} />
+              </div>
+              <div
+                className={`swiper-button-next ${
+                  slideIndex === productImages?.length - 1 && 'swiper-button-disabled'
+                }`}
+                role="button"
+                aria-label="Next slide"
+                aria-controls="swiper-wrapper-9a3741016670105a3b"
+                aria-disabled={slideIndex === productImages?.length - 1}
+                onClick={() => handalSwipeRightImage()}
+              >
+                <img className="icon-left-right" src={RightArrow} />
+              </div>
+
+              <span
+                className="swiper-notification"
+                aria-live="assertive"
+                aria-atomic="true"
+              ></span>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 ProductZoomModal.propTypes = {
-    handalModal: PropTypes.func,
+  handalModal: PropTypes.func,
 };

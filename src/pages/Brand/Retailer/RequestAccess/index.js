@@ -120,6 +120,24 @@ export default function RequestAccess(props) {
   const handleSort = (column) => {
     setSortColumn(column);
   };
+  const getProductStatus = (status) => {
+    let statusText = '';
+    switch (status) {
+      case 'accepted':
+        statusText = 'Connected';
+        break;
+      case 'pending':
+        statusText = 'Pending';
+        break;
+      case 'declined':
+        statusText = 'Declined';
+        break;
+      default:
+        statusText = 'Not Connected';
+        break;
+    }
+    return statusText;
+  }
   return (
     <>
       <InviteRetailer
@@ -277,7 +295,7 @@ export default function RequestAccess(props) {
                               <div className="number_wrap">
                                 <a href="#" className="number">
                                   <img
-                                    src={item.user.retailer_details.store_photo}
+                                    src={item?.user?.retailer_details?.store_photo}
                                     className="avtar-img"
                                   />
                                 </a>
@@ -309,7 +327,7 @@ export default function RequestAccess(props) {
                               className={`status-pill ${
                                 item.invite_status == 'pending'
                                   ? 'pill_pending'
-                                  : item.invite_status == 'connected'
+                                  : item.invite_status == 'accepted'
                                   ? 'pill_connected'
                                   : item.invite_status == 'declined'
                                   ? 'pill_declined'
@@ -318,7 +336,7 @@ export default function RequestAccess(props) {
                                   : ''
                               }`}
                             >
-                              {item.invite_status}
+                              {getProductStatus(item.invite_status)}
                             </span>
                           </td>
                           <td>
@@ -331,7 +349,7 @@ export default function RequestAccess(props) {
                                   <div className="dropdown_inner">
                                     <ul>
                                       <li>
-                                        <a href="#">View/Edit</a>
+                                        <a href={`/brand/retailer-profile/${item?.id}`}>View/Edit</a>
                                       </li>
                                       <li>
                                         <a href="mailto:someone@example.com">

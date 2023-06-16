@@ -12,20 +12,21 @@ import Avtar1 from '../../images/shopify_logo_whitebg.jpg';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import DisconnectModal from './DisconnectModal';
 import { ToastContainer, toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
 
 export default function BrandSetting() {
+  const location = useLocation();
   const [storeUrl, setStoreUrl] = useState('');
-  const [isValideStoreURL, setIsValidStoreUrl] = useState(false);
+  const [storeUrlError, setStoreUrlError] = useState(false);
   const [isStoreConnected, setIsStoreConnected] = useState(false);
   const [storeStatus, setStoreStatus] = useState('');
-  //temporary for seeing a disconnect ui
   const brandProfileDetails = useSelector(selectBrandProfileDetails);
   const useDetails = useSelector(selectUserDetails);
   const [openDisconnectModal, setOpenDisconnectModal] = useState(false);
   const dispatch = useDispatch();
+  const shopNameRegex = /^[^.!@#$%^&*]+$/;
 
   useEffect(() => {
-    console.log('brandProfileDetails----', brandProfileDetails);
     if (brandProfileDetails?.shop_detail?.shop) {
       const onlyBranName = brandProfileDetails?.shop_detail?.shop.replace(
         '.myshopify.com',
@@ -40,41 +41,49 @@ export default function BrandSetting() {
       }
     } else {
       setStoreUrl('');
-      setIsValidStoreUrl(false);
+      setStoreUrlError(false);
       setIsStoreConnected(false);
     }
   }, [brandProfileDetails]);
 
-  // alert(storeUrl);
-
   const connectStore = () => {
     if (storeUrl) {
-      dispatch(
-        connectShopifyAction({
-          name: `${storeUrl}.myshopify.com`,
-          user_id: useDetails.id,
-        })
-      );
-      // setIsStoreConnected(true);
+      if (
+        shopNameRegex.test(storeUrl) &&
+        !storeUrl.includes('.myshopify.com')
+      ) {
+        setStoreUrlError(false);
+        dispatch(
+          connectShopifyAction({
+            name: `${storeUrl}.myshopify.com`,
+            user_id: useDetails.id,
+          })
+        );
+      } else {
+        setStoreUrlError(true);
+      }
     } else {
       setIsStoreConnected(false);
-      setIsValidStoreUrl(true);
-      // setStoreStatus(false);
+      setStoreUrlError(true);
     }
   };
 
   const handleInputChange = (e) => {
     setStoreUrl(e.target.value);
-    setIsValidStoreUrl(false);
   };
 
   const handleReconnect = () => {
-    dispatch(
-      disconnectShopifyAction({
-        domain: `${storeUrl}.myshopify.com`,
-        user_id: useDetails.id,
-      })
-    );
+    if (shopNameRegex.test(storeUrl) && !storeUrl.includes('.myshopify.com')) {
+      setStoreUrlError(false);
+      dispatch(
+        disconnectShopifyAction({
+          domain: `${storeUrl}.myshopify.com`,
+          user_id: useDetails.id,
+        })
+      );
+    } else {
+      setStoreUrlError(true);
+    }
   };
 
   const onDisconnectClick = () => {
@@ -135,7 +144,7 @@ export default function BrandSetting() {
                             {' '}
                             Enter the name of your store without myshopify.com{' '}
                           </small>
-                          {isValideStoreURL && (
+                          {storeUrlError && (
                             <div className="invalid-feedback">
                               Please only enter the name of your store.
                             </div>
@@ -247,6 +256,7 @@ export default function BrandSetting() {
         onCancel={onCancelClick}
         onDisconnect={onDisconnectClick}
       />
+      <ToastContainer />
     </>
   );
 }
