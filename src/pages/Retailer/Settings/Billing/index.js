@@ -35,6 +35,7 @@ export default function Billing() {
   const [showError, setShowError] = useState('');
   const [billList, setBillList] = useState([]);
   const [transformStatesOption, setTransformStatesOption] = useState([]);
+  const [monthOption, setMonthOption] = useState([]);
 
   const statesOption = useSelector(selectStates);
 
@@ -69,17 +70,23 @@ export default function Billing() {
         setTransformStatesOption(states);
       }
     });
+
+    const months = [];
+    for (let index = 1; index <= 12; index++) {
+      index = index < 10 ? "0"+index : index;
+      months.push({ label: index, value: index, code: index });
+    }
+    setMonthOption(months);
   };
 
   const onSubmit = async (data) => {
-    const splitText = data.expiryDate.split('/');
     const formData = {
       legal_name: data.nameOnCard,
       cardNumber: data.cardNumber.toString(),
       cvv: data.cvv,
       brand: 'VISA',
-      expiryMonth: splitText[0],
-      expiryYear: `20${splitText[1]}`,
+      expiryMonth: data.expiryMonth,
+      expiryYear: `20${data.expiryYear}`,
       address_line_1: data.addressLine1,
       address_line_2: null,
       city: data.city,
@@ -174,21 +181,54 @@ export default function Billing() {
                       </div>
 
                       <div className="category-form-input">
-                        <div className="form-input mb-4">
-                          <label className="form-label">Expiry date</label>
+                        <div className="form-input mb-2">
+                          <label className="form-label">Expiry month</label>
+                          <Controller
+                            name={'expiryMonth'}
+                            control={control}
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                className="basic-single_top"
+                                classNamePrefix="select"
+                                placeholder="Select Month"
+                                styles={categoryStyle}
+                                components={{
+                                  IndicatorSeparator: () => null,
+                                }}
+                                theme={(theme) => ({
+                                  ...theme,
+                                  colors: {
+                                    ...theme.colors,
+                                    primary25: '#fbf5f0',
+                                    primary: '#bd6f34',
+                                  },
+                                })}
+                                options={monthOption}
+                              />
+                            )}
+                          />
+                          {errors?.expiryMonth && (
+                            <span className="error-text">
+                              {errors?.expiryMonth?.message}
+                            </span>
+                          )}
+                        </div>
+                        <div className="form-input mb-2">
+                          <label className="form-label">Expiry year</label>
                           <input
                             type="text"
                             className="form-control mb-0"
                             id=""
-                            placeholder="MM/YY"
-                            name="expiryDate"
-                            {...register('expiryDate', {
+                            placeholder={new Date().getFullYear()}
+                            name="expiryYear"
+                            {...register('expiryYear', {
                               required: true,
                             })}
                           />
-                          {errors?.expiryDate && (
+                          {errors?.expiryYear && (
                             <span className="error-text">
-                              {errors?.expiryDate?.message}
+                              {errors?.expiryYear?.message}
                             </span>
                           )}
                         </div>
