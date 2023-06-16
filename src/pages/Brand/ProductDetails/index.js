@@ -35,6 +35,7 @@ import {
 } from '../../../actions/brandActions';
 import { getCountriesAction } from '../../../actions/generalActions';
 import { selectStates } from '../../../redux/General/States/getStatesSelector';
+import { Parser } from 'html-to-react';
 
 export default function ProductDetails() {
   const [image, setimage] = useState(ProductUrl);
@@ -49,6 +50,7 @@ export default function ProductDetails() {
   const shippingDetailsRes = useSelector(selectShippingData);
   const shippingTimes = useSelector(shippingTime);
   const [shippingData, setShippingData] = useState({});
+  const [orderImages, setOrderImages] = useState([]);
   const statesOption = useSelector(selectStates);
 
   const transformStatesOption = statesOption?.map((el) => {
@@ -73,7 +75,6 @@ export default function ProductDetails() {
   };
 
   useEffect(() => {
-    console.log(shippingDetailsRes, 'shippingDetailsRes');
     if (shippingDetailsRes?.shippingDetails) {
       formatShippingDetails(
         shippingDetailsRes?.shippingDetails?.brand_details.shipping_rate
@@ -171,7 +172,9 @@ export default function ProductDetails() {
         ...productDetails?.categories,
       };
       map(orderArray, (cat, key) => {
-        value = value == '' ? `${cat?.name}` : `${value} > ${cat?.name}`;
+        if (cat?.name) {
+          value = value == '' ? `${cat?.name}` : `${value} > ${cat?.name}`;
+        }
       });
     }
     return value;
@@ -185,6 +188,23 @@ export default function ProductDetails() {
     if (response.isSuccess) {
       dispatch(getProductDetailsAction(params.id));
     }
+  };
+
+  useEffect(() => {
+    handleImageOrder();
+  }, [productDetails?.productDetails?.product_images]);
+
+  const handleImageOrder = () => {
+    const array1 = [];
+    const array2 = [];
+    map(productDetails?.productDetails?.product_images, (img, key) => {
+      if (img.is_main == '1') {
+        array1.push(img);
+      } else {
+        array2.push(img);
+      }
+    });
+    setOrderImages([...array1, ...array2]);
   };
 
   return (
@@ -380,29 +400,26 @@ export default function ProductDetails() {
                         id="swiper-wrapper-61653a910e210be737"
                         aria-live="polite"
                       >
-                        {map(
-                          productDetails?.productDetails?.product_images,
-                          (productImage, key) => {
-                            const currentKey = key + 1;
-                            return (
-                              <div
-                                className={`swiper-slide swiper-slide-visible ${
-                                  swipedImage === currentKey &&
-                                  'swiper-slide-thumb-active'
-                                } `}
-                                onClick={() => handaleChangeImage(currentKey)}
-                                role="group"
-                                aria-label="1 / 3"
-                              >
-                                <div className="image">
-                                  <picture>
-                                    <img src={productImage.src} alt="" />
-                                  </picture>
-                                </div>
+                        {map(orderImages, (productImage, key) => {
+                          const currentKey = key + 1;
+                          return (
+                            <div
+                              className={`swiper-slide swiper-slide-visible ${
+                                swipedImage === currentKey &&
+                                'swiper-slide-thumb-active'
+                              } `}
+                              onClick={() => handaleChangeImage(currentKey)}
+                              role="group"
+                              aria-label="1 / 3"
+                            >
+                              <div className="image">
+                                <picture>
+                                  <img src={productImage.src} alt="" />
+                                </picture>
                               </div>
-                            );
-                          }
-                        )}
+                            </div>
+                          );
+                        })}
                       </div>
                       <span
                         className="swiper-notification"
@@ -420,27 +437,24 @@ export default function ProductDetails() {
                         id="swiper-wrapper-9a3741016670105a3b"
                         aria-live="polite"
                       >
-                        {map(
-                          productDetails?.productDetails?.product_images,
-                          (productImage, key) => {
-                            return (
-                              <div
-                                className={`swiper-slide ${
-                                  swipedImage === 1 &&
-                                  'swiper-slide-visible swiper-slide-active'
-                                } ${swipedImage === 2 && 'swiper-slide-prev'}`}
-                                role="group"
-                                aria-label="1 / 3"
-                              >
-                                <div className="image">
-                                  <picture>
-                                    <img src={productImage.src} alt="" />
-                                  </picture>
-                                </div>
+                        {map(orderImages, (productImage, key) => {
+                          return (
+                            <div
+                              className={`swiper-slide ${
+                                swipedImage === 1 &&
+                                'swiper-slide-visible swiper-slide-active'
+                              } ${swipedImage === 2 && 'swiper-slide-prev'}`}
+                              role="group"
+                              aria-label="1 / 3"
+                            >
+                              <div className="image">
+                                <picture>
+                                  <img src={productImage.src} alt="" />
+                                </picture>
                               </div>
-                            );
-                          }
-                        )}
+                            </div>
+                          );
+                        })}
 
                         {/* <div
                           className={`swiper-slide ${
@@ -538,7 +552,7 @@ export default function ProductDetails() {
                     </div>
                   </div>
                   <h2 className="h1">
-                    {productDetails?.productDetails?.body_html}
+                    {Parser().parse(productDetails?.productDetails?.body_html)}
                   </h2>
                   <p>{productDetails?.productDetails?.details}</p>
                   {/* <div className="for">

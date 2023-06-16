@@ -200,6 +200,7 @@ export default function BrandOnBoarding() {
                         <OnboardListUI
                           {...l}
                           key={curentKey}
+                          isOnboarding={l.isOnboarding}
                           isCompleted={isCompleted}
                           isActive={curentKey == activeStep}
                           openGuide={
