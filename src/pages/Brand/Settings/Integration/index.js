@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   connectShopifyAction,
   disconnectShopifyAction,
+  syncProductAction,
 } from '../../../../actions/brandActions';
 import Warning from '../../../../assets/images/icons/icon-outline.svg';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
@@ -10,7 +11,7 @@ import { useEffect } from 'react';
 import Avtar1 from '../../images/shopify_logo_whitebg.jpg';
 import { selectBrandProfileDetails } from '../../../../redux/Brand/Profile/brandProfileSelectors';
 import DisconnectModal from './DisconnectModal';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 
 export default function BrandSetting() {
@@ -47,7 +48,10 @@ export default function BrandSetting() {
 
   const connectStore = () => {
     if (storeUrl) {
-      if(shopNameRegex.test(storeUrl) && !storeUrl.includes('.myshopify.com')){
+      if (
+        shopNameRegex.test(storeUrl) &&
+        !storeUrl.includes('.myshopify.com')
+      ) {
         setStoreUrlError(false);
         dispatch(
           connectShopifyAction({
@@ -69,7 +73,7 @@ export default function BrandSetting() {
   };
 
   const handleReconnect = () => {
-    if(shopNameRegex.test(storeUrl) && !storeUrl.includes('.myshopify.com')) {
+    if (shopNameRegex.test(storeUrl) && !storeUrl.includes('.myshopify.com')) {
       setStoreUrlError(false);
       dispatch(
         disconnectShopifyAction({
@@ -89,6 +93,13 @@ export default function BrandSetting() {
 
   const onCancelClick = () => {
     setOpenDisconnectModal(false);
+  };
+
+  const handleAddProduct = async () => {
+    const productresponse = await dispatch(syncProductAction(useDetails.id));
+    if (productresponse) {
+      toast.success('Product added successfully');
+    }
   };
 
   return (
@@ -173,7 +184,19 @@ export default function BrandSetting() {
                             onClick={() => setOpenDisconnectModal(true)}
                             className="button button-dark"
                           >
-                            Disconnect
+                            Disconnect from Shopify
+                          </button>
+                          <button
+                            style={{
+                              marginLeft: 16,
+                              background: '#2870A5',
+                              borderColor: '#2870A5',
+                              color: 'white',
+                            }}
+                            onClick={handleAddProduct}
+                            className="button button-dark-2"
+                          >
+                            Add Product
                           </button>
                         </div>
                       </div>
@@ -227,6 +250,7 @@ export default function BrandSetting() {
           </div>
         </div>
       </div>
+      <ToastContainer />
       <DisconnectModal
         open={openDisconnectModal}
         onCancel={onCancelClick}
