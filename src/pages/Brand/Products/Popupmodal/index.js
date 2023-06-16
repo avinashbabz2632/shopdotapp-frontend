@@ -7,9 +7,42 @@ import stockYellowAlert from '../../../../assets/images/icons/yellow-warning.svg
 import saveIcon from '../../../../assets/images/icons/save.svg';
 import info from '../../../../assets/images/icons/info-blue.svg';
 import logoPng from '../../../../assets/images/logos/logo-png.png';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { cloneDeep, map } from 'lodash';
 
 export default function PopupModal(props) {
-  const { variantdata, handalPopup } = props;
+  const { variantdata, handalPopup, handleVarient } = props;
+  const [updateData, setUpdateData] = useState([]);
+
+  useEffect(() => {
+    setUpdateData(variantdata);
+  }, []);
+
+  const handleTextChange = (e, key, typeKey) => {
+    let updateArray = cloneDeep(updateData);
+    updateArray[key][typeKey] = e.target.value;
+    setUpdateData(updateArray);
+  };
+
+  const handleSave = async () => {
+    let currentData = [];
+    await map(updateData, (d, key) => {
+      let data = {
+        sku: d.sku,
+        msrp: d.price,
+        wsp: d.wsp,
+        status: d.status,
+        id: d.id,
+      };
+      currentData.push(data);
+    });
+    handleVarient({
+      product_id: updateData?.[0]?.product_id,
+      product_variant: currentData,
+    });
+  };
+
   return (
     <div className="popup my-product-modal active">
       <div className="popup_wrapper">
@@ -26,7 +59,10 @@ export default function PopupModal(props) {
                 >
                   Cancel{' '}
                 </button>
-                <button className="button button-orange-dark">
+                <button
+                  onClick={handleSave}
+                  className="button button-orange-dark"
+                >
                   <span className="icon-size">
                     <img src={saveIcon} className="icon" />
                   </span>
@@ -136,7 +172,7 @@ export default function PopupModal(props) {
                     </tr>
                   </thead>
                   <tbody className="scroll-table">
-                    {variantdata.map((e, i) => (
+                    {updateData.map((e, i) => (
                       <tr key={i}>
                         <td>
                           <div className="image image--cover image--1-1">
@@ -175,8 +211,11 @@ export default function PopupModal(props) {
                             <input
                               type="text"
                               className="tabel-text"
-                              placeholder="$10.95"
+                              placeholder="$00.00"
                               value={e.wsp}
+                              onChange={(event) => {
+                                handleTextChange(event, i, 'wsp');
+                              }}
                             />
                           </div>
                         </td>
@@ -185,8 +224,11 @@ export default function PopupModal(props) {
                             <input
                               type="text"
                               className="tabel-text"
-                              placeholder="$15.95"
+                              placeholder="$00.00"
                               value={e.price}
+                              onChange={(event) => {
+                                handleTextChange(event, i, 'price');
+                              }}
                             />
                           </div>
                         </td>
