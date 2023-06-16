@@ -1019,7 +1019,7 @@ export default function ProductTable(props) {
                             >
                               {
                                 ele?.product_categories?.[0]?.parent_category
-                                  ?.name
+                                  ?.super_category?.main_category
                               }
                             </p>
                           )}

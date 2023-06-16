@@ -38,7 +38,7 @@ import { selectUserDetails } from '../../../redux/user/userSelector';
 import { ToastContainer, toast } from 'react-toastify';
 import { selectProfileCompleted } from '../../../redux/Brand/Profile/brandProfileSelectors';
 import { uploadImageAction } from '../../../actions/userActions';
-import { cloneDeep, map } from 'lodash';
+import { cloneDeep, map, remove } from 'lodash';
 import { setProductDetails } from '../../../redux/Brand/Products/productSlice';
 
 const FormValidationSchema = yup.object().shape({
@@ -208,8 +208,12 @@ export default function EditProductDetails() {
   };
 
   const removeImage = (i) => {
-    multipleImages.splice(i, 1);
-    setMultipleImages([...multipleImages]);
+    let updateImage = cloneDeep(multipleImages);
+    remove(updateImage, (d, k) => {
+      return k === i;
+    });
+
+    setMultipleImages(updateImage);
   };
 
   const renderProductImages = (data) => {
@@ -377,13 +381,7 @@ export default function EditProductDetails() {
     const variantsObjArr = transformVariants();
     console.log(activeVariants, 'act');
 
-    if (
-      wspError ||
-      msrpError ||
-      !selectedProductCatId ||
-      !selectedProductSubCatId
-    )
-      return;
+    if (wspError || msrpError || !selectedProductCatId) return;
     const updateImage = [];
     map(multipleImages, (img, i) => {
       let data = {
@@ -742,6 +740,8 @@ export default function EditProductDetails() {
                                     // value={selectedProductCatId}
                                     onChange={(e) => {
                                       setSelectedProductCatId(e.target.value);
+                                      setSelectedProductSubCatId(null);
+                                      setSelectedProductGroupId(null);
                                     }}
                                   >
                                     <option value="">Select a category</option>
@@ -763,11 +763,12 @@ export default function EditProductDetails() {
                                       selectedProductCatId == null ||
                                       selectedProductCatId == undefined
                                     }
-                                    onChange={(event) =>
+                                    onChange={(event) => {
                                       setSelectedProductSubCatId(
                                         event.target.value
-                                      )
-                                    }
+                                      );
+                                      setSelectedProductGroupId(null);
+                                    }}
                                   >
                                     <option value="">
                                       Select a subcategory
