@@ -28,7 +28,7 @@ import { getStatesAction } from '../../../../actions/generalActions';
 export default function Billing() {
   const dispatch = useDispatch();
   const [addCredit, setAddCredit] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isConfirmModel, setIsConfirmModel] = useState(false);
   const [isRemoveModel, setIsRemoveModel] = useState(false);
   const [dataArray, setDataArray] = useState([]);
@@ -97,6 +97,10 @@ export default function Billing() {
           paid: true,
         })
       );
+      setIsOpen(true);
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 3000);
     } else {
       setShowError(
         response && response.data && response.data.errors
@@ -107,10 +111,6 @@ export default function Billing() {
     // setDataArray(newDataArray);
     // reset();
     // setAddCredit(false);
-    // setIsOpen(true);
-    // setTimeout(() => {
-    //   setIsOpen(false);
-    // }, 3000);
   };
 
   const getDefaultValueOfStateField = () => {
@@ -494,7 +494,7 @@ export default function Billing() {
             </div>
           </div>
         </div>
-        {isOpen && dataArray?.length > 0 && (
+        {isOpen && (
           <div className="bottom-notify active">
             <div className="container">
               <div className="bottom-notify_text">
