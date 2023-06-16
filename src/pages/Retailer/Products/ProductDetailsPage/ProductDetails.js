@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import RetailerHeader from '../../common/components/RetailerHeader';
-import FirstImg from '../../../../assets/first_img.jpeg';
-import SecondImg from '../../../../assets/second_img.jpeg';
-import ThirdImg from '../../../../assets/third_img.jpeg';
-import FourImg from '../../../../assets/fourth_img.jpeg';
-import FiveImg from '../../../../assets/fifth_img.webp';
-import SixImg from '../../../../assets/sixth_img.webp';
-import SevenImg from '../../../../assets/seventh_img.webp';
-import EightImg from '../../../../assets/eighth_img.webp';
-import NineImg from '../../../../assets/nineth_img.webp';
-import TenImg from '../../../../assets/tenth_img.webp';
-import ElevenImg from '../../../../assets/eleventh_img.webp';
 import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
 import singleSquareImage from '../../../Brand/images/single-square.jpg';
 import mailIcon from '../../../../assets/images/icons/mail-icon.svg';
@@ -26,26 +15,25 @@ import closeIcon from '../../../../assets/images/icons/icon-newclose.svg';
 import LeftArrow from '../../images/icons/icon-chevron--left.svg';
 import ZoomIcon from '../../images/icons/icon-zoom.svg';
 import ProductZoomModal from './ProductZoomModel';
-import { retailerProductData } from '../../Brand/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
-import { getRetailerProductDetailsAction, retailerNewConnectionRequestAction } from '../../../../actions/retailerActions';
+import {
+  getRetailerProductDetailsAction,
+  retailerNewConnectionRequestAction,
+} from '../../../../actions/retailerActions';
 import { selectRetailerProductDetails } from '../../../../redux/Brand/Retailer/retailerSelector';
-import { selectLoggedInUser } from '../../../../redux/auth/authSelector';
-// import { setProductActiveValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
 
 function ProductDetails() {
   const setActiveOpen = false; //useSelector(setProductActiveValue);
   const [slideIndex, setSlideIndex] = useState(0);
   const [isActiveButton, setIsActiveButton] = useState(false);
   const [zoomProduct, setZoomProduct] = useState(false);
-  const [profileData, setProfileData] = useState(null);
   const [connectStatus, setConnectStatus] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
   const retailerProductsData = useSelector(selectRetailerProductDetails);
-  console.log('retailerProducts----', retailerProductsData);
-  const { productDetails, total_stock_quantity, categories } = retailerProductsData || {};
+  const { productDetails, total_stock_quantity, categories } =
+    retailerProductsData || {};
   const {
     user,
     product_variants,
@@ -72,10 +60,16 @@ function ProductDetails() {
 
   useEffect(() => {
     setSetActiveOpenVal(setActiveOpen);
-    if(retailerProductsData?.productDetails?.user?.invitees?.length > 0){
-      setConnectStatus(retailerProductsData.productDetails.user.invitees[0].invite_status)
-    }else if(retailerProductsData?.productDetails?.user?.inviters?.length > 0){
-      setConnectStatus(retailerProductsData.productDetails.user.inviters[0].invite_status)
+    if (retailerProductsData?.productDetails?.user?.invitees?.length > 0) {
+      setConnectStatus(
+        retailerProductsData.productDetails.user.invitees[0].invite_status
+      );
+    } else if (
+      retailerProductsData?.productDetails?.user?.inviters?.length > 0
+    ) {
+      setConnectStatus(
+        retailerProductsData.productDetails.user.inviters[0].invite_status
+      );
     }
   }, [setActiveOpen]);
 
@@ -100,7 +94,7 @@ function ProductDetails() {
 
   const getProductDetails = () => {
     dispatch(getRetailerProductDetailsAction(params?.id));
-  }
+  };
   useEffect(() => {
     getProductDetails();
   }, []);
@@ -130,19 +124,16 @@ function ProductDetails() {
   };
 
   const handleConnectButton = () => {
-    dispatch(retailerNewConnectionRequestAction({
-      "invitee_id": retailerProductsData?.productDetails?.user.id,
-      "invite_via": "retailer_request"
-    }))
+    dispatch(
+      retailerNewConnectionRequestAction({
+        invitee_id: retailerProductsData?.productDetails?.user.id,
+        invite_via: 'retailer_request',
+      })
+    );
     setIsOpen(true);
     setTimeout(() => {
       setIsOpen(false);
     }, 4000);
-  };
-
-  const getWSPTotal = () => {
-    let wspTotal = 0;
-    // if()
   };
 
   return (
@@ -263,7 +254,14 @@ function ProductDetails() {
                             <div className="product-detail_image">
                               <div className="image image--cover image--1-1">
                                 <picture>
-                                  <img src={singleSquareImage} alt="" />
+                                  <img
+                                    src={
+                                      brand_details?.store_logo
+                                        ? brand_details?.store_logo
+                                        : singleSquareImage
+                                    }
+                                    alt=""
+                                  />
                                 </picture>
                               </div>
                             </div>
@@ -426,12 +424,15 @@ function ProductDetails() {
                               </div>
                               <div
                                 className={`swiper-button-next ${
-                                  slideIndex === product_images?.length - 1 && 'swiper-button-disabled'
+                                  slideIndex === product_images?.length - 1 &&
+                                  'swiper-button-disabled'
                                 }`}
                                 role="button"
                                 aria-label="Next slide"
                                 aria-controls="swiper-wrapper-9a3741016670105a3b"
-                                aria-disabled={slideIndex === product_images?.length - 1}
+                                aria-disabled={
+                                  slideIndex === product_images?.length - 1
+                                }
                               >
                                 <div
                                   className="icon"
@@ -467,11 +468,17 @@ function ProductDetails() {
                           <div className="product-category">
                             <div className="title category-items">
                               Category:&nbsp;
-                              <span>{group?.name}</span>
-                              &gt;
-                              <span>{mainCategory?.name}</span>
-                              &gt;
-                              <span>{subCategory?.name}</span>
+                              {group?.name && <span>{group?.name}</span>}
+                              {mainCategory?.name && (
+                                <>
+                                  &gt;<span>{mainCategory?.name}</span>
+                                </>
+                              )}
+                              {subCategory?.name && (
+                                <>
+                                  &gt;<span>{subCategory?.name}</span>
+                                </>
+                              )}
                             </div>
                           </div>
                           <>{body_html}</>
@@ -758,21 +765,20 @@ function ProductDetails() {
                                     Retailer has to have an online store.
                                   </p>
                                 </div>
-                                {/* <div className="brand-single_about-buttons">
-                                                            <a
-                                                                href="#"
-                                                                className="button button-dark large"
-                                                            >
-                                                                View All
-                                                                Products (31)
-                                                            </a>
-                                                            <a
-                                                                href="#"
-                                                                className="button large message-brand"
-                                                            >
-                                                                Message Brand
-                                                            </a>
-                                                        </div> */}
+                                <div className="brand-single_about-buttons">
+                                  <a
+                                    href="#"
+                                    className="button button-dark large"
+                                  >
+                                    View All Products (31)
+                                  </a>
+                                  <a
+                                    href="#"
+                                    className="button large message-brand"
+                                  >
+                                    Message Brand
+                                  </a>
+                                </div>
                               </div>
                             </div>
                             <div className="brand-single_info">
@@ -802,7 +808,13 @@ function ProductDetails() {
               <div className="bottom-notify active">
                 <div className="container">
                   <div className="bottom-notify_text">
-                    <p>Request to connect sent to {retailerProductsData?.productDetails?.user?.brand_details?.store_name}</p>
+                    <p>
+                      Request to connect sent to{' '}
+                      {
+                        retailerProductsData?.productDetails?.user
+                          ?.brand_details?.store_name
+                      }
+                    </p>
                   </div>
                 </div>
                 <div className="bottom-notify-close">
