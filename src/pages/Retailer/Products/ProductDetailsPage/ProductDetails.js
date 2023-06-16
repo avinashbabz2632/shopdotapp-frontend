@@ -17,6 +17,10 @@ import ZoomIcon from '../../images/icons/icon-zoom.svg';
 import ProductZoomModal from './ProductZoomModel';
 import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
+import logoPng from '../../../../assets/images/logos/logo-png.png';
+import logoMain from '../../../../assets/images/logos/logo-main.png';
+
+
 import {
   getRetailerProductDetailsAction,
   retailerNewConnectionRequestAction,
@@ -335,7 +339,7 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                {product_images &&
+                                {product_images ?
                                   product_images?.map((productImage, index) => {
                                     return (
                                       <div
@@ -358,7 +362,25 @@ function ProductDetails() {
                                         </div>
                                       </div>
                                     );
-                                  })}
+                                  }) : <div
+                                  className={`swiper-slide swiper-slide-visible ${
+                                    slideIndex === index &&
+                                    'swiper-slide-thumb-active'
+                                  } `}
+                                  onClick={() => setSlideIndex(index)}
+                                  style={{
+                                    marginBottom: '1px',
+                                  }}
+                                >
+                                  <div className="image">
+                                    <picture>
+                                      <img
+                                        src={logoMain}
+                                        alt=""
+                                      />
+                                    </picture>
+                                  </div>
+                                </div>}
                               </div>
                               <span
                                 className="swiper-notification"
@@ -380,7 +402,7 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                {product_images &&
+                                {product_images ?
                                   product_images?.map((productImage, index) => {
                                     return (
                                       <div
@@ -404,7 +426,26 @@ function ProductDetails() {
                                         </div>
                                       </div>
                                     );
-                                  })}
+                                  }) : <div
+                                  className="swiper-slide"
+                                  role="group"
+                                  aria-label="1 / 11"
+                                  style={{
+                                    width: '480px',
+                                  }}
+                                >
+                                  <div
+                                    className="image"
+                                    onClick={() => handalSwipeLeftImage()}
+                                  >
+                                    <picture>
+                                      <img
+                                        src={logoMain}
+                                        alt=""
+                                      />
+                                    </picture>
+                                  </div>
+                                </div>}
                               </div>
                               <div
                                 className={`swiper-button-prev ${
@@ -569,7 +610,7 @@ function ProductDetails() {
                                       <td>
                                         <div className="image image--cover image--1-1">
                                           <picture>
-                                            <img src={summer} alt="" />
+                                            <img src={item?.image ? item?.image : logoPng} alt="" />
                                           </picture>
                                         </div>
                                       </td>
