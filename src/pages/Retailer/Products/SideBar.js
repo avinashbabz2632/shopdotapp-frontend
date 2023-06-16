@@ -672,7 +672,7 @@ function SideBar() {
                               {allTimeSale.max &&
                               parseInt(allTimeSale.max) <
                                 parseInt(allTimeSale.min)
-                                ? 'max is less than min value'
+                                ? 'Min must be less than Max'
                                 : null}
                             </span>
                           </div>

@@ -45,7 +45,7 @@ function ProductDetails() {
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
   const retailerProductsData = useSelector(selectRetailerProductDetails);
   console.log('retailerProducts----', retailerProductsData);
-  const { productDetails, total_stock_quantity } = retailerProductsData || {};
+  const { productDetails, total_stock_quantity, categories } = retailerProductsData || {};
   const {
     user,
     product_variants,
@@ -65,6 +65,7 @@ function ProductDetails() {
   const { shipping_rate } = brand_details || {};
   const { shipping_address, incremental_fee, shipping_cost } =
     shipping_rate || {};
+  const { group, mainCategory, subCategory } = categories || {};
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
@@ -105,8 +106,8 @@ function ProductDetails() {
   }, []);
 
   const getStatus = () => {
-    const { invitees, inviters } = user || {};
-    const isNotConnected = invitees.length === 0 && inviters.length === 0;
+    const { invitees = [], inviters = [] } = user || {};
+    const isNotConnected = invitees?.length === 0 && inviters?.length === 0;
     let status;
     if (isNotConnected) {
       status = 'Not Connected';
@@ -466,11 +467,11 @@ function ProductDetails() {
                           <div className="product-category">
                             <div className="title category-items">
                               Category:&nbsp;
-                              <span>Baby &amp; Kids</span>
+                              <span>{group?.name}</span>
                               &gt;
-                              <span>Bath &amp; Safety</span>
+                              <span>{mainCategory?.name}</span>
                               &gt;
-                              <span>Bab Monitors</span>
+                              <span>{subCategory?.name}</span>
                             </div>
                           </div>
                           <>{body_html}</>
