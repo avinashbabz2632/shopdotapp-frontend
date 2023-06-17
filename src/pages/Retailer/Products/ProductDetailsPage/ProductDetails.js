@@ -339,7 +339,7 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                {product_images ?
+                                {product_images && product_images.length > 0 ?
                                   product_images?.map((productImage, index) => {
                                     return (
                                       <div
@@ -364,10 +364,9 @@ function ProductDetails() {
                                     );
                                   }) : <div
                                   className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === index &&
+                                    slideIndex === 0 &&
                                     'swiper-slide-thumb-active'
                                   } `}
-                                  onClick={() => setSlideIndex(index)}
                                   style={{
                                     marginBottom: '1px',
                                   }}
@@ -402,7 +401,7 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                {product_images ?
+                                {product_images && product_images.length > 0 ?
                                   product_images?.map((productImage, index) => {
                                     return (
                                       <div
@@ -465,14 +464,14 @@ function ProductDetails() {
                               </div>
                               <div
                                 className={`swiper-button-next ${
-                                  slideIndex === product_images?.length - 1 &&
+                                  slideIndex === (product_images?.length === 0 ? 0 : product_images?.length -1) &&
                                   'swiper-button-disabled'
                                 }`}
                                 role="button"
                                 aria-label="Next slide"
                                 aria-controls="swiper-wrapper-9a3741016670105a3b"
                                 aria-disabled={
-                                  slideIndex === product_images?.length - 1
+                                  slideIndex === (product_images?.length === 0 ? 0 : product_images?.length -1)
                                 }
                               >
                                 <div
@@ -707,7 +706,7 @@ function ProductDetails() {
                                   <div className="brand-img">
                                     <a href="brand-single.html">
                                       <picture>
-                                        <img src={singleSquareImage} alt="" />
+                                        <img src={brand_details?.store_logo} alt="" />
                                       </picture>
                                     </a>
                                   </div>
@@ -806,7 +805,7 @@ function ProductDetails() {
                                     Retailer has to have an online store.
                                   </p>
                                 </div>
-                                <div className="brand-single_about-buttons">
+                                {/* <div className="brand-single_about-buttons">
                                   <a
                                     href="#"
                                     className="button button-dark large"
@@ -819,7 +818,7 @@ function ProductDetails() {
                                   >
                                     Message Brand
                                   </a>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                             <div className="brand-single_info">
