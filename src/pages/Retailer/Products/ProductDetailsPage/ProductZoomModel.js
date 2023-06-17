@@ -15,6 +15,8 @@ import ElevenImg from '../../../../assets/eleventh_img.webp';
 import closeIcon from '../../../Brand/images/icons/close-icon.svg';
 import LeftArrow from '../../../Brand/images/icons/icon-arrow-black.svg';
 import RightArrow from '../../../Brand/images/icons/icon-arrow-right-black.svg';
+import logoMain from '../../../../assets/images/logos/logo-main.png';
+
 
 export default function ProductZoomModal(props) {
   const { handalModal, productImages } = props;
@@ -45,7 +47,7 @@ export default function ProductZoomModal(props) {
                   transitionDuration: '1000ms',
                 }}
               >
-                {productImages &&
+                {productImages && productImages.length > 0 ?
                   productImages.map((image, index) => {
                     return (
                       <div
@@ -60,7 +62,17 @@ export default function ProductZoomModal(props) {
                         </div>
                       </div>
                     );
-                  })}
+                  }) : <div
+                  className="swiper-slide"
+                  role="group"
+                  aria-label="1 / 11"
+                >
+                  <div className="image">
+                    <picture>
+                      <img src={logoMain} alt="" />
+                    </picture>
+                  </div>
+                </div>}
               </div>
               <div
                 className={`swiper-button-prev ${
@@ -76,12 +88,12 @@ export default function ProductZoomModal(props) {
               </div>
               <div
                 className={`swiper-button-next ${
-                  slideIndex === productImages?.length - 1 && 'swiper-button-disabled'
+                  slideIndex === (productImages?.length === 0 ? 0 : productImages?.length -1) && 'swiper-button-disabled'
                 }`}
                 role="button"
                 aria-label="Next slide"
                 aria-controls="swiper-wrapper-9a3741016670105a3b"
-                aria-disabled={slideIndex === productImages?.length - 1}
+                aria-disabled={slideIndex === (productImages?.length === 0 ? 0 : productImages?.length -1)}
                 onClick={() => handalSwipeRightImage()}
               >
                 <img className="icon-left-right" src={RightArrow} />
