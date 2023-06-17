@@ -322,7 +322,7 @@ function ProductDetails() {
                           {/* <!--Added latest detail end--> */}
                         </div>
                       </div>
-                      <div className="product">
+                      <div className="product_main">
                         <div className="product_slider">
                           <div className="product_slider-thumbs">
                             <div className="swiper-container gallery-thumbs swiper-initialized swiper-vertical swiper-pointer-events swiper-thumbs">
