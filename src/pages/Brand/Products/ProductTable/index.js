@@ -1017,10 +1017,18 @@ export default function ProductTable(props) {
                                 handalCategoryPopup([], 'category', ele.id, ele)
                               }
                             >
-                              {
-                                ele?.product_categories?.[0]?.parent_category
-                                  ?.super_category?.main_category
-                              }
+                              {ele?.product_categories?.[0]?.parent_category
+                                ?.super_category?.main_category
+                                ? ele?.product_categories?.[0]?.parent_category
+                                    ?.super_category?.main_category
+                                : ele?.product_categories?.[0]?.parent_category
+                                    ?.sub_category
+                                ? ele?.product_categories?.[0]?.parent_category
+                                    ?.sub_category
+                                : ele?.product_categories?.[0]?.parent_category
+                                ? ele?.product_categories?.[0]?.parent_category
+                                    ?.name
+                                : ''}
                             </p>
                           )}
                         </div>
