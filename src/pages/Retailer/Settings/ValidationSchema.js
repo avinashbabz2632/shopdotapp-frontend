@@ -37,59 +37,40 @@ export const retailerBillingValidationSchema = yup.object().shape({
       'Credit Card number is invalid',
       (value) => valid.number(value).isValid
     ),
-  expiryDate: yup
+  expiryYear: yup
     .string()
-    .typeError('Not a valid expiration date. Example: MM/YY')
-    .max(5, 'Not a valid expiration date. Example: MM/YY')
-    .matches(
-      /([0-9]{2})\/([0-9]{2})/,
-      'Not a valid expiration date. Example: MM/YY'
-    )
-    .test(
-      'test-credit-card-expiration-date',
-      'Invalid Expiration Date has past',
-      (expirationDate) => {
-        if (!expirationDate) {
-          return false;
-        }
+    // .typeError('Not a valid expiration date. Example: YY')
+    .max(2).min(2)
+    // .matches(
+    //   /([0-9]{2})/,
+    //   'Not a valid expiration date. Example: YY'
+    // )
+    // .test(
+    //   'test-credit-card-expiration-date',
+    //   'Enter future date',
+    //   (expirationDate) => {
+    //     if (!expirationDate) {
+    //       return false;
+    //     }
+    //     const today = new Date();
+    //     const monthToday = today.getMonth() + 1;
+    //     const yearToday = today.getFullYear().toString().substr(-2);
 
-        const today = new Date();
-        const monthToday = today.getMonth() + 1;
-        const yearToday = today.getFullYear().toString().substr(-2);
+    //     const expYear = expirationDate;
+    //     if (Number(expYear) < Number(yearToday)) {
+    //       return false;
+    //     } else if (
+    //       // Number(expMonth) < monthToday &&
+    //       Number(expYear) <= Number(yearToday)
+    //     ) {
+    //       return false;
+    //     }
 
-        const [expMonth, expYear] = expirationDate.split('/');
-
-        if (Number(expYear) < Number(yearToday)) {
-          return false;
-        } else if (
-          Number(expMonth) < monthToday &&
-          Number(expYear) <= Number(yearToday)
-        ) {
-          return false;
-        }
-
-        return true;
-      }
-    )
-    .test(
-      'test-credit-card-expiration-date',
-      'Invalid Expiration Month',
-      (expirationDate) => {
-        if (!expirationDate) {
-          return false;
-        }
-        const today = new Date().getFullYear().toString().substr(-2);
-
-        const [expMonth] = expirationDate.split('/');
-
-        if (Number(expMonth) > 12) {
-          return false;
-        }
-
-        return true;
-      }
-    )
-    .required('Expiration date is required'),
+    //     return true;
+    //   }
+    // )
+    .required('Expiration year is required'),
+  expiryMonth: yup.object().required("Please select expiry month"),
   cvv: yup.string().min(3).max(3).required('CVV is required.'),
   nameOnCard: yup.string().required('Name on Card is required.'),
   addressLine1: yup.string().required('Address 1 is required.'),

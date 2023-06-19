@@ -36,6 +36,9 @@ export default function Billing() {
   const [billList, setBillList] = useState([]);
   const [transformStatesOption, setTransformStatesOption] = useState([]);
   const [monthOption, setMonthOption] = useState([]);
+  const [expYear, setExpYear] = useState(null)
+  const [expMonth, setExpMonth] = useState(null)
+  const [expError, setExpError] = useState(null)
 
   const statesOption = useSelector(selectStates);
 
@@ -80,6 +83,9 @@ export default function Billing() {
   };
 
   const onSubmit = async (data) => {
+    if(expError){
+      return false
+    }
     const formData = {
       legal_name: data.nameOnCard,
       cardNumber: data.cardNumber.toString(),
@@ -135,7 +141,32 @@ export default function Billing() {
   const handleRemoveModelClose = useCallback(() => {
     setIsRemoveModel(false);
   }, [isRemoveModel]);
+  const handleMonthAndYearChange = (e) => {
+    let year = ""
+    let month = ""
+    if(e.target){
+      month = expMonth
+      year = e.target.value
+      setExpYear(e.target.value)
+    }else{
+      year = expYear
+      month = e.value
+      setExpMonth(e.value);
+    }
+    if(expMonth && expYear){
+      const today = new Date();
+      const someday = new Date();
+      console.log(month, year);
+      someday.setFullYear("20"+year, month, 1);
 
+      if (someday < today) {
+        setExpError("Please select future date")
+        return false;
+      }else{
+        setExpError(null)
+      }
+    }
+  }
   return addCredit === true ? (
     <div className="products_content">
       <div className="products_body">
@@ -193,6 +224,7 @@ export default function Billing() {
                                 classNamePrefix="select"
                                 placeholder="Select Month"
                                 styles={categoryStyle}
+                                onChange={handleMonthAndYearChange}
                                 components={{
                                   IndicatorSeparator: () => null,
                                 }}
@@ -220,17 +252,25 @@ export default function Billing() {
                             type="text"
                             className="form-control mb-0"
                             id=""
-                            placeholder={new Date().getFullYear()}
+                            placeholder={new Date().getFullYear().toString().substr(-2)}
                             name="expiryYear"
                             {...register('expiryYear', {
                               required: true,
                             })}
+                            onChange={handleMonthAndYearChange}
                           />
                           {errors?.expiryYear && (
                             <span className="error-text">
                               {errors?.expiryYear?.message}
                             </span>
                           )}
+                          {
+                            expError && (
+                              <span className="error-text">
+                              {expError}
+                            </span>
+                            )
+                          }
                         </div>
                         <div className="form-input mb-4">
                           <label className="form-label">CVV</label>
