@@ -131,7 +131,7 @@ function App() {
     }
 
     if (isLogged) {
-      if (userDetails?.role?.name) {
+      if (isRoleUpdated || userDetails?.role?.name) {
         if (
           pathname === '/brand-onboarding' ||
           pathname === '/retailer-onboarding' ||
