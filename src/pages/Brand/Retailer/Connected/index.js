@@ -314,11 +314,11 @@ export default function Connected(props) {
                                                         </td>
                                                         <td>
                                                             {
-                                                                item?.retailer_details?.retailer_category.store_categories.name
+                                                                item?.retailer_details?.retailer_category?.store_categories.name
                                                             }
                                                         </td>
 
-                                                        <td>{item.retailer_details.store_state}</td>
+                                                        <td>{item?.retailer_details?.store_state}</td>
                                                         <td>
                                                             <span className="status-pill pill_connected w-auto">
                                                                 {/* {item.invite_status} */}

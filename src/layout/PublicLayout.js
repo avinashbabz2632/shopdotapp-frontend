@@ -11,6 +11,7 @@ import axios from 'axios';
 import { selectUserDetails } from '../redux/user/userSelector';
 
 function PublicLayout({ children }) {
+  document.body.style.backgroundColor = '#fbf5f0';
   return (
     <>
       <main>
