@@ -302,16 +302,17 @@ function BrandHeader(props) {
                       You have not completed onboarding.
                       <br />
                     </>
+                  ) : !statusIndicator?.store ? (
+                    <>
+                      
+                      Your brand profile is not visible to retailers because
+                      your Shopify store is disconnected.
+                      <br />
+                    </>
                   ) : !statusIndicator?.products ? (
                     <>
                       Your brand profile is not visible to retailers because you
                       have no active products.
-                      <br />
-                    </>
-                  ) : !statusIndicator?.store ? (
-                    <>
-                      Your brand profile is not visible to retailers because
-                      your Shopify store is disconnected.
                       <br />
                     </>
                   ) : !statusIndicator?.billing ? (
