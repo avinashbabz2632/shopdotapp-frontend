@@ -40,7 +40,12 @@ export const retailerBillingValidationSchema = yup.object().shape({
   expiryYear: yup
     .string()
     // .typeError('Not a valid expiration date. Example: YY')
-    .max(2).min(2)
+    .max(2)
+    .test(
+      "test-year",
+      "Expiration year should be future date",
+      (value) => valid.expirationYear(value).isValid
+    )
     // .matches(
     //   /([0-9]{2})/,
     //   'Not a valid expiration date. Example: YY'
@@ -70,7 +75,12 @@ export const retailerBillingValidationSchema = yup.object().shape({
     //   }
     // )
     .required('Expiration year is required'),
-  expiryMonth: yup.object().required("Please select expiry month"),
+  // expiryMonth: yup.object().nullable().required("Please select expiry month"),
+  expiryMonth: yup.object().test(
+    "test-month",
+    "Month should be future month",
+    (value, ctx) => valid.expirationMonth(value).isValid
+  ),
   cvv: yup.string().min(3).max(3).required('CVV is required.'),
   nameOnCard: yup.string().required('Name on Card is required.'),
   addressLine1: yup.string().required('Address 1 is required.'),
