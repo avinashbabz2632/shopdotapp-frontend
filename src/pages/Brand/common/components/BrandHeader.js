@@ -297,36 +297,31 @@ function BrandHeader(props) {
                   }`}
                 >
                   <i className="sd-popover-arrow"></i>
-                  {!statusIndicator?.onboarding && (
+                  {!statusIndicator?.onboarding ? (
                     <>
                       You have not completed onboarding.
                       <br />
                     </>
-                  )}
-
-                  {!statusIndicator?.products && (
+                  ) : !statusIndicator?.products ? (
                     <>
                       Your brand profile is not visible to retailers because you
                       have no active products.
                       <br />
                     </>
-                  )}
-
-                  {!statusIndicator?.store && (
+                  ) : !statusIndicator?.store ? (
                     <>
                       Your brand profile is not visible to retailers because
                       your Shopify store is disconnected.
                       <br />
                     </>
-                  )}
-
-                  {!statusIndicator?.billing && (
+                  ) : !statusIndicator?.billing ? (
                     <>
                       Your payment account is pending with Priority Holdings.
                       <br />
                     </>
+                  ) : (
+                    <div />
                   )}
-
                   {getStatusIndicatorType() &&
                     'Your brand profile and products are visible to retailers on ShopDot.'}
                 </div>
