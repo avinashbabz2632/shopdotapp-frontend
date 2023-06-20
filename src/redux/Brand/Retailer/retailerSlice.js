@@ -20,6 +20,7 @@ const initialState = {
     selectedStockFilters: [],
     selectedWSPFilter: [],
     selectedMSRPFilter: [],
+    selectedTagsValueFilter: [],
     limit: 10,
     offset: 0,
     productSearchQuery: "",
@@ -100,6 +101,9 @@ const retaielrSlice = createSlice({
         setSelectedMSRPFilter: (state, action) => {
             state.selectedMSRPFilter = [...action.payload];
         },
+        setSelectedTagsValueFilter: (state, action) => {
+            state.selectedTagsValueFilter = [...action.payload];
+        },
         setLimit: (state, action) => {
             state.limit = action.payload;
         },
@@ -135,6 +139,7 @@ export const {
     setSelectedStockFilters,
     setSelectedWSPFilter,
     setSelectedMSRPFilter,
+    setSelectedTagsValueFilter,
     setLimit,
     setOffset,
     setProductSearchQuery,

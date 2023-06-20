@@ -20,4 +20,4 @@ export const selectLimit = (state) => state.brandRetailer.limit;
 export const selectOffset = (state) => state.brandRetailer.offset;
 export const productSearchQuery = (state) => state.brandRetailer.productSearchQuery;
 export const selectCurrentPage = (state) => state.brandRetailer.currentPage;
-
+export const selectSelectedTagsValueFilters = (state) => state.brandRetailer.selectedTagsValueFilter;

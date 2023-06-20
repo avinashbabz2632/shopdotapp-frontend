@@ -350,7 +350,7 @@ export default function BrandPreference() {
                           type="radio"
                           control={control}
                           name="retunRefundPolicy"
-                          value="no"
+                          value="No returns or refunds"
                           {...register('retunRefundPolicy', {
                             required: true,
                           })}
@@ -364,7 +364,7 @@ export default function BrandPreference() {
                           type="radio"
                           control={control}
                           name="retunRefundPolicy"
-                          value="yes"
+                          value="Returns and refunds are accepted on a case-by-case basis"
                           {...register('retunRefundPolicy', {
                             required: true,
                           })}

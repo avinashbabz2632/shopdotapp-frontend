@@ -61,6 +61,7 @@ export const RETAILER_PRODUCTS = `${BASE_URL}/retailer/brand/product/list`;
 export const RETAILER_PRODUCT_DETAILS = (ID) =>
   `${BASE_URL}/retailer/product/${ID}`;
 export const BRAND_FILTERS = `${BASE_URL}/retailer/brand/dropdown`;
+export const RETAILER_BRAND_TAGS_VALUE = (id) => `${BASE_URL}/retailer/product-tags?brand=${id}`;
 
 // Product
 export const PRODUCT_LIST = `${BASE_URL}/brand/product/list`;

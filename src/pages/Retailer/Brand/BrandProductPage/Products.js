@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import RetailerHeader from '../../common/components/RetailerHeader';
 import BrandProductsSidebar from './BrandProductsSidebar';
-import singleSquareImage from '../../../Brand/images/single-square.jpg';
-import summer from '../../../Brand/images/pc-slider-temp.jfif';
 import close from '../../../Brand/images/icons/icon-close.png';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
@@ -27,16 +25,16 @@ import { useLocation } from 'react-router-dom';
 import {
   getRetailerBrandProfileAction,
   getRetailerProductsAction,
+  getRetailerBrandTagsValueAction
 } from '../../../../actions/retailerActions';
 import {
   productSearchQuery,
   selectLimit,
   selectOffset,
-  selectSelectedBrandFilters,
-  selectSelectedBrandStatusFilters,
   selectSelectedDaysToFullfillFilters,
   selectSelectedMSRPFilters,
   selectSelectedStockFilters,
+  selectSelectedTagsValueFilters,
   selectSelectedWSPFilters,
 } from '../../../../redux/Brand/Retailer/retailerSelector';
 import {
@@ -48,6 +46,7 @@ import {
   setSelectedDaysToFullfilFilters,
   setSelectedMSRPFilter,
   setSelectedStockFilters,
+  setSelectedTagsValueFilter,
   setSelectedWSPFilter,
 } from '../../../../redux/Brand/Retailer/retailerSlice';
 import ReactPlayer from 'react-player';
@@ -80,6 +79,7 @@ function Products() {
   const selectedWSPFilter = useSelector(selectSelectedWSPFilters);
   const selectedMSRPFilter = useSelector(selectSelectedMSRPFilters);
   const productSearchValue = useSelector(productSearchQuery);
+  const selectedTagsValueFilter = useSelector(selectSelectedTagsValueFilters);
 
   const { count, rows } = productData;
 
@@ -197,6 +197,7 @@ function Products() {
     dispatch(setLimit(10));
     dispatch(setOffset(0));
     fetchRetailerProducts();
+    dispatch(getRetailerBrandTagsValueAction(user_id));
   }, []);
 
   useEffect(() => {
@@ -249,7 +250,7 @@ function Products() {
 
   const clearProductFilter = (e) => {
     if (e === 'tagsValue') {
-      // dispatch(retailertagsClear());
+      dispatch(setSelectedTagsValueFilter([]));
     } else if (e === 'wspFilterValues') {
       dispatch(setSelectedWSPFilter([]));
     } else if (e === 'msrpFilterValues') {
@@ -267,6 +268,7 @@ function Products() {
   };
 
   const handleClearFilter = () => {
+    dispatch(setSelectedTagsValueFilter([]));
     dispatch(setSelectedBrandFilters([]));
     dispatch(setSelectedBrandStatusFilters([]));
     dispatch(setSelectedDaysToFullfilFilters([]));
@@ -540,18 +542,19 @@ function Products() {
                           </div>
                         </div>
                       </div>
-                      {(!isEmpty(tagsValue) ||
+                      {(!isEmpty(selectedTagsValueFilter) ||
                         !isEmpty(selectedWSPFilter) ||
+                        !isEmpty(selectedMSRPFilter) ||
                         !isEmpty(msrpFilterValues) ||
                         !isEmpty(stockFilters) ||
                         !isEmpty(daysFullfillFilters)) && (
                         <div className="products_mid">
                           <div className="products_active-filters mb-0">
                             {/* <div className="products_active-filters mb-0"> */}
-                            {!isEmpty(tagsValue) && (
+                            {!isEmpty(selectedTagsValueFilter) && (
                               <div className="products_active-filter">
                                 <div className="txt">
-                                  <b>Tags:</b> {tagsValue?.join(', ')}
+                                  <b>Tags:</b> {selectedTagsValueFilter?.join(', ')}
                                 </div>
                                 <button
                                   className="products_active-remove"
@@ -567,7 +570,7 @@ function Products() {
                             {!isEmpty(selectedWSPFilter) && (
                               <div className="products_active-filter">
                                 <div className="txt">
-                                  <b>WSP:</b> {wspFilterValues?.join(', ')}
+                                  <b>WSP:</b> {selectedWSPFilter?.join(', ')}
                                 </div>
                                 <button
                                   className="products_active-remove"
@@ -626,7 +629,7 @@ function Products() {
                                 </button>
                               </div>
                             )}
-                            {(!isEmpty(tagsValue) ||
+                            {(!isEmpty(selectedTagsValueFilter) ||
                               !isEmpty(selectedWSPFilter) ||
                               !isEmpty(selectedMSRPFilter) ||
                               !isEmpty(selectedStockFilters) ||
