@@ -35,7 +35,7 @@ function ForgotPassword() {
   };
 
   return (
-    <>
+    <div className="onboard">
       <Header pageTitle="User Info" />
       <PublicLayout>
         <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
@@ -75,7 +75,7 @@ function ForgotPassword() {
           </div>
         </form>
       </PublicLayout>
-    </>
+    </div>
   );
 }
 

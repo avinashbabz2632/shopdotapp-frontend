@@ -15,7 +15,7 @@ export default function PersonalizeNotSupport() {
   };
 
   return (
-    <>
+    <div className="onboard">
       <OnboardingLayout
         classNames="no_support_wrapper"
         pageTitle="Let’s Personalize Your Platform & Experience"
@@ -49,6 +49,6 @@ export default function PersonalizeNotSupport() {
           </form>
         </div>
       </OnboardingLayout>
-    </>
+    </div>
   );
 }

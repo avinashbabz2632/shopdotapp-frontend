@@ -13,7 +13,7 @@ import '../password.style.scss';
 
 function ResetPasswordSuccess() {
   return (
-    <>
+    <div className="auth">
       <Header pageTitle="Reset Password" />
       <PublicLayout>
         <form className="sign__form form">
@@ -32,7 +32,7 @@ function ResetPasswordSuccess() {
           </div>
         </form>
       </PublicLayout>
-    </>
+    </div>
   );
 }
 
