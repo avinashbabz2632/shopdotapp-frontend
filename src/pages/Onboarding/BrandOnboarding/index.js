@@ -181,7 +181,7 @@ export default function BrandOnBoarding() {
   };
 
   return (
-    <>
+    <div className="onboard">
       <div className="wrapper onbording">
         <BrandHeader />
         <main>
@@ -264,6 +264,6 @@ export default function BrandOnBoarding() {
           </section>
         </main>
       </div>
-    </>
+    </div>
   );
 }

@@ -37,7 +37,7 @@ export default function Personalize() {
       setPlatform(1);
     }
   };
- 
+
   //Here 1 for SHOFIFY and 2 for OTHERS
   const selectPlatform = (platform) => {
     if (platform == 1) {
@@ -78,7 +78,7 @@ export default function Personalize() {
   };
 
   return (
-    <>
+    <div className="onboard">
       <OnboardingLayout pageTitle="Let’s Personalize Your Platform & Experience">
         <form action="#" className="form" id="">
           <div className="form-area">
@@ -238,6 +238,6 @@ export default function Personalize() {
           </div>
         </form>
       </OnboardingLayout>
-    </>
+    </div>
   );
 }

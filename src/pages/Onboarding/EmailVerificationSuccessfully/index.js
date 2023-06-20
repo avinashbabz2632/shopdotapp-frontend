@@ -18,17 +18,17 @@ function EmailVerification() {
   const userDetails = useSelector(selectUserDetails);
   const loggedIn = useSelector(isLoggedIn);
 
-const handleNextClick = () => {
-  const {is_email_verified} = userDetails || {};
-  if(loggedIn && is_email_verified) {
-    navigate('/personalize');
-  } else {
-    navigate('/login');
-  }
-}
+  const handleNextClick = () => {
+    const { is_email_verified } = userDetails || {};
+    if (loggedIn && is_email_verified) {
+      navigate('/personalize');
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
-    <>
+    <div className="onboard">
       <OnboardingLayout pageTitle="">
         <div className="form-area">
           <div className="form-group verify_email">
@@ -40,26 +40,23 @@ const handleNextClick = () => {
                   marginLeft: '5px',
                 }}
               >
-               Email Verified Successfully
-
+                Email Verified Successfully
               </h2>
             </div>
-            <p>
-            Your email address is verified successfully
-            </p>
+            <p>Your email address is verified successfully</p>
             <div className="form__field  mt-5">
               <Button
                 className="button w-100"
                 type="button"
                 onClick={handleNextClick}
               >
-                 Next
+                Next
               </Button>
             </div>
           </div>
         </div>
       </OnboardingLayout>
-    </>
+    </div>
   );
 }
 

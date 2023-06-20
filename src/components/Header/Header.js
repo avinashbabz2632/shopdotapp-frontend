@@ -6,20 +6,22 @@ import logoPng from '../../assets/images/logos/logo-png.png';
 import '../../pages/Onboarding/onboarding.style.scss';
 
 function Header({ pageTitle }) {
-    return (
-        <div className="ob-head">
-            <img src={logoPng} alt="logo" className="logo-round" />
-            <h1>{pageTitle}</h1>
-        </div>
-    );
+  return (
+    <div className="onboard">
+      <div className="ob-head">
+        <img src={logoPng} alt="logo" className="logo-round" />
+        <h1>{pageTitle}</h1>
+      </div>
+    </div>
+  );
 }
 
 Header.propTypes = {
-    pageTitle: PropTypes.string,
+  pageTitle: PropTypes.string,
 };
 
 Header.defaultProps = {
-    pageTitle: 'Signin',
+  pageTitle: 'Signin',
 };
 
 export default Header;

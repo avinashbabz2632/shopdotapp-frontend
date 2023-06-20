@@ -12,6 +12,7 @@ const initialState = {
   retailerNewConnectionRequestError: false,
   retailerBrandProfile: null,
   retailerProducts: [],
+  retailerBrandTagsValue: [],
 };
 
 const retailerBrandProductsSlice = createSlice({
@@ -74,6 +75,9 @@ const retailerBrandProductsSlice = createSlice({
     },
     setRetailerProducts: (state, action) => {
       state.retailerProducts = action.payload;
+    },
+    setRetailerBrandTagsValue: (state, action) => {
+      state.retailerBrandTagsValue = action.payload;
     }
   },
 });
@@ -96,7 +100,8 @@ export const {
   setRetailerNewConnectionRequestError,
   resetNewConnectionRequestState,
   setRetailerBrandProfile,
-  setRetailerProducts
+  setRetailerProducts,
+  setRetailerBrandTagsValue
 } = retailerBrandProductsSlice.actions;
 
 /**

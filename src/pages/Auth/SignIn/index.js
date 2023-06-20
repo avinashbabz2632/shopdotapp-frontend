@@ -108,7 +108,7 @@ function SignIn() {
   };
 
   return (
-    <>
+    <div className="auth">
       <Header pageTitle="Sign In" />
       <PublicLayout>
         <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
@@ -165,7 +165,7 @@ function SignIn() {
           </div>
         </form>
       </PublicLayout>
-    </>
+    </div>
   );
 }
 
