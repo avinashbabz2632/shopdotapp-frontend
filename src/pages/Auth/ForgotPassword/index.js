@@ -50,7 +50,7 @@ function ForgotPassword() {
   };
 
   return (
-    <>
+    <div className="auth">
       <Header pageTitle="Forgot Password?" />
       <PublicLayout>
         <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
@@ -82,7 +82,7 @@ function ForgotPassword() {
           </div>
         </form>
       </PublicLayout>
-    </>
+    </div>
   );
 }
 

@@ -32,7 +32,7 @@ function EmailVerification() {
     dispatch(sendVerifyEmailAction({ id: userDetails?.id }));
   };
   return (
-    <>
+    <div className="onboard">
       <OnboardingLayout pageTitle="Create Your ShopDot Account">
         <div className="form-area">
           <div className="form-group verify_email">
@@ -64,7 +64,7 @@ function EmailVerification() {
           </div>
         </div>
       </OnboardingLayout>
-    </>
+    </div>
   );
 }
 

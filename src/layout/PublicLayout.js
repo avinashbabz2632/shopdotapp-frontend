@@ -13,7 +13,7 @@ import { selectUserDetails } from '../redux/user/userSelector';
 function PublicLayout({ children }) {
   document.body.style.backgroundColor = '#fbf5f0';
   return (
-    <>
+    <div className="auth">
       <main>
         <section className="auth_section sign sign-@@cls">
           <div className="container">
@@ -22,7 +22,7 @@ function PublicLayout({ children }) {
         </section>
       </main>
       <ToastContainer />
-    </>
+    </div>
   );
 }
 

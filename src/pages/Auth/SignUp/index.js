@@ -94,7 +94,7 @@ function SignUp() {
   };
 
   return (
-    <>
+    <div className="auth">
       <Header pageTitle="Create your ShopDot Account" />
       <PublicLayout>
         <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
@@ -228,7 +228,7 @@ function SignUp() {
           </div>
         </form>
       </PublicLayout>
-    </>
+    </div>
   );
 }
 

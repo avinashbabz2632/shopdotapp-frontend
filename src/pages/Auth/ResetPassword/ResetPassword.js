@@ -62,7 +62,7 @@ function ResetPassword() {
   };
 
   return (
-    <>
+    <div className="auth">
       <Header pageTitle="Reset Password" />
       <PublicLayout>
         <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
@@ -138,7 +138,7 @@ function ResetPassword() {
           </div>
         </form>
       </PublicLayout>
-    </>
+    </div>
   );
 }
 

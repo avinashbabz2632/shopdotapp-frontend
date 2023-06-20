@@ -9,7 +9,7 @@ import RetailerHeader from '../../Retailer/common/components/RetailerHeader';
 
 export default function ReatialerOnBoarding() {
   return (
-    <>
+    <div className="onboard">
       <RetailerHeader />
       <div className="wrapper onbording">
         <main>
@@ -58,6 +58,6 @@ export default function ReatialerOnBoarding() {
           </section>
         </main>
       </div>
-    </>
+    </div>
   );
 }

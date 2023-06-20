@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OnboardingLayout from '../../../layout/OnboardingLayout';
@@ -7,7 +6,7 @@ import Button from '../../../components/common/Button';
 
 function EmailVerification() {
   return (
-    <>
+    <div className="onboard">
       <OnboardingLayout pageTitle="">
         <div className="form-area">
           <div className="form-group verify_email">
@@ -24,18 +23,14 @@ function EmailVerification() {
             </div>
 
             <div className="form__field  mt-5">
-              <Button
-                className="button w-100"
-                type="button"
-                onClick={""}
-              >
-                      Home
+              <Button className="button w-100" type="button" onClick={''}>
+                Home
               </Button>
             </div>
           </div>
         </div>
       </OnboardingLayout>
-    </>
+    </div>
   );
 }
 
