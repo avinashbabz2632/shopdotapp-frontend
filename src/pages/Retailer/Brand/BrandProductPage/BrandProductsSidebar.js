@@ -206,7 +206,6 @@ function BrandProductsSidebar(props) {
       filter.push(daysToFullFill);
     }
 
-    console.log("all time sale --- ", allTimeSale)
     if (allTimeSale.min && allTimeSale.max) {
       const minMax = {
         field: activeTab,

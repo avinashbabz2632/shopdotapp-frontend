@@ -9,7 +9,7 @@ import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import InfoIcon from '../../../../assets/images/icons/info-blue.svg';
 import danger from '../../images/icons/icon-danger.svg';
 import redDanger from '../../images/icons/icon-red-triangle.svg';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import RightArrowIcon from '../../images/icons/icon-chevron--right.svg';
 import closeIcon from '../../../../assets/images/icons/icon-newclose.svg';
 import LeftArrow from '../../images/icons/icon-chevron--left.svg';
@@ -19,7 +19,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
 import logoPng from '../../../../assets/images/logos/logo-png.png';
 import logoMain from '../../../../assets/images/logos/logo-main.png';
-
+import { Parser } from 'html-to-react';
 
 import {
   getRetailerProductDetailsAction,
@@ -34,7 +34,7 @@ function ProductDetails() {
   const [zoomProduct, setZoomProduct] = useState(false);
   const [connectStatus, setConnectStatus] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
+  const [openSubMenu, setOpenSubmenu] = useState(false);
   const retailerProductsData = useSelector(selectRetailerProductDetails);
   const { productDetails, total_stock_quantity, categories } =
     retailerProductsData || {};
@@ -62,20 +62,20 @@ function ProductDetails() {
   const params = useParams();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setSetActiveOpenVal(setActiveOpen);
-    if (retailerProductsData?.productDetails?.user?.invitees?.length > 0) {
-      setConnectStatus(
-        retailerProductsData.productDetails.user.invitees[0].invite_status
-      );
-    } else if (
-      retailerProductsData?.productDetails?.user?.inviters?.length > 0
-    ) {
-      setConnectStatus(
-        retailerProductsData.productDetails.user.inviters[0].invite_status
-      );
-    }
-  }, [setActiveOpen]);
+  // useEffect(() => {
+  //   setSetActiveOpenVal(setActiveOpen);
+  //   if (retailerProductsData?.productDetails?.user?.invitees?.length > 0) {
+  //     setConnectStatus(
+  //       retailerProductsData.productDetails.user.invitees[0].invite_status
+  //     );
+  //   } else if (
+  //     retailerProductsData?.productDetails?.user?.inviters?.length > 0
+  //   ) {
+  //     setConnectStatus(
+  //       retailerProductsData.productDetails.user.inviters[0].invite_status
+  //     );
+  //   }
+  // }, [setActiveOpen]);
 
   const handalSwipeRightImage = () => {
     setSlideIndex((prev) => (prev + 1) % 11);
@@ -140,11 +140,15 @@ function ProductDetails() {
     }, 4000);
   };
 
+  const onClickSubmenu = () => {
+    setOpenSubmenu(!openSubMenu);
+  };
+
   return (
     <>
       <div className="wrapper">
-        <RetailerHeader />
-        {setActiveOpenVal === true ? (
+        <RetailerHeader onClickSubmenu={onClickSubmenu} />
+        {openSubMenu ? (
           <BabyAndKids />
         ) : (
           <>
@@ -257,6 +261,7 @@ function ProductDetails() {
                           <div className="product-detail product-detail--brand">
                             <div className="product-detail_image">
                               <div className="image image--cover image--1-1">
+                                <Link to="/retailer/brand/single" state={{user_id: brand_details?.user_id, brand_id: brand_details?.id}}>
                                 <picture>
                                   <img
                                     src={
@@ -267,11 +272,14 @@ function ProductDetails() {
                                     alt=""
                                   />
                                 </picture>
+                                </Link>
                               </div>
                             </div>
                             <div className="product-detail_info">
                               <div className="ttl">Brand</div>
+                              <Link to="/retailer/brand/single" state={{user_id: brand_details?.user_id, brand_id: brand_details?.id}}>
                               <p className="txt">{brand_details?.store_name}</p>
+                              </Link>
                             </div>
                           </div>
                           <div className="product-detail product-detail--stock">
@@ -339,7 +347,7 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                {product_images && product_images.length > 0 ?
+                                {product_images && product_images.length > 0 ? (
                                   product_images?.map((productImage, index) => {
                                     return (
                                       <div
@@ -351,6 +359,7 @@ function ProductDetails() {
                                         style={{
                                           marginBottom: '1px',
                                         }}
+                                        key={`${index}`}
                                       >
                                         <div className="image">
                                           <picture>
@@ -362,24 +371,24 @@ function ProductDetails() {
                                         </div>
                                       </div>
                                     );
-                                  }) : <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 0 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img
-                                        src={logoMain}
-                                        alt=""
-                                      />
-                                    </picture>
+                                  })
+                                ) : (
+                                  <div
+                                    className={`swiper-slide swiper-slide-visible ${
+                                      slideIndex === 0 &&
+                                      'swiper-slide-thumb-active'
+                                    } `}
+                                    style={{
+                                      marginBottom: '1px',
+                                    }}
+                                  >
+                                    <div className="image">
+                                      <picture>
+                                        <img src={logoMain} alt="" />
+                                      </picture>
+                                    </div>
                                   </div>
-                                </div>}
+                                )}
                               </div>
                               <span
                                 className="swiper-notification"
@@ -401,7 +410,7 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                {product_images && product_images.length > 0 ?
+                                {product_images && product_images.length > 0 ? (
                                   product_images?.map((productImage, index) => {
                                     return (
                                       <div
@@ -425,26 +434,26 @@ function ProductDetails() {
                                         </div>
                                       </div>
                                     );
-                                  }) : <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="1 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
+                                  })
+                                ) : (
                                   <div
-                                    className="image"
-                                    onClick={() => handalSwipeLeftImage()}
+                                    className="swiper-slide"
+                                    role="group"
+                                    aria-label="1 / 11"
+                                    style={{
+                                      width: '480px',
+                                    }}
                                   >
-                                    <picture>
-                                      <img
-                                        src={logoMain}
-                                        alt=""
-                                      />
-                                    </picture>
+                                    <div
+                                      className="image"
+                                      onClick={() => handalSwipeLeftImage()}
+                                    >
+                                      <picture>
+                                        <img src={logoMain} alt="" />
+                                      </picture>
+                                    </div>
                                   </div>
-                                </div>}
+                                )}
                               </div>
                               <div
                                 className={`swiper-button-prev ${
@@ -464,14 +473,20 @@ function ProductDetails() {
                               </div>
                               <div
                                 className={`swiper-button-next ${
-                                  slideIndex === (product_images?.length === 0 ? 0 : product_images?.length -1) &&
+                                  slideIndex ===
+                                    (product_images?.length === 0
+                                      ? 0
+                                      : product_images?.length - 1) &&
                                   'swiper-button-disabled'
                                 }`}
                                 role="button"
                                 aria-label="Next slide"
                                 aria-controls="swiper-wrapper-9a3741016670105a3b"
                                 aria-disabled={
-                                  slideIndex === (product_images?.length === 0 ? 0 : product_images?.length -1)
+                                  slideIndex ===
+                                  (product_images?.length === 0
+                                    ? 0
+                                    : product_images?.length - 1)
                                 }
                               >
                                 <div
@@ -521,7 +536,7 @@ function ProductDetails() {
                               )}
                             </div>
                           </div>
-                          <>{body_html}</>
+                          <>{Parser().parse(body_html)}</>
                           <div className="product-category">
                             <strong>Tags:</strong>
                             <div className="tags">
@@ -609,7 +624,14 @@ function ProductDetails() {
                                       <td>
                                         <div className="image image--cover image--1-1">
                                           <picture>
-                                            <img src={item?.image ? item?.image : logoPng} alt="" />
+                                            <img
+                                              src={
+                                                item?.image
+                                                  ? item?.image
+                                                  : logoPng
+                                              }
+                                              alt=""
+                                            />
                                           </picture>
                                         </div>
                                       </td>
@@ -706,7 +728,10 @@ function ProductDetails() {
                                   <div className="brand-img">
                                     <a href="brand-single.html">
                                       <picture>
-                                        <img src={brand_details?.store_logo} alt="" />
+                                        <img
+                                          src={brand_details?.store_logo}
+                                          alt=""
+                                        />
                                       </picture>
                                     </a>
                                   </div>
@@ -825,9 +850,6 @@ function ProductDetails() {
                               <div className="brand-single_block">
                                 <h2>About the Brand</h2>
                                 {brand_details?.brand_story}
-                              </div>
-                              <div className="imageArea">
-                                <img src={summer} />
                               </div>
                             </div>
                           </div>

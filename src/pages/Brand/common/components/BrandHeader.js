@@ -101,11 +101,11 @@ function BrandHeader(props) {
     }
     return false;
   };
-  console.log(
-    getStatusIndicatorType(),
-    'getStatusIndicatorType',
-    statusIndicator
-  );
+  // console.log(
+  //   getStatusIndicatorType(),
+  //   'getStatusIndicatorType',
+  //   statusIndicator
+  // );
   return (
     <>
       <header className="header mp-header">
