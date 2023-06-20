@@ -11,6 +11,7 @@ import {
   selectSelectedMSRPFilters,
   selectSelectedStockFilters,
   selectSelectedWSPFilters,
+  selectSelectedTagsValueFilters,
 } from '../../../../redux/Brand/Retailer/retailerSelector';
 import {
   setSelectedBrandFilters,
@@ -18,10 +19,13 @@ import {
   setSelectedDaysToFullfilFilters,
   setSelectedMSRPFilter,
   setSelectedStockFilters,
+  setSelectedTagsValueFilter,
   setSelectedWSPFilter,
+  selectedTags
 } from '../../../../redux/Brand/Retailer/retailerSlice';
 import FilterCheckbox from '../../../Brand/Products/components/FilterCheckbox';
 import { getRetailerProductsAction } from '../../../../actions/retailerActions';
+import { selectRetailerBrandTagsValue } from '../../../../redux/Retailer/Brand/Products/selectRetailerBrandProductsSelector';
 
 
 function BrandProductsSidebar(props) {
@@ -45,9 +49,13 @@ function BrandProductsSidebar(props) {
   const selectedStockFilters = useSelector(selectSelectedStockFilters);
   const selectedWSPFilter = useSelector(selectSelectedWSPFilters);
   const selectedMSRPFilter = useSelector(selectSelectedMSRPFilters);
+  const selectedTagsValueFilter = useSelector(selectSelectedTagsValueFilters);
+
   const limit = useSelector(selectLimit);
   const offset = useSelector(selectOffset);
   const productSearchValue = useSelector(productSearchQuery)
+  const brandTagsValueOptions = useSelector(selectRetailerBrandTagsValue);
+
 
   const stockOptions = ['< 10 units', '11-50 units', '> 50 units'];
 
@@ -67,6 +75,14 @@ function BrandProductsSidebar(props) {
       operator: 'in',
       value: [brandId]
     });
+    if (selectedTagsValueFilter && selectedTagsValueFilter.length > 0) {
+      const tagsValueFilter = {
+        field: 'tags',
+        operator: 'in',
+        value: selectedTagsValueFilter,
+      };
+      filter.push(tagsValueFilter);
+    }
     if (selectedBrandFilters && selectedBrandFilters.length > 0) {
       const brandFilter = {
         field: 'brand_id',
@@ -94,28 +110,24 @@ function BrandProductsSidebar(props) {
             operator: 'between',
             value: '1-99',
           };
-          // filter.push(wsp);
         } else if (el == '$100 - $499') {
           wsp = {
             field: 'wsp',
             operator: 'between',
             value: '100-499',
           };
-          // filter.push(wsp);
         }else if (el == '$500 - $999') {
           wsp = {
             field: 'wsp',
             operator: 'between',
             value: '500-999',
           };
-          // filter.push(wsp);
         } else if (el == '$1000 or more') {
           const wsp = {
             field: 'wsp',
             operator: 'gte',
             value: '1000',
           };
-          // filter.push(wsp);
         } 
 
         if(wsp) {
@@ -134,7 +146,6 @@ function BrandProductsSidebar(props) {
             operator: 'between',
             value: '1-99',
           };
-          // filter.push(msrp);
         } 
         if (el == '$100 - $499') {
           msrp = {
@@ -142,7 +153,6 @@ function BrandProductsSidebar(props) {
             operator: 'between',
             value: '100-499',
           };
-          // filter.push(msrp);
         }
         if (el == '$500 - $999') {
           msrp = {
@@ -150,7 +160,6 @@ function BrandProductsSidebar(props) {
             operator: 'between',
             value: '500-999',
           };
-          // filter.push(msrp);
         } 
         if (el == '$1000 or more') {
           msrp = {
@@ -158,7 +167,6 @@ function BrandProductsSidebar(props) {
             operator: 'gte',
             value: '1000',
           };
-          // filter.push(msrp);
         } 
 
         if(msrp) {
@@ -206,7 +214,7 @@ function BrandProductsSidebar(props) {
       filter.push(daysToFullFill);
     }
 
-    if (allTimeSale.min && allTimeSale.max) {
+    if (allTimeSale.min && allTimeSale.max && parseInt(allTimeSale.max) > parseInt(allTimeSale.min)) {
       const minMax = {
         field: activeTab,
         operator: 'between',
@@ -241,6 +249,7 @@ function BrandProductsSidebar(props) {
     selectedStockFilters,
     selectedWSPFilter,
     selectedMSRPFilter,
+    selectedTagsValueFilter,
     allTimeSale,
     productSearchValue,
     limit,
@@ -260,23 +269,15 @@ function BrandProductsSidebar(props) {
     handleClearFilter();
   }, []);
 
-  const handleTagsOption = (item) => {
-    const isChecked = item.target.checked;
-    const value = item.target.value;
-    const newData = JSON.parse(JSON.stringify(productFilterVal));
-    if (isChecked) {
-      newData.tagsValue.push(value);
-      setProductFilterVal({ ...newData });
-      setFilterTagsVal((prev) => [...prev, value]);
+  const handleTagsOption = (checked, value) => {
+    const copy = [...selectedTagsValueFilter];
+    if (checked) {
+      copy.push(value);
+      dispatch(setSelectedTagsValueFilter(copy));
     } else {
-      const newCategory = newData.tagsValue.filter(
-        (product) => product !== value
-      );
-      newData.tagsValue = newCategory;
-      setProductFilterVal({ ...newData });
-      setFilterTagsVal(newCategory);
+      const filter = copy.filter((el) => el !== value);
+      dispatch(setSelectedTagsValueFilter(filter));
     }
-    // dispatch(setBrandProductFilter({ ...newData }));
   };
 
   const handleWSPFilter = (checked, value) => {
@@ -331,6 +332,13 @@ function BrandProductsSidebar(props) {
     setActiveTab(tab);
   };
 
+  const isMaxLowerThanMin = () => {
+    if(allTimeSale.max && allTimeSale.min) {
+      return parseInt(allTimeSale.max) < parseInt(allTimeSale.min);
+    }
+    return false;
+  }
+
   return (
     <>
       <aside className={`filters ${openCloseFilter ? '' : 'hidden'}`}>
@@ -367,21 +375,25 @@ function BrandProductsSidebar(props) {
                   <div className="filter_form-results">
                     <div className="subfilter_head">tagsValue</div>
                     <div className="filter_form-items">
-                      {(tagsOption || []).map((item, i) => {
-                        return (
-                          <div key={i} className="checkbox checkbox--no-decor">
-                            <label>
-                              <input
-                                type="checkbox"
-                                value={item}
-                                onChange={handleTagsOption}
-                                checked={filterTagsVal?.includes(item)}
-                              />
-                              <div className="checkbox-text">{item}</div>
-                            </label>
-                          </div>
-                        );
-                      })}
+                    {brandTagsValueOptions && brandTagsValueOptions?.map((item, i) => {
+                          return (
+                            <div
+                              key={i}
+                              className="checkbox checkbox--no-decor"
+                            >
+                              <label>
+                                <FilterCheckbox
+                                  data={item?.tag}
+                                  onChange={handleTagsOption}
+                                  initialValue={selectedTagsValueFilter && selectedTagsValueFilter.some(
+                                    (sf) => sf == item?.tag
+                                  )}
+                                />
+                                <div className="checkbox-text">{item?.tag}</div>
+                              </label>
+                            </div>
+                          );
+                        })}
                     </div>
                   </div>
 
@@ -493,6 +505,7 @@ function BrandProductsSidebar(props) {
                               value={allTimeSale?.max}
                             />
                           </div>
+                          {isMaxLowerThanMin() ? <span style={{color: '#FF0000'}}>Max is less than Min</span> : null}
                         </div>
                       </div>
                     </div>
