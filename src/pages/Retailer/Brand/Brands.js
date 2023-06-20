@@ -182,7 +182,6 @@ function Brands() {
   const handleSearch = (e) => {
     setSearch(e.target.value.trim());
   };
-
   const productStatusViseFilter = (status) => {
     setInviteStatus(status);
   };
