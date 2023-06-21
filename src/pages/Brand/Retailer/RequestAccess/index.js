@@ -142,7 +142,7 @@ export default function RequestAccess(props) {
     if(status == "accepted"){
       status = "connected"
     }
-    status.charAt(0).toUpperCase() + status.slice(1)
+    return status.charAt(0).toUpperCase() + status.slice(1)
   }
   return (
     <>
