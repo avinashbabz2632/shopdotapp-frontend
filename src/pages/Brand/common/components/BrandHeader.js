@@ -299,20 +299,20 @@ function BrandHeader(props) {
                   <i className="sd-popover-arrow"></i>
                   {!statusIndicator?.onboarding ? (
                     <>
-                      You have not completed onboarding.
+                      You have not completed <NavLink to="/brand-onboarding">onboarding</NavLink>.
                       <br />
                     </>
                   ) : !statusIndicator?.store ? (
                     <>
                       
                       Your brand profile is not visible to retailers because
-                      your Shopify store is disconnected.
+                      your <NavLink to="/brand/setting/integration">Shopify store</NavLink> is disconnected.
                       <br />
                     </>
                   ) : !statusIndicator?.products ? (
                     <>
                       Your brand profile is not visible to retailers because you
-                      have no active products.
+                      have no active <NavLink to="brand/products">products</NavLink>.
                       <br />
                     </>
                   ) : !statusIndicator?.billing ? (
