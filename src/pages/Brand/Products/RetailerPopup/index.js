@@ -68,7 +68,8 @@ export default function RetailerPopup(props) {
         query: {
           search: {
             store_name: searchQuery,
-            category_id: null
+            category_id: null,
+            product_id: retailerBrand?.id
           }
         },
       };
