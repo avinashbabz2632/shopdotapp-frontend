@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Input from '../../../../components/common/Input/divStyled';
 import { changePassword } from '../../../../actions/brandActions';
-import { securityDetails } from '../../../../redux/Brand/security/securitySelector';
+import { securityDetails } from '../../../../redux/Brand/Security/securitySelector';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { ToastContainer } from 'react-toastify';
 import { isEmpty } from 'lodash';
