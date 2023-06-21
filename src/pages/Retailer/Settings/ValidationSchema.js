@@ -86,5 +86,5 @@ export const retailerBillingValidationSchema = yup.object().shape({
   addressLine1: yup.string().required('Address 1 is required.'),
   state: yup.object().nullable().required('State  is required.'),
   city: yup.string().required('City is required.'),
-  zip: yup.string().required('Zip is required.'),
+  zip: yup.string().min(5).max(5).required('Zip is required.'),
 });
