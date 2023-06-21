@@ -330,7 +330,7 @@ export default function Connected(props) {
                                                         <td>
                                                             <span className="status-pill pill_connected w-auto">
                                                                 {/* {item.invite_status} */}
-                                                                Accepted
+                                                                Connected
                                                             </span>
                                                         </td>
                                                         <td>
