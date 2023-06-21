@@ -139,10 +139,11 @@ export default function RequestAccess(props) {
     return statusText;
   }
   const getStatus = (status) => {
+    console.log(status);
     if(status == "accepted"){
       status = "connected"
     }
-    status.charAt(0).toUpperCase() + status.slice(1)
+    return status.charAt(0).toUpperCase() + status.slice(1)
   }
   return (
     <>
