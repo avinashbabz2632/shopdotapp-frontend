@@ -28,13 +28,17 @@ import { getStatesAction } from '../../../../actions/generalActions';
 export default function Billing() {
   const dispatch = useDispatch();
   const [addCredit, setAddCredit] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isConfirmModel, setIsConfirmModel] = useState(false);
   const [isRemoveModel, setIsRemoveModel] = useState(false);
   const [dataArray, setDataArray] = useState([]);
   const [showError, setShowError] = useState('');
   const [billList, setBillList] = useState([]);
   const [transformStatesOption, setTransformStatesOption] = useState([]);
+  const [monthOption, setMonthOption] = useState([]);
+  const [expYear, setExpYear] = useState(null)
+  const [expMonth, setExpMonth] = useState(null)
+  const [expError, setExpError] = useState(null)
 
   const statesOption = useSelector(selectStates);
 
@@ -69,17 +73,26 @@ export default function Billing() {
         setTransformStatesOption(states);
       }
     });
+
+    const months = [];
+    for (let index = 1; index <= 12; index++) {
+      index = index < 10 ? "0"+index : index;
+      months.push({ label: index, value: index, code: index });
+    }
+    setMonthOption(months);
   };
 
   const onSubmit = async (data) => {
-    const splitText = data.expiryDate.split('/');
+    if(expError){
+      return false
+    }
     const formData = {
       legal_name: data.nameOnCard,
       cardNumber: data.cardNumber.toString(),
       cvv: data.cvv,
       brand: 'VISA',
-      expiryMonth: splitText[0],
-      expiryYear: `20${splitText[1]}`,
+      expiryMonth: data.expiryMonth,
+      expiryYear: `20${data.expiryYear}`,
       address_line_1: data.addressLine1,
       address_line_2: null,
       city: data.city,
@@ -97,6 +110,10 @@ export default function Billing() {
           paid: true,
         })
       );
+      setIsOpen(true);
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 3000);
     } else {
       setShowError(
         response && response.data && response.data.errors
@@ -107,10 +124,6 @@ export default function Billing() {
     // setDataArray(newDataArray);
     // reset();
     // setAddCredit(false);
-    // setIsOpen(true);
-    // setTimeout(() => {
-    //   setIsOpen(false);
-    // }, 3000);
   };
 
   const getDefaultValueOfStateField = () => {
@@ -128,7 +141,32 @@ export default function Billing() {
   const handleRemoveModelClose = useCallback(() => {
     setIsRemoveModel(false);
   }, [isRemoveModel]);
+  const handleMonthAndYearChange = (e) => {
+    let year = ""
+    let month = ""
+    if(e.target){
+      month = expMonth
+      year = e.target.value
+      setExpYear(e.target.value)
+    }else{
+      year = expYear
+      month = e.value
+      setExpMonth(e.value);
+    }
+    if(expMonth && expYear){
+      const today = new Date();
+      const someday = new Date();
+      console.log(month, year);
+      someday.setFullYear("20"+year, month, 1);
 
+      if (someday < today) {
+        setExpError("Please select future date")
+        return false;
+      }else{
+        setExpError(null)
+      }
+    }
+  }
   return addCredit === true ? (
     <div className="products_content">
       <div className="products_body">
@@ -174,23 +212,65 @@ export default function Billing() {
                       </div>
 
                       <div className="category-form-input">
-                        <div className="form-input mb-4">
-                          <label className="form-label">Expiry date</label>
+                        <div className="form-input mb-2">
+                          <label className="form-label">Expiry month</label>
+                          <Controller
+                            name={'expiryMonth'}
+                            control={control}
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                className="basic-single_top"
+                                classNamePrefix="select"
+                                placeholder="Select Month"
+                                styles={categoryStyle}
+                                onChange={handleMonthAndYearChange}
+                                components={{
+                                  IndicatorSeparator: () => null,
+                                }}
+                                theme={(theme) => ({
+                                  ...theme,
+                                  colors: {
+                                    ...theme.colors,
+                                    primary25: '#fbf5f0',
+                                    primary: '#bd6f34',
+                                  },
+                                })}
+                                options={monthOption}
+                              />
+                            )}
+                          />
+                          {errors?.expiryMonth && (
+                            <span className="error-text">
+                              {errors?.expiryMonth?.message}
+                            </span>
+                          )}
+                        </div>
+                        <div className="form-input mb-2">
+                          <label className="form-label">Expiry year</label>
                           <input
                             type="text"
                             className="form-control mb-0"
                             id=""
-                            placeholder="MM/YY"
-                            name="expiryDate"
-                            {...register('expiryDate', {
+                            placeholder={new Date().getFullYear().toString().substr(-2)}
+                            name="expiryYear"
+                            {...register('expiryYear', {
                               required: true,
                             })}
+                            onChange={handleMonthAndYearChange}
                           />
-                          {errors?.expiryDate && (
+                          {errors?.expiryYear && (
                             <span className="error-text">
-                              {errors?.expiryDate?.message}
+                              {errors?.expiryYear?.message}
                             </span>
                           )}
+                          {
+                            expError && (
+                              <span className="error-text">
+                              {expError}
+                            </span>
+                            )
+                          }
                         </div>
                         <div className="form-input mb-4">
                           <label className="form-label">CVV</label>
@@ -494,7 +574,7 @@ export default function Billing() {
             </div>
           </div>
         </div>
-        {isOpen && dataArray?.length > 0 && (
+        {isOpen && (
           <div className="bottom-notify active">
             <div className="container">
               <div className="bottom-notify_text">

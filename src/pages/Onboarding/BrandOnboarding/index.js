@@ -181,7 +181,7 @@ export default function BrandOnBoarding() {
   };
 
   return (
-    <>
+    <div className="onboard">
       <div className="wrapper onbording">
         <BrandHeader />
         <main>
@@ -200,6 +200,7 @@ export default function BrandOnBoarding() {
                         <OnboardListUI
                           {...l}
                           key={curentKey}
+                          isOnboarding={l.isOnboarding}
                           isCompleted={isCompleted}
                           isActive={curentKey == activeStep}
                           openGuide={
@@ -263,6 +264,6 @@ export default function BrandOnBoarding() {
           </section>
         </main>
       </div>
-    </>
+    </div>
   );
 }

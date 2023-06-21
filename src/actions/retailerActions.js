@@ -18,6 +18,7 @@ import {
   sendRetaileNewConnectionRequest,
   setRetailerBrandProductsList,
   setRetailerBrandProfile,
+  setRetailerBrandTagsValue,
   setRetailerBrandValuesList,
   setRetailerNewConnectionRequestError,
   setRetailerNewConnectionRequestSuccess,
@@ -65,6 +66,7 @@ export function updateRetailerProfileAction(formData, isCreate) {
       ) {
         toast.success(response?.data?.message);
         dispatch(setRetailerProfileSaveResult(response.data.data));
+        dispatch(getRetailerProfileAction(formData.user_id))
       } else {
         toast.error('Something went worng');
       }
@@ -124,7 +126,7 @@ export function getRetailerBrandProductsListAction(data) {
         `${API_END_POINT.RETAILER_BRANDS}`,
         data
       );
-      if (response && response.data && response.data.code == 201) {
+      if (response && response.data && response.data.code == 200) {
         dispatch(setRetailerBrandProductsList(response?.data?.data));
       }
     } catch (err) {
@@ -282,22 +284,21 @@ export function getBrandFiltersAction(data) {
   };
 }
 
-// export function getRetailerProductsAction(data) {
-//   return async (dispatch) => {
-//     try {
-//       const response = await axios.post(
-//         `${API_END_POINT.RETAILER_PRODUCTS}`,
-//         data
-//       );
-//       if (response && response.data && response.data.code == 200) {
-//         dispatch(setRetailerProducts(response?.data?.data));
-//       }
-//     } catch (err) {
-//       toast.error(
-//         err && err.response && err.response.data && err.response.data.errors
-//           ? err.response.data.errors
-//           : 'Something went worng'
-//       );
-//     }
-//   };
-// }
+export function getRetailerBrandTagsValueAction(id) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${API_END_POINT.RETAILER_BRAND_TAGS_VALUE(id)}`
+      );
+      if (response && response.data && response.data.code == 200) {
+        dispatch(setRetailerBrandTagsValue(response?.data?.data));
+      }
+    } catch (err) {
+      toast.error(
+        err && err.response && err.response.data && err.response.data.errors
+          ? err.response.data.errors
+          : 'Something went worng'
+      );
+    }
+  };
+}

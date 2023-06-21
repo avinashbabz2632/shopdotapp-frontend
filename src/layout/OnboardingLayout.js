@@ -12,7 +12,7 @@ import axios from 'axios';
 
 function OnboardingLayout({ children, classNames, pageTitle }) {
   return (
-    <>
+    <div className="onboard">
       <div className="wrapper onbording">
         <main>
           <section>
@@ -24,7 +24,7 @@ function OnboardingLayout({ children, classNames, pageTitle }) {
         </main>
       </div>
       <ToastContainer />
-    </>
+    </div>
   );
 }
 

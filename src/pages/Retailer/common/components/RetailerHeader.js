@@ -19,8 +19,10 @@ import { clearAuthLogout, logOut } from '../../../../redux/auth/authSlice';
 import { clearUserLogout } from '../../../../redux/user/userSlice';
 import { createBrowserHistory } from 'history';
 
-function RetailerHeader() {
+function RetailerHeader(props) {
   const location = useLocation();
+  const lastIndexOfSlash = location.pathname.lastIndexOf("/");
+  const productId = location.pathname.substring(lastIndexOfSlash + 1);
   const [modalIsOpen, setIsOpen] = useState(false);
   const useDetails = useSelector(selectUserDetails);
   const dispatch = useDispatch();
@@ -207,7 +209,9 @@ function RetailerHeader() {
           </div>
         </div>
         {location?.pathname === '/retailer/brands' ||
-        location?.pathname === '/retailer/products' ? (
+        location?.pathname === '/retailer/products' || location?.pathname ===
+        `/retailer/brands/brand-products/${productId}` || location?.pathname ===
+        `/retailer/brand/single-product-details/${productId}` ? (
           <>
             <div className="header_block header_block-bottom">
               <button className="header_submenu-scroll-button header_submenu-scroll-button-prev">
@@ -238,7 +242,10 @@ function RetailerHeader() {
                     className="submenu_item with-child"
                     data-target="baby-and-kids"
                   >
-                    <Link to="#" className="submenu_link">
+                    <Link 
+                     className="submenu_link"
+                     onClick={props?.onClickSubmenu}
+                    >
                       Baby &amp; Kids
                       <div className="icon_wrap">
                         <span className="icon">

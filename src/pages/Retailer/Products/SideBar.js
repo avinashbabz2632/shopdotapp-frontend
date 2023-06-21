@@ -33,7 +33,6 @@ import {
 function SideBar() {
   const dispatch = useDispatch();
   const brandFilters = useSelector(selectBrandFilters);
-  console.log('brandFilters----', brandFilters);
   const [brandFiltersClone, setBrandFiltersClone] = useState(brandFilters);
   const [openCloseFilter, setOpenCloseFilter] = useState(true);
   const [allTimeSale, setAllTimeSale] = useState({ min: '', max: '' });
@@ -54,7 +53,7 @@ function SideBar() {
   const selectedMSRPFilter = useSelector(selectSelectedMSRPFilters);
   const limit = useSelector(selectLimit);
   const offset = useSelector(selectOffset);
-  const productSearchValue = useSelector(productSearchQuery)
+  const productSearchValue = useSelector(productSearchQuery);
 
   const brandStatusOptions = [
     {
@@ -97,69 +96,62 @@ function SideBar() {
       const statusFilter = {
         field: 'brand_status',
         operator: 'in',
-        value: selectedBrandStatusFilters.map(el => el.value),
+        value: selectedBrandStatusFilters.map((el) => el.value),
       };
       filter.push(statusFilter);
     }
 
     if (selectedWSPFilter && selectedWSPFilter.length > 0) {
-      selectedWSPFilter.forEach(el => {
+      selectedWSPFilter.forEach((el) => {
         let wsp;
-        if(el == '$1 - $99') {
+        if (el == '$1 - $99') {
           wsp = {
             field: 'wsp',
             operator: 'between',
             value: '1-99',
           };
-          // filter.push(wsp);
         } else if (el == '$100 - $499') {
           wsp = {
             field: 'wsp',
             operator: 'between',
             value: '100-499',
           };
-          // filter.push(wsp);
-        }else if (el == '$500 - $999') {
+        } else if (el == '$500 - $999') {
           wsp = {
             field: 'wsp',
             operator: 'between',
             value: '500-999',
           };
-          // filter.push(wsp);
         } else if (el == '$1000 or more') {
           const wsp = {
             field: 'wsp',
             operator: 'gte',
             value: '1000',
           };
-          // filter.push(wsp);
-        } 
+        }
 
-        if(wsp) {
+        if (wsp) {
           filter.push(wsp);
         }
       });
-      
     }
 
     if (selectedMSRPFilter && selectedMSRPFilter.length > 0) {
-      selectedMSRPFilter.forEach(el => {
+      selectedMSRPFilter.forEach((el) => {
         let msrp;
-        if(el == '$1 - $99') {
+        if (el == '$1 - $99') {
           msrp = {
             field: 'price',
             operator: 'between',
             value: '1-99',
           };
-          // filter.push(msrp);
-        } 
+        }
         if (el == '$100 - $499') {
           msrp = {
             field: 'price',
             operator: 'between',
             value: '100-499',
           };
-          // filter.push(msrp);
         }
         if (el == '$500 - $999') {
           msrp = {
@@ -167,21 +159,19 @@ function SideBar() {
             operator: 'between',
             value: '500-999',
           };
-          // filter.push(msrp);
-        } 
+        }
         if (el == '$1000 or more') {
           msrp = {
             field: 'price',
             operator: 'gte',
             value: '1000',
           };
-          // filter.push(msrp);
-        } 
+        }
 
-        if(msrp) {
+        if (msrp) {
           filter.push(msrp);
         }
-      });      
+      });
     }
 
     if (selectedStockFilters && selectedStockFilters.length > 0) {
@@ -223,28 +213,14 @@ function SideBar() {
       filter.push(daysToFullFill);
     }
 
-    console.log("all time sale --- ", allTimeSale)
-    if (allTimeSale.min && allTimeSale.max) {
+    if (allTimeSale.min && allTimeSale.max && (parseInt(allTimeSale.max) > parseInt(allTimeSale.min))) {
       const minMax = {
         field: activeTab,
         operator: 'between',
         value: `${allTimeSale.min}-${allTimeSale.max}`,
       };
-     
-      // filter = filter.filter((item) => item.field !== 'wsp' && item.field !== 'price')
       filter.push(minMax);
-      // clearing wsp and msrp filters
-
-      // if (selectedWSPFilter.length > 0) {
-      //   dispatch(setSelectedWSPFilter([]))
-      // }
-      // if (selectedMSRPFilter.length > 0) {
-      //   dispatch(setSelectedMSRPFilter([]))
-      // }
     }
-
-    console.log("this is filter: ", filter)
-
     return filter;
   };
 
@@ -258,7 +234,7 @@ function SideBar() {
       filter: prepareFilter(),
     };
     if (productSearchValue) {
-      body.query.search = productSearchValue;;
+      body.query.search = productSearchValue;
     }
     dispatch(getRetailerProductsAction(body));
   };
@@ -313,23 +289,23 @@ function SideBar() {
   ]);
 
   const handleSearch = (e) => {
-    const searchQuery = e.target.value.toLowerCase();
+    const searchQuery = e.target.value;
     if (searchQuery) {
       const searchWords = searchQuery.split(/\s+/);
       const data = brandFilters.map((item) => {
         return {
           id: item.id,
-          name: `${item?.brand_details?.company_name} ${item?.brand_details?.store_name}`
+          name: `${item?.brand_details?.company_name} ${item?.brand_details?.store_name}`,
         };
       });
       const searchValue = data.filter((ele) => {
-        const tags = ele.name.toLowerCase().split(' ');
+        const tags = ele.name.split(' ');
         return searchWords.every((word) =>
           tags.some((tag) => tag.includes(word))
         );
       });
       const finalData = searchValue.map((item) => {
-        return brandFilters.find(el => el.id === item.id)
+        return brandFilters.find((el) => el.id === item.id);
       });
       setBrandFiltersClone(finalData);
       setSearchVal(searchQuery);
@@ -358,7 +334,7 @@ function SideBar() {
   const handleBrandFilter = (checked, value) => {
     const copy = [...selectedBrandFilters];
     if (checked) {
-      const item = brandFilters.find(el => el.brand_details?.id == value);
+      const item = brandFilters.find((el) => el.brand_details?.id == value);
       copy.push(item);
       dispatch(setSelectedBrandFilters(copy));
     } else {
@@ -381,7 +357,7 @@ function SideBar() {
   const handleStatusFilter = (checked, value) => {
     const copy = [...selectedBrandStatusFilters];
     if (checked) {
-      const item = brandStatusOptions.find(el => el.value == value);
+      const item = brandStatusOptions.find((el) => el.value == value);
       copy.push(item);
       dispatch(setSelectedBrandStatusFilters(copy));
     } else {
@@ -499,9 +475,14 @@ function SideBar() {
                               <FilterCheckbox
                                 data={item?.brand_details?.id}
                                 onChange={handleBrandFilter}
-                                initialValue={selectedBrandFilters && selectedBrandFilters?.some(
-                                  (pc) => pc.brand_details.id == item?.brand_details?.id
-                                )}
+                                initialValue={
+                                  selectedBrandFilters &&
+                                  selectedBrandFilters?.some(
+                                    (pc) =>
+                                      pc.brand_details.id ==
+                                      item?.brand_details?.id
+                                  )
+                                }
                               />
                               <div className="checkbox-text">
                                 <strong>
@@ -529,7 +510,12 @@ function SideBar() {
                                 <FilterCheckbox
                                   data={item.value}
                                   onChange={handleStatusFilter}
-                                    initialValue={selectedBrandStatusFilters && selectedBrandStatusFilters?.some(pc => pc.value == item.value)}
+                                  initialValue={
+                                    selectedBrandStatusFilters &&
+                                    selectedBrandStatusFilters?.some(
+                                      (pc) => pc.value == item.value
+                                    )
+                                  }
                                 />
                                 <div className="checkbox-text">{item.name}</div>
                               </label>
@@ -609,7 +595,10 @@ function SideBar() {
                                             onChange={handleWSPFilter}
                                             initialValue={
                                               activeTab === 'wsp' &&
-                                              selectedWSPFilter && selectedWSPFilter.some(el => el == item)
+                                              selectedWSPFilter &&
+                                              selectedWSPFilter.some(
+                                                (el) => el == item
+                                              )
                                             }
                                           />
                                           <div className="checkbox-text">
@@ -636,7 +625,10 @@ function SideBar() {
                                             onChange={handleMSRPFilter}
                                             initialValue={
                                               activeTab === 'msrp' &&
-                                              selectedMSRPFilter && selectedMSRPFilter.some(el => el == item)
+                                              selectedMSRPFilter &&
+                                              selectedMSRPFilter.some(
+                                                (el) => el == item
+                                              )
                                             }
                                           />
                                           <div className="checkbox-text">
@@ -676,6 +668,13 @@ function SideBar() {
                                 value={allTimeSale?.max}
                               />
                             </div>
+                            <span style={{ color: '#ff0000' }}>
+                              {allTimeSale.max &&
+                              parseInt(allTimeSale.max) <
+                                parseInt(allTimeSale.min)
+                                ? 'Min must be less than Max'
+                                : null}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -693,9 +692,12 @@ function SideBar() {
                                 <FilterCheckbox
                                   data={item}
                                   onChange={handleStockFilter}
-                                  initialValue={selectedStockFilters && selectedStockFilters.some(
-                                    (sf) => sf == item
-                                  )}
+                                  initialValue={
+                                    selectedStockFilters &&
+                                    selectedStockFilters.some(
+                                      (sf) => sf == item
+                                    )
+                                  }
                                 />
                                 <div className="checkbox-text">{item}</div>
                               </label>
@@ -717,9 +719,12 @@ function SideBar() {
                                 <FilterCheckbox
                                   data={item}
                                   onChange={handleDaysToFullfilFilter}
-                                  initialValue={selectedDaysToFullfilFilters && selectedDaysToFullfilFilters.some(
-                                    (dtf) => dtf === item
-                                  )}
+                                  initialValue={
+                                    selectedDaysToFullfilFilters &&
+                                    selectedDaysToFullfilFilters.some(
+                                      (dtf) => dtf === item
+                                    )
+                                  }
                                 />
                                 <div className="checkbox-text">{item}</div>
                               </label>

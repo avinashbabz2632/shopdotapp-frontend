@@ -101,11 +101,11 @@ function BrandHeader(props) {
     }
     return false;
   };
-  console.log(
-    getStatusIndicatorType(),
-    'getStatusIndicatorType',
-    statusIndicator
-  );
+  // console.log(
+  //   getStatusIndicatorType(),
+  //   'getStatusIndicatorType',
+  //   statusIndicator
+  // );
   return (
     <>
       <header className="header mp-header">
@@ -162,8 +162,7 @@ function BrandHeader(props) {
                   <div className="dropdown">
                     <div className="dropdown_header">
                       <div className="dropdown_header-chevron">
-                        <NavLink
-                          to="/brand/connected-retailer"
+                        <span
                           className={({ isActive }) =>
                             `${isActive ? 'active' : ''} menu_link`
                           }
@@ -174,7 +173,7 @@ function BrandHeader(props) {
                               <img src={ArrowDown} alt="" />
                             </span>
                           </div> */}
-                        </NavLink>
+                        </span>
                       </div>
                     </div>
                     <div className="dropdown_body">
@@ -298,36 +297,32 @@ function BrandHeader(props) {
                   }`}
                 >
                   <i className="sd-popover-arrow"></i>
-                  {!statusIndicator?.onboarding && (
+                  {!statusIndicator?.onboarding ? (
                     <>
                       You have not completed onboarding.
                       <br />
                     </>
-                  )}
-
-                  {!statusIndicator?.products && (
+                  ) : !statusIndicator?.store ? (
+                    <>
+                      
+                      Your brand profile is not visible to retailers because
+                      your Shopify store is disconnected.
+                      <br />
+                    </>
+                  ) : !statusIndicator?.products ? (
                     <>
                       Your brand profile is not visible to retailers because you
                       have no active products.
                       <br />
                     </>
-                  )}
-
-                  {!statusIndicator?.store && (
-                    <>
-                      Your brand profile is not visible to retailers because
-                      your Shopify store is disconnected.
-                      <br />
-                    </>
-                  )}
-
-                  {!statusIndicator?.billing && (
+                  ) : !statusIndicator?.billing ? (
                     <>
                       Your payment account is pending with Priority Holdings.
                       <br />
                     </>
+                  ) : (
+                    <div />
                   )}
-
                   {getStatusIndicatorType() &&
                     'Your brand profile and products are visible to retailers on ShopDot.'}
                 </div>

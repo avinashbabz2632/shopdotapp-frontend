@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import RetailerHeader from '../../common/components/RetailerHeader';
-import FirstImg from '../../../../assets/first_img.jpeg';
-import SecondImg from '../../../../assets/second_img.jpeg';
-import ThirdImg from '../../../../assets/third_img.jpeg';
-import FourImg from '../../../../assets/fourth_img.jpeg';
-import FiveImg from '../../../../assets/fifth_img.webp';
-import SixImg from '../../../../assets/sixth_img.webp';
-import SevenImg from '../../../../assets/seventh_img.webp';
-import EightImg from '../../../../assets/eighth_img.webp';
-import NineImg from '../../../../assets/nineth_img.webp';
-import TenImg from '../../../../assets/tenth_img.webp';
-import ElevenImg from '../../../../assets/eleventh_img.webp';
 import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
 import singleSquareImage from '../../../Brand/images/single-square.jpg';
 import mailIcon from '../../../../assets/images/icons/mail-icon.svg';
@@ -20,42 +9,73 @@ import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import InfoIcon from '../../../../assets/images/icons/info-blue.svg';
 import danger from '../../images/icons/icon-danger.svg';
 import redDanger from '../../images/icons/icon-red-triangle.svg';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import RightArrowIcon from '../../images/icons/icon-chevron--right.svg';
 import closeIcon from '../../../../assets/images/icons/icon-newclose.svg';
 import LeftArrow from '../../images/icons/icon-chevron--left.svg';
 import ZoomIcon from '../../images/icons/icon-zoom.svg';
 import ProductZoomModal from './ProductZoomModel';
-import { retailerProductData } from '../../Brand/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
-import { getRetailerProductDetailsAction } from '../../../../actions/retailerActions';
+import logoPng from '../../../../assets/images/logos/logo-png.png';
+import logoMain from '../../../../assets/images/logos/logo-main.png';
+import { Parser } from 'html-to-react';
+
+import {
+  getRetailerProductDetailsAction,
+  retailerNewConnectionRequestAction,
+} from '../../../../actions/retailerActions';
 import { selectRetailerProductDetails } from '../../../../redux/Brand/Retailer/retailerSelector';
-// import { setProductActiveValue } from '../../../../redux/Retailer/Brand/RetailerBrandSelector';
 
 function ProductDetails() {
   const setActiveOpen = false; //useSelector(setProductActiveValue);
   const [slideIndex, setSlideIndex] = useState(0);
   const [isActiveButton, setIsActiveButton] = useState(false);
   const [zoomProduct, setZoomProduct] = useState(false);
-  const [profileData, setProfileData] = useState(null);
+  const [connectStatus, setConnectStatus] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  console.log('isOpen', isOpen);
-  const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
+  const [openSubMenu, setOpenSubmenu] = useState(false);
   const retailerProductsData = useSelector(selectRetailerProductDetails);
-  console.log('retailerProducts----', retailerProductsData);
-  const {productDetails, total_stock_quantity} = retailerProductsData || {};
-  const {user, product_variants, price_wps, price_msrp, body_html, product_tags, shipping_time} = productDetails || {};
-  const {brand_details, brand_categories, brand_values, brand_retailer_preference} = user || {};
-  const {shipping_rate} = brand_details || {};
-  const { shipping_address, incremental_fee, shipping_cost } = shipping_rate || {};
+  const { productDetails, total_stock_quantity, categories } =
+    retailerProductsData || {};
+  const {
+    user,
+    product_variants,
+    price_wps,
+    price_msrp,
+    body_html,
+    product_tags,
+    shipping_time,
+    product_images,
+  } = productDetails || {};
+  const {
+    brand_details,
+    brand_categories,
+    brand_values,
+    brand_retailer_preference,
+  } = user || {};
+  const { shipping_rate } = brand_details || {};
+  const { shipping_address, incremental_fee, shipping_cost } =
+    shipping_rate || {};
+  const { group, mainCategory, subCategory } = categories || {};
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setSetActiveOpenVal(setActiveOpen);
-  }, [setActiveOpen]);
+  // useEffect(() => {
+  //   setSetActiveOpenVal(setActiveOpen);
+  //   if (retailerProductsData?.productDetails?.user?.invitees?.length > 0) {
+  //     setConnectStatus(
+  //       retailerProductsData.productDetails.user.invitees[0].invite_status
+  //     );
+  //   } else if (
+  //     retailerProductsData?.productDetails?.user?.inviters?.length > 0
+  //   ) {
+  //     setConnectStatus(
+  //       retailerProductsData.productDetails.user.inviters[0].invite_status
+  //     );
+  //   }
+  // }, [setActiveOpen]);
 
   const handalSwipeRightImage = () => {
     setSlideIndex((prev) => (prev + 1) % 11);
@@ -76,51 +96,59 @@ function ProductDetails() {
     setIsActiveButton(!isActiveButton);
   };
 
-  useEffect(() => {
+  const getProductDetails = () => {
     dispatch(getRetailerProductDetailsAction(params?.id));
+  };
+  useEffect(() => {
+    getProductDetails();
   }, []);
 
-  // useEffect(() => {
-  //   const findData = retailerProductData.find((ele) => {
-  //     return ele.id === Number(params?.id);
-  //   });
-
-  //   if (findData) {
-  //     setProfileData(findData);
-  //   }
-  // }, [retailerProductData, params?.id]);
+  const getStatus = () => {
+    const { invitees = [], inviters = [] } = user || {};
+    const isNotConnected = invitees?.length === 0 && inviters?.length === 0;
+    let status;
+    if (isNotConnected) {
+      status = 'Not Connected';
+    } else if (invitees.length > 0) {
+      const obj = invitees[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
+        status = 'Connected';
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
+        status = 'Pending';
+      }
+    } else if (inviters.length > 0) {
+      const obj = inviters[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
+        status = 'Connected';
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
+        status = 'Pending';
+      }
+    }
+    return status;
+  };
 
   const handleConnectButton = () => {
+    dispatch(
+      retailerNewConnectionRequestAction({
+        invitee_id: retailerProductsData?.productDetails?.user.id,
+        invite_via: 'retailer_request',
+      })
+    );
     setIsOpen(true);
     setTimeout(() => {
       setIsOpen(false);
     }, 4000);
   };
 
-  const getProductStatus = () => {
-    let statusText = '';
-    const {status} = productDetails || {};
-    switch (status) {
-      case '1':
-        statusText = 'Connected';
-        break;
-    
-      default:
-        break;
-    }
-    return statusText;
-  }
-
-  const getWSPTotal = () => {
-    let wspTotal = 0;
-    // if()
-  }
+  const onClickSubmenu = () => {
+    setOpenSubmenu(!openSubMenu);
+  };
 
   return (
     <>
       <div className="wrapper">
-        <RetailerHeader />
-        {setActiveOpenVal === true ? (
+        <RetailerHeader onClickSubmenu={onClickSubmenu} />
+        {openSubMenu ? (
           <BabyAndKids />
         ) : (
           <>
@@ -140,20 +168,17 @@ function ProductDetails() {
                           <div className="product_status">
                             <span
                               className={`status-pill w-auto ${
-                                productDetails?.status === '1' &&
-                                'pill_connected'
+                                getStatus() === 'Connected' && 'pill_connected'
                               } ${
-                                productDetails?.status === '2' &&
-                                'pill_pending'
+                                getStatus() === 'Pending' && 'pill_pending'
                               } ${
-                                productDetails?.status === '3' &&
-                                'pill_declined'
+                                getStatus() === 'Declined' && 'pill_declined'
                               } ${
-                                productDetails?.status === '0' &&
+                                getStatus() === 'Not Connected' &&
                                 'pill_not_connected'
                               }`}
                             >
-                              {getProductStatus()}
+                              {getStatus()}
                             </span>
                             &nbsp; &nbsp;
                           </div>
@@ -163,72 +188,54 @@ function ProductDetails() {
                           className="buttons"
                           onClick={() => handleActiveButton()}
                         >
-                          {/* <div className="channels-area">
-                                                    <div className="ca_area">
-                                                        <div>
-                                                            Add/remove channels
-                                                        </div>
-
-                                                        <div
-                                                            className="icon"
-                                                            style={{
-                                                                position:
-                                                                    'absolute',
-                                                                left: '85%',
-                                                                top: '20%',
-                                                            }}
-                                                        >
-                                                            <img
-                                                                src={ArrowDown}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        className="ca_area_data"
-                                                        style={{
-                                                            display:
-                                                                isActiveButton
-                                                                    ? 'block'
-                                                                    : 'none',
-                                                        }}
-                                                    >
-                                                        <div className="dropdown_inner">
-                                                            <ul>
-                                                                <li className="shopify_link">
-                                                                    <span>
-                                                                        Shopify
-                                                                    </span>
-                                                                    <a href="retailer-setting.html">
-                                                                        Add
-                                                                    </a>
-                                                                </li>
-                                                                <li className="shopify_link">
-                                                                    <span>
-                                                                        Shopify
-                                                                    </span>
-                                                                    <a
-                                                                        href="retailer-setting.html"
-                                                                        className="remove-link"
-                                                                    >
-                                                                        Remove
-                                                                    </a>
-                                                                </li>
-                                                                <li className="button-view">
-                                                                    <a href="retailer-setting.html">
-                                                                        <span>
-                                                                            <h3 className="plus_icon">
-                                                                                +
-                                                                            </h3>
-                                                                        </span>
-                                                                        Add new
-                                                                        channel
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div> */}
-                          {profileData?.status === 'Not Connected' && (
+                          <div className="channels-area">
+                            <div className="ca_area">
+                              <div>Add/remove channels</div>
+                              <div
+                                className="icon"
+                                style={{
+                                  position: 'absolute',
+                                  left: '85%',
+                                  top: '20%',
+                                }}
+                              >
+                                <img src={ArrowDown} />
+                              </div>
+                            </div>
+                            <div
+                              className="ca_area_data"
+                              style={{
+                                display: isActiveButton ? 'block' : 'none',
+                              }}
+                            >
+                              <div className="dropdown_inner">
+                                <ul>
+                                  <li className="shopify_link">
+                                    <span>Shopify</span>
+                                    <a href="retailer-setting.html">Add</a>
+                                  </li>
+                                  <li className="shopify_link">
+                                    <span>Shopify</span>
+                                    <a
+                                      href="retailer-setting.html"
+                                      className="remove-link"
+                                    >
+                                      Remove
+                                    </a>
+                                  </li>
+                                  <li className="button-view">
+                                    <a href="retailer-setting.html">
+                                      <span>
+                                        <h3 className="plus_icon">+</h3>
+                                      </span>
+                                      Add new channel
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          {getStatus() === 'Not Connected' && (
                             <button
                               className="button button-dark"
                               onClick={() => handleConnectButton()}
@@ -236,6 +243,7 @@ function ProductDetails() {
                               Connect
                             </button>
                           )}
+                          {/* <a href="#" class="button button-green request-approved-box">Approve</a> */}
                           <button className="button message-brand">
                             <div className="icon">
                               <img src={mailIcon} />
@@ -253,20 +261,35 @@ function ProductDetails() {
                           <div className="product-detail product-detail--brand">
                             <div className="product-detail_image">
                               <div className="image image--cover image--1-1">
+                                <Link to="/retailer/brand/single" state={{user_id: brand_details?.user_id, brand_id: brand_details?.id}}>
                                 <picture>
-                                  <img src={singleSquareImage} alt="" />
+                                  <img
+                                    src={
+                                      brand_details?.store_logo
+                                        ? brand_details?.store_logo
+                                        : singleSquareImage
+                                    }
+                                    alt=""
+                                  />
                                 </picture>
+                                </Link>
                               </div>
                             </div>
                             <div className="product-detail_info">
                               <div className="ttl">Brand</div>
+                              <Link to="/retailer/brand/single" state={{user_id: brand_details?.user_id, brand_id: brand_details?.id}}>
                               <p className="txt">{brand_details?.store_name}</p>
+                              </Link>
                             </div>
                           </div>
                           <div className="product-detail product-detail--stock">
                             <div className="product-detail_info">
-                              <div className="ttl">{total_stock_quantity} in stock</div>
-                              <p className="txt">{product_variants?.length} variants</p>
+                              <div className="ttl">
+                                {total_stock_quantity} in stock
+                              </div>
+                              <p className="txt">
+                                {product_variants?.length} variants
+                              </p>
                             </div>
                           </div>
                           <div className="product-detail product-detail--wsp">
@@ -300,7 +323,10 @@ function ProductDetails() {
                           <div className="product-detail product-detail--ship-from">
                             <div className="product-detail_info">
                               <div className="ttl">Ships From</div>
-                              <p className="txt">{shipping_address?.city}, {shipping_address?.state}</p>
+                              <p className="txt">
+                                {shipping_address?.city},{' '}
+                                {shipping_address?.state}
+                              </p>
                             </div>
                           </div>
                           {/* <!--Added latest detail--> */}
@@ -308,7 +334,7 @@ function ProductDetails() {
                           {/* <!--Added latest detail end--> */}
                         </div>
                       </div>
-                      <div className="product">
+                      <div className="product_main">
                         <div className="product_slider">
                           <div className="product_slider-thumbs">
                             <div className="swiper-container gallery-thumbs swiper-initialized swiper-vertical swiper-pointer-events swiper-thumbs">
@@ -321,192 +347,48 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 0 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(0)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={FirstImg} alt="" />
-                                    </picture>
+                                {product_images && product_images.length > 0 ? (
+                                  product_images?.map((productImage, index) => {
+                                    return (
+                                      <div
+                                        className={`swiper-slide swiper-slide-visible ${
+                                          slideIndex === index &&
+                                          'swiper-slide-thumb-active'
+                                        } `}
+                                        onClick={() => setSlideIndex(index)}
+                                        style={{
+                                          marginBottom: '1px',
+                                        }}
+                                        key={`${index}`}
+                                      >
+                                        <div className="image">
+                                          <picture>
+                                            <img
+                                              src={productImage.src}
+                                              alt=""
+                                            />
+                                          </picture>
+                                        </div>
+                                      </div>
+                                    );
+                                  })
+                                ) : (
+                                  <div
+                                    className={`swiper-slide swiper-slide-visible ${
+                                      slideIndex === 0 &&
+                                      'swiper-slide-thumb-active'
+                                    } `}
+                                    style={{
+                                      marginBottom: '1px',
+                                    }}
+                                  >
+                                    <div className="image">
+                                      <picture>
+                                        <img src={logoMain} alt="" />
+                                      </picture>
+                                    </div>
                                   </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 1 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(1)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={SecondImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 2 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(2)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={ThirdImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 3 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(3)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={FourImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 4 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(4)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={FiveImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 5 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(5)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={SixImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 6 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(6)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={SevenImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 7 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(7)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={EightImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 8 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(8)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={NineImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 9 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(9)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={TenImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className={`swiper-slide swiper-slide-visible ${
-                                    slideIndex === 10 &&
-                                    'swiper-slide-thumb-active'
-                                  } `}
-                                  onClick={() => setSlideIndex(10)}
-                                  style={{
-                                    marginBottom: '1px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={ElevenImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
+                                )}
                               </div>
                               <span
                                 className="swiper-notification"
@@ -528,176 +410,50 @@ function ProductDetails() {
                                   transitionDuration: '300ms',
                                 }}
                               >
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="1 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
+                                {product_images && product_images.length > 0 ? (
+                                  product_images?.map((productImage, index) => {
+                                    return (
+                                      <div
+                                        className="swiper-slide"
+                                        role="group"
+                                        aria-label="1 / 11"
+                                        style={{
+                                          width: '480px',
+                                        }}
+                                      >
+                                        <div
+                                          className="image"
+                                          onClick={() => handalSwipeLeftImage()}
+                                        >
+                                          <picture>
+                                            <img
+                                              src={productImage.src}
+                                              alt=""
+                                            />
+                                          </picture>
+                                        </div>
+                                      </div>
+                                    );
+                                  })
+                                ) : (
                                   <div
-                                    className="image"
-                                    onClick={() => handalSwipeLeftImage()}
+                                    className="swiper-slide"
+                                    role="group"
+                                    aria-label="1 / 11"
+                                    style={{
+                                      width: '480px',
+                                    }}
                                   >
-                                    <picture>
-                                      <img src={FirstImg} alt="" />
-                                    </picture>
+                                    <div
+                                      className="image"
+                                      onClick={() => handalSwipeLeftImage()}
+                                    >
+                                      <picture>
+                                        <img src={logoMain} alt="" />
+                                      </picture>
+                                    </div>
                                   </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="2 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div
-                                    className="image"
-                                    onClick={() => handalSwipeLeftImage()}
-                                  >
-                                    <picture>
-                                      <img src={SecondImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide swiper-slide-prev"
-                                  role="group"
-                                  aria-label="3 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={ThirdImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide swiper-slide-visible swiper-slide-active"
-                                  role="group"
-                                  aria-label="4 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={FourImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide swiper-slide-next"
-                                  role="group"
-                                  aria-label="5 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={FiveImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="6 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={SixImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="7 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={SevenImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="8 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={EightImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="9 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={NineImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="10 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={TenImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="swiper-slide"
-                                  role="group"
-                                  aria-label="11 / 11"
-                                  style={{
-                                    width: '480px',
-                                  }}
-                                >
-                                  <div className="image">
-                                    <picture>
-                                      <img src={ElevenImg} alt="" />
-                                    </picture>
-                                  </div>
-                                </div>
+                                )}
                               </div>
                               <div
                                 className={`swiper-button-prev ${
@@ -717,12 +473,21 @@ function ProductDetails() {
                               </div>
                               <div
                                 className={`swiper-button-next ${
-                                  slideIndex === 10 && 'swiper-button-disabled'
+                                  slideIndex ===
+                                    (product_images?.length === 0
+                                      ? 0
+                                      : product_images?.length - 1) &&
+                                  'swiper-button-disabled'
                                 }`}
                                 role="button"
                                 aria-label="Next slide"
                                 aria-controls="swiper-wrapper-9a3741016670105a3b"
-                                aria-disabled={slideIndex === 10}
+                                aria-disabled={
+                                  slideIndex ===
+                                  (product_images?.length === 0
+                                    ? 0
+                                    : product_images?.length - 1)
+                                }
                               >
                                 <div
                                   className="icon"
@@ -758,29 +523,36 @@ function ProductDetails() {
                           <div className="product-category">
                             <div className="title category-items">
                               Category:&nbsp;
-                              <span>Baby &amp; Kids</span>
-                              &gt;
-                              <span>Bath &amp; Safety</span>
-                              &gt;
-                              <span>Bab Monitors</span>
+                              {group?.name && <span>{group?.name}</span>}
+                              {mainCategory?.name && (
+                                <>
+                                  &gt;<span>{mainCategory?.name}</span>
+                                </>
+                              )}
+                              {subCategory?.name && (
+                                <>
+                                  &gt;<span>{subCategory?.name}</span>
+                                </>
+                              )}
                             </div>
                           </div>
-                          <>
-                          {body_html}
-                          </>
+                          <>{Parser().parse(body_html)}</>
                           <div className="product-category">
                             <strong>Tags:</strong>
                             <div className="tags">
-                              {product_tags && product_tags.length > 0 && product_tags.map((item, index) => {
-                              return <div className="tag">{item?.tag}</div>
-                              })}
+                              {product_tags &&
+                                product_tags.length > 0 &&
+                                product_tags.map((item, index) => {
+                                  return <div className="tag">{item?.tag}</div>;
+                                })}
                             </div>
                           </div>
 
                           <div className="shipped-info">
                             <p>
-                              Product will be shipped by <span>{brand_details?.store_name}</span>{' '}
-                              within <span>{shipping_time} days</span>
+                              Product will be shipped by{' '}
+                              <span>{brand_details?.store_name}</span> within{' '}
+                              <span>{shipping_time} days</span>
                             </p>
                           </div>
                         </div>
@@ -844,58 +616,72 @@ function ProductDetails() {
                               </tr>
                             </thead>
                             <tbody>
-                              {product_variants && product_variants.length > 0 && product_variants.map((item, index) => {
-                                return (
-                                  <tr key={`${index}`}>
-                                  <td>
-                                    <div className="image image--cover image--1-1">
-                                      <picture>
-                                        <img src={summer} alt="" />
-                                      </picture>
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="txt">{item?.material}</div>
-                                  </td>
-                                  <td>
-                                    <div className="txt">{item?.color}</div>
-                                  </td>
-                                  <td>
-                                    <div className="txt">{item?.sku}</div>
-                                  </td>
-                                  <td>
-                                    <div className="txt">{item?.barcode}</div>
-                                  </td>
-                                  <td>
-                                    <div className="txt">
-                                      {/* <!--Red color for icon by default, orange with className icon--orange--> */}
-                                      {item?.inventory_quantity}
-                                      <div className="tooltip-icon-orange">
-                                        <div className="icon">
-                                          <img src={danger} />
+                              {product_variants &&
+                                product_variants.length > 0 &&
+                                product_variants.map((item, index) => {
+                                  return (
+                                    <tr key={`${index}`}>
+                                      <td>
+                                        <div className="image image--cover image--1-1">
+                                          <picture>
+                                            <img
+                                              src={
+                                                item?.image
+                                                  ? item?.image
+                                                  : logoPng
+                                              }
+                                              alt=""
+                                            />
+                                          </picture>
                                         </div>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="txt">${item?.wsp}</div>
-                                  </td>
-  
-                                  <td>
-                                    <div className="txt">${item?.price}</div>
-                                  </td>
-  
-                                  <td>
-                                    <div className="txt">
-                                      <button className="pc-status-button pc-status-button--add-list">
-                                        Add to Cart
-                                      </button>
-                                    </div>
-                                  </td>
-                                </tr>
-                                );
-                              })}
-                             
+                                      </td>
+                                      <td>
+                                        <div className="txt">
+                                          {item?.material}
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div className="txt">{item?.color}</div>
+                                      </td>
+                                      <td>
+                                        <div className="txt">{item?.sku}</div>
+                                      </td>
+                                      <td>
+                                        <div className="txt">
+                                          {item?.barcode}
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div className="txt">
+                                          {/* <!--Red color for icon by default, orange with className icon--orange--> */}
+                                          {item?.inventory_quantity}
+                                          <div className="tooltip-icon-orange">
+                                            <div className="icon">
+                                              <img src={danger} />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div className="txt">${item?.wsp}</div>
+                                      </td>
+
+                                      <td>
+                                        <div className="txt">
+                                          ${item?.price}
+                                        </div>
+                                      </td>
+
+                                      <td>
+                                        <div className="txt">
+                                          <button className="pc-status-button pc-status-button--add-list">
+                                            Add to Cart
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
                             </tbody>
                           </table>
                         </div>
@@ -910,16 +696,19 @@ function ProductDetails() {
                                 <div className="product_extra-text">
                                   <p>
                                     Estimated days to fulfill is{' '}
-                                    <strong>[{shipping_time}]</strong>. Product ships from{' '}
+                                    <strong>[{shipping_time}]</strong>. Product
+                                    ships from{' '}
                                     <strong>[{shipping_address?.city}]</strong>,{' '}
-                                    <strong>[{shipping_address?.state}]</strong>.
+                                    <strong>[{shipping_address?.state}]</strong>
+                                    .
                                   </p>
                                   <p>
                                     Shipping costs will be a flat rate of{' '}
                                     <strong>[${shipping_cost}]</strong> for the
                                     first product and{' '}
-                                    <strong>[${incremental_fee}]</strong> for each
-                                    additional product within the same order.
+                                    <strong>[${incremental_fee}]</strong> for
+                                    each additional product within the same
+                                    order.
                                   </p>
                                 </div>
                               </div>
@@ -939,7 +728,10 @@ function ProductDetails() {
                                   <div className="brand-img">
                                     <a href="brand-single.html">
                                       <picture>
-                                        <img src={singleSquareImage} alt="" />
+                                        <img
+                                          src={brand_details?.store_logo}
+                                          alt=""
+                                        />
                                       </picture>
                                     </a>
                                   </div>
@@ -955,11 +747,14 @@ function ProductDetails() {
                                     <div className="brand-single_about-item">
                                       <p>
                                         <strong>Shipping Location: </strong>
-                                        {shipping_address?.city}, {shipping_address?.state}
+                                        {shipping_address?.city},{' '}
+                                        {shipping_address?.state}
                                       </p>
                                       <p>
                                         <strong>Website: </strong>
-                                        <a href="#">{brand_details?.store_website}</a>
+                                        <a href="#">
+                                          {brand_details?.store_website}
+                                        </a>
                                       </p>
                                     </div>
                                   </div>
@@ -970,9 +765,15 @@ function ProductDetails() {
                                       Brand Categories:
                                     </div>
                                     <div className="brand-single_about-item-wrap">
-                                    {brand_categories && brand_categories.length > 0 && brand_categories.map((item, index) => {
-                                        return <a href="#" key={`${index}`}>{item?.store_categories?.name}</a>
-                                      })}
+                                      {brand_categories &&
+                                        brand_categories.length > 0 &&
+                                        brand_categories.map((item, index) => {
+                                          return (
+                                            <a href="#" key={`${index}`}>
+                                              {item?.store_categories?.name}
+                                            </a>
+                                          );
+                                        })}
                                     </div>
                                   </div>
                                   <div className="brand-single_about-item">
@@ -980,9 +781,15 @@ function ProductDetails() {
                                       Brand Values:
                                     </div>
                                     <div className="brand-single_about-item-wrap">
-                                      {brand_values && brand_values.length > 0 && brand_values.map((item, index) => {
-                                        return <a href="#" key={`${index}`}>{item?.store_values?.name}</a>
-                                      })}
+                                      {brand_values &&
+                                        brand_values.length > 0 &&
+                                        brand_values.map((item, index) => {
+                                          return (
+                                            <a href="#" key={`${index}`}>
+                                              {item?.store_values?.name}
+                                            </a>
+                                          );
+                                        })}
                                     </div>
                                   </div>
                                   <div className="brand-single_about-item">
@@ -1024,29 +831,25 @@ function ProductDetails() {
                                   </p>
                                 </div>
                                 {/* <div className="brand-single_about-buttons">
-                                                            <a
-                                                                href="#"
-                                                                className="button button-dark large"
-                                                            >
-                                                                View All
-                                                                Products (31)
-                                                            </a>
-                                                            <a
-                                                                href="#"
-                                                                className="button large message-brand"
-                                                            >
-                                                                Message Brand
-                                                            </a>
-                                                        </div> */}
+                                  <a
+                                    href="#"
+                                    className="button button-dark large"
+                                  >
+                                    View All Products (31)
+                                  </a>
+                                  <a
+                                    href="#"
+                                    className="button large message-brand"
+                                  >
+                                    Message Brand
+                                  </a>
+                                </div> */}
                               </div>
                             </div>
                             <div className="brand-single_info">
                               <div className="brand-single_block">
                                 <h2>About the Brand</h2>
                                 {brand_details?.brand_story}
-                              </div>
-                              <div className="imageArea">
-                                <img src={summer} />
                               </div>
                             </div>
                           </div>
@@ -1057,7 +860,7 @@ function ProductDetails() {
                   {zoomProduct && (
                     <ProductZoomModal
                       handalModal={() => handalProductZoomModal()}
-                      productImages={slideIndex}
+                      productImages={product_images}
                     />
                   )}
                 </div>
@@ -1067,7 +870,13 @@ function ProductDetails() {
               <div className="bottom-notify active">
                 <div className="container">
                   <div className="bottom-notify_text">
-                    <p>Request to connect sent to DeniumWear</p>
+                    <p>
+                      Request to connect sent to{' '}
+                      {
+                        retailerProductsData?.productDetails?.user
+                          ?.brand_details?.store_name
+                      }
+                    </p>
                   </div>
                 </div>
                 <div className="bottom-notify-close">

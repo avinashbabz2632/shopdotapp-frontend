@@ -47,7 +47,7 @@ function CreateAccount() {
     navigate('/verify-email');
   };
   return (
-    <>
+    <div className="onboard">
       <OnboardingLayout pageTitle="Create Your ShopDot Account">
         <form onSubmit={handleSubmit(onSubmit)} className="sign__form form">
           <div className="form__field form__field--half ">
@@ -138,7 +138,7 @@ function CreateAccount() {
           </div>
         </form>
       </OnboardingLayout>
-    </>
+    </div>
   );
 }
 

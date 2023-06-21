@@ -1,0 +1,294 @@
+.info-icon {
+  height: 20px;
+  width: 20px;
+}
+
+.preview img {
+  height: 10rem !important;
+}
+
+.preview {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.error-text {
+  color: var(--color-red) !important;
+}
+
+.header_Z-index {
+  z-index: 0 !important;
+}
+
+.ReactModal__Content--after-open {
+  position: absolute !important;
+  inset: 0px !important;
+  border: 0px solid transparent !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  border-radius: 0px !important;
+  outline: none !important;
+  padding: 0px !important;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.report-table {
+  font-family: 'Mulish', sans-serif;
+  border: none;
+  overflow: auto;
+  position: relative;
+  width: 100%;
+  border-radius: 0.8rem;
+  background: #fff;
+  border-spacing: 0;
+  border-collapse: separate;
+  letter-spacing: 0.04em;
+}
+
+thead {
+  background: #f7f7f8;
+}
+
+.report-table td,
+.report-table th {
+  font-weight: 500;
+  width: auto;
+  -webkit-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.16);
+          box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.16);
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #283b49;
+  text-align: left;
+}
+
+.report-table th {
+  color: #283b49;
+  font-weight: 700;
+  font-size: 14px;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  line-height: 16px;
+  padding: 16px;
+}
+
+.report-table tbody tr.tr-total-fixed {
+  position: -webkit-sticky;
+  position: sticky;
+  border: none;
+  bottom: 0;
+  background: #f7f7f8;
+  color: #283b49;
+}
+
+.report-table tbody tr.tr-total-fixed td {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.report-table tbody tr.tr-total-fixed td .text-right {
+  text-align: right;
+}
+
+.report-table .tr-total-fixed td,
+.report-table .tr-total-fixed th {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+.report-table th.rt-title label {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 40px;
+  color: #283b49;
+}
+
+.rt-row {
+  background: #f8eee8;
+  border-bottom: 1px solid #e7e7e8;
+}
+
+.rt-title span {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 32px;
+}
+
+.report-table th.text-right {
+  text-align: right;
+}
+
+.button_blue {
+  position: relative;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background: var(--btn-background);
+  padding: var(--btn-padding);
+  height: var(--btn-height);
+  border-radius: var(--btn-radius);
+  border: 0.2rem solid var(--btn-background);
+  font-size: var(--btn-font-size);
+  font-family: var(--btn-font-family);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--btn-color);
+  text-decoration: none;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  gap: 1rem;
+}
+
+.button_blue:hover {
+  border: 0.2rem solid var(--btn-background);
+  color: var(--btn-color);
+}
+
+.marginBottom {
+  margin-bottom: 7px;
+}
+
+.products_body {
+  --pb-gap: 0rem !important;
+}
+
+.mp-header_block-bottom {
+  height: var(--h-mp-height-bottom) !important;
+}
+
+.header_container {
+  -webkit-box-pack: justify !important;
+      -ms-flex-pack: justify !important;
+          justify-content: space-between !important;
+}
+
+.logo {
+  max-width: 50px !important;
+}
+
+.marginBottom {
+  margin-bottom: 7px;
+}
+
+.products_body {
+  --pb-gap: 0rem !important;
+}
+
+.mp-header_block-bottom {
+  height: var(--h-mp-height-bottom) !important;
+}
+
+.header_container {
+  -webkit-box-pack: justify !important;
+      -ms-flex-pack: justify !important;
+          justify-content: space-between !important;
+}
+
+.logo {
+  max-width: 50px !important;
+}
+
+.close_icon_search {
+  background-color: #828282;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  border-radius: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  cursor: pointer;
+  height: 17px;
+  width: 17px;
+}
+
+.product_clear_icon {
+  width: 9px;
+  margin: 0px 0px 1px 4px;
+}
+
+.swiper-button-prev .icon,
+.swiper-button-next .icon {
+  width: 1rem;
+  height: 1.6rem;
+}
+
+.icon:hover {
+  -webkit-filter: brightness(0) saturate(100%) invert(23%) sepia(11%) saturate(1394%) hue-rotate(174deg) brightness(91%) contrast(87%);
+          filter: brightness(0) saturate(100%) invert(23%) sepia(11%) saturate(1394%) hue-rotate(174deg) brightness(91%) contrast(87%);
+}
+
+.navbar_subtab {
+  top: 45px !important;
+}
+
+.ReactModal__Content--after-open {
+  position: absolute !important;
+  inset: 0px !important;
+  border: 0px solid transparent !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  border-radius: 0px !important;
+  outline: none !important;
+  padding: 0px !important;
+}
+
+.ReactModal__Overlay--after-open {
+  position: fixed !important;
+  inset: 0px !important;
+  background-color: transparent !important;
+  z-index: 100 !important;
+}
+
+.link_button_a {
+  background-color: initial;
+  cursor: pointer;
+  border: none;
+}
+
+.setting-popup.delete-user-modal div.popup-close {
+  width: 20px;
+  height: 20px;
+}
+
+.add-user:hover .plus_icon {
+  -webkit-filter: brightness(0) saturate(100%) invert(100%) sepia(2%) saturate(1216%) hue-rotate(165deg) brightness(115%) contrast(100%);
+          filter: brightness(0) saturate(100%) invert(100%) sepia(2%) saturate(1216%) hue-rotate(165deg) brightness(115%) contrast(100%);
+}
+
+.icon_position {
+  left: 145px;
+  position: absolute;
+}
+
+.connect-brand-popup .popup_success .icon_wrap {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  border: none;
+  color: transparent;
+}
+
+.connect-brand-popup .popup_success .icon {
+  width: 58px;
+  height: 58px;
+}
+/*# sourceMappingURL=retail.dev.css.map */

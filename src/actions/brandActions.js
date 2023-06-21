@@ -34,38 +34,30 @@ export function connectShopifyAction(formData) {
         user_id: formData.user_id,
       };
 
-      fetch(
+      const response = await axios.post(
+        `${API_END_POINT.SHOPIFY_CHECK_UPDATE}`,
+       {shop: formData.name}
+      );
+
+      if (response && response.data && (response.data.code == 201 || response.data.code == 200)) {
+              fetch(
         `${API_END_POINT.PLATFORM}/shopify-integration?shop=${formData.name}&user_id=${formData.user_id}`,
         {
           redirect: 'manual',
         }
-      )
-        .then((res) => {
+      ).then((res) => {
+        console.log('res----', res);
           if (res.type === 'opaqueredirect') {
             window.location.href = res.url;
           } else {
             return res;
           }
-        })
-        .catch(() => {});
-
-      // const response = await axios.get(
-      //   `${API_END_POINT.PLATFORM}/shopify-integration`,
-      //   {
-      //     params,
-
-      //     headers: {
-      //       'Content-type': 'text/html',
-      //       'Access-Control-Allow-Origin': true,
-      //     },
-      //   }
-      // );
-      //
-      // if (response && response.data && response.data.code == 201) {
-      // } else {
-      //
-      //   toast.error('Something went worng');
-      // }
+        }).catch(() => {});
+      } else if (response && response.code == 400) {
+        toast.error(response?.errors);
+      } else {
+        toast.error('Something went worng');
+      }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.location) {
         window.location = err.response.data.location;
@@ -133,10 +125,10 @@ export function getBrandProfileAction(id) {
         );
         dispatch(
           setStatusIndicator({
-            billing: response?.data?.data?.payment_detail?.customer_id,
-            products: response?.data?.data?.user_detail?.is_initial_sync_done,
+            billing: response?.data?.data?.payment_detail?.merchant_status === 'ACTIVE',
+            products: response?.data?.data?.active_product_count > 0,
             store: response?.data?.data?.shop_detail?.is_active,
-            onboarding: response?.data?.data?.brandPreference?.id,
+            onboarding: response?.data?.data?.shippingRate?.id,
           })
         );
       } else {
@@ -163,10 +155,11 @@ export function getPlatformValuesAction() {
 }
 
 export function syncProductAction(userId) {
-  return async () => {
+  return async (dispatch) => {
     try {
       const response = await axios.get(API_END_POINT.SYNC_PRODUCT_ALL(userId));
       if (response && response.data && response.data.code == 200) {
+        dispatch(getBrandProfileAction(userId));
         return true;
       }
     } catch (err) {
@@ -433,6 +426,7 @@ export function updateShipping(data, shippingId) {
         response = await axios.post(API_END_POINT.BRAND_SHIPPING, data);
       }
       dispatch(getBrandShippingAction(data.brand_id));
+      dispatch(getBrandProfileAction(data?.user_id));
       dispatch(setProfileCompleted({ shipping: true }));
       toast.success(response.data.message);
     } catch (err) {

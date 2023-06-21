@@ -3,7 +3,7 @@ import { LinkMod } from '../../../../components/common/A';
 import { useParams } from 'react-router-dom';
 
 export default function BrandSidebar({ completedStep }) {
-  console.log(completedStep);
+  console.log('completedStep----', completedStep);
   const { activeTab } = useParams();
 
   const [tab, setTab] = useState(activeTab);
@@ -12,10 +12,81 @@ export default function BrandSidebar({ completedStep }) {
     setTab(tabName);
   };
 
-  const checkStepCompleted = (step) => {
-    if (completedStep.includes(step)) return 'checked';
-    return 'required';
+  const isStepCompleted = (step) => {
+    if (step.required) {
+      return completedStep.includes(step.tabName) ? 'checked' : 'required';
+    }
+    return '';
   };
+
+  const isPreviousStepCompleted = (step, index) => {
+    if(step.required) {
+      const previousStepIndex = index - 1;
+      if(previousStepIndex == -1) return true;
+      const item = allSteps[previousStepIndex];
+      return  completedStep.includes(item?.tabName);
+    }
+    return true;
+  }
+
+  const allSteps = [
+    {
+      to: '/brand/setting',
+      dataLink: 'Account',
+      name: 'Brand Profile',
+      tabName: 'profile',
+      required: true,
+    },
+    {
+      to: '/brand/setting/preference',
+      dataLink: 'Preferences',
+      name: 'Preferences',
+      tabName: 'preference',
+      required: true,
+    },
+    {
+      to: '/brand/setting/paid',
+      dataLink: 'GettingPaid',
+      name: 'Getting Paid',
+      tabName: 'payment',
+      required: true,
+    },
+    {
+      to: '/brand/setting/shipping',
+      dataLink: 'Shipping',
+      name: 'Shipping',
+      tabName: 'shipping',
+      required: true,
+    },
+    {
+      to: '/brand/setting/integration',
+      dataLink: 'Integration',
+      name: 'Integration',
+      tabName: 'integration',
+      required: true,
+    },
+    {
+      to: '/brand/setting/users',
+      dataLink: 'Users',
+      name: 'Users',
+      tabName: 'users',
+      required: false,
+    },
+    {
+      to: '/brand/setting/security',
+      dataLink: 'Security',
+      name: 'Security',
+      tabName: 'security',
+      required: false,
+    },
+    {
+      to: '/brand/setting/notification',
+      dataLink: 'AlertsNotifications',
+      name: 'Notifications',
+      tabName: 'notification',
+      required: false,
+    },
+  ];
 
   return (
     <aside className="filters mp-filter">
@@ -32,13 +103,38 @@ export default function BrandSidebar({ completedStep }) {
                   <span className="line line3"></span>
                 </div>
                 <div className="pc_tabs-menu tab_menu">
-                  <LinkMod
+                  {allSteps.map((step, index) => {
+                    return (
+                      <LinkMod
+                        key={`${index}`}
+                        to={step.to}
+                        data-link={step.dataLink}
+                        className={`tab-links ${isStepCompleted(step)} ${
+                          tab === step.tabName ? 'active' : ''
+                        }`}
+                        onClick={() => {
+                          handleChangTab(step.tabName);
+                        }}
+                        style={isPreviousStepCompleted(step, index) ? null : { pointerEvents: 'none' }}
+                      >
+                        {step.name}
+                        {step.required && <div className="tooltip_text not-available-tooltip">
+                          <p>
+                            This is a mandatory setting that is part of the
+                            onboarding process.
+                          </p>
+                        </div>}
+                      </LinkMod>
+                    );
+                  })}
+                  {/* <LinkMod
                     to={'/brand/setting'}
                     data-link="Account"
                     className={`tab-links ${
                       completedStep.includes('profile') ? 'checked' : 'required'
                     } ${tab === 'profile' || tab == undefined ? 'active' : ''}`}
                     onClick={() => handleChangTab('profile')}
+                    style={{pointerEvents: 'none'}}
                   >
                     Brand Profile
                     <div className="tooltip_text not-available-tooltip">
@@ -139,7 +235,7 @@ export default function BrandSidebar({ completedStep }) {
                     onClick={() => handleChangTab('notification')}
                   >
                     Notifications
-                  </LinkMod>
+                  </LinkMod> */}
                 </div>
               </div>
             </div>

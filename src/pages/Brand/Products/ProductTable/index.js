@@ -31,6 +31,7 @@ import {
   productCatClear,
   stockClear,
   setProductStatusFilter,
+  setProductDetails,
 } from '../../../../redux/Brand/Products/productSlice';
 import { filter, isEmpty, keyBy, map } from 'lodash';
 import PopupModal from '../Popupmodal';
@@ -41,11 +42,18 @@ import stockYellowAlert from '../../../../assets/images/icons/yellow-warning.svg
 import {
   downloadProductAction,
   getProductListAction,
+  getSingleProductDetailsAction,
   syncSingleProductAction,
+  updateProductCategoryAction,
+  updateProductStatusAction,
+  updateProductTagAction,
+  updateProductVarientAction,
   uploadProductAction,
 } from '../../../../actions/productActions';
 import { useNavigate } from 'react-router-dom';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
+import { toast } from 'react-toastify';
+import logoPng from '../../../../assets/images/logos/logo-png.png';
 
 export default function ProductTable(props) {
   const dispatch = useDispatch();
@@ -82,6 +90,9 @@ export default function ProductTable(props) {
   const [selectedRetailerBrand, setSelectedRetailerBrand] = useState(null);
   const [limit, setLimit] = useState(20);
   const [offset, setOffset] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState({});
+
+  console.log(productTagsFilter, 'productTagsFilter');
 
   const { count, records } = productList || {};
 
@@ -93,8 +104,6 @@ export default function ProductTable(props) {
   }, [productCategory]);
 
   console.log(productCategory, 'productCategory');
-
- 
 
   let pageCount = 0;
   if (records && records.length > 0) {
@@ -240,15 +249,14 @@ export default function ProductTable(props) {
     setShowVariantPopup(variantshoePopup === false ? true : false);
   };
 
-  const handalCategoryPopup = (e, type, id) => {
+  const handalCategoryPopup = (e, type, id, currentProduct) => {
     setCategoryTagPopup(categoryTagPopup === false ? true : false);
     setProductId(id);
+    setSelectedProduct(currentProduct);
     if (type) {
       setTypeOfTag(type);
     }
-    if (e) {
-      setCategoryTagData(e);
-    }
+
     setOpenSelect(false);
   };
 
@@ -266,8 +274,14 @@ export default function ProductTable(props) {
     fetchProducts();
   };
 
-  const handleChangeStatus = (ele) => {
-    //
+  const handleChangeStatus = async (ele) => {
+    const response = await updateProductStatusAction(
+      JSON.stringify(ele.id),
+      ele?.status == '1' ? 0 : 1
+    );
+    if (response.isSuccess) {
+      fetchProducts();
+    }
   };
 
   const handleCheckCheckBox = (ele, isAll) => {
@@ -328,8 +342,10 @@ export default function ProductTable(props) {
   const showProductTags = (item) => {
     const { product_tags } = item;
     let tags = '';
-    if (product_tags && product_tags.length > 0) {
-      tags = `${product_tags[0]?.tag} +${product_tags?.length} More...`;
+    if (product_tags && product_tags.length > 1) {
+      tags = `${product_tags[0]?.tag} +${product_tags?.length - 1} More...`;
+    } else {
+      tags = `${product_tags[0]?.tag}`;
     }
     return tags;
   };
@@ -389,13 +405,51 @@ export default function ProductTable(props) {
     );
   };
 
+  const handleSave = async (e) => {
+    let res;
+    if (typeOfTag == 'tag') {
+      res = await updateProductTagAction({
+        productId: selectedProduct.id,
+        tags: e,
+      });
+    } else if (typeOfTag === 'category') {
+      res = await updateProductCategoryAction({
+        product_id: selectedProduct.id,
+        product_category: e,
+      });
+    }
+    if (res.isSuccess) {
+      fetchProducts();
+      toast.success(
+        `Product ${
+          typeOfTag == 'tag' ? 'tag' : 'category'
+        } updated successfully`
+      );
+    }
+  };
+
   useEffect(() => {
     if (!syncInProgress && syncSuccess && !syncError) {
       setRefresh(!refresh);
     }
   }, [syncInProgress, syncSuccess, syncError]);
 
-  console.log(productCatFilter, 'productCatFilter');
+  const handleEditProduct = async (productId) => {
+    const response = await getSingleProductDetailsAction(productId);
+    if (response.isSuccess) {
+      dispatch(setProductDetails(response.data));
+      navigate(`/brand/edit-product/${productId}`);
+    }
+  };
+
+  const handleVarient = async (currentData) => {
+    handalVariantPopup();
+    const response = await updateProductVarientAction(currentData);
+    if (response.isSuccess) {
+      fetchProducts();
+      toast.success('Product varient updated successfully');
+    }
+  };
 
   return (
     <>
@@ -485,6 +539,7 @@ export default function ProductTable(props) {
         <PopupModal
           variantdata={variantdata}
           handalPopup={() => handalVariantPopup()}
+          handleVarient={handleVarient}
         />
       )}
       {categoryTagPopup && (
@@ -494,6 +549,8 @@ export default function ProductTable(props) {
           handalPopup={handalCategoryPopup}
           changeTag={handalChangeTag}
           productId={productId}
+          saveCallback={handleSave}
+          selectedProduct={selectedProduct}
         />
       )}
       {retailerPopup && (
@@ -689,12 +746,20 @@ export default function ProductTable(props) {
                         </li>
                       </ul>
                       <ul className="select_ul">
-                        <li onClick={() => handalCategoryPopup([], 'category')}>
+                        <li
+                          onClick={() =>
+                            handalCategoryPopup([], 'category', null, null)
+                          }
+                        >
                           <div className="option">
                             <p>Edit Categories</p>
                           </div>
                         </li>
-                        <li onClick={() => handalCategoryPopup([], 'tag')}>
+                        <li
+                          onClick={() =>
+                            handalCategoryPopup([], 'tag', null, null)
+                          }
+                        >
                           <div className="option">
                             <p>Add Tags</p>
                           </div>
@@ -854,7 +919,14 @@ export default function ProductTable(props) {
                             <a className="number">
                               {' '}
                               <picture>
-                                <img src={getProductImage(ele)} alt="Image" />
+                                <img
+                                  src={
+                                    ele?.product_images?.length > 0
+                                      ? getProductImage(ele)
+                                      : logoPng
+                                  }
+                                  alt="Image"
+                                />
                               </picture>
                             </a>
                           </div>
@@ -927,9 +999,14 @@ export default function ProductTable(props) {
                           {ele.product_categories?.length === 0 ? (
                             <p
                               className="add-item-label add-category cursor-pointer"
-                              onClick={() =>
-                                handalCategoryPopup([], 'category', ele.id)
-                              }
+                              onClick={() => {
+                                handalCategoryPopup(
+                                  [],
+                                  'category',
+                                  ele.id,
+                                  ele
+                                );
+                              }}
                             >
                               <span>+</span> Category
                             </p>
@@ -937,10 +1014,21 @@ export default function ProductTable(props) {
                             <p
                               className="value_added cursor-pointer"
                               onClick={() =>
-                                handalCategoryPopup([], 'category', ele.id)
+                                handalCategoryPopup([], 'category', ele.id, ele)
                               }
                             >
-                              {ele.category}
+                              {ele?.product_categories?.[0]?.parent_category
+                                ?.super_category?.main_category
+                                ? ele?.product_categories?.[0]?.parent_category
+                                    ?.super_category?.main_category
+                                : ele?.product_categories?.[0]?.parent_category
+                                    ?.sub_category
+                                ? ele?.product_categories?.[0]?.parent_category
+                                    ?.sub_category
+                                : ele?.product_categories?.[0]?.parent_category
+                                ? ele?.product_categories?.[0]?.parent_category
+                                    ?.name
+                                : ''}
                             </p>
                           )}
                         </div>
@@ -951,7 +1039,12 @@ export default function ProductTable(props) {
                             <p
                               className="add-item-label add-tags cursor-pointer"
                               onClick={() =>
-                                handalCategoryPopup(ele?.product_tags, 'tag')
+                                handalCategoryPopup(
+                                  ele?.product_tags,
+                                  'tag',
+                                  null,
+                                  ele
+                                )
                               }
                             >
                               <span>+</span> Tags
@@ -960,7 +1053,12 @@ export default function ProductTable(props) {
                             <p
                               className="value_added cursor-pointer"
                               onClick={() =>
-                                handalCategoryPopup(ele?.product_tags, 'tag')
+                                handalCategoryPopup(
+                                  ele?.product_tags,
+                                  'tag',
+                                  null,
+                                  ele
+                                )
                               }
                             >
                               {showProductTags(ele)}
@@ -1016,7 +1114,12 @@ export default function ProductTable(props) {
                               <div className="dropdown_inner">
                                 <ul>
                                   <li>
-                                    <button className="edit-product">
+                                    <button
+                                      onClick={() => {
+                                        handleEditProduct(ele?.id);
+                                      }}
+                                      className="edit-product"
+                                    >
                                       Edit Product
                                     </button>
                                   </li>
@@ -1033,9 +1136,7 @@ export default function ProductTable(props) {
                                   <li>
                                     <button
                                       className="sync-product"
-                                      onClick={() =>
-                                        handalRetailerPopup('', [])
-                                      }
+                                      onClick={() => handalRetailerPopup(ele)}
                                     >
                                       Assign Retailers
                                     </button>

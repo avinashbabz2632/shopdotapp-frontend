@@ -52,7 +52,7 @@ function CreatePassword() {
   };
 
   return (
-    <>
+    <div className="auth">
       <Header pageTitle="Create New Password" />
       <PublicLayout>
         <div className="info-window">
@@ -115,7 +115,7 @@ function CreatePassword() {
           </div>
         </form>
       </PublicLayout>
-    </>
+    </div>
   );
 }
 
