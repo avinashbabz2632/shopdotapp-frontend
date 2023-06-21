@@ -16,7 +16,7 @@ import {
   selectRetailers,
 } from '../../../../redux/Brand/Retailer/retailerSelector';
 import { resetBrandAssignedRetailerState } from '../../../../redux/Brand/Retailer/retailerSlice';
-
+import { toast, ToastContainer } from 'react-toastify';
 export default function RetailerPopup(props) {
   const { handalPopup, retailerBrand, handleOnClose } = props;
   const dispatch = useDispatch();
@@ -32,45 +32,49 @@ export default function RetailerPopup(props) {
   const [unAssignedRetailers, setUnAssignedRetailers] =
     useState(notAssignedRetailers);
   const [assignedRetailers, setAssignedRetailers] = useState(assignedArr);
-  
+  const previousAssignedRetailers = assignedArr?.length;
+  const newAssignedRetailers =
+    previousAssignedRetailers - assignedRetailers.length;
+
   useEffect(() => {
     const body = {
       query: {
         search: {
-          product_id: retailerBrand?.id
-        }
+          product_id: retailerBrand?.id,
+        },
       },
-    }
+    };
     dispatch(getRetailerListAction(body));
   }, []);
 
   useEffect(() => {
     const { assignedRetailers: assignedArr, notAssignedRetailers } =
-    retailers || {};
+      retailers || {};
     setUnAssignedRetailers(notAssignedRetailers);
     setAssignedRetailers(assignedArr);
   }, [retailers]);
 
   useEffect(() => {
-    if(!updating && success && !error) {
+    if (!updating && success && !error) {
+      toast.success(`${newAssignedRetailers} retailers are assigned to selected product`);
       dispatch(resetBrandAssignedRetailerState());
       // handalPopup();
       handleOnClose();
-    } else if(!updating && !success && error) {
+    } else if (!updating && !success && error) {
       dispatch(resetBrandAssignedRetailerState());
     }
   }, [updating, success, error]);
 
   const handleSearchRetailer = (e) => {
     const searchQuery = e.target.value.toLowerCase();
-    if(searchQuery){
+    if (searchQuery) {
       const body = {
         query: {
           search: {
             store_name: searchQuery,
             category_id: null,
-            product_id: retailerBrand?.id
-          }
+            product_id: retailerBrand?.id,
+          },
         },
       };
       dispatch(getRetailerListAction(body));
@@ -78,10 +82,10 @@ export default function RetailerPopup(props) {
       const body = {
         query: {
           search: {
-            product_id: retailerBrand?.id
-          }
+            product_id: retailerBrand?.id,
+          },
         },
-      }
+      };
       dispatch(getRetailerListAction(body));
     }
   };
@@ -123,160 +127,164 @@ export default function RetailerPopup(props) {
   };
 
   return (
-    <div className="popup my-product-modal pd-retailer-modal">
-      <div className="popup_wrapper">
-        <div className="popup_content">
-          <div className="popup-close" onClick={() => handalPopup()}>
-            <img className="icon" src={closeBlackIcon} />
-          </div>
-          <div className="popup-display pd-retailer active">
-            <div className="retailers-tab">
-              <div className="action-head">
-                <button
-                  className="button button-white cancel"
-                  onClick={() => handalPopup()}
-                >
-                  Cancel{' '}
-                </button>
-                <button
-                  className="button button-orange-dark"
-                  onClick={handleSave}
-                >
-                  <span className="icon-size">
-                    <img src={saveIcon} />
-                  </span>
-                  Save Changes
-                </button>
-              </div>
-              <div className="product-title">Allow Product for Retailer</div>
-
-              <div className="products_head-search">
-                <form action="#" className="search_form">
-                  <div className="search_form-input">
-                    <input
-                      type="text"
-                      placeholder="Search Retailer"
-                      onChange={handleSearchRetailer}
-                    />
-                  </div>
-                  <button type="cancel" className="search_form-button">
-                    <svg className="icon"></svg>
-                  </button>
-                  <button type="submit"></button>
-                  <svg className="icon"></svg>
-                </form>
-              </div>
-
-              <div className="product-retailer-area">
-                <div className="available-area">
-                  <div className="av-title">
-                    {unAssignedRetailers && unAssignedRetailers.length}{' '}
-                    {unAssignedRetailers && unAssignedRetailers.length === 1
-                      ? 'Retailer Available'
-                      : 'Retailers Available'}
-                  </div>
-
-                  <a
-                    onClick={assignedAllRetailer}
-                    href="#"
-                    className={`add-item-label add-category ${
-                      unAssignedRetailers && unAssignedRetailers.length > 0
-                        ? ''
-                        : 'light-pill'
-                    }`}
+    <>
+      <div className="popup my-product-modal pd-retailer-modal">
+        <div className="popup_wrapper">
+          <div className="popup_content">
+            <div className="popup-close" onClick={() => handalPopup()}>
+              <img className="icon" src={closeBlackIcon} />
+            </div>
+            <div className="popup-display pd-retailer active">
+              <div className="retailers-tab">
+                <div className="action-head">
+                  <button
+                    className="button button-white cancel"
+                    onClick={() => handalPopup()}
                   >
-                    <span>+</span> Assign All
-                  </a>
+                    Cancel{' '}
+                  </button>
+                  <button
+                    className="button button-orange-dark"
+                    onClick={handleSave}
+                  >
+                    <span className="icon-size">
+                      <img src={saveIcon} />
+                    </span>
+                    Save Changes
+                  </button>
+                </div>
+                <div className="product-title">Allow Product for Retailer</div>
 
-                  <div className="retailer-box">
-                    {unAssignedRetailers &&
-                      unAssignedRetailers.length > 0 &&
-                      unAssignedRetailers.map((e, i) => (
-                        <div className="retailer-area" key={i}>
-                          <span
-                            id="add_retailer"
-                            onClick={() => assignedSingleRetailer(e, i)}
-                          >
-                            <img src={addRetaielr} />
-                          </span>
-                          <div className="retailer-item">
-                            <div className="ri-photo">
-                              <img src="https://placeimg.com/200/200/nature" />
-                            </div>
-                            <div className="ri-detail">
-                              <h3>{e.store_name}</h3>
-                              <p>
-                                Published to Store Products:{' '}
-                                <span>{e.published_to_store_products}</span>
-                              </p>
-                              <p>
-                                Products Sales: <span>{e.all_time_sales}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div className="retailer-category">
-                            <label>Category:</label>
-                            <p className="chips-area">
-                              <label>{e.category}</label>
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
+                <div className="products_head-search">
+                  <form action="#" className="search_form">
+                    <div className="search_form-input">
+                      <input
+                        type="text"
+                        placeholder="Search Retailer"
+                        onChange={handleSearchRetailer}
+                      />
+                    </div>
+                    <button type="cancel" className="search_form-button">
+                      <svg className="icon"></svg>
+                    </button>
+                    <button type="submit"></button>
+                    <svg className="icon"></svg>
+                  </form>
                 </div>
 
-                <div className="assigned-area">
-                  <div className="av-title">
-                    {assignedRetailers && assignedRetailers.length}{' '}
-                    {assignedRetailers && assignedRetailers.length == 1
-                      ? 'Retailer Assigned'
-                      : 'Retailers Assigned'}
+                <div className="product-retailer-area">
+                  <div className="available-area">
+                    <div className="av-title">
+                      {unAssignedRetailers && unAssignedRetailers.length}{' '}
+                      {unAssignedRetailers && unAssignedRetailers.length === 1
+                        ? 'Retailer Available'
+                        : 'Retailers Available'}
+                    </div>
+
+                    <a
+                      onClick={assignedAllRetailer}
+                      href="#"
+                      className={`add-item-label add-category ${
+                        unAssignedRetailers && unAssignedRetailers.length > 0
+                          ? ''
+                          : 'light-pill'
+                      }`}
+                    >
+                      <span>+</span> Assign All
+                    </a>
+
+                    <div className="retailer-box">
+                      {unAssignedRetailers &&
+                        unAssignedRetailers.length > 0 &&
+                        unAssignedRetailers.map((e, i) => (
+                          <div className="retailer-area" key={i}>
+                            <span
+                              id="add_retailer"
+                              onClick={() => assignedSingleRetailer(e, i)}
+                            >
+                              <img src={addRetaielr} />
+                            </span>
+                            <div className="retailer-item">
+                              <div className="ri-photo">
+                                <img src="https://placeimg.com/200/200/nature" />
+                              </div>
+                              <div className="ri-detail">
+                                <h3>{e.store_name}</h3>
+                                <p>
+                                  Published to Store Products:{' '}
+                                  <span>{e.published_to_store_products}</span>
+                                </p>
+                                <p>
+                                  Products Sales:{' '}
+                                  <span>{e.all_time_sales}</span>
+                                </p>
+                              </div>
+                            </div>
+                            <div className="retailer-category">
+                              <label>Category:</label>
+                              <p className="chips-area">
+                                <label>{e.category}</label>
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
                   </div>
-                  <a
-                    onClick={removeAllRetailer}
-                    href="#"
-                    className={`add-item-label add-category ${
-                      assignedRetailers && assignedRetailers.length > 0
-                        ? ''
-                        : 'light-pill'
-                    }`}
-                  >
-                    <span>-</span> Remove All
-                  </a>
-                  <div className="retailer-box">
-                    {assignedRetailers &&
-                      assignedRetailers.length > 0 &&
-                      assignedRetailers.map((e, i) => (
-                        <div className="retailer-area" key={i}>
-                          <span
-                            id="add_retailer"
-                            onClick={() => removeSingleRetailer(e, i)}
-                          >
-                            <img src={remvoeRetaielr} />
-                          </span>
-                          <div className="retailer-item">
-                            <div className="ri-photo">
-                              <img src="https://placeimg.com/200/200/nature" />
+
+                  <div className="assigned-area">
+                    <div className="av-title">
+                      {assignedRetailers && assignedRetailers.length}{' '}
+                      {assignedRetailers && assignedRetailers.length == 1
+                        ? 'Retailer Assigned'
+                        : 'Retailers Assigned'}
+                    </div>
+                    <a
+                      onClick={removeAllRetailer}
+                      href="#"
+                      className={`add-item-label add-category ${
+                        assignedRetailers && assignedRetailers.length > 0
+                          ? ''
+                          : 'light-pill'
+                      }`}
+                    >
+                      <span>-</span> Remove All
+                    </a>
+                    <div className="retailer-box">
+                      {assignedRetailers &&
+                        assignedRetailers.length > 0 &&
+                        assignedRetailers.map((e, i) => (
+                          <div className="retailer-area" key={i}>
+                            <span
+                              id="add_retailer"
+                              onClick={() => removeSingleRetailer(e, i)}
+                            >
+                              <img src={remvoeRetaielr} />
+                            </span>
+                            <div className="retailer-item">
+                              <div className="ri-photo">
+                                <img src="https://placeimg.com/200/200/nature" />
+                              </div>
+                              <div className="ri-detail">
+                                <h3>{e.store_name}</h3>
+                                <p>
+                                  Published to Store Products:{' '}
+                                  <span>{e.published_to_store_products}</span>
+                                </p>
+                                <p>
+                                  Products Sales:{' '}
+                                  <span>{e.all_time_sales}</span>
+                                </p>
+                              </div>
                             </div>
-                            <div className="ri-detail">
-                              <h3>{e.store_name}</h3>
-                              <p>
-                                Published to Store Products:{' '}
-                                <span>{e.published_to_store_products}</span>
-                              </p>
-                              <p>
-                                Products Sales: <span>{e.all_time_sales}</span>
+                            <div className="retailer-category">
+                              <label>Category:</label>
+                              <p className="chips-area">
+                                <label>{e.category}</label>
                               </p>
                             </div>
                           </div>
-                          <div className="retailer-category">
-                            <label>Category:</label>
-                            <p className="chips-area">
-                              <label>{e.category}</label>
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -284,7 +292,8 @@ export default function RetailerPopup(props) {
           </div>
         </div>
       </div>
-    </div>
+      <ToastContainer />
+    </>
   );
 }
 

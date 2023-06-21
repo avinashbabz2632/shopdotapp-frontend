@@ -323,15 +323,15 @@ export default function RequestAccess(props) {
                               className={`status-pill ${item.invite_status == 'pending'
                                   ? 'pill_pending'
                                   : item.invite_status == 'accepted'
-                                    ? 'pill_connected'
-                                    : item.invite_status == 'declined'
-                                      ? 'pill_declined'
-                                      : item.invite_status == ''
-                                        ? 'pill_not_connected'
-                                        : ''
-                                }`}
+                                  ? 'pill_connected'
+                                  : item.invite_status == 'declined'
+                                  ? 'pill_declined'
+                                  : item.invite_status == ''
+                                  ? 'pill_not_connected'
+                                  : ''
+                              }`}
                             >
-                              {getProductStatus(item.invite_status)}
+                              {item.invite_status.charAt(0).toUpperCase() + item.invite_status.slice(1)}
                             </span>
                           </td>
                           <td>
