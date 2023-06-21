@@ -139,7 +139,6 @@ export default function RequestAccess(props) {
     return statusText;
   }
   const getStatus = (status) => {
-    console.log(status);
     if(status == "accepted"){
       status = "connected"
     }
