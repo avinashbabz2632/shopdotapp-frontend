@@ -244,11 +244,13 @@ function ProductDetails() {
                             </button>
                           )}
                           {/* <a href="#" class="button button-green request-approved-box">Approve</a> */}
+                          <a href={`mailto:`}>
                           <button className="button message-brand">
                             <div className="icon">
                               <img src={mailIcon} />
                             </div>
                           </button>
+                          </a>
                         </div>
                       </div>
                     </div>
