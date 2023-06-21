@@ -9,7 +9,7 @@ import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import InfoIcon from '../../../../assets/images/icons/info-blue.svg';
 import danger from '../../images/icons/icon-danger.svg';
 import redDanger from '../../images/icons/icon-red-triangle.svg';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import RightArrowIcon from '../../images/icons/icon-chevron--right.svg';
 import closeIcon from '../../../../assets/images/icons/icon-newclose.svg';
 import LeftArrow from '../../images/icons/icon-chevron--left.svg';
@@ -19,6 +19,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import BabyAndKids from '../../common/BabyAndKids';
 import logoPng from '../../../../assets/images/logos/logo-png.png';
 import logoMain from '../../../../assets/images/logos/logo-main.png';
+import { Parser } from 'html-to-react';
 
 import {
   getRetailerProductDetailsAction,
@@ -33,7 +34,7 @@ function ProductDetails() {
   const [zoomProduct, setZoomProduct] = useState(false);
   const [connectStatus, setConnectStatus] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
+  const [openSubMenu, setOpenSubmenu] = useState(false);
   const retailerProductsData = useSelector(selectRetailerProductDetails);
   const { productDetails, total_stock_quantity, categories } =
     retailerProductsData || {};
@@ -61,20 +62,20 @@ function ProductDetails() {
   const params = useParams();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setSetActiveOpenVal(setActiveOpen);
-    if (retailerProductsData?.productDetails?.user?.invitees?.length > 0) {
-      setConnectStatus(
-        retailerProductsData.productDetails.user.invitees[0].invite_status
-      );
-    } else if (
-      retailerProductsData?.productDetails?.user?.inviters?.length > 0
-    ) {
-      setConnectStatus(
-        retailerProductsData.productDetails.user.inviters[0].invite_status
-      );
-    }
-  }, [setActiveOpen]);
+  // useEffect(() => {
+  //   setSetActiveOpenVal(setActiveOpen);
+  //   if (retailerProductsData?.productDetails?.user?.invitees?.length > 0) {
+  //     setConnectStatus(
+  //       retailerProductsData.productDetails.user.invitees[0].invite_status
+  //     );
+  //   } else if (
+  //     retailerProductsData?.productDetails?.user?.inviters?.length > 0
+  //   ) {
+  //     setConnectStatus(
+  //       retailerProductsData.productDetails.user.inviters[0].invite_status
+  //     );
+  //   }
+  // }, [setActiveOpen]);
 
   const handalSwipeRightImage = () => {
     setSlideIndex((prev) => (prev + 1) % 11);
@@ -139,11 +140,15 @@ function ProductDetails() {
     }, 4000);
   };
 
+  const onClickSubmenu = () => {
+    setOpenSubmenu(!openSubMenu);
+  };
+
   return (
     <>
       <div className="wrapper">
-        <RetailerHeader />
-        {setActiveOpenVal === true ? (
+        <RetailerHeader onClickSubmenu={onClickSubmenu} />
+        {openSubMenu ? (
           <BabyAndKids />
         ) : (
           <>
@@ -239,11 +244,15 @@ function ProductDetails() {
                             </button>
                           )}
                           {/* <a href="#" class="button button-green request-approved-box">Approve</a> */}
-                          <button className="button message-brand">
-                            <div className="icon">
-                              <img src={mailIcon} />
-                            </div>
-                          </button>
+                          <a
+                            href={`mailto:${brand_details.company_email_address}`}
+                          >
+                            <button className="button message-brand">
+                              <div className="icon">
+                                <img src={mailIcon} />
+                              </div>
+                            </button>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -256,21 +265,39 @@ function ProductDetails() {
                           <div className="product-detail product-detail--brand">
                             <div className="product-detail_image">
                               <div className="image image--cover image--1-1">
-                                <picture>
-                                  <img
-                                    src={
-                                      brand_details?.store_logo
-                                        ? brand_details?.store_logo
-                                        : singleSquareImage
-                                    }
-                                    alt=""
-                                  />
-                                </picture>
+                                <Link
+                                  to="/retailer/brand/single"
+                                  state={{
+                                    user_id: brand_details?.user_id,
+                                    brand_id: brand_details?.id,
+                                  }}
+                                >
+                                  <picture>
+                                    <img
+                                      src={
+                                        brand_details?.store_logo
+                                          ? brand_details?.store_logo
+                                          : singleSquareImage
+                                      }
+                                      alt=""
+                                    />
+                                  </picture>
+                                </Link>
                               </div>
                             </div>
                             <div className="product-detail_info">
                               <div className="ttl">Brand</div>
-                              <p className="txt">{brand_details?.store_name}</p>
+                              <Link
+                                to="/retailer/brand/single"
+                                state={{
+                                  user_id: brand_details?.user_id,
+                                  brand_id: brand_details?.id,
+                                }}
+                              >
+                                <p className="txt">
+                                  {brand_details?.store_name}
+                                </p>
+                              </Link>
                             </div>
                           </div>
                           <div className="product-detail product-detail--stock">
@@ -325,7 +352,7 @@ function ProductDetails() {
                           {/* <!--Added latest detail end--> */}
                         </div>
                       </div>
-                      <div className="product">
+                      <div className="product_main">
                         <div className="product_slider">
                           <div className="product_slider-thumbs">
                             <div className="swiper-container gallery-thumbs swiper-initialized swiper-vertical swiper-pointer-events swiper-thumbs">
@@ -350,6 +377,7 @@ function ProductDetails() {
                                         style={{
                                           marginBottom: '1px',
                                         }}
+                                        key={`${index}`}
                                       >
                                         <div className="image">
                                           <picture>
@@ -526,7 +554,7 @@ function ProductDetails() {
                               )}
                             </div>
                           </div>
-                          <>{body_html}</>
+                          <>{Parser().parse(body_html)}</>
                           <div className="product-category">
                             <strong>Tags:</strong>
                             <div className="tags">
@@ -840,9 +868,6 @@ function ProductDetails() {
                               <div className="brand-single_block">
                                 <h2>About the Brand</h2>
                                 {brand_details?.brand_story}
-                              </div>
-                              <div className="imageArea">
-                                <img src={summer} />
                               </div>
                             </div>
                           </div>

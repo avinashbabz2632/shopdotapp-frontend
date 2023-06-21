@@ -125,10 +125,10 @@ export function getBrandProfileAction(id) {
         );
         dispatch(
           setStatusIndicator({
-            billing: response?.data?.data?.payment_detail?.customer_id,
-            products: response?.data?.data?.user_detail?.is_initial_sync_done,
+            billing: response?.data?.data?.payment_detail?.merchant_status === 'ACTIVE',
+            products: response?.data?.data?.active_product_count > 0,
             store: response?.data?.data?.shop_detail?.is_active,
-            onboarding: response?.data?.data?.brandPreference?.id,
+            onboarding: response?.data?.data?.shippingRate?.id,
           })
         );
       } else {
@@ -155,10 +155,11 @@ export function getPlatformValuesAction() {
 }
 
 export function syncProductAction(userId) {
-  return async () => {
+  return async (dispatch) => {
     try {
       const response = await axios.get(API_END_POINT.SYNC_PRODUCT_ALL(userId));
       if (response && response.data && response.data.code == 200) {
+        dispatch(getBrandProfileAction(userId));
         return true;
       }
     } catch (err) {
@@ -425,6 +426,7 @@ export function updateShipping(data, shippingId) {
         response = await axios.post(API_END_POINT.BRAND_SHIPPING, data);
       }
       dispatch(getBrandShippingAction(data.brand_id));
+      dispatch(getBrandProfileAction(data?.user_id));
       dispatch(setProfileCompleted({ shipping: true }));
       toast.success(response.data.message);
     } catch (err) {

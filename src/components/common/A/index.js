@@ -41,5 +41,5 @@ export const LinkMod = styled(Link)`
   &:hover {
     color: ${orange100};
     opacity: 0.8;
-  }
+  };
 `;

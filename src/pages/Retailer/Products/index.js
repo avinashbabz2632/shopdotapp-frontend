@@ -52,7 +52,7 @@ function Products() {
   const selectedStockFilters = useSelector(selectSelectedStockFilters);
   const selectedWSPFilter = useSelector(selectSelectedWSPFilters);
   const selectedMSRPFilter = useSelector(selectSelectedMSRPFilters);
-  const [setActiveOpenVal, setSetActiveOpenVal] = useState(false);
+  const [openSubMenu, setOpenSubmenu] = useState(false);
   const [imgStates, setImgStates] = useState(
     Array(retailerProductData.length).fill(0)
   );
@@ -70,13 +70,15 @@ function Products() {
     const pageNumbers = [];
     for (let index = 1; index <= pageCount; index++) {
       const selected = offset + 1 === index;
-      const optionItem = <option key={`${index}`} value={index} selected={selected}>
-        {index}
-      </option> 
+      const optionItem = (
+        <option key={`${index}`} value={index} selected={selected}>
+          {index}
+        </option>
+      );
       pageNumbers.push(optionItem);
     }
     return pageNumbers;
-  }
+  };
 
   const fetchRetailerProducts = () => {
     const body = {
@@ -205,11 +207,15 @@ function Products() {
     }
   };
 
+  const onClickSubmenu = () => {
+    setOpenSubmenu(!openSubMenu)
+  }
+
   return (
     <>
       <div className="wrapper">
-        <RetailerHeader />
-        {setActiveOpenVal === true ? (
+        <RetailerHeader onClickSubmenu={onClickSubmenu} />
+        {openSubMenu ? (
           <BabyAndKids />
         ) : (
           <main className="content">
@@ -268,7 +274,10 @@ function Products() {
                       {!isEmpty(selectedBrandFilters) && (
                         <div className="products_active-filter">
                           <div className="txt">
-                            <b>Brand:</b> {selectedBrandFilters?.map(el => el.brand_details.store_name).join(', ')}
+                            <b>Brand:</b>{' '}
+                            {selectedBrandFilters
+                              ?.map((el) => el.brand_details.store_name)
+                              .join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -281,7 +290,10 @@ function Products() {
                       {!isEmpty(selectedBrandStatusFilters) && (
                         <div className="products_active-filter">
                           <div className="txt">
-                            <b>BrandStatus:</b> {selectedBrandStatusFilters?.map(el => el.name).join(', ')}
+                            <b>BrandStatus:</b>{' '}
+                            {selectedBrandStatusFilters
+                              ?.map((el) => el.name)
+                              .join(', ')}
                           </div>
                           <button
                             className="products_active-remove"
@@ -392,121 +404,126 @@ function Products() {
                       rows?.map((item, index) => {
                         return (
                           <div key={index} className="pc">
-                            <Link to={`/retailer/brand/single-product-details/${item?.id}`}>
-                            <div className="pc_main">
-                              <div className="pc_head">
-                                <div className="pc_head-item">
-                                  <span
-                                    className={`status-pill ${
-                                      getStatus(item) === 'Not Connected' &&
-                                      'pill_not_connected'
-                                    } ${
-                                      getStatus(item) === 'Connected' &&
-                                      'pill_connected'
-                                    } ${
-                                      getStatus(item) === 'Pending' &&
-                                      'pill_pending'
-                                    } ${
-                                      getStatus(item) === 'Declined' &&
-                                      'pill_declined'
-                                    }`}
-                                  >
-                                    {getStatus(item)}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="pc_body">
-                                <div className="pc_slider">
-                                  <div
-                                    href="product-single.html"
-                                    className="swiper-container swiper-initialized swiper-horizontal swiper-pointer-events"
-                                  >
-                                    <div
-                                      className="swiper-wrapper"
-                                      id={`swiper-wrapper-${index}`}
-                                      aria-live="polite"
-                                      style={{
-                                        transform: `translate3d(-${
-                                          206 * imgStates[index]
-                                        }px, 0px, 0px)`,
-                                        transitionDuration: ' 1000ms',
-                                      }}
+                            <Link
+                              to={`/retailer/brand/single-product-details/${item?.id}`}
+                            >
+                              <div className="pc_main">
+                                <div className="pc_head">
+                                  <div className="pc_head-item">
+                                    <span
+                                      className={`status-pill ${
+                                        getStatus(item) === 'Not Connected' &&
+                                        'pill_not_connected'
+                                      } ${
+                                        getStatus(item) === 'Connected' &&
+                                        'pill_connected'
+                                      } ${
+                                        getStatus(item) === 'Pending' &&
+                                        'pill_pending'
+                                      } ${
+                                        getStatus(item) === 'Declined' &&
+                                        'pill_declined'
+                                      }`}
                                     >
-                                      {item?.product_images.map(
-                                        (_, imgIndex) => (
-                                          <div
-                                            key={imgIndex}
-                                            className={`swiper-slide ${
-                                              imgIndex === imgStates[index]
-                                                ? 'swiper-slide-active'
-                                                : ''
-                                            }`}
-                                            role="group"
-                                            aria-label={`${imgIndex + 1} / 3`}
-                                            style={{
-                                              width: '206px',
-                                            }}
-                                          >
-                                            <div className="image">
+                                      {getStatus(item)}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="pc_body">
+                                  <div className="pc_slider">
+                                    <div
+                                      href="product-single.html"
+                                      className="swiper-container swiper-initialized swiper-horizontal swiper-pointer-events"
+                                    >
+                                      <div
+                                        className="swiper-wrapper"
+                                        id={`swiper-wrapper-${index}`}
+                                        aria-live="polite"
+                                        style={{
+                                          transform: `translate3d(-${
+                                            206 * imgStates[index]
+                                          }px, 0px, 0px)`,
+                                          transitionDuration: ' 1000ms',
+                                        }}
+                                      >
+                                        {item?.product_images.map(
+                                          (_, imgIndex) => (
+                                            <div
+                                              key={imgIndex}
+                                              className={`swiper-slide ${
+                                                imgIndex === imgStates[index]
+                                                  ? 'swiper-slide-active'
+                                                  : ''
+                                              }`}
+                                              role="group"
+                                              aria-label={`${imgIndex + 1} / 3`}
+                                              style={{
+                                                width: '206px',
+                                              }}
+                                            >
+                                              <div className="image">
                                                 <picture>
                                                   <img
                                                     src={getImage(item)}
                                                     alt=""
                                                   />
                                                 </picture>
+                                              </div>
                                             </div>
-                                          </div>
-                                        )
-                                      )}
-                                    </div>
-                                    <div
-                                      className={`swiper-button-prev ${
-                                        imgStates[index] === 0 &&
-                                        'swiper-button-disabled'
-                                      }`}
-                                      aria-disabled={imgStates[index] === 0}
-                                      onClick={() =>
-                                        handalSwipeLeftImage(index)
-                                      }
-                                    >
-                                      <img className="icon" src={LeftArrow} />
-                                    </div>
-                                    <div
-                                      className={`swiper-button-next ${
-                                        imgStates[index] === 2 &&
-                                        'swiper-button-disabled'
-                                      }`}
-                                      aria-disabled={imgStates[index] === 2}
-                                      onClick={() =>
-                                        handalSwipeRightImage(index)
-                                      }
-                                    >
-                                      <img className="icon" src={RightArrow} />
-                                    </div>
-                                    <div className="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
-                                      {item?.product_images.map(
-                                        (_, bulletIndex) => (
-                                          <span
-                                            key={bulletIndex}
-                                            className={`swiper-pagination-bullet ${
-                                              imgStates[index] === bulletIndex
-                                                ? 'swiper-pagination-bullet-active'
-                                                : ''
-                                            }`}
-                                            onClick={() =>
-                                              handleClickBullet(
-                                                index,
-                                                bulletIndex
-                                              )
-                                            }
-                                          ></span>
-                                        )
-                                      )}
-                                    </div>
-                                    {/* <span className="swiper-notification"></span>
+                                          )
+                                        )}
+                                      </div>
+                                      <div
+                                        className={`swiper-button-prev ${
+                                          imgStates[index] === 0 &&
+                                          'swiper-button-disabled'
+                                        }`}
+                                        aria-disabled={imgStates[index] === 0}
+                                        onClick={() =>
+                                          handalSwipeLeftImage(index)
+                                        }
+                                      >
+                                        <img className="icon" src={LeftArrow} />
+                                      </div>
+                                      <div
+                                        className={`swiper-button-next ${
+                                          imgStates[index] === 2 &&
+                                          'swiper-button-disabled'
+                                        }`}
+                                        aria-disabled={imgStates[index] === 2}
+                                        onClick={() =>
+                                          handalSwipeRightImage(index)
+                                        }
+                                      >
+                                        <img
+                                          className="icon"
+                                          src={RightArrow}
+                                        />
+                                      </div>
+                                      <div className="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
+                                        {item?.product_images.map(
+                                          (_, bulletIndex) => (
+                                            <span
+                                              key={bulletIndex}
+                                              className={`swiper-pagination-bullet ${
+                                                imgStates[index] === bulletIndex
+                                                  ? 'swiper-pagination-bullet-active'
+                                                  : ''
+                                              }`}
+                                              onClick={() =>
+                                                handleClickBullet(
+                                                  index,
+                                                  bulletIndex
+                                                )
+                                              }
+                                            ></span>
+                                          )
+                                        )}
+                                      </div>
+                                      {/* <span className="swiper-notification"></span>
                                                                     <span className="swiper-notification"></span> */}
-                                  </div>
-                                  {/* <div className="pc_links">
+                                    </div>
+                                    {/* <div className="pc_links">
                                                                     <a
                                                                         href="product-single.html"
                                                                         className="pc_links-product"
@@ -524,34 +541,38 @@ function Products() {
                                                                         </svg>
                                                                     </a>
                                                                 </div> */}
-                                </div>
-                              </div>
-                              <div className="pc_footer">
-                                <div className="pc-title">{item?.title}</div>
-                                <div className="pc_price-area">
-                                  <div className="pc_price-item">
-                                    <label>WSP</label>
-                                    <label className="red-text">
-                                      $ {item?.price_wps ?? '0.00'}
-                                    </label>
-                                  </div>
-                                  <div className="pc_price-item">
-                                    <label>MSRP</label>
-                                    <label className="black-text">
-                                      $ {item?.price_msrp ?? '0.00'}
-                                    </label>
                                   </div>
                                 </div>
-                                <div className="pc_brand-item">
-                                  <a href="brand-single.html">
-                                    <img src={item?.user?.brand_details?.store_logo} />
-                                    <span className="brand-name">
-                                      {item?.user?.brand_details?.store_name}
-                                    </span>
-                                  </a>
+                                <div className="pc_footer">
+                                  <div className="pc-title">{item?.title}</div>
+                                  <div className="pc_price-area">
+                                    <div className="pc_price-item">
+                                      <label>WSP</label>
+                                      <label className="red-text">
+                                        $ {item?.price_wps ?? '0.00'}
+                                      </label>
+                                    </div>
+                                    <div className="pc_price-item">
+                                      <label>MSRP</label>
+                                      <label className="black-text">
+                                        $ {item?.price_msrp ?? '0.00'}
+                                      </label>
+                                    </div>
+                                  </div>
+                                  <div className="pc_brand-item">
+                                    <a href="brand-single.html">
+                                      <img
+                                        src={
+                                          item?.user?.brand_details?.store_logo
+                                        }
+                                      />
+                                      <span className="brand-name">
+                                        {item?.user?.brand_details?.store_name}
+                                      </span>
+                                    </a>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
                             </Link>
                           </div>
                         );
