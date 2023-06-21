@@ -27,7 +27,7 @@ export const retailerProfileValidationSchema = yup.object().shape({
   countryAddress: yup.object().nullable().required('Country  is required.'),
   stateAddress: yup.object().nullable().required('State  is required.'),
   city: yup.string().required('City is required.'),
-  zipcode: yup.string().required('Zip is required.'),
+  zipcode: yup.string().min(5).max(5).required('Zip is required.'),
 });
 export const retailerBillingValidationSchema = yup.object().shape({
   cardNumber: yup
