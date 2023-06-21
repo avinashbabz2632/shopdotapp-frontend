@@ -38,6 +38,7 @@ export default function Connected(props) {
     const filterCategories = useSelector(selectCategoryViseData);
     const filterStates = useSelector(selectStateViseData);
     const [isDeclineModelOpen, setIsDeclineModelOpen] = useState(false);
+    const [isFilterSet, setIsFilterSet] = useState(false)
 
     const fetchRetailerRequests = (props) => {
         const query = {
@@ -46,18 +47,19 @@ export default function Connected(props) {
                 offset: offset,
             },
             sort: [
-                ['full_name', sortColumn == 'full_name' ? 'ASC' : 'DESC'],
-                [
-                    'assigned_products',
-                    sortColumn == 'assigned_products' ? 'ASC' : 'DESC',
-                ],
-                // ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
-                [
-                    'retailer_category',
-                    sortColumn == 'retailer_category' ? 'ASC' : 'DESC',
-                ],
-                ['invite_status', sortColumn == 'invite_status' ? 'ASC' : 'DESC'],
-                ['state', sortColumn == 'state' ? 'ASC' : 'DESC'],
+                [sortColumn, 'ASC'],
+                // ['full_name', sortColumn == 'full_name' ? 'ASC' : 'DESC'],
+                // [
+                //     'assigned_products',
+                //     sortColumn == 'assigned_products' ? 'ASC' : 'DESC',
+                // ],
+                // // ["all_time_sale",sortColumn == "all_time_sale" ? "ASC" : "DESC"],
+                // [
+                //     'retailer_category',
+                //     sortColumn == 'retailer_category' ? 'ASC' : 'DESC',
+                // ],
+                // ['invite_status', sortColumn == 'invite_status' ? 'ASC' : 'DESC'],
+                // ['state', sortColumn == 'state' ? 'ASC' : 'DESC'],
             ],
             query: {},
             filter: [
@@ -84,6 +86,12 @@ export default function Connected(props) {
                 operator: 'in',
                 value: filterStates,
             });
+        }
+
+        if(Object.keys(query.query).length > 0 || query.filter.length > 1){
+            setIsFilterSet(true)
+        }else{
+            setIsFilterSet(false)
         }
         dispatch(getConnectedRetailer(query));
     };
@@ -314,11 +322,11 @@ export default function Connected(props) {
                                                         </td>
                                                         <td>
                                                             {
-                                                                item?.retailer_details?.retailer_category.store_categories.name
+                                                                item?.retailer_details?.retailer_category?.store_categories?.name
                                                             }
                                                         </td>
 
-                                                        <td>{item.retailer_details.store_state}</td>
+                                                        <td>{item.state}</td>
                                                         <td>
                                                             <span className="status-pill pill_connected w-auto">
                                                                 {/* {item.invite_status} */}
@@ -429,11 +437,9 @@ export default function Connected(props) {
                                                                     />
                                                                 </picture>
                                                             </div>
-                                                            <h3>
-                                                                You currently
-                                                                have no requests
-                                                                for access from
-                                                                any retailer.
+                                                            <h3>{
+                                                                isFilterSet ? "There are no approved retailers that meet your criteria" : "You currently have no requests for access from any retailer."
+                                                            }
                                                             </h3>
                                                             <p>
                                                                 Invite your
@@ -588,47 +594,47 @@ export default function Connected(props) {
                                 </td>
                             </tr>
                         )}
-        { data?.count > 0 && (
-            <div className="pagination_wrap mt-0">
-                <div className="pagination br-top-none">
-                    <div className="pagination_per">
-                        <select name="per" id="per" onChange={handleLimit}>
-                            <option value="20" selected="">
-                                20
-                            </option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <div className="pagination-title">items per page</div>
-                    </div>
-                    <div className="pagination_nav">
-                        <div className="pagination-title">page</div>
-                        <select name="per" id="per" onChange={handlePageNumber}>
-                            {getTotalPage()}
-                        </select>
-                        <div className="pagination-title">of {totalPage}</div>
-                        <button
-                            className="pagination-arrow pagination-arrow-prev"
-                            onClick={decrementPageNumber}
-                        >
-                            <img className="icon" src={LeftIcon} />
-                        </button>
-                        <button
-                            className="pagination-arrow pagination-arrow-next"
-                            onClick={incrementPageNumber}
-                        >
-                            <img className="icon" src={RightIcon} />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        )
-}
-          </div >
-        </div >
-      </div >
-    </>
-  );
+                        {/* {data?.count > 0 && (
+                            <div className="pagination_wrap mt-0">
+                                <div className="pagination br-top-none">
+                                    <div className="pagination_per">
+                                        <select name="per" id="per" onChange={handleLimit}>
+                                            <option value="20" selected="">
+                                                20
+                                            </option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                        <div className="pagination-title">items per page</div>
+                                    </div>
+                                    <div className="pagination_nav">
+                                        <div className="pagination-title">page</div>
+                                        <select name="per" id="per" onChange={handlePageNumber}>
+                                            {getTotalPage()}
+                                        </select>
+                                        <div className="pagination-title">of {totalPage}</div>
+                                        <button
+                                            className="pagination-arrow pagination-arrow-prev"
+                                            onClick={decrementPageNumber}
+                                        >
+                                            <img className="icon" src={LeftIcon} />
+                                        </button>
+                                        <button
+                                            className="pagination-arrow pagination-arrow-next"
+                                            onClick={incrementPageNumber}
+                                        >
+                                            <img className="icon" src={RightIcon} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                        } */}
+                    </div >
+                </div >
+            </div >
+        </>
+    );
 }
 
 Connected.propTypes = {

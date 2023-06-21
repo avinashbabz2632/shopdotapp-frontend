@@ -56,12 +56,11 @@ function Brands() {
   );
 
   const { count, rows = [] } = products || {};
-  const productList = rows;
   const countriesOption = useSelector(selectCountries);
   const [productsActiveFilterHeight, setProductsActiveFilterHeight] =
     useState(0);
   const [otherDivsHeight, setOtherDivsHeight] = useState(0);
-  const [dynamicHeight, setDynamicHeight] = useState(10);
+  const [dynamicHeight, setDynamicHeight] = useState(100);
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [inviteStatus, setInviteStatus] = useState('All');
@@ -183,7 +182,6 @@ function Brands() {
   const handleSearch = (e) => {
     setSearch(e.target.value.trim());
   };
-
   const productStatusViseFilter = (status) => {
     setInviteStatus(status);
   };
@@ -227,12 +225,27 @@ function Brands() {
     return text;
   };
 
-  const getInviteStatus = (status) => {
-    let text = '';
-    if (status) {
-      text = status.charAt(0).toUpperCase() + status.slice(1);
+  const getInviteStatus = (invitees, inviters) => {
+    const isNotConnected = invitees.length === 0 && inviters.length === 0;
+    let status;
+    if (isNotConnected) {
+      status = 'Not Connected';
+    } else if (invitees.length > 0) {
+      const obj = invitees[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
+        status = 'Connected';
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
+        status = 'Pending';
+      }
+    } else if (inviters.length > 0) {
+      const obj = inviters[0];
+      if (obj.invite_status.toLowerCase() === 'accepted') {
+        status = 'Connected';
+      } else if (obj.invite_status.toLowerCase() === 'pending') {
+        status = 'Pending';
+      }
     }
-    return text;
+    return status;
   };
 
   const handleSendNewConnectRequestClick = (invitee_id) => {
@@ -248,12 +261,13 @@ function Brands() {
     dispatch(resetNewConnectionRequestState());
   };
 
-  const showConnectButton = (status, invitee_id) => {
-    if (status && status.toLowerCase() === 'not connected') {
+  const showConnectButton = (invitees, inviters, id) => {
+    const status = getInviteStatus(invitees, inviters);
+    if (status === 'Not Connected') {
       return (
         <button
           className="button button-dark connect-brand"
-          onClick={() => handleSendNewConnectRequestClick(invitee_id)}
+          onClick={() => handleSendNewConnectRequestClick(id)}
         >
           Connect
         </button>
@@ -526,14 +540,8 @@ function Brands() {
                         </tr>
                       </thead>
                       <tbody>
-                        {(productList ?? []).map((item, i) => {
-                          const { invited_user, invite_status } = item || {};
-                          const {
-                            brand_details = {},
-                            product = [],
-                            brand_values = [],
-                          } = invited_user || {};
-                          const {} = product || [];
+                        {rows && rows.map((item, i) => {
+                          const { invited_user, product, brand_details, brand_values, invitees, inviters, id } = item || {};
                           return (
                             <tr key={i}>
                               <td>
@@ -547,7 +555,7 @@ function Brands() {
                                       />
                                     </a>
                                   </div>
-                                  <Link to="/retailer/brand/single" state={{user_id: invited_user?.id}}>
+                                  <Link to="/retailer/brand/single" state={{user_id: item?.id, brand_id: item?.brand_details?.id}}>
                                     {brand_details?.store_name}
                                   </Link>
                                 </div>
@@ -576,29 +584,31 @@ function Brands() {
                                 <div className="status">
                                   <span
                                     className={`status-pill ${
-                                      invite_status === 'Not Connected' &&
+                                      getInviteStatus(invitees, inviters) === 'Not Connected' &&
                                       'pill_not_connected'
                                     } ${
-                                      invite_status === 'Connected' &&
+                                      getInviteStatus(invitees, inviters) === 'Connected' &&
                                       'pill_connected'
                                     } ${
-                                      invite_status === 'pending' &&
+                                      getInviteStatus(invitees, inviters) === 'Pending' &&
                                       'pill_pending'
                                     } ${
-                                      invite_status === 'Declined' &&
+                                      getInviteStatus(invitees, inviters) === 'Declined' &&
                                       'pill_declined'
                                     }`}
                                   >
-                                    {getInviteStatus(invite_status)}
+                                    {getInviteStatus(invitees, inviters)}
                                   </span>
                                 </div>
                               </td>
                               <td>
                                 <div className="buttons">
-                                  {showConnectButton(invite_status, invited_user?.id)}
+                                  {showConnectButton(invitees, inviters, id)}
+                                  <a href={`mailto:${brand_details.company_email_address}`}>
                                   <button className="button message-brand">
                                     <img src={mailIcon} />
                                   </button>
+                                  </a>
                                 </div>
                               </td>
                             </tr>
