@@ -318,11 +318,13 @@ function Products() {
                         </div>
                       </div>
                       <div className="buttons">
+                      <a href={`mailto:${brand_profile.company_email_address}`}>
                         <button className="button message-brand">
                           <div className="icon">
                             <img src={mailIcon} />
                           </div>
                         </button>
+                        </a>
                       </div>
                     </div>
                   </div>

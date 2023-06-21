@@ -41,41 +41,41 @@ export default function RequestAccess(props) {
     dispatch(setStatusViseFilter(value));
   };
   const fetchRetailerRequests = () => {
-        const query = {
-          paging: {
-            limit: limit,
-            offset: offset,
-          },
-          sort: [
-            ["full_name",sortColumn == "full_name" ? "ASC" : "DESC"],
-            ["created_at",sortColumn == "created_at" ? "ASC" : "DESC"],
-            ["status_updated_on",sortColumn == "status_updated_on" ? "ASC" : "DESC"]
-          ],
-        query: {},
-        filter: [],
-        };
-        if(searchVal){
-            query.query.search = searchVal
-        }
-        if(filterStatus != "all"){
-            query.filter.push({
-                "field": "invite_status",
-                "operator": "eq",
-                "value": filterStatus
-            })
-        }
-        dispatch(getRetailerRequestForAccess(query));
-      };
-    useEffect(() => {
-        fetchRetailerRequests();
-        const page = (newData.count / limit);
-        if(page % 1 === 0){
-            setTotalPage(page)
-        }else{
-            setTotalPage(Math.floor(page)+1)
-        }
-        getTotalPage()
-    }, [filterStatus, searchVal, limit, offset, sortColumn]);
+    const query = {
+      paging: {
+        limit: limit,
+        offset: offset,
+      },
+      sort: [
+        ["full_name", sortColumn == "full_name" ? "ASC" : "DESC"],
+        ["created_at", sortColumn == "created_at" ? "ASC" : "DESC"],
+        ["status_updated_on", sortColumn == "status_updated_on" ? "ASC" : "DESC"]
+      ],
+      query: {},
+      filter: [],
+    };
+    if (searchVal) {
+      query.query.search = searchVal
+    }
+    if (filterStatus != "all") {
+      query.filter.push({
+        "field": "invite_status",
+        "operator": "eq",
+        "value": filterStatus
+      })
+    }
+    dispatch(getRetailerRequestForAccess(query));
+  };
+  useEffect(() => {
+    fetchRetailerRequests();
+    const page = (newData.count / limit);
+    if (page % 1 === 0) {
+      setTotalPage(page)
+    } else {
+      setTotalPage(Math.floor(page) + 1)
+    }
+    getTotalPage()
+  }, [filterStatus, searchVal, limit, offset, sortColumn]);
 
   const handleSearch = (e) => {
     const searchInput = e.target.value.trim(); // remove extra spaces from start/end
@@ -196,36 +196,32 @@ export default function RequestAccess(props) {
             <div className="products_head-retailer-types">
               <a
                 href="#"
-                className={`retailer-type  ${
-                  filterStatus == 'all' ? 'active' : ''
-                }`}
+                className={`retailer-type  ${filterStatus == 'all' ? 'active' : ''
+                  }`}
                 onClick={() => changeStatusFilter('all')}
               >
                 All
               </a>
               <a
                 href="#"
-                className={`retailer-type  ${
-                  filterStatus == 'conncted' ? 'active' : ''
-                }`}
+                className={`retailer-type  ${filterStatus == 'conncted' ? 'active' : ''
+                  }`}
                 onClick={() => changeStatusFilter('conncted')}
               >
                 Connected
               </a>
               <a
                 href="#"
-                className={`retailer-type  ${
-                  filterStatus == 'pending' ? 'active' : ''
-                }`}
+                className={`retailer-type  ${filterStatus == 'pending' ? 'active' : ''
+                  }`}
                 onClick={() => changeStatusFilter('pending')}
               >
                 Pending
               </a>
               <a
                 href="#"
-                className={`retailer-type  ${
-                  filterStatus == 'declined' ? 'active' : ''
-                }`}
+                className={`retailer-type  ${filterStatus == 'declined' ? 'active' : ''
+                  }`}
                 onClick={() => changeStatusFilter('declined')}
               >
                 Declined
@@ -324,17 +320,16 @@ export default function RequestAccess(props) {
                           </td>
                           <td>
                             <span
-                              className={`status-pill ${
-                                item.invite_status == 'pending'
+                              className={`status-pill ${item.invite_status == 'pending'
                                   ? 'pill_pending'
                                   : item.invite_status == 'accepted'
-                                  ? 'pill_connected'
-                                  : item.invite_status == 'declined'
-                                  ? 'pill_declined'
-                                  : item.invite_status == ''
-                                  ? 'pill_not_connected'
-                                  : ''
-                              }`}
+                                    ? 'pill_connected'
+                                    : item.invite_status == 'declined'
+                                      ? 'pill_declined'
+                                      : item.invite_status == ''
+                                        ? 'pill_not_connected'
+                                        : ''
+                                }`}
                             >
                               {getProductStatus(item.invite_status)}
                             </span>
@@ -349,7 +344,14 @@ export default function RequestAccess(props) {
                                   <div className="dropdown_inner">
                                     <ul>
                                       <li>
-                                        <a href={`/brand/retailer-profile/${item?.id}`}>View/Edit</a>
+                                        <NavLink
+                                          to={`/brand/retailer-profile/${item?.id}`}
+                                          onClick={() => {
+                                            dispatch(setCurrentRetailerProfile(item));
+                                          }}
+                                        >
+                                          View/Edit
+                                        </NavLink>
                                       </li>
                                       <li>
                                         <a href="mailto:someone@example.com">

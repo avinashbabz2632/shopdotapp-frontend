@@ -182,7 +182,6 @@ function Brands() {
   const handleSearch = (e) => {
     setSearch(e.target.value.trim());
   };
-
   const productStatusViseFilter = (status) => {
     setInviteStatus(status);
   };
@@ -262,13 +261,13 @@ function Brands() {
     dispatch(resetNewConnectionRequestState());
   };
 
-  const showConnectButton = (invitees, inviters) => {
+  const showConnectButton = (invitees, inviters, id) => {
     const status = getInviteStatus(invitees, inviters);
     if (status === 'Not Connected') {
       return (
         <button
           className="button button-dark connect-brand"
-          onClick={() => handleSendNewConnectRequestClick(invitee_id)}
+          onClick={() => handleSendNewConnectRequestClick(id)}
         >
           Connect
         </button>
@@ -542,7 +541,7 @@ function Brands() {
                       </thead>
                       <tbody>
                         {rows && rows.map((item, i) => {
-                          const { invited_user, product, brand_details, brand_values, invitees, inviters } = item || {};
+                          const { invited_user, product, brand_details, brand_values, invitees, inviters, id } = item || {};
                           return (
                             <tr key={i}>
                               <td>
@@ -604,10 +603,12 @@ function Brands() {
                               </td>
                               <td>
                                 <div className="buttons">
-                                  {showConnectButton(invitees, inviters)}
+                                  {showConnectButton(invitees, inviters, id)}
+                                  <a href={`mailto:${brand_details.company_email_address}`}>
                                   <button className="button message-brand">
                                     <img src={mailIcon} />
                                   </button>
+                                  </a>
                                 </div>
                               </td>
                             </tr>
