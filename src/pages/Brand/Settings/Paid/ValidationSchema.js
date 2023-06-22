@@ -16,8 +16,8 @@ export const BusinessDetailsValidationSchema = yup.object().shape({
   website: yup
     .string()
     .matches(
-        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-        'Please enter correct website url!'
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      'Please enter correct website url!'
     )
     .required('Business website address is required.'),
   businessEmail: yup
@@ -271,7 +271,11 @@ export const getRepresentativeValidation = () => {
               .nullable()
               .required('State of issuance is required.'),
           }),
-        idNumber: yup.string().nullable().required('Id number is required.'),
+        idNumber: yup
+          .string()
+          .nullable()
+          .required('Id number is required.')
+          .max(17),
         percentageOwnership: yup
           .mixed()
           .required('Ownership percentage must be 100%.')
@@ -281,7 +285,7 @@ export const getRepresentativeValidation = () => {
             (value, context) => {
               console.log('context', context);
               // Custom validation function for the 'percentageOwnership' field
-              if (businessDetails?.businessCategory?.value === 'partnership') {
+              if (businessDetails?.businessCategory?.value === 'PARTNERSHIP') {
                 if (
                   value !== '' &&
                   !isNaN(value) &&
@@ -299,8 +303,8 @@ export const getRepresentativeValidation = () => {
                 });
               } else if (
                 businessDetails?.businessCategory?.value ===
-                  'single_member_llc' ||
-                businessDetails?.businessCategory?.value === 'sole_proprietor'
+                  'SINGLE_MEMBER_LLC' ||
+                businessDetails?.businessCategory?.value === 'SOLE_PROPRIETOR'
               ) {
                 if (value !== '' && !isNaN(value) && Number(value) === 100) {
                   return true;
@@ -456,7 +460,11 @@ export const shippingValidationSchema = yup.object().shape({
   city: yup.string().required('City is required.'),
   shippingfee: yup.string().required('Shipping fee is required.'),
   incrementalfee: yup.string().required('Incremental fee is required.'),
-  zip: yup.string().min(5, 'Zipcode must be atleast 5 characters').max(5, 'Zipcode must be 5 characters').required('Zipcode is required'),
+  zip: yup
+    .string()
+    .min(5, 'Zipcode must be atleast 5 characters')
+    .max(5, 'Zipcode must be 5 characters')
+    .required('Zipcode is required'),
 });
 
 export const brandProfileValidationSchema = yup.object().shape({

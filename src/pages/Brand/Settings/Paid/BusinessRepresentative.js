@@ -14,6 +14,7 @@ import {
 import {
   BusinessRepresentativeValidationSchema,
   getRepresentativeValidation,
+  shippingValidationSchema,
 } from './ValidationSchema';
 import rightArrow from '../../../../assets/images/icons/Vector.11.svg';
 import info from '../../images/icons/icon-info-red.svg';
@@ -127,6 +128,15 @@ export default function BusinessRepresentative({
     handleChangeTab('3');
   };
 
+  useEffect(() => {
+    if (
+      businessDetails?.businessCategory?.value !== 'SINGLE_MEMBER_LLC' ||
+      businessDetails?.businessCategory?.value !== 'SOLE_PROPRIETOR'
+    ) {
+      setValue(`representativeDetails.${0}.percentageOwnership`, '100');
+    }
+  }, []);
+
   const handlePhoneChange = (event, i) => {
     const rawValue = event.target.value.replace(/[^\d]/g, ''); // Remove all non-digits
     let formattedValue = '';
@@ -223,10 +233,10 @@ export default function BusinessRepresentative({
         businessDetails?.businessCategory?.value !== 'SINGLE_MEMBER_LLC' ||
         businessDetails?.businessCategory?.value !== 'SOLE_PROPRIETOR'
       ) {
-        if (totalCent >= 25) {
-          return false;
-        }
-        return true;
+        // if (totalCent >= 25) {
+        //   return false;
+        // }
+        return false;
       }
     } else {
       return false;
@@ -773,7 +783,7 @@ export default function BusinessRepresentative({
                             'SINGLE_MEMBER_LLC' ||
                           businessDetails?.businessCategory?.value ==
                             'SOLE_PROPRIETOR'
-                            ? 100
+                            ? '100'
                             : value
                         }
                         placeholder="25% or more"
