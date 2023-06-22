@@ -487,7 +487,7 @@ export default function Billing() {
                                   <span>
                                     {`${data.brand} card ending with ${data.Last4}`}
                                     <div className="exp-date">
-                                      Exp. Date 12/25
+                                      Exp. Date {data.expiryMonth}/{data.expiryYear.toString().substr(-2)}
                                     </div>
                                   </span>
 
