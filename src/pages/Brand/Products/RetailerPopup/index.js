@@ -16,7 +16,7 @@ import {
   selectRetailers,
 } from '../../../../redux/Brand/Retailer/retailerSelector';
 import { resetBrandAssignedRetailerState } from '../../../../redux/Brand/Retailer/retailerSlice';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { formatMessage } from '../utils';
 import NoDataComponent from '../../retailers/RetailerProfile/NoDataComponent';
 export default function RetailerPopup(props) {
@@ -24,19 +24,16 @@ export default function RetailerPopup(props) {
   const dispatch = useDispatch();
 
   const retailers = useSelector(selectRetailers);
+  console.log('retailers----', retailers);
   const updating = useSelector(selectBrandAssignedRetaielrUpdating);
   const success = useSelector(selectBrandAssignedRetaielrSuccess);
   const error = useSelector(selectBrandAssignedRetaielrError);
 
-  const { assignedRetailers: assignedArr, notAssignedRetailers } =
-    retailers || {};
+  const { assignedRetailers: assignedArr = [], notAssignedRetailers = []} = retailers || {};
 
-  const [unAssignedRetailers, setUnAssignedRetailers] =
-    useState(notAssignedRetailers);
+  const [unAssignedRetailers, setUnAssignedRetailers] = useState(notAssignedRetailers);
   const [assignedRetailers, setAssignedRetailers] = useState(assignedArr);
-  const previousAssignedRetailers = assignedArr?.length;
-  const newAssignedRetailers =
-    previousAssignedRetailers - assignedRetailers.length;
+  const newAssignedRetailers = assignedRetailers ? assignedRetailers.length : 0;
 
   useEffect(() => {
     const body = {
@@ -48,12 +45,6 @@ export default function RetailerPopup(props) {
     };
     dispatch(getRetailerListAction(body));
   }, []);
-
-  const getToasterMessage = () => {
-    let message = '';
-    if (newAssignedRetailers < 10) {
-    }
-  };
 
   useEffect(() => {
     const { assignedRetailers: assignedArr, notAssignedRetailers } =
@@ -67,7 +58,6 @@ export default function RetailerPopup(props) {
       const message = formatMessage(newAssignedRetailers);
       onShowToast && onShowToast(message);
       dispatch(resetBrandAssignedRetailerState());
-      // handalPopup();
       handleOnClose();
     } else if (!updating && !success && error) {
       dispatch(resetBrandAssignedRetailerState());
@@ -155,6 +145,7 @@ export default function RetailerPopup(props) {
                   <button
                     className="button button-orange-dark"
                     onClick={handleSave}
+                    disabled={assignedArr?.length === 0 && notAssignedRetailers?.length === 0}
                   >
                     <span className="icon-size">
                       <img src={saveIcon} />
@@ -180,8 +171,8 @@ export default function RetailerPopup(props) {
                     <svg className="icon"></svg>
                   </form>
                 </div>
-                {assignedRetailers?.length === 0 &&
-                notAssignedRetailers?.length === 0 ? (
+                {!retailers || (assignedRetailers && assignedRetailers?.length === 0) &&
+                (unAssignedRetailers && unAssignedRetailers?.length === 0) ? (
                   <NoDataComponent
                     fromAssignedUnassignedPage={true}
                     setShowInviteRetailerModal={
@@ -223,7 +214,7 @@ export default function RetailerPopup(props) {
                               </span>
                               <div className="retailer-item">
                                 <div className="ri-photo">
-                                  <img src="https://placeimg.com/200/200/nature" />
+                                  <img src={e?.logo} />
                                 </div>
                                 <div className="ri-detail">
                                   <h3>{e.store_name}</h3>

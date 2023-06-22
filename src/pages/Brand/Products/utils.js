@@ -585,7 +585,7 @@ export const formatMessage = (count) => {
   let message;
   switch (count) {
     case 1:
-      message = `One retailers are assigned to selected product`;
+      message = `One retailer are assigned to selected product`;
       break;
     case 2:
       message = `Two retailers are assigned to selected product`;
@@ -610,6 +610,9 @@ export const formatMessage = (count) => {
       break;
     case 9:
       message = `Nine retailers are assigned to selected product`;
+      break;
+    case 10:
+      message = `Ten retailers are assigned to selected product`;
       break;
     default:
       message = `${count} retailers are assigned to selected product`;

@@ -4,11 +4,9 @@ import ArrowLeft from '../../images/icons/icon-arrow--left.svg';
 import singleSquareImage from '../../../Brand/images/single-square.jpg';
 import mailIcon from '../../../../assets/images/icons/mail-icon.svg';
 import doller from '../../../../assets/images/icons/icon-msrp--dollar.svg';
-import summer from '../../../Brand/images/pc-slider-temp.jfif';
 import ArrowDown from '../../images/icons/icon-chevron--down.svg';
 import InfoIcon from '../../../../assets/images/icons/info-blue.svg';
 import danger from '../../images/icons/icon-danger.svg';
-import redDanger from '../../images/icons/icon-red-triangle.svg';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import RightArrowIcon from '../../images/icons/icon-chevron--right.svg';
 import closeIcon from '../../../../assets/images/icons/icon-newclose.svg';
@@ -28,11 +26,9 @@ import {
 import { selectRetailerProductDetails } from '../../../../redux/Brand/Retailer/retailerSelector';
 
 function ProductDetails() {
-  const setActiveOpen = false; //useSelector(setProductActiveValue);
   const [slideIndex, setSlideIndex] = useState(0);
   const [isActiveButton, setIsActiveButton] = useState(false);
   const [zoomProduct, setZoomProduct] = useState(false);
-  const [connectStatus, setConnectStatus] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [openSubMenu, setOpenSubmenu] = useState(false);
   const retailerProductsData = useSelector(selectRetailerProductDetails);
@@ -61,21 +57,6 @@ function ProductDetails() {
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   setSetActiveOpenVal(setActiveOpen);
-  //   if (retailerProductsData?.productDetails?.user?.invitees?.length > 0) {
-  //     setConnectStatus(
-  //       retailerProductsData.productDetails.user.invitees[0].invite_status
-  //     );
-  //   } else if (
-  //     retailerProductsData?.productDetails?.user?.inviters?.length > 0
-  //   ) {
-  //     setConnectStatus(
-  //       retailerProductsData.productDetails.user.inviters[0].invite_status
-  //     );
-  //   }
-  // }, [setActiveOpen]);
 
   const handalSwipeRightImage = () => {
     setSlideIndex((prev) => (prev + 1) % 11);
@@ -245,7 +226,7 @@ function ProductDetails() {
                           )}
                           {/* <a href="#" class="button button-green request-approved-box">Approve</a> */}
                           <a
-                            href={`mailto:${brand_details.company_email_address}`}
+                            href={`mailto:${brand_details?.company_email_address}`}
                           >
                             <button className="button message-brand">
                               <div className="icon">

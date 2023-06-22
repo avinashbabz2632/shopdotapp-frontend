@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../Style/brand.style.scss';
 import '../Style/brand.media.scss';
 import '../Style/brand.dev.scss';
@@ -34,6 +34,14 @@ export default function ProductsList() {
     setToasterMessage('');
     setToasterVisible(false);
   } 
+
+  useEffect(() => {
+    if(toasterVisible) {
+      setTimeout(() => {
+        setToasterVisible(false);
+      }, 2000);
+    }
+  }, [toasterVisible]);
 
   return (
     <div className="wrapper">

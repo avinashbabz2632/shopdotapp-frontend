@@ -9,7 +9,7 @@ import RightIcon from '../../../Brand/images/icons/icon-chevron--right.svg';
 import RightArrow from '../../../Retailer/images/icons/icon-chevron--right.svg';
 import LeftArrow from '../../../Retailer/images/icons/icon-chevron--left.svg';
 import LeftIcon from '../../../Brand/images/icons/icon-chevron--left.svg';
-import { connectedTableData, retailerProductData } from '../utils';
+import { retailerProductData } from '../utils';
 import doller from '../../../../assets/images/icons/icon-msrp--dollar.svg';
 import { isEmpty } from 'lodash';
 import emptyTable from '../../../Brand/images/product-card-empty.svg';
@@ -56,12 +56,6 @@ function Products() {
   const dispatch = useDispatch();
   const params = useParams();
   const setActiveOpen = false; //useSelector(false);
-  const [profileData, setProfileData] = useState(null);
-  const [tagsValue, setFilterByBrand] = useState([]);
-  const [wspFilterValues, setWspFilter] = useState([]);
-  const [msrpFilterValues, setMsrpFilter] = useState([]);
-  const [stockFilters, setStockFilter] = useState([]);
-  const [daysFullfillFilters, setDaysFullfillFilter] = useState([]);
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(true);
   const [imgStates, setImgStates] = useState(
     Array(retailerProductData.length).fill(0)
@@ -204,25 +198,24 @@ function Products() {
     setSetActiveOpenVal(setActiveOpen);
   }, [setActiveOpen]);
 
-  useEffect(() => {
-    const findData = connectedTableData.find((ele) => {
-      return (
-        ele.id === Number(params?.id) ||
-        ele.productCategoryTag === params?.productCategoryTag ||
-        ele.brandValues === params?.brandValues
-      );
-    });
+  // useEffect(() => {
+  //   const findData = connectedTableData.find((ele) => {
+  //     return (
+  //       ele.id === Number(params?.id) ||
+  //       ele.productCategoryTag === params?.productCategoryTag ||
+  //       ele.brandValues === params?.brandValues
+  //     );
+  //   });
 
-    if (findData) {
-      setProfileData(findData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    connectedTableData,
-    params?.id,
-    params?.productCategoryTag,
-    params?.brandValues,
-  ]);
+  //   if (findData) {
+  //     setProfileData(findData);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   params?.id,
+  //   params?.productCategoryTag,
+  //   params?.brandValues,
+  // ]);
 
   const handalSwipeRightImage = (index) => {
     setImgStates((prevStates) => {
@@ -320,7 +313,7 @@ function Products() {
                       </div>
                       <div className="buttons">
                         <a
-                          href={`mailto:${brand_profile.company_email_address}`}
+                          href={`mailto:${brand_profile?.company_email_address}`}
                         >
                           <button className="button message-brand">
                             <div className="icon">
@@ -554,9 +547,8 @@ function Products() {
                       {(!isEmpty(selectedTagsValueFilter) ||
                         !isEmpty(selectedWSPFilter) ||
                         !isEmpty(selectedMSRPFilter) ||
-                        !isEmpty(msrpFilterValues) ||
-                        !isEmpty(stockFilters) ||
-                        !isEmpty(daysFullfillFilters)) && (
+                        !isEmpty(selectedStockFilters) ||
+                        !isEmpty(selectedDaysToFullfilFilters)) && (
                         <div className="products_mid">
                           <div className="products_active-filters mb-0">
                             {/* <div className="products_active-filters mb-0"> */}
