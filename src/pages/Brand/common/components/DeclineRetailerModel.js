@@ -5,6 +5,17 @@ import closeBlackIcon from '../../images/icons/close-icon.svg';
 import declineIcon from '../../images/icons/icon-decline.svg';
 
 function DeclineRetailerModel(props) {
+    const declineRequest = async () => {
+        const data = {
+            inviter_id: props.declineRetailerData.id,
+            invite_via: 'retailer_request',
+            invite_status: "declined",
+          };
+          const response = await respondRetailerRequestAction(data);
+          if (response.status === 200) {
+            props.opencloseDeclineRetailerModal()
+          }
+    }
     return (
         <Modal
             ariaHideApp={false}
@@ -27,7 +38,7 @@ function DeclineRetailerModel(props) {
                             <h2 className="h1">Decline Request</h2>
                             <p>
                                 You are declining{' '}
-                                <a href="">Retailer Name&apos;s</a> request for
+                                <a href={`/brand/retailer-profile/${props.declineRetailerData?.id}`}>{props.declineRetailerData?.full_name}&apos;s</a> request for
                                 access. They will still be able to view your
                                 products but not list nor push them to store.
                             </p>
@@ -44,7 +55,7 @@ function DeclineRetailerModel(props) {
                                 <button
                                     className="button"
                                     onClick={() =>
-                                        props.opencloseDeclineRetailerModal()
+                                        declineRequest()
                                     }
                                 >
                                     Yes

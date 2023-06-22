@@ -360,7 +360,7 @@ export default function RequestAccess(props) {
                                         </NavLink>
                                       </li>
                                       <li>
-                                        <a href="mailto:someone@example.com">
+                                        <a href={`mailto:${item?.user?.retailer_details?.company_email_address}`}>
                                           Message
                                         </a>
                                       </li>
