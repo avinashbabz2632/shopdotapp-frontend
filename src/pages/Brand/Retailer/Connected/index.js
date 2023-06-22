@@ -34,6 +34,7 @@ export default function Connected(props) {
     const [totalPage, setTotalPage] = useState(1);
     const [searchVal, setSearchVal] = useState('');
     const [sortColumn, setSortColumn] = useState('full_name');
+    const [sortOrder, setSortOrder] = useState('ASC');
     const [modalIsOpen, setIsOpen] = useState(false);
     const filterCategories = useSelector(selectCategoryViseData);
     const filterStates = useSelector(selectStateViseData);
@@ -47,7 +48,7 @@ export default function Connected(props) {
                 offset: offset,
             },
             sort: [
-                [sortColumn, 'ASC'],
+                [sortColumn, sortOrder],
                 // ['full_name', sortColumn == 'full_name' ? 'ASC' : 'DESC'],
                 // [
                 //     'assigned_products',
@@ -104,7 +105,7 @@ export default function Connected(props) {
             setTotalPage(Math.floor(page) + 1);
         }
         getTotalPage();
-    }, [searchVal, limit, offset, sortColumn, filterCategories, filterStates]);
+    }, [searchVal, limit, offset, sortColumn, filterCategories, filterStates, sortOrder]);
 
     const handleSearch = (e) => {
         const searchQuery = e.target.value?.toLowerCase();
@@ -146,7 +147,13 @@ export default function Connected(props) {
         if (offset > 0) setOffset(offset - 1);
     };
     const handleSort = (column) => {
-        setSortColumn(column);
+        if(sortColumn == column){
+            let o = sortOrder == "ASC" ? "DESC" : "ASC"
+            setSortOrder(o)
+        }else{
+            setSortColumn(column);
+            setSortOrder("ASC")
+        }
     };
     const handleRetailerCategories = (category) => {
         const categories = [];
