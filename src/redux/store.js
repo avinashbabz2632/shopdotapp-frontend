@@ -16,7 +16,7 @@ import { preferenceReducer } from './Brand/Preference/preferenceSlice';
 import { getCountriesReducer } from './General/Countries/getCountriesSlice';
 import { getStatesReducer } from './General/States/getStatesSlice';
 import { retailerProfileReducer } from './Retailer/Profile/retailerProfileSlice';
-import { retailerSecurityReducer } from './Retailer/Security/securitySlice';
+import { retailerSecurityReducer } from './Retailer/security/securitySlice';
 import { retailerProductReducer } from './Retailer/Brand/Products/retailerBrandProductsSlice';
 import { retailerReducer } from './Brand/Retailer/retailerSlice';
 import { brandRetailerProfileReducer } from './Brand/RetailerProfile/retailerProfileSlice';
