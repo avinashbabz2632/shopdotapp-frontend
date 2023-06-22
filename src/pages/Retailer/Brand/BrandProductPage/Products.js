@@ -9,7 +9,7 @@ import RightIcon from '../../../Brand/images/icons/icon-chevron--right.svg';
 import RightArrow from '../../../Retailer/images/icons/icon-chevron--right.svg';
 import LeftArrow from '../../../Retailer/images/icons/icon-chevron--left.svg';
 import LeftIcon from '../../../Brand/images/icons/icon-chevron--left.svg';
-import { connectedTableData, retailerProductData } from '../utils';
+import { retailerProductData } from '../utils';
 import doller from '../../../../assets/images/icons/icon-msrp--dollar.svg';
 import { isEmpty } from 'lodash';
 import emptyTable from '../../../Brand/images/product-card-empty.svg';
@@ -25,7 +25,7 @@ import { useLocation } from 'react-router-dom';
 import {
   getRetailerBrandProfileAction,
   getRetailerProductsAction,
-  getRetailerBrandTagsValueAction
+  getRetailerBrandTagsValueAction,
 } from '../../../../actions/retailerActions';
 import {
   productSearchQuery,
@@ -56,12 +56,6 @@ function Products() {
   const dispatch = useDispatch();
   const params = useParams();
   const setActiveOpen = false; //useSelector(false);
-  const [profileData, setProfileData] = useState(null);
-  const [tagsValue, setFilterByBrand] = useState([]);
-  const [wspFilterValues, setWspFilter] = useState([]);
-  const [msrpFilterValues, setMsrpFilter] = useState([]);
-  const [stockFilters, setStockFilter] = useState([]);
-  const [daysFullfillFilters, setDaysFullfillFilter] = useState([]);
   const [setActiveOpenVal, setSetActiveOpenVal] = useState(true);
   const [imgStates, setImgStates] = useState(
     Array(retailerProductData.length).fill(0)
@@ -204,25 +198,24 @@ function Products() {
     setSetActiveOpenVal(setActiveOpen);
   }, [setActiveOpen]);
 
-  useEffect(() => {
-    const findData = connectedTableData.find((ele) => {
-      return (
-        ele.id === Number(params?.id) ||
-        ele.productCategoryTag === params?.productCategoryTag ||
-        ele.brandValues === params?.brandValues
-      );
-    });
+  // useEffect(() => {
+  //   const findData = connectedTableData.find((ele) => {
+  //     return (
+  //       ele.id === Number(params?.id) ||
+  //       ele.productCategoryTag === params?.productCategoryTag ||
+  //       ele.brandValues === params?.brandValues
+  //     );
+  //   });
 
-    if (findData) {
-      setProfileData(findData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    connectedTableData,
-    params?.id,
-    params?.productCategoryTag,
-    params?.brandValues,
-  ]);
+  //   if (findData) {
+  //     setProfileData(findData);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   params?.id,
+  //   params?.productCategoryTag,
+  //   params?.brandValues,
+  // ]);
 
   const handalSwipeRightImage = (index) => {
     setImgStates((prevStates) => {
@@ -275,6 +268,7 @@ function Products() {
     dispatch(setSelectedStockFilters([]));
     dispatch(setSelectedWSPFilter([]));
     dispatch(setSelectedMSRPFilter([]));
+    dispatch(setProductSearchQuery(''));
   };
 
   return (
@@ -318,12 +312,14 @@ function Products() {
                         </div>
                       </div>
                       <div className="buttons">
-                      <a href={`mailto:${brand_profile.company_email_address}`}>
-                        <button className="button message-brand">
-                          <div className="icon">
-                            <img src={mailIcon} />
-                          </div>
-                        </button>
+                        <a
+                          href={`mailto:${brand_profile?.company_email_address}`}
+                        >
+                          <button className="button message-brand">
+                            <div className="icon">
+                              <img src={mailIcon} />
+                            </div>
+                          </button>
                         </a>
                       </div>
                     </div>
@@ -352,7 +348,12 @@ function Products() {
                                 </p>
                                 <p>
                                   <strong>Website: </strong>
-                                  <a href={brand_profile?.store_website} target="_blank">{brand_profile?.store_website}</a>
+                                  <a
+                                    href={brand_profile?.store_website}
+                                    target="_blank"
+                                  >
+                                    {brand_profile?.store_website}
+                                  </a>
                                 </p>
                               </div>
                             </div>
@@ -406,15 +407,14 @@ function Products() {
                                                                 } */}
                               </div>
                               <div className="brand-single_about-item-wrap">
-                                {product_categories && product_categories?.map(
-                                  (item, index) => {
+                                {product_categories &&
+                                  product_categories?.map((item, index) => {
                                     return (
                                       <a href="#" key={index}>
                                         {item?.parent_category?.name}
                                       </a>
                                     );
-                                  }
-                                )}
+                                  })}
                                 {/* <a href="#">
                                                                     Baby &amp;
                                                                     Kids
@@ -547,16 +547,16 @@ function Products() {
                       {(!isEmpty(selectedTagsValueFilter) ||
                         !isEmpty(selectedWSPFilter) ||
                         !isEmpty(selectedMSRPFilter) ||
-                        !isEmpty(msrpFilterValues) ||
-                        !isEmpty(stockFilters) ||
-                        !isEmpty(daysFullfillFilters)) && (
+                        !isEmpty(selectedStockFilters) ||
+                        !isEmpty(selectedDaysToFullfilFilters)) && (
                         <div className="products_mid">
                           <div className="products_active-filters mb-0">
                             {/* <div className="products_active-filters mb-0"> */}
                             {!isEmpty(selectedTagsValueFilter) && (
                               <div className="products_active-filter">
                                 <div className="txt">
-                                  <b>Tags:</b> {selectedTagsValueFilter?.join(', ')}
+                                  <b>Tags:</b>{' '}
+                                  {selectedTagsValueFilter?.join(', ')}
                                 </div>
                                 <button
                                   className="products_active-remove"
@@ -662,6 +662,12 @@ function Products() {
                                   <p>
                                     There are no orders that meet your criteria.
                                   </p>
+                                  <div
+                                    className="filters-clear"
+                                    onClick={() => handleClearFilter()}
+                                  >
+                                    View all products
+                                  </div>
                                   <div className="image">
                                     <picture>
                                       <img src={emptyTable} alt="" />

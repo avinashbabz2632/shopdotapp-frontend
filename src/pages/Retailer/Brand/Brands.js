@@ -604,7 +604,7 @@ function Brands() {
                               <td>
                                 <div className="buttons">
                                   {showConnectButton(invitees, inviters, id)}
-                                  <a href={`mailto:${brand_details.company_email_address}`}>
+                                  <a href={`mailto:${brand_details?.company_email_address}`}>
                                   <button className="button message-brand">
                                     <img src={mailIcon} />
                                   </button>

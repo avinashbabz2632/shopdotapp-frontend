@@ -564,11 +564,11 @@ export function getRetailerListAction(data) {
         dispatch(setRetailers(response.data?.data));
       }
     } catch (err) {
-      toast.error(
-        err && err.response && err.response.data && err.response.data.errors
-          ? err.response.data.errors
-          : 'Something went worng'
-      );
+      const {response} = err || {};
+      const {data} = response || {};
+      const {errors = ''} = data || {};
+      const errorMsg = !errors?.includes('You currently have no connected retailers') ? errors : 'Something went worng';
+      toast.error(errorMsg);
     }
   };
 }

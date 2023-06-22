@@ -130,6 +130,7 @@ function Products() {
     dispatch(setSelectedStockFilters([]));
     dispatch(setSelectedWSPFilter([]));
     dispatch(setSelectedMSRPFilter([]));
+    dispatch(setProductSearchQuery(''));
   };
 
   const ProductSearchBar = (e) => {
@@ -208,8 +209,8 @@ function Products() {
   };
 
   const onClickSubmenu = () => {
-    setOpenSubmenu(!openSubMenu)
-  }
+    setOpenSubmenu(!openSubMenu);
+  };
 
   return (
     <>
@@ -390,6 +391,12 @@ function Products() {
                         <td className="no-data-cell" colSpan="10">
                           <div className="product-card-empty_body">
                             <p>There are no orders that meet your criteria.</p>
+                            <div
+                              className="filters-clear"
+                              onClick={() => handleClearFilter()}
+                            >
+                              View all products
+                            </div>
                             <div className="image">
                               <picture>
                                 <img src={emptyTable} alt="" />
