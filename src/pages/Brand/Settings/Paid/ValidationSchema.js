@@ -456,7 +456,7 @@ export const shippingValidationSchema = yup.object().shape({
   city: yup.string().required('City is required.'),
   shippingfee: yup.string().required('Shipping fee is required.'),
   incrementalfee: yup.string().required('Incremental fee is required.'),
-  zip: yup.string().min(5).max(5).required('Zipcode must be atleast 5 characters'),
+  zip: yup.string().min(5, 'Zipcode must be atleast 5 characters').max(5, 'Zipcode must be 5 characters').required('Zipcode is required'),
 });
 
 export const brandProfileValidationSchema = yup.object().shape({
