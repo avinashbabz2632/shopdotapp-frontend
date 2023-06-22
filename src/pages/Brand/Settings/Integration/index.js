@@ -196,7 +196,7 @@ export default function BrandSetting() {
                             onClick={handleAddProduct}
                             className="button button-dark-2"
                           >
-                            Add Product
+                            Sync Product
                           </button>
                         </div>
                       </div>

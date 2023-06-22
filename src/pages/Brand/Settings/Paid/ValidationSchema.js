@@ -79,9 +79,9 @@ export const BusinessDetailsValidationSchema = yup.object().shape({
       ['00000'],
       'Should be in XXXXX format.Cannot containt all zeroes.'
     )
-    .min(5, 'Should be in XXXXX format.')
-    .max(5, 'Zip-code should be 5 digits.')
-    .required('Zip-code is required.'),
+    .min(5)
+    .max(5)
+    .required('Zipcode must be atleast 5 characters'),
   stateOfIncorportation: yup
     .object()
     .nullable()
@@ -253,9 +253,9 @@ export const getRepresentativeValidation = () => {
             ['00000'],
             'Should be in XXXXX format.Cannot containt all zeroes.'
           )
-          .min(5, 'Should be in XXXXX format.')
-          .max(5, 'Zip-code should be 5 digits.')
-          .required('Zip-code is required.'),
+          .min(5)
+          .max(5)
+          .required('Zipcode must be atleast 5 characters'),
         secondaryIdentificationType: yup
           .object()
           .nullable()
@@ -378,9 +378,9 @@ export const BusinessRepresentativeValidationSchema = yup.object().shape({
           ['00000'],
           'Should be in XXXXX format.Cannot containt all zeroes.'
         )
-        .min(5, 'Should be in XXXXX format.')
-        .max(5, 'Zip-code should be 5 digits.')
-        .required('Zip-code is required.'),
+        .min(5)
+        .max(5)
+        .required('Zipcode must be atleast 5 characters'),
       secondaryIdentificationType: yup
         .object()
         .nullable()
@@ -456,7 +456,7 @@ export const shippingValidationSchema = yup.object().shape({
   city: yup.string().required('City is required.'),
   shippingfee: yup.string().required('Shipping fee is required.'),
   incrementalfee: yup.string().required('Incremental fee is required.'),
-  zip: yup.string().required('Zip-code is required.'),
+  zip: yup.string().min(5).max(5).required('Zipcode must be atleast 5 characters'),
 });
 
 export const brandProfileValidationSchema = yup.object().shape({
