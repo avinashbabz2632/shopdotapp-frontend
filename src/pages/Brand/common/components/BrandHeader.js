@@ -312,7 +312,7 @@ function BrandHeader(props) {
                   ) : !statusIndicator?.products ? (
                     <>
                       Your brand profile is not visible to retailers because you
-                      have no active <NavLink to="brand/products">products</NavLink>.
+                      have no active <NavLink to="/brand/products">products</NavLink>.
                       <br />
                     </>
                   ) : !statusIndicator?.billing ? (
