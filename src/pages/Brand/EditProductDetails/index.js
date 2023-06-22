@@ -422,10 +422,6 @@ export default function EditProductDetails() {
     // });
   };
 
-  useEffect(() => {
-    //
-  }, []);
-
   const removeTags = (e) => {
     const tagsValue = tags.filter((ele) => ele !== e);
     setTags(tagsValue);
@@ -463,6 +459,28 @@ export default function EditProductDetails() {
     setActiveVarient(udapteData);
   };
 
+  let size = false;
+  let color = false;
+  let material = false;
+  map(activeVariants, (product, key) => {
+    const option1 = product?.option1?.toLowerCase();
+    const option2 = product?.option2?.toLowerCase();
+    const option3 = product?.option3?.toLowerCase();
+    if (option1 === 'size' || option2 === 'size' || option3 === 'size') {
+      size = true;
+    }
+    if (option1 === 'color' || option2 === 'color' || option3 === 'color') {
+      color = true;
+    }
+    if (
+      option1 === 'material' ||
+      option2 === 'material' ||
+      option3 === 'material'
+    ) {
+      material = true;
+    }
+  });
+
   return (
     <div className="wrapper">
       <BrandHeader />
@@ -499,7 +517,10 @@ export default function EditProductDetails() {
                   </div>
                   <button
                     type="submit"
-                    className="button button-dark black large"
+                    className="button button-dark black large "
+                    disabled={
+                      !profileCompleted.profile || !profileCompleted.paid
+                    }
                   >
                     <img className="icon" src={saveIcon} />
                     Save Changes
@@ -974,28 +995,45 @@ export default function EditProductDetails() {
                                 <thead className="sticky-thead">
                                   <tr>
                                     <th></th>
-                                    <th>
-                                      <div className="txt">
-                                        Material
-                                        <button className="sort">
-                                          <img
-                                            className="icon"
-                                            src={DownIcon}
-                                          />
-                                        </button>
-                                      </div>
-                                    </th>
-                                    <th>
-                                      <div className="txt">
-                                        Color
-                                        <button className="sort">
-                                          <img
-                                            className="icon"
-                                            src={DownIcon}
-                                          />
-                                        </button>
-                                      </div>
-                                    </th>
+                                    {material ? (
+                                      <th>
+                                        <div className="txt">
+                                          Material
+                                          <button className="sort">
+                                            <img
+                                              className="icon"
+                                              src={DownIcon}
+                                            />
+                                          </button>
+                                        </div>
+                                      </th>
+                                    ) : null}
+                                    {color ? (
+                                      <th>
+                                        <div className="txt">
+                                          Color
+                                          <button className="sort">
+                                            <img
+                                              className="icon"
+                                              src={DownIcon}
+                                            />
+                                          </button>
+                                        </div>
+                                      </th>
+                                    ) : null}
+                                    {size ? (
+                                      <th>
+                                        <div className="txt">
+                                          Size
+                                          <button className="sort">
+                                            <img
+                                              className="icon"
+                                              src={DownIcon}
+                                            />
+                                          </button>
+                                        </div>
+                                      </th>
+                                    ) : null}
                                     <th>
                                       <div className="txt">
                                         SKU
@@ -1148,16 +1186,27 @@ export default function EditProductDetails() {
                                             </picture>
                                           </div>
                                         </td>
-                                        <td>
-                                          <div className="txt">
-                                            {item?.material}
-                                          </div>
-                                        </td>
-                                        <td>
-                                          <div className="txt">
-                                            {item?.title}
-                                          </div>
-                                        </td>
+                                        {item?.material ? (
+                                          <td>
+                                            <div className="txt">
+                                              {item?.material}
+                                            </div>
+                                          </td>
+                                        ) : null}
+                                        {item?.color ? (
+                                          <td>
+                                            <div className="txt">
+                                              {item?.color}
+                                            </div>
+                                          </td>
+                                        ) : null}
+                                        {item?.size ? (
+                                          <td>
+                                            <div className="txt">
+                                              {item?.size}
+                                            </div>
+                                          </td>
+                                        ) : null}
                                         <td>
                                           <div className="txt vin-txt">
                                             {item?.sku}

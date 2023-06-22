@@ -3,9 +3,32 @@ import PropTypes from 'prop-types';
 import info1 from '../../images/icons/icon-info-red.svg';
 import down from '../../images/icons/icon-chevron--up.svg';
 import logoPng from '../../../../assets/images/logos/logo-png.png';
+import { map } from 'lodash';
 
 export default function ProductVariantTable(props) {
   const { productVariant } = props;
+  let size = false;
+  let color = false;
+  let material = false;
+  map(productVariant, (product, key) => {
+    const option1 = product?.option1?.toLowerCase();
+    const option2 = product?.option2?.toLowerCase();
+    const option3 = product?.option3?.toLowerCase();
+    if (option1 === 'size' || option2 === 'size' || option3 === 'size') {
+      size = true;
+    }
+    if (option1 === 'color' || option2 === 'color' || option3 === 'color') {
+      color = true;
+    }
+    if (
+      option1 === 'material' ||
+      option2 === 'material' ||
+      option3 === 'material'
+    ) {
+      material = true;
+    }
+  });
+
   return (
     <div className="product_vars pv-update" id="vars">
       <div className="product_extra-head">
@@ -14,23 +37,42 @@ export default function ProductVariantTable(props) {
       <table className="table table-vars">
         <thead>
           <tr>
-            <th></th>
-            <th>
-              <div className="txt">
-                Material
-                <button className="sort">
-                  <img className="icon-info-down" src={down} />
-                </button>
-              </div>
-            </th>
-            <th>
-              <div className="txt">
-                Color
-                <button className="sort">
-                  <img className="icon-info-down" src={down} />
-                </button>
-              </div>
-            </th>
+            {material ? (
+              <th>
+                <div className="txt">
+                  Material
+                  <button className="sort">
+                    <img className="icon-info-down" src={down} />
+                  </button>
+                </div>
+              </th>
+            ) : (
+              <div />
+            )}
+            {color ? (
+              <th>
+                <div className="txt">
+                  Color
+                  <button className="sort">
+                    <img className="icon-info-down" src={down} />
+                  </button>
+                </div>
+              </th>
+            ) : (
+              <div />
+            )}
+            {size ? (
+              <th>
+                <div className="txt">
+                  Size
+                  <button className="sort">
+                    <img className="icon-info-down" src={down} />
+                  </button>
+                </div>
+              </th>
+            ) : (
+              <div />
+            )}
             <th>
               <div className="txt">
                 SKU
@@ -135,12 +177,21 @@ export default function ProductVariantTable(props) {
                   </picture>
                 </div>
               </td>
-              <td>
-                <div className="txt">{ele?.material} </div>
-              </td>
-              <td>
-                <div className="txt">{ele?.color} </div>
-              </td>
+              {ele?.material ? (
+                <td>
+                  <div className="txt">{ele?.material} </div>
+                </td>
+              ) : null}
+              {ele?.color ? (
+                <td>
+                  <div className="txt">{ele?.color} </div>
+                </td>
+              ) : null}
+              {ele?.size ? (
+                <td>
+                  <div className="txt">{ele?.size} </div>
+                </td>
+              ) : null}
               <td>
                 <div className="txt">{ele?.sku} </div>
               </td>
