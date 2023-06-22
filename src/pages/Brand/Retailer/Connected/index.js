@@ -23,7 +23,7 @@ import LeftIcon from '../../images/icons/icon-chevron--left.svg';
 import InviteRetailer from '../../common/components/InviteRetailerHeaderModal';
 import DeclineRetailerModel from '../../common/components/DeclineRetailerModel';
 import { Link, NavLink } from 'react-router-dom';
-import { getConnectedRetailer } from '../../../../actions/brandActions';
+import { getConnectedRetailer, respondRetailerRequestAction } from '../../../../actions/brandActions';
 
 export default function Connected(props) {
     const dispatch = useDispatch();
@@ -40,6 +40,7 @@ export default function Connected(props) {
     const filterStates = useSelector(selectStateViseData);
     const [isDeclineModelOpen, setIsDeclineModelOpen] = useState(false);
     const [isFilterSet, setIsFilterSet] = useState(false)
+    const [declineRetailerData, setDeclineRetailerData] = useState({id: null, full_name: null})
 
     const fetchRetailerRequests = (props) => {
         const query = {
@@ -115,8 +116,10 @@ export default function Connected(props) {
         setIsOpen(!modalIsOpen);
     }, [modalIsOpen]);
 
-    const opencloseDeclineRetailerModal = useCallback(() => {
+    const opencloseDeclineRetailerModal = useCallback((id, full_name) => {
+        setDeclineRetailerData({id: id, full_name: full_name})
         setIsDeclineModelOpen(!isDeclineModelOpen);
+        fetchRetailerRequests();
     }, [isDeclineModelOpen]);
     const handleLimit = (e) => {
         setLimit(e.target.value);
@@ -172,6 +175,7 @@ export default function Connected(props) {
             <DeclineRetailerModel
                 modalIsOpen={isDeclineModelOpen}
                 opencloseDeclineRetailerModal={opencloseDeclineRetailerModal}
+                declineRetailerData={declineRetailerData}
             />
             <div className="products_content">
                 <div className="products_head">
@@ -400,7 +404,7 @@ export default function Connected(props) {
                                                                                 </li>
                                                                                 <li>
                                                                                     <a
-                                                                                        href="mailto:someone@example.com"
+                                                                                        href={`mailto:${item?.retailer_details?.company_email_address}`}
                                                                                         className="message-box"
                                                                                     >
                                                                                         Message
@@ -408,11 +412,11 @@ export default function Connected(props) {
                                                                                 </li>
                                                                                 <li
                                                                                     onClick={() =>
-                                                                                        opencloseDeclineRetailerModal()
+                                                                                        opencloseDeclineRetailerModal(item.id, item.full_name)
                                                                                     }
                                                                                 >
                                                                                     <a
-                                                                                        href="#"
+                                                                                        href="javascript:void(0)"
                                                                                         className="decline-box"
                                                                                     >
                                                                                         Decline
