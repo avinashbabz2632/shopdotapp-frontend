@@ -54,6 +54,7 @@ import { useNavigate } from 'react-router-dom';
 import { selectUserDetails } from '../../../../redux/user/userSelector';
 import { toast } from 'react-toastify';
 import logoPng from '../../../../assets/images/logos/logo-png.png';
+import InviteRetailer from '../../common/components/InviteRetailerHeaderModal';
 
 export default function ProductTable(props) {
   const dispatch = useDispatch();
@@ -91,8 +92,7 @@ export default function ProductTable(props) {
   const [limit, setLimit] = useState(20);
   const [offset, setOffset] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState({});
-
-  console.log(productTagsFilter, 'productTagsFilter');
+  const [showInviteRetailerModal, setShowInviteRetailerModal] = useState(false);
 
   const { count, records } = productList || {};
 
@@ -102,8 +102,6 @@ export default function ProductTable(props) {
       setCategoryKeyby(tempKey);
     }
   }, [productCategory]);
-
-  console.log(productCategory, 'productCategory');
 
   let pageCount = 0;
   if (records && records.length > 0) {
@@ -451,6 +449,15 @@ export default function ProductTable(props) {
     }
   };
 
+  const handleInviteRetailerModal = () => {
+    setShowInviteRetailerModal(!showInviteRetailerModal);
+  }
+
+  const handleSetShowInviteRetailerModal = () => {
+    handalRetailerPopup();
+    setShowInviteRetailerModal(true);
+  }
+
   return (
     <>
       {uploadModalShow === true && (
@@ -559,8 +566,14 @@ export default function ProductTable(props) {
           assignedData={assignedRetailer}
           retailerBrand={selectedRetailerBrand}
           handleOnClose={handleOnClose}
+          onShowToast={props?.onShowToast}
+          handleSetShowInviteRetailerModal={handleSetShowInviteRetailerModal}
         />
       )}
+      {showInviteRetailerModal && <InviteRetailer
+        modalIsOpen={showInviteRetailerModal}
+        opencloseRetailerModal={handleInviteRetailerModal}
+      />}
 
       <div className="products_content">
         <div className="products_head">

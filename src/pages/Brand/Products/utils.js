@@ -580,3 +580,40 @@ export const mockRetailers = {
     },
   ],
 };
+
+export const formatMessage = (count) => {
+  let message;
+  switch (count) {
+    case 1:
+      message = `One retailers are assigned to selected product`;
+      break;
+    case 2:
+      message = `Two retailers are assigned to selected product`;
+      break;
+    case 3:
+      message = `Three retailers are assigned to selected product`;
+      break;
+    case 4:
+      message = `Four retailers are assigned to selected product`;
+      break;
+    case 5:
+      message = `Five retailers are assigned to selected product`;
+      break;
+    case 6:
+      message = `Six retailers are assigned to selected product`;
+      break;
+    case 7:
+      message = `Seven retailers are assigned to selected product`;
+      break;
+    case 8:
+      message = `Eight retailers are assigned to selected product`;
+      break;
+    case 9:
+      message = `Nine retailers are assigned to selected product`;
+      break;
+    default:
+      message = `${count} retailers are assigned to selected product`;
+      break;
+  }
+  return message;
+};

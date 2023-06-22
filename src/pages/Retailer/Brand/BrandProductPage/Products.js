@@ -25,7 +25,7 @@ import { useLocation } from 'react-router-dom';
 import {
   getRetailerBrandProfileAction,
   getRetailerProductsAction,
-  getRetailerBrandTagsValueAction
+  getRetailerBrandTagsValueAction,
 } from '../../../../actions/retailerActions';
 import {
   productSearchQuery,
@@ -275,6 +275,7 @@ function Products() {
     dispatch(setSelectedStockFilters([]));
     dispatch(setSelectedWSPFilter([]));
     dispatch(setSelectedMSRPFilter([]));
+    dispatch(setProductSearchQuery(''));
   };
 
   return (
@@ -318,12 +319,14 @@ function Products() {
                         </div>
                       </div>
                       <div className="buttons">
-                      <a href={`mailto:${brand_profile.company_email_address}`}>
-                        <button className="button message-brand">
-                          <div className="icon">
-                            <img src={mailIcon} />
-                          </div>
-                        </button>
+                        <a
+                          href={`mailto:${brand_profile.company_email_address}`}
+                        >
+                          <button className="button message-brand">
+                            <div className="icon">
+                              <img src={mailIcon} />
+                            </div>
+                          </button>
                         </a>
                       </div>
                     </div>
@@ -352,7 +355,12 @@ function Products() {
                                 </p>
                                 <p>
                                   <strong>Website: </strong>
-                                  <a href={brand_profile?.store_website} target="_blank">{brand_profile?.store_website}</a>
+                                  <a
+                                    href={brand_profile?.store_website}
+                                    target="_blank"
+                                  >
+                                    {brand_profile?.store_website}
+                                  </a>
                                 </p>
                               </div>
                             </div>
@@ -406,15 +414,14 @@ function Products() {
                                                                 } */}
                               </div>
                               <div className="brand-single_about-item-wrap">
-                                {product_categories && product_categories?.map(
-                                  (item, index) => {
+                                {product_categories &&
+                                  product_categories?.map((item, index) => {
                                     return (
                                       <a href="#" key={index}>
                                         {item?.parent_category?.name}
                                       </a>
                                     );
-                                  }
-                                )}
+                                  })}
                                 {/* <a href="#">
                                                                     Baby &amp;
                                                                     Kids
@@ -556,7 +563,8 @@ function Products() {
                             {!isEmpty(selectedTagsValueFilter) && (
                               <div className="products_active-filter">
                                 <div className="txt">
-                                  <b>Tags:</b> {selectedTagsValueFilter?.join(', ')}
+                                  <b>Tags:</b>{' '}
+                                  {selectedTagsValueFilter?.join(', ')}
                                 </div>
                                 <button
                                   className="products_active-remove"
@@ -662,6 +670,12 @@ function Products() {
                                   <p>
                                     There are no orders that meet your criteria.
                                   </p>
+                                  <div
+                                    className="filters-clear"
+                                    onClick={() => handleClearFilter()}
+                                  >
+                                    View all products
+                                  </div>
                                   <div className="image">
                                     <picture>
                                       <img src={emptyTable} alt="" />

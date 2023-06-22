@@ -17,8 +17,10 @@ import {
 } from '../../../../redux/Brand/Retailer/retailerSelector';
 import { resetBrandAssignedRetailerState } from '../../../../redux/Brand/Retailer/retailerSlice';
 import { toast, ToastContainer } from 'react-toastify';
+import { formatMessage } from '../utils';
+import NoDataComponent from '../../retailers/RetailerProfile/NoDataComponent';
 export default function RetailerPopup(props) {
-  const { handalPopup, retailerBrand, handleOnClose } = props;
+  const { handalPopup, retailerBrand, handleOnClose, onShowToast } = props;
   const dispatch = useDispatch();
 
   const retailers = useSelector(selectRetailers);
@@ -47,6 +49,12 @@ export default function RetailerPopup(props) {
     dispatch(getRetailerListAction(body));
   }, []);
 
+  const getToasterMessage = () => {
+    let message = '';
+    if (newAssignedRetailers < 10) {
+    }
+  };
+
   useEffect(() => {
     const { assignedRetailers: assignedArr, notAssignedRetailers } =
       retailers || {};
@@ -56,7 +64,8 @@ export default function RetailerPopup(props) {
 
   useEffect(() => {
     if (!updating && success && !error) {
-      toast.success(`${newAssignedRetailers} retailers are assigned to selected product`);
+      const message = formatMessage(newAssignedRetailers);
+      onShowToast && onShowToast(message);
       dispatch(resetBrandAssignedRetailerState());
       // handalPopup();
       handleOnClose();
@@ -171,122 +180,131 @@ export default function RetailerPopup(props) {
                     <svg className="icon"></svg>
                   </form>
                 </div>
+                {assignedRetailers?.length === 0 &&
+                notAssignedRetailers?.length === 0 ? (
+                  <NoDataComponent
+                    fromAssignedUnassignedPage={true}
+                    setShowInviteRetailerModal={
+                      props?.handleSetShowInviteRetailerModal
+                    }
+                  />
+                ) : (
+                  <div className="product-retailer-area">
+                    <div className="available-area">
+                      <div className="av-title">
+                        {unAssignedRetailers && unAssignedRetailers.length}{' '}
+                        {unAssignedRetailers && unAssignedRetailers.length === 1
+                          ? 'Retailer Available'
+                          : 'Retailers Available'}
+                      </div>
 
-                <div className="product-retailer-area">
-                  <div className="available-area">
-                    <div className="av-title">
-                      {unAssignedRetailers && unAssignedRetailers.length}{' '}
-                      {unAssignedRetailers && unAssignedRetailers.length === 1
-                        ? 'Retailer Available'
-                        : 'Retailers Available'}
+                      <a
+                        onClick={assignedAllRetailer}
+                        href="#"
+                        className={`add-item-label add-category ${
+                          unAssignedRetailers && unAssignedRetailers.length > 0
+                            ? ''
+                            : 'light-pill'
+                        }`}
+                      >
+                        <span>+</span> Assign All
+                      </a>
+
+                      <div className="retailer-box">
+                        {unAssignedRetailers &&
+                          unAssignedRetailers.length > 0 &&
+                          unAssignedRetailers.map((e, i) => (
+                            <div className="retailer-area" key={i}>
+                              <span
+                                id="add_retailer"
+                                onClick={() => assignedSingleRetailer(e, i)}
+                              >
+                                <img src={addRetaielr} />
+                              </span>
+                              <div className="retailer-item">
+                                <div className="ri-photo">
+                                  <img src="https://placeimg.com/200/200/nature" />
+                                </div>
+                                <div className="ri-detail">
+                                  <h3>{e.store_name}</h3>
+                                  <p>
+                                    Published to Store Products:{' '}
+                                    <span>{e.published_to_store_products}</span>
+                                  </p>
+                                  <p>
+                                    Products Sales:{' '}
+                                    <span>{e.all_time_sales}</span>
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="retailer-category">
+                                <label>Category:</label>
+                                <p className="chips-area">
+                                  <label>{e.category}</label>
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
                     </div>
 
-                    <a
-                      onClick={assignedAllRetailer}
-                      href="#"
-                      className={`add-item-label add-category ${
-                        unAssignedRetailers && unAssignedRetailers.length > 0
-                          ? ''
-                          : 'light-pill'
-                      }`}
-                    >
-                      <span>+</span> Assign All
-                    </a>
-
-                    <div className="retailer-box">
-                      {unAssignedRetailers &&
-                        unAssignedRetailers.length > 0 &&
-                        unAssignedRetailers.map((e, i) => (
-                          <div className="retailer-area" key={i}>
-                            <span
-                              id="add_retailer"
-                              onClick={() => assignedSingleRetailer(e, i)}
-                            >
-                              <img src={addRetaielr} />
-                            </span>
-                            <div className="retailer-item">
-                              <div className="ri-photo">
-                                <img src="https://placeimg.com/200/200/nature" />
+                    <div className="assigned-area">
+                      <div className="av-title">
+                        {assignedRetailers && assignedRetailers.length}{' '}
+                        {assignedRetailers && assignedRetailers.length == 1
+                          ? 'Retailer Assigned'
+                          : 'Retailers Assigned'}
+                      </div>
+                      <a
+                        onClick={removeAllRetailer}
+                        href="#"
+                        className={`add-item-label add-category ${
+                          assignedRetailers && assignedRetailers.length > 0
+                            ? ''
+                            : 'light-pill'
+                        }`}
+                      >
+                        <span>-</span> Remove All
+                      </a>
+                      <div className="retailer-box">
+                        {assignedRetailers &&
+                          assignedRetailers.length > 0 &&
+                          assignedRetailers.map((e, i) => (
+                            <div className="retailer-area" key={i}>
+                              <span
+                                id="add_retailer"
+                                onClick={() => removeSingleRetailer(e, i)}
+                              >
+                                <img src={remvoeRetaielr} />
+                              </span>
+                              <div className="retailer-item">
+                                <div className="ri-photo">
+                                  <img src="https://placeimg.com/200/200/nature" />
+                                </div>
+                                <div className="ri-detail">
+                                  <h3>{e.store_name}</h3>
+                                  <p>
+                                    Published to Store Products:{' '}
+                                    <span>{e.published_to_store_products}</span>
+                                  </p>
+                                  <p>
+                                    Products Sales:{' '}
+                                    <span>{e.all_time_sales}</span>
+                                  </p>
+                                </div>
                               </div>
-                              <div className="ri-detail">
-                                <h3>{e.store_name}</h3>
-                                <p>
-                                  Published to Store Products:{' '}
-                                  <span>{e.published_to_store_products}</span>
-                                </p>
-                                <p>
-                                  Products Sales:{' '}
-                                  <span>{e.all_time_sales}</span>
+                              <div className="retailer-category">
+                                <label>Category:</label>
+                                <p className="chips-area">
+                                  <label>{e.category}</label>
                                 </p>
                               </div>
                             </div>
-                            <div className="retailer-category">
-                              <label>Category:</label>
-                              <p className="chips-area">
-                                <label>{e.category}</label>
-                              </p>
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="assigned-area">
-                    <div className="av-title">
-                      {assignedRetailers && assignedRetailers.length}{' '}
-                      {assignedRetailers && assignedRetailers.length == 1
-                        ? 'Retailer Assigned'
-                        : 'Retailers Assigned'}
-                    </div>
-                    <a
-                      onClick={removeAllRetailer}
-                      href="#"
-                      className={`add-item-label add-category ${
-                        assignedRetailers && assignedRetailers.length > 0
-                          ? ''
-                          : 'light-pill'
-                      }`}
-                    >
-                      <span>-</span> Remove All
-                    </a>
-                    <div className="retailer-box">
-                      {assignedRetailers &&
-                        assignedRetailers.length > 0 &&
-                        assignedRetailers.map((e, i) => (
-                          <div className="retailer-area" key={i}>
-                            <span
-                              id="add_retailer"
-                              onClick={() => removeSingleRetailer(e, i)}
-                            >
-                              <img src={remvoeRetaielr} />
-                            </span>
-                            <div className="retailer-item">
-                              <div className="ri-photo">
-                                <img src="https://placeimg.com/200/200/nature" />
-                              </div>
-                              <div className="ri-detail">
-                                <h3>{e.store_name}</h3>
-                                <p>
-                                  Published to Store Products:{' '}
-                                  <span>{e.published_to_store_products}</span>
-                                </p>
-                                <p>
-                                  Products Sales:{' '}
-                                  <span>{e.all_time_sales}</span>
-                                </p>
-                              </div>
-                            </div>
-                            <div className="retailer-category">
-                              <label>Category:</label>
-                              <p className="chips-area">
-                                <label>{e.category}</label>
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

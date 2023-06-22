@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 export default function ProductsList() {
   const [actionDes, setActionDes] = useState('');
   const [toasterVisible, setToasterVisible] = useState(false);
+  const [toaserMessage, setToasterMessage] = useState('');
 
   const handleAction = (type, howMuch) => {
     if (type == 'active') {
@@ -24,23 +25,33 @@ export default function ProductsList() {
     }, 5000);
   };
 
+  const onShowToast = (message) => {
+    setToasterMessage(message);
+    setToasterVisible(true);
+  }
+
+  const onCloseToaster= () => {
+    setToasterMessage('');
+    setToasterVisible(false);
+  } 
+
   return (
     <div className="wrapper">
       <BrandHeader />
       <main className="content mp-content">
         <section className="section products mp-section">
           <ProductsFilters />
-          <ProductTable handleAction={handleAction} />
+          <ProductTable handleAction={handleAction} onShowToast={onShowToast} />
         </section>
       </main>
       {toasterVisible && (
         <div className="bottom-notify active">
           <div className="container">
             <div className="bottom-notify_text">
-              <p>{actionDes}</p>
+              <p>{toaserMessage}</p>
             </div>
           </div>
-          <div className="bottom-notify-close">
+          <div className="bottom-notify-close" onClick={onCloseToaster}>
             <svg className="close-icon">
               <img src={iconClose} />
             </svg>
