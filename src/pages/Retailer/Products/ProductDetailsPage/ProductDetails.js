@@ -244,11 +244,15 @@ function ProductDetails() {
                             </button>
                           )}
                           {/* <a href="#" class="button button-green request-approved-box">Approve</a> */}
-                          <button className="button message-brand">
-                            <div className="icon">
-                              <img src={mailIcon} />
-                            </div>
-                          </button>
+                          <a
+                            href={`mailto:${brand_details.company_email_address}`}
+                          >
+                            <button className="button message-brand">
+                              <div className="icon">
+                                <img src={mailIcon} />
+                              </div>
+                            </button>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -261,24 +265,38 @@ function ProductDetails() {
                           <div className="product-detail product-detail--brand">
                             <div className="product-detail_image">
                               <div className="image image--cover image--1-1">
-                                <Link to="/retailer/brand/single" state={{user_id: brand_details?.user_id, brand_id: brand_details?.id}}>
-                                <picture>
-                                  <img
-                                    src={
-                                      brand_details?.store_logo
-                                        ? brand_details?.store_logo
-                                        : singleSquareImage
-                                    }
-                                    alt=""
-                                  />
-                                </picture>
+                                <Link
+                                  to="/retailer/brand/single"
+                                  state={{
+                                    user_id: brand_details?.user_id,
+                                    brand_id: brand_details?.id,
+                                  }}
+                                >
+                                  <picture>
+                                    <img
+                                      src={
+                                        brand_details?.store_logo
+                                          ? brand_details?.store_logo
+                                          : singleSquareImage
+                                      }
+                                      alt=""
+                                    />
+                                  </picture>
                                 </Link>
                               </div>
                             </div>
                             <div className="product-detail_info">
                               <div className="ttl">Brand</div>
-                              <Link to="/retailer/brand/single" state={{user_id: brand_details?.user_id, brand_id: brand_details?.id}}>
-                              <p className="txt">{brand_details?.store_name}</p>
+                              <Link
+                                to="/retailer/brand/single"
+                                state={{
+                                  user_id: brand_details?.user_id,
+                                  brand_id: brand_details?.id,
+                                }}
+                              >
+                                <p className="txt">
+                                  {brand_details?.store_name}
+                                </p>
                               </Link>
                             </div>
                           </div>

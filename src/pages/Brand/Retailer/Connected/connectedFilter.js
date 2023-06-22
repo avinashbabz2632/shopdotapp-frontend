@@ -94,7 +94,7 @@ const ConnectedFilter = forwardRef((props, ref) => {
                         </div>
                         <div
                             id="relailerCategory"
-                            className={`select-list select-options ${openSelect === 'category'
+                            className={`select-list filter_form-items select-options ${openSelect === 'category'
                                     ? 'hide retailer-select'
                                     : ''
                                 }`}
@@ -138,7 +138,7 @@ const ConnectedFilter = forwardRef((props, ref) => {
                         </div>
                         <div
                             id="states"
-                            className={`select-list select-options ${openSelect === 'state'
+                            className={`select-list filter_form-items select-options ${openSelect === 'state'
                                     ? 'hide retailer-select'
                                     : ''
                                 }`}

@@ -138,6 +138,12 @@ export default function RequestAccess(props) {
     }
     return statusText;
   }
+  const getStatus = (status) => {
+    if(status == "accepted"){
+      status = "connected"
+    }
+    return status.charAt(0).toUpperCase() + status.slice(1)
+  }
   return (
     <>
       <InviteRetailer
@@ -206,7 +212,7 @@ export default function RequestAccess(props) {
                 href="#"
                 className={`retailer-type  ${filterStatus == 'conncted' ? 'active' : ''
                   }`}
-                onClick={() => changeStatusFilter('conncted')}
+                onClick={() => changeStatusFilter('accepted')}
               >
                 Connected
               </a>
@@ -331,7 +337,7 @@ export default function RequestAccess(props) {
                                   : ''
                               }`}
                             >
-                              {item.invite_status.charAt(0).toUpperCase() + item.invite_status.slice(1)}
+                              {getStatus(item.invite_status)}
                             </span>
                           </td>
                           <td>
