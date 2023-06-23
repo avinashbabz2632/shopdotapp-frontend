@@ -6,6 +6,6 @@ files:
 hooks:
 
   Install:
-    - location: scripts/start_server.sh
+    - location: scripts/startserver.sh
       timeout: 300
       runas: root
