@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-cd /home/ubuntu/shopdotapp-frontend
+cd /home/ubuntu/shopdot-frontend
 
 
 sudo npm start
