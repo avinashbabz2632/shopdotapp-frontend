@@ -4,4 +4,4 @@
 cd /home/ubuntu/shopdot-frontend
 
 
-sudo npm start
+npx pm2 start npm --name "my-app" -- start
