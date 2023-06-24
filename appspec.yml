@@ -4,8 +4,11 @@ files:
   - source: /
     destination: /home/ubuntu/shopdot-frontend
 hooks:
-
   Install:
     - location: scripts/startserver.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/npmstart.sh
       timeout: 300
       runas: root
