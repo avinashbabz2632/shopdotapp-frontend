@@ -6,6 +6,5 @@ cd /home/ubuntu/shopdotapp-frontend
 
 sudo npm install
 
-sudo npm run build
 
 sudo npm start
